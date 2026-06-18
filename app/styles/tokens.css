@@ -1,0 +1,157 @@
+/* =============================================================================
+   VANSALES.COM — DESIGN TOKENS  (single source of truth)
+   Reskin the entire product by editing the values in this file alone.
+   A Claude Design palette drops straight into the --color-* ramps below.
+
+   Direction: "Forecourt / Highway" — dark ink chrome, sodium-amber energy,
+   quiet teal secondary, authentic UK number-plate yellow as the signature.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------------------
+     1. COLOUR
+     -------------------------------------------------------------------------*/
+
+  /* Ink — text + dark chrome (header, footer) */
+  --color-ink-900: #0d1620; /* deepest — chrome backgrounds, hero ink   */
+  --color-ink-800: #14202c; /* primary headings, body emphasis          */
+  --color-ink-700: #1f2e3b; /* default body text                        */
+  --color-ink-600: #36495a; /* secondary text                           */
+  --color-ink-500: #5c6b78; /* muted / meta                             */
+  --color-ink-400: #8493a0; /* placeholder, disabled                    */
+  --color-ink-300: #aab7c2; /* faint                                    */
+
+  /* Surfaces — cool steel tints, lightest → resting */
+  --color-surface-0: #ffffff; /* cards, top surface        */
+  --color-surface-1: #f6f8fb; /* page background           */
+  --color-surface-2: #edf1f6; /* insets, rails             */
+  --color-surface-3: #e2e9f0; /* pressed / wells           */
+
+  /* Borders */
+  --color-border: #dce4ec;
+  --color-border-strong: #c2cdd8;
+
+  /* Brand — deep teal (structural accents, eyebrows, iconography) */
+  --color-brand-700: #0e4a5a;
+  --color-brand-600: #135e72;
+  --color-brand-500: #1b7f98;
+  --color-brand-tint: #e3f1f4;
+
+  /* Accent — sodium amber (primary actions, price, the signature energy) */
+  --color-accent-700: #b8490a;
+  --color-accent-600: #e8650a;
+  --color-accent-500: #ff7a1a;
+  --color-accent-400: #ff9a4d;
+  --color-accent-tint: #fff1e5;
+
+  /* Plate — authentic UK registration yellow (signature badge only) */
+  --color-plate: #f7d117;
+  --color-plate-ink: #14202c;
+
+  /* Status — available / reserved / sold + danger */
+  --color-success-600: #0f7a4f;
+  --color-success-500: #16a36a;
+  --color-success-tint: #e2f4ec;
+  --color-reserved-600: #b45309;
+  --color-reserved-tint: #fbecd9;
+  --color-sold-600: #64748b;
+  --color-sold-tint: #eef1f4;
+  --color-danger-600: #c0392b;
+
+  /* Semantic role aliases (used by components & Tailwind theme) */
+  --color-bg: var(--color-surface-1);
+  --color-fg: var(--color-ink-700);
+  --color-heading: var(--color-ink-800);
+  --color-muted: var(--color-ink-500);
+  --color-card: var(--color-surface-0);
+  --color-accent: var(--color-accent-500);
+  --color-accent-strong: var(--color-accent-600);
+  --color-link: var(--color-accent-600);
+  --color-ring: var(--color-accent-500);
+
+  /* ---------------------------------------------------------------------------
+     2. TYPOGRAPHY
+     Font families are injected by next/font as --font-display/-sans/-mono.
+     Fallbacks here keep the file usable standalone.
+     -------------------------------------------------------------------------*/
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-hanken), "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Fluid type scale — mobile-first, clamps up for large viewports */
+  --text-2xs: 0.6875rem; /* 11px — plate sub-labels        */
+  --text-xs: 0.75rem; /* 12px — meta, eyebrows          */
+  --text-sm: 0.8125rem; /* 13px — captions               */
+  --text-base: 0.9375rem; /* 15px — body (mobile-first)    */
+  --text-md: 1rem; /* 16px — lead body              */
+  --text-lg: 1.125rem; /* 18px                          */
+  --text-xl: clamp(1.25rem, 1.05rem + 0.9vw, 1.5rem);
+  --text-2xl: clamp(1.55rem, 1.2rem + 1.7vw, 2.1rem);
+  --text-3xl: clamp(2rem, 1.4rem + 3vw, 3rem);
+  --text-4xl: clamp(2.5rem, 1.6rem + 4.6vw, 4.25rem); /* hero */
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-display: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-eyebrow: 0.16em;
+  --tracking-plate: 0.06em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* ---------------------------------------------------------------------------
+     3. RADII — sturdy, lightly squared (commercial, not bubbly)
+     -------------------------------------------------------------------------*/
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-pill: 999px;
+
+  /* ---------------------------------------------------------------------------
+     4. SHADOWS — cool-tinted (ink, not pure black) for a clean lifted look
+     -------------------------------------------------------------------------*/
+  --shadow-xs: 0 1px 2px rgba(13, 22, 32, 0.06);
+  --shadow-sm: 0 1px 3px rgba(13, 22, 32, 0.08), 0 1px 2px rgba(13, 22, 32, 0.04);
+  --shadow-md: 0 6px 16px -4px rgba(13, 22, 32, 0.12), 0 2px 6px -2px rgba(13, 22, 32, 0.08);
+  --shadow-lg: 0 18px 40px -12px rgba(13, 22, 32, 0.22);
+  --shadow-plate: inset 0 0 0 2px rgba(13, 22, 32, 0.85), 0 1px 0 rgba(255, 255, 255, 0.4);
+  --shadow-focus: 0 0 0 3px rgba(255, 122, 26, 0.4);
+
+  /* ---------------------------------------------------------------------------
+     5. SPACING / LAYOUT
+     -------------------------------------------------------------------------*/
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --container-max: 1200px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --section-y: clamp(3rem, 7vw, 5.5rem);
+
+  /* ---------------------------------------------------------------------------
+     6. MOTION
+     -------------------------------------------------------------------------*/
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 360ms;
+}
