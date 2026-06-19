@@ -69,7 +69,7 @@ export default async function PanelVanCategoryPage() {
             <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">Latest panel vans</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {result.listings.map((l, i) => (
-                <ListingCard key={l.id} listing={l} priority={i < 3} />
+                <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />
               ))}
             </div>
             <div className="mt-8 text-center">

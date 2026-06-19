@@ -146,7 +146,7 @@ export default async function NewVanDetailPage({ params }: Props) {
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {stockResult.listings.slice(0, 3).map((l, i) => (
-                <ListingCard key={l.id} listing={l} priority={i === 0} />
+                <ListingCard key={l.id} listing={l} priority={i === 0} cardIndex={i} />
               ))}
             </div>
           </Container>
