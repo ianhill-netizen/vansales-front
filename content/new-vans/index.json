@@ -1,0 +1,832 @@
+[
+  {
+    "slug": "citroen-berlingo-crew-cab",
+    "title": "Citroen Berlingo Crew Cab",
+    "make": "Citroën",
+    "model": "Berlingo Crew Cab",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795.webp",
+    "description": "[![Citroen Berlingo Crew…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=Berlingo",
+    "wordCount": 871
+  },
+  {
+    "slug": "citroen-berlingo-enterprise",
+    "title": "Citroen Berlingo Enterprise",
+    "make": "Citroën",
+    "model": "Berlingo Enterprise",
+    "heroImage": "/images/new-vans/Citroen-Berlingo-Lease-2025-04-12-at-18.23-Background-Removed.30-600x345.webp",
+    "description": "Citroen Berlingo Enterprise My six months with the UK’s best-selling compact van, the Citroen Berlingo Enterprise, have shown me exactly why it dominates…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=Berlingo+Enterprise",
+    "wordCount": 4106
+  },
+  {
+    "slug": "citroen-berlingo-lease",
+    "title": "Citroen Berlingo",
+    "make": "Citroën",
+    "model": "Berlingo",
+    "heroImage": "/images/new-vans/Citroen-Berlingo-Lease-2025-04-12-at-18.22-Background-Removed.58-600x359.webp",
+    "description": "Citroen Berlingo Lease The Citroen Berlingo lease market offers an attractive path to driving this versatile vehicle without the burden of full ownership…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=Berlingo",
+    "wordCount": 3872
+  },
+  {
+    "slug": "citroen-dispatch-crew-cab",
+    "title": "Citroen Dispatch Crew Cab",
+    "make": "Citroën",
+    "model": "Dispatch Crew Cab",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795.webp",
+    "description": "[![Citroen Dispatch Crew…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=Dispatch",
+    "wordCount": 2418
+  },
+  {
+    "slug": "citroen-dispatch-lease",
+    "title": "Citroen Dispatch",
+    "make": "Citroën",
+    "model": "Dispatch",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "[![Citroen Dispatch…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=Dispatch",
+    "wordCount": 3230
+  },
+  {
+    "slug": "citroen-e-berlingo",
+    "title": "Citroen E Berlingo",
+    "make": "Citroën",
+    "model": "E Berlingo",
+    "heroImage": "/images/new-vans/Citroen-Berlingo-Lease-2025-04-12-at-18.23-Background-Removed.30-600x345.webp",
+    "description": "Citroen e-Berlingo The electric Berlingo seemed like just another family van at first. My viewpoint changed completely when I found it could travel miles…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=E+Berlingo",
+    "wordCount": 4570
+  },
+  {
+    "slug": "citroen-relay-lease",
+    "title": "Citroen Relay Lease - Van Sales",
+    "make": "Citroën",
+    "model": "Relay",
+    "heroImage": "/images/new-vans/white-Background-Removed-e1744933801939.webp",
+    "description": "[![Citroen Relay…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=Relay",
+    "wordCount": 3881
+  },
+  {
+    "slug": "citroen-relay-tipper",
+    "title": "Citroen Relay Tipper",
+    "make": "Citroën",
+    "model": "Relay",
+    "heroImage": "/images/new-vans/ba8eb071-818e-452c-9af0-affe7f9deb4d-Background-Removed-e1744937658923-600x368.webp",
+    "description": "Citroen Relay Tipper The Citroen Relay Tipper comes with a powerful.2-litre diesel engine that delivers bhp, making it a reliable workhorse for tough…",
+    "stockHref": "/vans?make=Citro%C3%ABn&model=Relay",
+    "wordCount": 2220
+  },
+  {
+    "slug": "fiat-doblo-lease",
+    "title": "Fiat Doblo Lease - Van Sales",
+    "make": "Fiat",
+    "model": "Doblo",
+    "heroImage": "/images/new-vans/getPngImage-Background-Removed-600x319.webp",
+    "description": "[![Fiat Doblo…",
+    "stockHref": "/vans?make=Fiat&model=Doblo",
+    "wordCount": 4920
+  },
+  {
+    "slug": "fiat-ducato-lease",
+    "title": "Fiat Ducato Lease",
+    "make": "Fiat",
+    "model": "Ducato",
+    "heroImage": "/images/new-vans/white-Background-Removed-e1744933801939.webp",
+    "description": "[![Fiat Ducato…",
+    "stockHref": "/vans?make=Fiat&model=Ducato",
+    "wordCount": 5244
+  },
+  {
+    "slug": "fiat-ducato-luton",
+    "title": "Fiat Ducato Luton",
+    "make": "Fiat",
+    "model": "Ducato",
+    "heroImage": "/images/new-vans/2a130295-8fd5-485b-b81b-66a172d5766e-Background-Removed-e1744990477480.webp",
+    "description": "[![Renault Master Low…",
+    "stockHref": "/vans?make=Fiat&model=Ducato",
+    "wordCount": 672
+  },
+  {
+    "slug": "fiat-scudo-crew-cab",
+    "title": "Fiat Scudo Crew Cab",
+    "make": "Fiat",
+    "model": "Scudo Crew Cab",
+    "heroImage": "/images/new-vans/getPngImage-1-Background-Removed-1-600x319.webp",
+    "description": "[![Fiat Scudo Crew…",
+    "stockHref": "/vans?make=Fiat&model=Scudo",
+    "wordCount": 3694
+  },
+  {
+    "slug": "fiat-scudo-lease",
+    "title": "Fiat Scudo",
+    "make": "Fiat",
+    "model": "Scudo",
+    "heroImage": "/images/new-vans/2a130295-8fd5-485b-b81b-66a172d5766e-Background-Removed-e1744990477480.webp",
+    "description": "[![Fiat Scudo…",
+    "stockHref": "/vans?make=Fiat&model=Scudo",
+    "wordCount": 2723
+  },
+  {
+    "slug": "ford-e-transit-courier",
+    "title": "Ford E Transit Courier",
+    "make": "Ford",
+    "model": "E Transit Courier",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![Ford Transit Courier…",
+    "stockHref": "/vans?make=Ford&model=E+Transit+Courier",
+    "wordCount": 3310
+  },
+  {
+    "slug": "ford-e-transit-custom",
+    "title": "Ford E Transit Custom",
+    "make": "Ford",
+    "model": "E Transit Custom",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "Ford E Transit Custom The Ford E-Transit Custom costs £10,000 more than its diesel version. This price gap definitely made us think twice before adding…",
+    "stockHref": "/vans?make=Ford&model=E+Transit+Custom",
+    "wordCount": 3721
+  },
+  {
+    "slug": "ford-e-transit",
+    "title": "Ford E Transit",
+    "make": "Ford",
+    "model": "E Transit",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-14-at-13.54-Background-Removed.20-e1744986649937.webp",
+    "description": "[![](../images/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp)](https://www.vansales.com/product/nissan-primastar-lease/)",
+    "stockHref": "/vans?make=Ford&model=E+Transit",
+    "wordCount": 750
+  },
+  {
+    "slug": "ford-ranger-lease",
+    "title": "Ford Ranger",
+    "make": "Ford",
+    "model": "Ranger",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-19-at-16.50-Background-Removed.46-e1745078106550-600x316.webp",
+    "description": "Ford Ranger Lease Monthly payments for the Ford Ranger now start at £339.34, marking an unexpected change in the lease market. Europe’s most popular…",
+    "stockHref": "/vans?make=Ford&model=Ranger",
+    "wordCount": 3545
+  },
+  {
+    "slug": "ford-ranger-phev",
+    "title": "Ford Ranger PHEV",
+    "make": "Ford",
+    "model": "Ranger",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![Ford Ranger…",
+    "stockHref": "/vans?make=Ford&model=Ranger",
+    "wordCount": 3739
+  },
+  {
+    "slug": "ford-tourneo-custom-minibus-lease",
+    "title": "Ford Tourneo Custom Minibus Lease - Van Sales",
+    "make": "Ford",
+    "model": "Tourneo Custom",
+    "heroImage": "/images/new-vans/2adbedb8-eb38-4263-9ea2-0937894c5225-Background-Removed-e1744885878591.webp",
+    "description": "[![Ford Ranger…",
+    "stockHref": "/vans?make=Ford&model=Tourneo+Custom",
+    "wordCount": 726
+  },
+  {
+    "slug": "ford-tourneo-custom",
+    "title": "Ford Transit Tourneo Custom",
+    "make": "Ford",
+    "model": "Tourneo Custom",
+    "heroImage": "/images/new-vans/2adbedb8-eb38-4263-9ea2-0937894c5225-Background-Removed-e1744885878591.webp",
+    "description": "[![Ford Tourneo…",
+    "stockHref": "/vans?make=Ford&model=Tourneo+Custom",
+    "wordCount": 737
+  },
+  {
+    "slug": "ford-transit-connect-lease",
+    "title": "Ford Transit Connect Lease",
+    "make": "Ford",
+    "model": "Transit Connect",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "Ford Transit Connect Lease Ford Transit Connect lease options are transforming how UK businesses manage their commercial vehicle needs. Whether you’re…",
+    "stockHref": "/vans?make=Ford&model=Transit+Connect",
+    "wordCount": 3995
+  },
+  {
+    "slug": "ford-transit-connect-phev",
+    "title": "Ford Transit Connect PHEV",
+    "make": "Ford",
+    "model": "Transit Connect",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "Ford Transit Connect PHEV In an era where sustainability and efficiency are paramount, the Ford Transit Connect PHEV emerges as a beacon of innovation in…",
+    "stockHref": "/vans?make=Ford&model=Transit+Connect",
+    "wordCount": 3916
+  },
+  {
+    "slug": "ford-transit-courier-lease",
+    "title": "Ford Transit Courier Lease",
+    "make": "Ford",
+    "model": "Transit Courier",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![Ford Transit Courier…",
+    "stockHref": "/vans?make=Ford&model=Transit+Courier",
+    "wordCount": 2040
+  },
+  {
+    "slug": "ford-transit-custom-automatic",
+    "title": "Ford Transit Custom Automatic - Van Sales",
+    "make": "Ford",
+    "model": "Transit Custom Automatic",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "[![FTC Side…",
+    "stockHref": "/vans?make=Ford&model=Transit+Custom",
+    "wordCount": 3509
+  },
+  {
+    "slug": "ford-transit-custom-crew-cab-lease",
+    "title": "Ford Transit Custom Crew Cab",
+    "make": "Ford",
+    "model": "Transit Custom Crew Cab",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795.webp",
+    "description": "[![Ford Transit Custom Crew Cab…",
+    "stockHref": "/vans?make=Ford&model=Transit+Custom",
+    "wordCount": 3809
+  },
+  {
+    "slug": "ford-transit-custom-dciv-phev",
+    "title": "Ford Transit Custom DCIV PHEV - Van Sales",
+    "make": "Ford",
+    "model": "Transit Custom Dciv",
+    "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
+    "description": "[![Ford Transit…",
+    "stockHref": "/vans?make=Ford&model=Transit+Custom+Dciv",
+    "wordCount": 736
+  },
+  {
+    "slug": "ford-transit-custom-lease",
+    "title": "Ford Transit Custom Lease",
+    "make": "Ford",
+    "model": "Transit Custom",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "Ford Transit Custom Lease The Ford Transit Custom lease stands as one of the most popular choices for businesses seeking reliable commercial…",
+    "stockHref": "/vans?make=Ford&model=Transit+Custom",
+    "wordCount": 3923
+  },
+  {
+    "slug": "ford-transit-custom-limited",
+    "title": "Ford Transit Custom Limited - Van Sales",
+    "make": "Ford",
+    "model": "Transit Custom Limited",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "[![Ford Transit Custom…",
+    "stockHref": "/vans?make=Ford&model=Transit+Custom",
+    "wordCount": 439
+  },
+  {
+    "slug": "ford-transit-custom-phev",
+    "title": "Ford Transit Custom PHEV",
+    "make": "Ford",
+    "model": "Transit Custom",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "Ford Transit Custom PHEV (2025): After months and,000 miles behind the wheel of a Ford Transit Custom PHEV, the real numbers about running costs might…",
+    "stockHref": "/vans?make=Ford&model=Transit+Custom",
+    "wordCount": 3557
+  },
+  {
+    "slug": "ford-transit-custom-sport",
+    "title": "Ford Transit Custom Sport",
+    "make": "Ford",
+    "model": "Transit Custom Sport",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "[![Ford Transit Custom…",
+    "stockHref": "/vans?make=Ford&model=Transit+Custom",
+    "wordCount": 7945
+  },
+  {
+    "slug": "ford-transit-double-cab",
+    "title": "Ford Transit Double Cab",
+    "make": "Ford",
+    "model": "Transit Double Cab",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-13-at-20.26-Background-Removed.34-600x412.webp",
+    "description": "Ford Transit Custom Double Cab The Ford Transit Custom Double Cab leads the UK’s light commercial vehicle market for almost a decade. After driving,000…",
+    "stockHref": "/vans?make=Ford&model=Transit",
+    "wordCount": 3003
+  },
+  {
+    "slug": "ford-transit-lease",
+    "title": "Ford Transit Lease",
+    "make": "Ford",
+    "model": "Transit",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-14-at-13.54-Background-Removed.20-e1744986649937.webp",
+    "description": "Ford Transit Lease Guide The Ford Transit Custom dominates UK’s light commercial vehicle market. Its sales record outshines competitors consistently since ",
+    "stockHref": "/vans?make=Ford&model=Transit",
+    "wordCount": 2915
+  },
+  {
+    "slug": "ford-transit-luton",
+    "title": "Ford Transit Luton",
+    "make": "Ford",
+    "model": "Transit",
+    "heroImage": "/images/new-vans/img8995-Background-Removed.webp",
+    "description": "[![Ford Transit…",
+    "stockHref": "/vans?make=Ford&model=Transit",
+    "wordCount": 3672
+  },
+  {
+    "slug": "ford-transit-tipper",
+    "title": "Ford Transit Tipper",
+    "make": "Ford",
+    "model": "Transit",
+    "heroImage": "/images/new-vans/Nissan-Vans24TDIEU_INTERSTAR_Illust_Tipper_pace020-d.jpg.ximg_.m_12_h-Background-Removed.smart_-e1744935376363.webp",
+    "description": "[![Ford Transit…",
+    "stockHref": "/vans?make=Ford&model=Transit",
+    "wordCount": 2854
+  },
+  {
+    "slug": "iveco-daily-lease",
+    "title": "Iveco Daily",
+    "make": "Iveco",
+    "model": "Daily",
+    "heroImage": "/images/new-vans/white-Background-Removed-e1744933801939.webp",
+    "description": "[![Iveco Daily…",
+    "stockHref": "/vans?make=Iveco&model=Daily",
+    "wordCount": 2285
+  },
+  {
+    "slug": "iveco-daily-luton-van",
+    "title": "Iveco Daily Luton Van",
+    "make": "Iveco",
+    "model": "Daily Luton Van",
+    "heroImage": "/images/new-vans/img8995-Background-Removed.webp",
+    "description": "[![Iveco Daily Luton…",
+    "stockHref": "/vans?make=Iveco&model=Daily+Luton+Van",
+    "wordCount": 2605
+  },
+  {
+    "slug": "iveco-daily-minibus",
+    "title": "Iveco Daily Minibus",
+    "make": "Iveco",
+    "model": "Daily",
+    "heroImage": "/images/new-vans/2adbedb8-eb38-4263-9ea2-0937894c5225-Background-Removed-e1744885878591-600x468.webp",
+    "description": "Iveco Daily Minibus (2025) The Iveco minibus market shows an interesting contrast in prices that range from £0.99 to a remarkable £108,000. The story goes ",
+    "stockHref": "/vans?make=Iveco&model=Daily",
+    "wordCount": 2410
+  },
+  {
+    "slug": "iveco-daily-tipper-2",
+    "title": "Iveco Daily Tipper",
+    "make": "Iveco",
+    "model": "Daily Tipper",
+    "heroImage": "/images/new-vans/Nissan-Vans24TDIEU_INTERSTAR_Illust_Tipper_pace020-d.jpg.ximg_.m_12_h-Background-Removed.smart_-e1744935376363.webp",
+    "description": "[![Iveco Daily…",
+    "stockHref": "/vans?make=Iveco&model=Daily",
+    "wordCount": 520
+  },
+  {
+    "slug": "iveco-daily-tipper",
+    "title": "Iveco Daily Tipper",
+    "make": "Iveco",
+    "model": "Daily",
+    "heroImage": "/images/new-vans/Nissan-Vans24TDIEU_INTERSTAR_Illust_Tipper_pace020-d.jpg.ximg_.m_12_h-Background-Removed.smart_-e1744935376363.webp",
+    "description": "[![Iveco Daily…",
+    "stockHref": "/vans?make=Iveco&model=Daily",
+    "wordCount": 2627
+  },
+  {
+    "slug": "mercedes-citan-lease",
+    "title": "Mercedes Citan",
+    "make": "Mercedes-Benz",
+    "model": "Citan",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![Mercedes Citan…",
+    "stockHref": "/vans?make=Mercedes-Benz&model=Citan",
+    "wordCount": 3043
+  },
+  {
+    "slug": "mercedes-luton-van",
+    "title": "Mercedes Luton Van",
+    "make": "Mercedes-Benz",
+    "model": "Luton Van",
+    "heroImage": "/images/new-vans/img8995-Background-Removed.webp",
+    "description": "[![Mercedes Luton…",
+    "stockHref": "/vans?make=Mercedes-Benz&model=Luton+Van",
+    "wordCount": 2698
+  },
+  {
+    "slug": "mercedes-sprinter-lease",
+    "title": "Mercedes Sprinter",
+    "make": "Mercedes-Benz",
+    "model": "Sprinter",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-13-at-17.53-Background-Removed.02-600x319.webp",
+    "description": "Mercedes Sprinter Lease In today’s competitive business environment, having reliable, efficient transportation is essential for UK businesses of all…",
+    "stockHref": "/vans?make=Mercedes-Benz&model=Sprinter",
+    "wordCount": 2633
+  },
+  {
+    "slug": "mercedes-sprinter-luton-rental",
+    "title": "Mercedes Sprinter Luton Rental - Van Sales",
+    "make": "Mercedes-Benz",
+    "model": "Sprinter Luton Rental",
+    "heroImage": "/images/new-vans/Screenshot-2023-02-12-at-23.00.08.webp",
+    "description": "Mercedes Luton Rental: Sprinter Vans Available Now In today’s dynamically evolving logistics and transportation landscape, the demand for versatile and…",
+    "stockHref": "/vans?make=Mercedes-Benz&model=Sprinter+Luton+Rental",
+    "wordCount": 2370
+  },
+  {
+    "slug": "mercedes-sprinter-tipper",
+    "title": "Mercedes Sprinter Tipper",
+    "make": "Mercedes-Benz",
+    "model": "Sprinter",
+    "heroImage": "/images/new-vans/90fa088a-de2f-403d-a818-3e5e53857d3a-Background-Removed-e1744938055801-600x346.webp",
+    "description": "Mercedes Sprinter Tipper The Mercedes Sprinter Tipper packs an impressive kg payload capacity with a load space that measures mm long and mm wide.…",
+    "stockHref": "/vans?make=Mercedes-Benz&model=Sprinter",
+    "wordCount": 2124
+  },
+  {
+    "slug": "mercedes-vito-crew-cab-lease",
+    "title": "Mercedes Vito Crew Cab",
+    "make": "Mercedes-Benz",
+    "model": "Vito Crew Cab",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-14-at-14.21-Background-Removed.09-600x320.webp",
+    "description": "[![Mercedes Citan…",
+    "stockHref": "/vans?make=Mercedes-Benz&model=Vito",
+    "wordCount": 1050
+  },
+  {
+    "slug": "nissan-interstar-lease",
+    "title": "Nissan Interstar",
+    "make": "Nissan",
+    "model": "Interstar",
+    "heroImage": "/images/new-vans/white-Background-Removed-e1744933801939.webp",
+    "description": "[![Nissan Insterstar…",
+    "stockHref": "/vans?make=Nissan&model=Interstar",
+    "wordCount": 637
+  },
+  {
+    "slug": "nissan-interstar-tipper",
+    "title": "Nissan Interstar Tipper",
+    "make": "Nissan",
+    "model": "Interstar",
+    "heroImage": "/images/new-vans/Nissan-Vans24TDIEU_INTERSTAR_Illust_Tipper_pace020-d.jpg.ximg_.m_12_h-Background-Removed.smart_-e1744935376363-600x269.webp",
+    "description": "Nissan Interstar Tipper The Nissan Interstar Tipper packs an impressive kg payload capacity. This feature makes it a strong competitor in the commercial…",
+    "stockHref": "/vans?make=Nissan&model=Interstar",
+    "wordCount": 2367
+  },
+  {
+    "slug": "nissan-primastar-lease",
+    "title": "Nissan Primastar",
+    "make": "Nissan",
+    "model": "Primastar",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-14-at-13.54-Background-Removed.20-e1744986649937.webp",
+    "description": "[![](../images/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp)](https://www.vansales.com/product/ford-transit-custom-dciv-phev/)",
+    "stockHref": "/vans?make=Nissan&model=Primastar",
+    "wordCount": 656
+  },
+  {
+    "slug": "nissan-townstar-lease",
+    "title": "Nissan Townstar",
+    "make": "Nissan",
+    "model": "Townstar",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![Nissan Townstar…",
+    "stockHref": "/vans?make=Nissan&model=Townstar",
+    "wordCount": 2964
+  },
+  {
+    "slug": "peugeot-boxer-lease",
+    "title": "Peugeot Boxer",
+    "make": "Peugeot",
+    "model": "Boxer",
+    "heroImage": "/images/new-vans/exterior-4-1-Background-Removed-e1744990793768.webp",
+    "description": "[![Peugeot Boxer…",
+    "stockHref": "/vans?make=Peugeot&model=Boxer",
+    "wordCount": 1950
+  },
+  {
+    "slug": "peugeot-expert-lease",
+    "title": "Peugeot Dispatch",
+    "make": "Peugeot",
+    "model": "Expert",
+    "heroImage": "/images/new-vans/exterior-4-1-Background-Removed-e1744990793768.webp",
+    "description": "[![Peugeot Expert…",
+    "stockHref": "/vans?make=Peugeot&model=Expert",
+    "wordCount": 3041
+  },
+  {
+    "slug": "peugeot-partner-lease",
+    "title": "Peugeot Partner",
+    "make": "Peugeot",
+    "model": "Partner",
+    "heroImage": "/images/new-vans/exterior-4-1-Background-Removed-e1744990793768-600x321.webp",
+    "description": "[![Ford-Transit-Connect-White](../images/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp)](https://www.vansales.co",
+    "stockHref": "/vans?make=Peugeot&model=Partner",
+    "wordCount": 889
+  },
+  {
+    "slug": "renault-kangoo-lease",
+    "title": "Renault Kangoo",
+    "make": "Renault",
+    "model": "Kangoo",
+    "heroImage": "/images/new-vans/Renault-kangoo-lease-2025-04-14-at-18.29-Background-Removed.22-e1744974250785.webp",
+    "description": "Renault Kangoo Lease The Renault Kangoo lease options stand out in the market. The van has secured ‘Small Van of the Year’ at both the Company Car & Van…",
+    "stockHref": "/vans?make=Renault&model=Kangoo",
+    "wordCount": 4075
+  },
+  {
+    "slug": "renault-master-lease",
+    "title": "Renault Master",
+    "make": "Renault",
+    "model": "Master",
+    "heroImage": "/images/new-vans/Renault-Master-Lease-2025-04-13-at-18.09-Background-Removed.38-e1744934226227-600x332.webp",
+    "description": "Renault Master Lease : Options Renault Master leasing presents a crucial decision for businesses seeking reliable commercial transport solutions. Whether…",
+    "stockHref": "/vans?make=Renault&model=Master",
+    "wordCount": 3571
+  },
+  {
+    "slug": "renault-master-low-loader",
+    "title": "Renault Master Low Loader",
+    "make": "Renault",
+    "model": "Master Low Loader",
+    "heroImage": "/images/new-vans/img8995-Background-Removed-600x450.webp",
+    "description": "[![Fiat Ducato…",
+    "stockHref": "/vans?make=Renault&model=Master+Low+Loader",
+    "wordCount": 774
+  },
+  {
+    "slug": "renault-master-luton",
+    "title": "Renault Master Luton",
+    "make": "Renault",
+    "model": "Master",
+    "heroImage": "/images/new-vans/006d5d83-301b-4644-8b5f-cd4c5828684e-Background-Removed-e1744990271147-600x418.webp",
+    "description": "[![Renault Master Low…",
+    "stockHref": "/vans?make=Renault&model=Master",
+    "wordCount": 780
+  },
+  {
+    "slug": "renault-trafic-crew-cab-lease",
+    "title": "Renault Trafic Crew Cab",
+    "make": "Renault",
+    "model": "Trafic Crew Cab",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795.webp",
+    "description": "[![Renault Trafic Crew Cab…",
+    "stockHref": "/vans?make=Renault&model=Trafic",
+    "wordCount": 2318
+  },
+  {
+    "slug": "renault-trafic-lease",
+    "title": "Renault Trafic",
+    "make": "Renault",
+    "model": "Trafic",
+    "heroImage": "/images/new-vans/img8995-Background-Removed.webp",
+    "description": "[![Renault Trafic…",
+    "stockHref": "/vans?make=Renault&model=Trafic",
+    "wordCount": 3861
+  },
+  {
+    "slug": "toyota-hilux-lease",
+    "title": "Toyota Hilux",
+    "make": "Toyota",
+    "model": "Hilux",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795.webp",
+    "description": "[![Toyota Hilux…",
+    "stockHref": "/vans?make=Toyota&model=Hilux",
+    "wordCount": 2424
+  },
+  {
+    "slug": "toyota-proace-city-lease",
+    "title": "Toyota Proace City",
+    "make": "Toyota",
+    "model": "Proace City",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![Toyota Proace City…",
+    "stockHref": "/vans?make=Toyota&model=Proace+City",
+    "wordCount": 3148
+  },
+  {
+    "slug": "toyota-proace-crew-cab",
+    "title": "Toyota Proace Crew Cab",
+    "make": "Toyota",
+    "model": "Proace Crew Cab",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795-600x332.webp",
+    "description": "[![Citroen Dispatch Crew…",
+    "stockHref": "/vans?make=Toyota&model=Proace",
+    "wordCount": 1122
+  },
+  {
+    "slug": "toyota-proace-lease-2",
+    "title": "Toyota Proace",
+    "make": "Toyota",
+    "model": "Proace Lease",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795.webp",
+    "description": "[![Toyota Proace…",
+    "stockHref": "/vans?make=Toyota&model=Proace+Lease",
+    "wordCount": 2441
+  },
+  {
+    "slug": "toyota-proace-lease",
+    "title": "Toyota Proace",
+    "make": "Toyota",
+    "model": "Proace",
+    "heroImage": "/images/new-vans/Toyota-Proace-Crew-Cab-LeaseScreenshot-2025-04-18-at-16.01-Background-Removed.31-e1744988964795.webp",
+    "description": "[![Toyota Proace City…",
+    "stockHref": "/vans?make=Toyota&model=Proace",
+    "wordCount": 356
+  },
+  {
+    "slug": "new-renault-master",
+    "title": "New Renault Master",
+    "make": "Van",
+    "model": "New Renault Master",
+    "heroImage": "/images/new-vans/img8995-Background-Removed.webp",
+    "description": "[![Renault Master…",
+    "stockHref": "/vans?model=New+Renault+Master",
+    "wordCount": 253
+  },
+  {
+    "slug": "new-vauxhall-movano",
+    "title": "New Vauxhall Movano - Van Sales",
+    "make": "Van",
+    "model": "New Vauxhall Movano",
+    "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
+    "description": "[![Vauxhall Vivaro…",
+    "stockHref": "/vans?model=New+Vauxhall+Movano",
+    "wordCount": 253
+  },
+  {
+    "slug": "vauxhall-combi-lease",
+    "title": "Vauxhall Combi",
+    "make": "Vauxhall",
+    "model": "Combi",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![Vauxhall Combo Life…",
+    "stockHref": "/vans?make=Vauxhall&model=Combi",
+    "wordCount": 3600
+  },
+  {
+    "slug": "vauxhall-vivaro-lease-2",
+    "title": "Vauxhall Vivaro",
+    "make": "Vauxhall",
+    "model": "Vivaro Lease",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "[![Vauxhall Vivaro…",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Lease",
+    "wordCount": 2692
+  },
+  {
+    "slug": "vauxhall-vivaro-lease",
+    "title": "Vauxhall Vivaro Lease - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro",
+    "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
+    "description": "[![Vauxhall Vivaro…",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro",
+    "wordCount": 257
+  },
+  {
+    "slug": "vauxhall-vivaro-medium-van-2",
+    "title": "Vauxhall Vivaro Medium Van - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro Medium Van",
+    "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
+    "description": "[![](../images/663-image-2.webp)](https://www.vansales.com/wp-content/uploads/2025/02/image-2.webp)",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Medium+Van",
+    "wordCount": 923
+  },
+  {
+    "slug": "vauxhall-vivaro-medium-van-3",
+    "title": "Vauxhall Vivaro Medium Van - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro Medium Van",
+    "heroImage": "/images/new-vans/Ford-Transit-Connect-White-2025-04-12-at-16.27-Background-Removed.39-e1744974194567.webp",
+    "description": "[![](../images/662-image-1-1.webp)](https://www.vansales.com/wp-content/uploads/2025/02/image-1-1.webp)",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Medium+Van",
+    "wordCount": 978
+  },
+  {
+    "slug": "vauxhall-vivaro-medium-van-4",
+    "title": "Vauxhall Vivaro Medium Van - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro Medium Van 4",
+    "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
+    "description": "[![](../images/664-image-2-1.webp)](https://www.vansales.com/wp-content/uploads/2025/02/image-2-1.webp)",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Medium+Van+4",
+    "wordCount": 987
+  },
+  {
+    "slug": "vauxhall-vivaro-medium-van-5",
+    "title": "Vauxhall Vivaro Medium Van - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro Medium Van 5",
+    "heroImage": "/images/new-vans/665-image-3.webp",
+    "description": "L2 E-TECH LL21kWkWh Advance Van AutoL2 E-TECH LL21kWkWh Advance Van AutoL2 E-TECH LL21kWkWh Advance Van AutoL2 E-TECH LL21kWkWh Advance Van AutoL2…",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Medium+Van+5",
+    "wordCount": 418
+  },
+  {
+    "slug": "vauxhall-vivaro-medium-van-6",
+    "title": "Vauxhall Vivaro Medium Van - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro Medium Van 6",
+    "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
+    "description": "[![](../images/663-image-2.webp)](https://www.vansales.com/wp-content/uploads/2025/02/image-2.webp)",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Medium+Van+6",
+    "wordCount": 1063
+  },
+  {
+    "slug": "vauxhall-vivaro-medium-van",
+    "title": "Vauxhall Vivaro Medium Van - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro Medium Van",
+    "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
+    "description": "[![](../images/image-19.webp)](https://www.vansales.com/wp-content/uploads/2025/02/image-19.webp)",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Medium+Van",
+    "wordCount": 913
+  },
+  {
+    "slug": "vauxhall-vivaro-prime",
+    "title": "Vauxhall Vivaro Prime - Van Sales",
+    "make": "Vauxhall",
+    "model": "Vivaro Prime",
+    "heroImage": "/images/new-vans/Ford-Transit-Custom-Lease-2025-04-12-at-18.01-Background-Removed.37-e1745078411499.webp",
+    "description": "[![Peugeot Expert…",
+    "stockHref": "/vans?make=Vauxhall&model=Vivaro+Prime",
+    "wordCount": 835
+  },
+  {
+    "slug": "vw-amarok-lease",
+    "title": "VW Amarok",
+    "make": "Volkswagen",
+    "model": "Amarok",
+    "heroImage": "/images/new-vans/VW-AmarokScreenshot-2025-04-19-at-16.10-Background-Removed.54-e1745076071277-600x330.webp",
+    "description": "VW Amarok Lease The VW Amarok has made quite a comeback in, and I found that there was a good reason why more customers are choosing to lease…",
+    "stockHref": "/vans?make=Volkswagen&model=Amarok",
+    "wordCount": 2569
+  },
+  {
+    "slug": "vw-caddy-lease",
+    "title": "VW Caddy",
+    "make": "Volkswagen",
+    "model": "Caddy",
+    "heroImage": "/images/new-vans/VW-Caddy-Lease-2025-04-12-at-20.09-Background-Removed.48-600x335.webp",
+    "description": "[![VW Caddy…",
+    "stockHref": "/vans?make=Volkswagen&model=Caddy",
+    "wordCount": 3331
+  },
+  {
+    "slug": "vw-crafter-lease",
+    "title": "VW Crafter Lease Deals - One Of Best Large Vans",
+    "make": "Volkswagen",
+    "model": "Crafter",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-13-at-18.40-Background-Removed.24-600x437.webp",
+    "description": "VW Crafter Lease The VW Crafter Lease  stands as Volkswagen’s largest commercial vehicle, and it delivers exactly what UK businesses need from a large van ",
+    "stockHref": "/vans?make=Volkswagen&model=Crafter",
+    "wordCount": 2362
+  },
+  {
+    "slug": "vw-crafter-luton",
+    "title": "VW Crafter Luton",
+    "make": "Volkswagen",
+    "model": "Crafter",
+    "heroImage": "/images/new-vans/7d5bc04d-3ae3-4aef-9ae9-5b7c5cb499d2-Background-Removed-e1744987676524-600x413.webp",
+    "description": "VW Crafter Luton Review The VW Crafter Luton stands out with its remarkablekg payload capacity and knows how to tow up tokg. My six months and,000…",
+    "stockHref": "/vans?make=Volkswagen&model=Crafter",
+    "wordCount": 2744
+  },
+  {
+    "slug": "vw-crafter-tipper",
+    "title": "VW Crafter Tipper",
+    "make": "Volkswagen",
+    "model": "Crafter",
+    "heroImage": "/images/new-vans/VW-Crafter-Tipper8db5b8f3-a954-4ade-947b-d6b2d8b02c53-Background-Removed-e1744938457598.webp",
+    "description": "VW Crafter Tipper (2025 The VW Crafter Tipper commands attention with its,065 kg payload capacity, establishing itself as a formidable option in the…",
+    "stockHref": "/vans?make=Volkswagen&model=Crafter",
+    "wordCount": 2101
+  },
+  {
+    "slug": "vw-t7-camper-for-sale",
+    "title": "VW T7 Camper For Sale - Van Sales",
+    "make": "Volkswagen",
+    "model": "T7 Camper For Sale",
+    "heroImage": "/images/new-vans/woocommerce-placeholder-600x600.png.webp",
+    "description": "",
+    "stockHref": "/vans?make=Volkswagen&model=T7+Camper+For+Sale",
+    "wordCount": 94
+  },
+  {
+    "slug": "vw-transporter-kombi-lease",
+    "title": "VW Transporter Kombi Lease - New T7 Is Out To Order",
+    "make": "Volkswagen",
+    "model": "Transporter Kombi",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-13-at-19.01-Background-Removed.44-e1744569579334-600x431.webp",
+    "description": "VW Transporter Kombi Lease (2025) VW Transporter Kombi lease deals look tempting at £216.14 per month through Contract Hire. But our experience with…",
+    "stockHref": "/vans?make=Volkswagen&model=Transporter+Kombi",
+    "wordCount": 2999
+  },
+  {
+    "slug": "vw-transporter-lease",
+    "title": "VW Transporter",
+    "make": "Volkswagen",
+    "model": "Transporter",
+    "heroImage": "/images/new-vans/Screenshot-2025-04-13-at-16.44-Background-Removed.13-600x321.webp",
+    "description": "VW Transporter Lease Everything You Need to Know Need a VW Transporter lease that fits your budget? Getting these versatile vans can be expensive to buy…",
+    "stockHref": "/vans?make=Volkswagen&model=Transporter",
+    "wordCount": 3876
+  }
+]
