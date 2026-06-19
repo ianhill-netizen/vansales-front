@@ -8,7 +8,9 @@ import { EnquiryPanel } from "@/components/enquiry-panel";
 import { SpecReadout } from "@/components/spec-readout";
 import { JsonLd } from "@/components/json-ld";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck } from "@/components/icons";
+import { ListingCTAButtons } from "@/components/dealer-cta-buttons";
 import { getListingBySlug } from "@/lib/listings/client";
+import { getDealerConfigBySeller } from "@/lib/dealers/config";
 import type { Listing } from "@/lib/listings/types";
 import {
   listingTitle,
@@ -56,6 +58,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   const { listing } = await getListingBySlug(slug);
   if (!listing) notFound();
 
+  const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
   const readouts = [
@@ -179,8 +182,19 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
           </div>
 
           {/* Right: sticky enquiry */}
-          <aside className="lg:sticky lg:top-20 lg:self-start">
+          <aside className="lg:sticky lg:top-20 lg:self-start space-y-3">
             <EnquiryPanel listing={listing} />
+            {dealerConfig && (
+              <ListingCTAButtons
+                listing={{
+                  make: listing.make,
+                  model: listing.model,
+                  plate: listing.plate,
+                  slug: listing.slug,
+                }}
+                dealer={dealerConfig}
+              />
+            )}
           </aside>
         </div>
       </Container>
