@@ -96,6 +96,7 @@ export interface Listing {
 export interface ListingFilters {
   make?: string;
   model?: string;
+  condition?: Condition;
   bodyStyle?: string;
   wheelbase?: Wheelbase;
   fuel?: string;

@@ -59,6 +59,7 @@ async function loadAll(): Promise<{
 function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
   let out = listings.filter((l) => l.status !== "removed");
 
+  if (f.condition) out = out.filter((l) => l.condition === f.condition);
   if (f.make) out = out.filter((l) => slugify(l.make) === slugify(f.make!));
   if (f.model) {
     const want = slugify(f.model);
