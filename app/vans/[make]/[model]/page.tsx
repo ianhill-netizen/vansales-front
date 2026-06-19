@@ -6,7 +6,7 @@ import { FilterRail } from "@/components/filter-rail";
 import { Pagination } from "@/components/pagination";
 import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
-import { VanPhoto } from "@/components/van-photo";
+import { SpecCard } from "@/components/spec-card";
 import { getListings, getFacets } from "@/lib/listings/client";
 import type { ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { listingTitle, listingMeta } from "@/lib/listings/format";
@@ -183,18 +183,23 @@ export default async function ModelPage({
             </div>
 
             <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-border">
-              <VanPhoto
-                listing={{
-                  colour: listings[0]?.colour ?? "Reflex Silver",
-                  make: makeName,
-                  model: modelName,
-                  plate: listings[0]?.plate ?? "",
-                }}
-                bodyStyle={listings[0]?.van_spec.body_style}
-                index={0}
-                className="size-full"
-                priority
-              />
+              {listings[0]?.images[0]?.url.startsWith("http") ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={listings[0].images[0].url}
+                  alt={listings[0].images[0].alt}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <SpecCard
+                  listing={{
+                    make: makeName,
+                    model: modelName,
+                    van_spec: listings[0]?.van_spec ?? { body_style: undefined, wheelbase: null, roof_height: null, payload_kg: null, load_length_mm: null, doors: null },
+                  }}
+                  className="size-full"
+                />
+              )}
             </div>
           </div>
         </Container>
