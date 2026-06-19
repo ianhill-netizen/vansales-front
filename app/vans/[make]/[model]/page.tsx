@@ -4,16 +4,19 @@ import Image from "next/image";
 import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { FilterRail } from "@/components/filter-rail";
+import { Pagination } from "@/components/pagination";
 import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
-import { getListings } from "@/lib/listings/client";
+import { getListings, getFacets } from "@/lib/listings/client";
 import type { ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { listingTitle, listingMeta } from "@/lib/listings/format";
 import { listingPath } from "@/lib/listings/slug";
 import { getModelContent } from "@/lib/models/content.generated";
 import { SITE, absUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic"; // filters live in searchParams
+export const dynamic = "force-dynamic"; // filters + page live in searchParams
+
+const PAGE_SIZE = 24;
 
 type Params = { make: string; model: string };
 type Search = { [k: string]: string | string[] | undefined };
@@ -38,8 +41,9 @@ function truncate(s: string, n: number): string {
   return s.length <= n ? s : `${s.slice(0, n - 1).replace(/\s+\S*$/, "")}…`;
 }
 
+const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
+
 function parseFilters(makeSlug: string, modelSlug: string, sp: Search): ListingFilters {
-  const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
   const num = (v: string | string[] | undefined) => {
     const n = Number(one(v));
     return Number.isFinite(n) && n > 0 ? n : undefined;
@@ -55,7 +59,27 @@ function parseFilters(makeSlug: string, modelSlug: string, sp: Search): ListingF
     wheelbase: (one(sp.wheelbase) as Wheelbase) || undefined,
     fuel: one(sp.fuel) || undefined,
     sort: (one(sp.sort) as ListingFilters["sort"]) || "newest",
+    page: num(sp.page) ?? 1,
+    pageSize: PAGE_SIZE,
   };
+}
+
+/** Href preserving the CURRENT filters, setting page (omitted for page 1). */
+function hrefWithFilters(makeSlug: string, modelSlug: string, sp: Search, page: number): string {
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(sp)) {
+    if (k === "page") continue;
+    const val = one(v);
+    if (val) params.set(k, val);
+  }
+  if (page > 1) params.set("page", String(page));
+  const qs = params.toString();
+  return `/vans/${makeSlug}/${modelSlug}${qs ? `?${qs}` : ""}`;
+}
+
+/** Clean canonical/series URL: page only, NO filter params (avoids facet dupes). */
+function cleanPageUrl(makeSlug: string, modelSlug: string, page: number): string {
+  return `/vans/${makeSlug}/${modelSlug}${page > 1 ? `?page=${page}` : ""}`;
 }
 
 async function resolve(params: Promise<Params>, searchParams: Promise<Search>) {
@@ -64,7 +88,6 @@ async function resolve(params: Promise<Params>, searchParams: Promise<Search>) {
   const filters = parseFilters(make, model, sp);
   const result = await getListings(filters);
   const content = getModelContent(make, model);
-  // Prefer the curated/canonical name, then real feed data, then a titleized slug.
   const makeName = content?.make ?? result.listings[0]?.make ?? titleizeSlug(make);
   const modelName = content?.model ?? result.listings[0]?.model ?? titleizeSlug(model);
   return { makeSlug: make, modelSlug: model, makeName, modelName, sp, result, content };
@@ -78,19 +101,20 @@ export async function generateMetadata({
   searchParams: Promise<Search>;
 }): Promise<Metadata> {
   const { makeSlug, modelSlug, makeName, modelName, result, content } = await resolve(params, searchParams);
-  const title = `${makeName} ${modelName} for sale`;
+  const onPage = result.page > 1 ? ` — Page ${result.page}` : "";
+  const title = `${makeName} ${modelName} for sale${onPage}`;
   const description = content?.intro?.length
     ? truncate(`${makeName} ${modelName} vans for sale on ${SITE.name}. ${content.intro[0]}`, 160)
     : `Browse ${result.total} ${makeName} ${modelName} vans for sale across the UK on ${SITE.name}. Filter by price, year, wheelbase, body style and fuel.`;
-  const canonical = `/vans/${makeSlug}/${modelSlug}`;
   return {
     title,
     description,
-    alternates: { canonical },
+    // Canonical excludes filter params (facet dupes) but keeps the page number.
+    alternates: { canonical: cleanPageUrl(makeSlug, modelSlug, result.page) },
     openGraph: {
       title: `${title} · ${SITE.name}`,
       description,
-      url: canonical,
+      url: cleanPageUrl(makeSlug, modelSlug, result.page),
       type: "website",
       images: content?.hero ? [{ url: content.hero }] : undefined,
     },
@@ -104,18 +128,21 @@ export default async function ModelPage({
   params: Promise<Params>;
   searchParams: Promise<Search>;
 }) {
-  const { makeSlug, modelSlug, makeName, modelName, result, content } = await resolve(params, searchParams);
-  const { listings, total } = result;
-  const canonical = `/vans/${makeSlug}/${modelSlug}`;
+  const { makeSlug, modelSlug, makeName, modelName, sp, result, content } = await resolve(params, searchParams);
+  const { listings, total, page, totalPages } = result;
+  const facets = await getFacets({ make: makeSlug, model: modelSlug });
+
+  const firstOnPage = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const lastOnPage = (page - 1) * PAGE_SIZE + listings.length;
 
   const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: `${makeName} ${modelName} for sale`,
-    numberOfItems: listings.length,
+    numberOfItems: total,
     itemListElement: listings.map((l, i) => ({
       "@type": "ListItem",
-      position: i + 1,
+      position: (page - 1) * PAGE_SIZE + i + 1,
       url: absUrl(listingPath(l)),
       name: listingTitle(l),
     })),
@@ -124,6 +151,9 @@ export default async function ModelPage({
   return (
     <>
       <JsonLd data={itemList} />
+      {/* rel prev/next for the paginated series (React 19 hoists to <head>) */}
+      {page > 1 && <link rel="prev" href={absUrl(cleanPageUrl(makeSlug, modelSlug, page - 1))} />}
+      {page < totalPages && <link rel="next" href={absUrl(cleanPageUrl(makeSlug, modelSlug, page + 1))} />}
 
       {/* Page header — hero band */}
       <section className="border-b border-border bg-ink-900 text-white">
@@ -173,11 +203,24 @@ export default async function ModelPage({
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
           {/* Filters */}
           <div>
-            <FilterRail resultCount={total} />
+            <FilterRail
+              resultCount={total}
+              fuels={facets.fuels.map((f) => f.value)}
+              bodyStyles={facets.bodyStyles.map((b) => b.value)}
+            />
           </div>
 
           {/* Results */}
           <div>
+            {total > 0 && (
+              <p className="mb-4 text-[var(--text-sm)] text-ink-500">
+                Showing <span className="font-mono text-ink-800">{firstOnPage}</span>–
+                <span className="font-mono text-ink-800">{lastOnPage}</span> of{" "}
+                <span className="font-mono text-ink-800">{total}</span>
+                {page > 1 ? ` · page ${page} of ${totalPages}` : ""}
+              </p>
+            )}
+
             {listings.length === 0 ? (
               <div className="rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-card p-10 text-center">
                 <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
@@ -187,22 +230,29 @@ export default async function ModelPage({
                   Try widening your price or year range, or clearing a filter to see more stock.
                 </p>
                 <Link
-                  href={canonical}
+                  href={`/vans/${makeSlug}/${modelSlug}`}
                   className="mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-accent-600 hover:underline"
                 >
                   Clear filters <IconArrow width={16} height={16} />
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {listings.map((l, i) => (
-                  <ListingCard key={l.id} listing={l} priority={i < 3} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                  {listings.map((l, i) => (
+                    <ListingCard key={l.id} listing={l} priority={i < 3} />
+                  ))}
+                </div>
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  hrefFor={(p) => hrefWithFilters(makeSlug, modelSlug, sp, p)}
+                />
+              </>
             )}
 
-            {/* SEO intro copy block — real, sanitised content harvested from the model's page */}
-            {content?.intro?.length ? (
+            {/* SEO intro copy — page 1 only (keeps paginated pages lean & non-duplicate) */}
+            {page === 1 && content?.intro?.length ? (
               <section className="mt-12 border-t border-border pt-8">
                 <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
                   Buying a {makeName} {modelName}
