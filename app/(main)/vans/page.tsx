@@ -4,6 +4,7 @@ import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { FilterRail } from "@/components/filter-rail";
 import { Pagination } from "@/components/pagination";
+import { ListMapToggle } from "@/components/list-map-toggle";
 import { IconArrow } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
 import type { Condition, ListingFilters, Wheelbase } from "@/lib/listings/types";
@@ -155,7 +156,7 @@ export default async function VansPage({
                 </Link>
               </div>
             ) : (
-              <>
+              <ListMapToggle listings={listings}>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {listings.map((l, i) => (
                     <ListingCard key={l.id} listing={l} priority={i < 6} cardIndex={(page - 1) * PAGE_SIZE + i} />
@@ -166,7 +167,7 @@ export default async function VansPage({
                   totalPages={totalPages}
                   hrefFor={(p) => hrefFor(sp, p)}
                 />
-              </>
+              </ListMapToggle>
             )}
           </div>
         </div>

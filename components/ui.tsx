@@ -95,7 +95,7 @@ export function Button({
 /* -----------------------------------------------------------------------------
    Badge + StatusBadge
    -------------------------------------------------------------------------- */
-type BadgeTone = "neutral" | "brand" | "accent" | "success" | "reserved" | "sold";
+type BadgeTone = "neutral" | "brand" | "accent" | "success" | "reserved" | "sold" | "featured";
 const BADGE_TONE: Record<BadgeTone, string> = {
   neutral: "bg-surface-2 text-ink-600",
   brand: "bg-brand-tint text-brand-700",
@@ -103,6 +103,7 @@ const BADGE_TONE: Record<BadgeTone, string> = {
   success: "bg-success-tint text-success-600",
   reserved: "bg-reserved-tint text-reserved-600",
   sold: "bg-sold-tint text-sold-600",
+  featured: "bg-amber-400 text-amber-900",
 };
 
 export function Badge({

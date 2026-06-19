@@ -20,6 +20,8 @@ export interface DealerConfig {
   /* WhatsApp number in international format, digits only, no + (e.g. 447XXXXXXXXX).
      Null = button renders disabled. */
   whatsapp: string | null;
+  /* Featured dealers get free promoted placement — foundation for paid boosts. */
+  featured: boolean;
   websites: { label: string; url: string }[];
   hours: { mon: DayHours; tue: DayHours; wed: DayHours; thu: DayHours; fri: DayHours; sat: DayHours; sun: DayHours };
   about: string;
@@ -75,10 +77,16 @@ export const DEALERS: Record<string, DealerConfig> = {
       "Van rental",
     ],
     sellerNames: ["Swiss Vans", "Swiss Vans Ltd"],
+    featured: true,
     googleRating: null,
     googleReviewCount: null,
   },
 };
+
+/** True when the seller's dealer is in the featured set. */
+export function isFeaturedSeller(sellerName: string): boolean {
+  return getDealerConfigBySeller(sellerName)?.featured === true;
+}
 
 /** Look up dealer config by the seller name appearing in a Dealski listing. */
 export function getDealerConfigBySeller(sellerName: string): DealerConfig | null {
