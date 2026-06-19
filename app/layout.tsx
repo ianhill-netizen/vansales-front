@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { fontVariables } from "./fonts";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { SITE, siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -28,17 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-GB" className={fontVariables}>
-      <body>
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-[var(--radius-md)] focus:bg-ink-900 focus:px-4 focus:py-2 focus:text-white"
-        >
-          Skip to content
-        </a>
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
