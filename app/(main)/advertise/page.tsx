@@ -1,112 +1,413 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container, Eyebrow, Button } from "@/components/ui";
-import { IconCheck, IconArrow, IconSearch } from "@/components/icons";
-import { SITE } from "@/lib/site";
+import { Container, Eyebrow, Badge } from "@/components/ui";
+import { IconCheck, IconArrow } from "@/components/icons";
+import { SITE, absUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Advertise Your Stock | Dealer & Trade Plans",
-  description: `Reach thousands of UK van buyers. Powered by Dealski — your live stock syncs automatically. Call ${SITE.phone} to get started.`,
+  title: "Advertise with Vansales | Dealer & Trade Packages",
+  description: "Reach 100,000+ UK van buyers. Cheaper than AutoTrader, leads straight to WhatsApp, van-specialist audience. 14-day free trial — no contract.",
+  alternates: { canonical: absUrl("/advertise") },
+  openGraph: {
+    title: `Advertise with Vansales · ${SITE.name}`,
+    description: "Reach 100,000+ UK van buyers. Cheaper than AutoTrader, leads straight to WhatsApp.",
+    url: absUrl("/advertise"),
+    type: "website",
+  },
 };
 
-const FEATURES = [
-  "Live stock feed via Dealski — no manual uploading",
-  "Every vehicle gets its own SEO-optimised listing page",
-  "Enquiries delivered by email and SMS",
-  "Highlight featured vehicles on the homepage",
-  "Detailed click and enquiry analytics dashboard",
-  "Dedicated account manager",
-  "Instant stock updates when you mark vehicles sold",
-  "ULEZ and LEZ compliance flags auto-populated",
-];
-
-const PLANS = [
+const PRICING = [
+  {
+    name: "Private",
+    tagline: "Sell one van",
+    price: null,
+    priceSuffix: "pay as you go",
+    highlight: false,
+    trial: false,
+    bullets: [
+      "Single-van listing",
+      "Full spec + up to 20 photos",
+      "Enquiries by email",
+      "Listed for 60 days",
+    ],
+    cta: "List one van",
+    ctaHref: "/sell",
+  },
   {
     name: "Starter",
-    vans: "Up to 10 vehicles",
-    price: "Contact us",
+    tagline: "Independent dealer",
+    price: 39,
+    priceSuffix: "/mo +VAT",
     highlight: false,
-    bullets: ["Live Dealski feed", "Standard listing pages", "Email enquiries"],
+    trial: true,
+    bullets: [
+      "Up to 20 vans",
+      "Dealer profile page",
+      "WhatsApp + enquiry leads",
+      "Small boost-token allowance",
+      "Email support",
+    ],
+    cta: "Start free trial",
+    ctaHref: "/dealer-portal/login",
   },
   {
-    name: "Growth",
-    vans: "Up to 50 vehicles",
-    price: "Contact us",
+    name: "Pro",
+    tagline: "Growing dealer",
+    price: 89,
+    priceSuffix: "/mo +VAT",
     highlight: true,
-    bullets: ["Everything in Starter", "SMS enquiry alerts", "Homepage featured slots", "Priority listing placement"],
+    trial: true,
+    bullets: [
+      "Up to 75 vans",
+      "Dealer profile page",
+      "WhatsApp + CRM leads",
+      "Finance + part-exchange module",
+      "Priority placement in search",
+      "More boost tokens",
+      "Analytics dashboard",
+    ],
+    cta: "Start free trial",
+    ctaHref: "/dealer-portal/login",
   },
   {
-    name: "Enterprise",
-    vans: "Unlimited vehicles",
-    price: "Contact us",
+    name: "Premium",
+    tagline: "High-volume dealer",
+    price: 199,
+    priceSuffix: "/mo +VAT",
     highlight: false,
-    bullets: ["Everything in Growth", "Dedicated account manager", "Custom landing pages", "Analytics API access"],
+    trial: true,
+    bullets: [
+      "Unlimited vans",
+      "Top search ranking",
+      "Large boost-token allocation",
+      "Featured homepage slots",
+      "Dedicated account manager",
+      "Analytics API",
+    ],
+    cta: "Start free trial",
+    ctaHref: "/dealer-portal/login",
+  },
+];
+
+const SELLER_TYPES = [
+  {
+    icon: "⚡",
+    who: "Already on Dealski?",
+    body: "Your stock feeds in automatically — live prices, photos and spec with no manual uploads.",
+    cta: "Connect my Dealski stock",
+    ctaHref: "/dealer-portal/login",
+  },
+  {
+    icon: "🏪",
+    who: "Independent dealer",
+    body: "From 20 to 75 vans. Dealer profile page, WhatsApp leads, finance module. No contract.",
+    cta: "Start free trial",
+    ctaHref: "/dealer-portal/login",
+  },
+  {
+    icon: "🏢",
+    who: "Dealer group (multi-site)",
+    body: "Volume pricing, multiple locations, white-label lead routing. Let's talk.",
+    cta: "Talk to us",
+    ctaHref: "mailto:dealers@vansales.com",
+  },
+  {
+    icon: "🚐",
+    who: "Private seller",
+    body: "Selling one van? List it free in under 5 minutes — no subscription needed.",
+    cta: "List one van",
+    ctaHref: "/sell",
+  },
+  {
+    icon: "💸",
+    who: "Finance / hire / fleet disposal",
+    body: "Bulk disposals, fleet remarketing, wholesale. Custom volume arrangements available.",
+    cta: "Talk to us",
+    ctaHref: "mailto:dealers@vansales.com",
+  },
+];
+
+const VS_REASONS = [
+  {
+    stat: "100K+",
+    label: "Van-buyer community",
+    body: "Vansales is built around an active UK van-buyer audience — not a generic classified site.",
+  },
+  {
+    stat: "WhatsApp",
+    label: "Leads in your pocket",
+    body: "Enquiries land in WhatsApp and your CRM inbox — not an email void. Faster response, more sales.",
+  },
+  {
+    stat: "Van-first",
+    label: "Specialist filters",
+    body: "Buyers filter by payload, wheelbase, ULEZ status and Euro grade — not just colour. Better-matched leads.",
+  },
+  {
+    stat: "£39/mo",
+    label: "A fraction of AutoTrader",
+    body: "Pro features at prices independent dealers can actually afford. No long-term contract.",
   },
 ];
 
 export default function AdvertisePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="border-b border-border bg-ink-900 text-white">
-        <Container className="py-14">
-          <div className="grid items-center gap-10 lg:grid-cols-2">
+      {/* ─── HERO ──────────────────────────────────────────────── */}
+      <section className="hero-grid relative overflow-hidden bg-ink-900">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="absolute -left-40 -top-40 size-[600px] rounded-full opacity-15"
+            style={{ background: "radial-gradient(circle, #2563eb 0%, transparent 70%)" }}
+          />
+        </div>
+
+        <Container className="relative z-10 py-16 lg:py-24">
+          <div className="grid gap-10 lg:grid-cols-[1fr_400px]">
             <div>
               <Eyebrow light>For dealers &amp; trade</Eyebrow>
-              <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight">
-                Your stock. Live.<br />
-                <span className="text-brand-400">Zero manual work.</span>
+              <h1 className="mt-4 font-display text-[clamp(2.2rem,1.4rem+3.5vw,3.4rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-white">
+                Advertise your vans to{" "}
+                <span className="text-brand-400">100,000+ UK van buyers.</span>
               </h1>
-              <p className="mt-4 max-w-lg text-[var(--text-md)] leading-relaxed text-white/75">
-                Vansales is powered by Dealski. If you&apos;re already on Dealski, your stock can appear
-                here automatically — live prices, photos and spec synced in real time.
+              <p className="mt-5 max-w-xl text-[var(--text-md)] leading-relaxed text-white/70">
+                Cheaper than AutoTrader. Every lead lands in WhatsApp. A van-specialist audience
+                who filter by payload and ULEZ — not just colour.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <Button href="#contact" variant="primary" size="lg">
-                  Get started <IconArrow width={18} height={18} />
-                </Button>
-                <Button href="tel:+441656507619" variant="outline-light" size="lg">
-                  Call 01656 507619
-                </Button>
+                <Link
+                  href="/dealer-portal/login"
+                  className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] bg-brand-500 px-6 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600"
+                >
+                  Start free 14-day trial <IconArrow width={18} height={18} />
+                </Link>
+                <a
+                  href="mailto:dealers@vansales.com"
+                  className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] border border-white/30 px-6 text-[var(--text-base)] font-semibold text-white/80 transition-colors hover:border-white/60 hover:text-white"
+                >
+                  Talk to the team
+                </a>
               </div>
-              <p className="mt-5 text-[var(--text-sm)] text-white/50">
-                Not on Dealski?{" "}
-                <a href="https://dealski.co.uk" target="_blank" rel="noopener noreferrer" className="text-white/70 underline hover:text-white">
-                  Visit dealski.co.uk
-                </a>{" "}
-                to create your account first.
+              <p className="mt-4 text-[var(--text-xs)] text-white/40">
+                14-day free trial · No credit card · Cancel anytime
               </p>
             </div>
-            <div className="rounded-[var(--radius-xl)] border border-white/10 bg-white/5 p-8">
-              <p className="font-display text-[var(--text-lg)] font-bold text-white">What&apos;s included in every plan</p>
-              <ul className="mt-4 space-y-3">
-                {FEATURES.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-[var(--text-sm)] text-white/80">
-                    <IconCheck width={16} height={16} className="mt-0.5 shrink-0 text-brand-400" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+
+            {/* Quick-stats card */}
+            <div className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-white/10 bg-white/6 p-7 backdrop-blur-sm lg:self-center">
+              {VS_REASONS.map((r) => (
+                <div key={r.stat} className="flex items-start gap-4">
+                  <div className="w-16 shrink-0 font-display text-[var(--text-2xl)] font-extrabold leading-none text-brand-400">
+                    {r.stat}
+                  </div>
+                  <div>
+                    <p className="text-[var(--text-sm)] font-bold text-white">{r.label}</p>
+                    <p className="mt-0.5 text-[var(--text-xs)] leading-relaxed text-white/55">{r.body}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </Container>
       </section>
 
-      {/* How it works */}
+      {/* ─── WHO ARE YOU? ─────────────────────────────────────── */}
+      <section className="border-b border-border bg-surface-1 py-14">
+        <Container>
+          <div className="mb-8 text-center">
+            <Eyebrow>Who are you?</Eyebrow>
+            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+              The right plan starts here
+            </h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {SELLER_TYPES.map((s) => (
+              <div
+                key={s.who}
+                className="flex flex-col rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-[var(--shadow-md)]"
+              >
+                <div className="mb-3 text-3xl" role="img" aria-hidden>{s.icon}</div>
+                <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">{s.who}</h3>
+                <p className="mt-1.5 flex-1 text-[var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
+                <Link
+                  href={s.ctaHref}
+                  className="mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline"
+                >
+                  {s.cta} <IconArrow width={14} height={14} />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ─── PRICING ─────────────────────────────────────────── */}
       <section className="py-14">
         <Container>
-          <div className="mb-10 text-center">
-            <Eyebrow>Powered by Dealski</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">How the integration works</h2>
+          <div className="mb-8 text-center">
+            <Eyebrow>Pricing</Eyebrow>
+            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+              Simple, honest pricing
+            </h2>
+            <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+              All plans include a 14-day free trial. No contract. All prices +VAT.
+            </p>
+            <p className="mt-1 text-[var(--text-xs)] text-ink-400">
+              Boost tokens are used for promoting individual listings and HPI checks.
+            </p>
           </div>
-          <div className="grid gap-6 sm:grid-cols-3">
+
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {PRICING.map((plan) => (
+              <div
+                key={plan.name}
+                className={`relative flex flex-col rounded-[var(--radius-xl)] border p-6 shadow-[var(--shadow-xs)] ${
+                  plan.highlight
+                    ? "border-brand-500 bg-ink-900 text-white ring-2 ring-brand-500/30"
+                    : "border-border bg-white"
+                }`}
+              >
+                {plan.highlight && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-500 px-3 py-1 text-[var(--text-xs)] font-bold text-white">
+                    Most popular
+                  </span>
+                )}
+
+                <div className="mb-1">
+                  <p className={`font-display text-[var(--text-xl)] font-extrabold ${plan.highlight ? "text-white" : "text-ink-900"}`}>
+                    {plan.name}
+                  </p>
+                  <p className={`text-[var(--text-xs)] ${plan.highlight ? "text-white/55" : "text-ink-500"}`}>
+                    {plan.tagline}
+                  </p>
+                </div>
+
+                <div className="my-4 flex items-baseline gap-1">
+                  {plan.price !== null ? (
+                    <>
+                      <span className={`font-display text-[var(--text-3xl)] font-extrabold ${plan.highlight ? "text-white" : "text-ink-900"}`}>
+                        £{plan.price}
+                      </span>
+                      <span className={`text-[var(--text-xs)] ${plan.highlight ? "text-white/50" : "text-ink-400"}`}>
+                        {plan.priceSuffix}
+                      </span>
+                    </>
+                  ) : (
+                    <span className={`font-display text-[var(--text-base)] font-bold ${plan.highlight ? "text-white" : "text-ink-700"}`}>
+                      {plan.priceSuffix}
+                    </span>
+                  )}
+                </div>
+
+                {plan.trial && (
+                  <p className={`mb-4 text-[var(--text-2xs)] font-semibold ${plan.highlight ? "text-brand-300" : "text-brand-700"}`}>
+                    14-day free trial included
+                  </p>
+                )}
+
+                <ul className="flex-1 space-y-2">
+                  {plan.bullets.map((b) => (
+                    <li key={b} className={`flex items-start gap-2 text-[var(--text-xs)] ${plan.highlight ? "text-white/80" : "text-ink-700"}`}>
+                      <IconCheck
+                        width={14}
+                        height={14}
+                        className={`mt-0.5 shrink-0 ${plan.highlight ? "text-brand-400" : "text-success-600"}`}
+                      />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href={plan.ctaHref}
+                  className={`mt-6 flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] text-[var(--text-sm)] font-bold transition-colors ${
+                    plan.highlight
+                      ? "bg-brand-500 text-white hover:bg-brand-600"
+                      : "border border-border bg-surface-1 text-ink-800 hover:border-ink-400 hover:bg-surface-2"
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Custom row */}
+          <div className="mt-5 rounded-[var(--radius-xl)] border border-dashed border-border bg-surface-1 p-6 text-center">
+            <p className="font-display text-[var(--text-lg)] font-bold text-ink-900">
+              Dealer groups · Finance companies · Hire fleets
+            </p>
+            <p className="mt-1.5 text-[var(--text-sm)] text-ink-500">
+              Multi-location stock, bulk lead routing, API integration, white-label options. Custom pricing.
+            </p>
+            <a
+              href="mailto:dealers@vansales.com"
+              className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-2.5 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700"
+            >
+              Talk to us <IconArrow width={14} height={14} />
+            </a>
+          </div>
+        </Container>
+      </section>
+
+      {/* ─── WHY VANSALES vs AUTOTRADER ──────────────────────── */}
+      <section className="bg-surface-1 py-14">
+        <Container>
+          <div className="mb-8 text-center">
+            <Eyebrow>Why Vansales</Eyebrow>
+            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+              Not AutoTrader. Better.
+            </h2>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { n: "1", title: "Connect your Dealski account", body: "Tell us your Dealski dealer ID. We enable the Vansales feed for your account — takes 5 minutes." },
-              { n: "2", title: "Stock syncs automatically", body: "Every vehicle in your Dealski inventory appears on Vansales within minutes. Price changes and sold status update in real time." },
-              { n: "3", title: "Receive live enquiries", body: "When a buyer enquires, the lead goes to your Dealski inbox and your email simultaneously. No manual checking needed." },
+              {
+                title: "100K-member van-buyer community",
+                body: "Vansales attracts buyers who already know they want a van — not general car buyers. Higher intent, better conversion.",
+              },
+              {
+                title: "Leads to WhatsApp, not a void",
+                body: "Buyers enquire via WhatsApp or form — you get a live notification. Not buried in an inbox you check once a week.",
+              },
+              {
+                title: "Van-specialist filters",
+                body: "Payload, wheelbase, ULEZ, roof height, Euro status. Buyers self-qualify. You spend less time on tyre-kickers.",
+              },
+              {
+                title: "A fraction of the cost",
+                body: "AutoTrader Pro starts at £800+/mo. Vansales Pro is £89. Same buyers, fraction of the cost, direct relationship.",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)]"
+              >
+                <IconCheck width={18} height={18} className="mb-3 text-success-600" />
+                <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">{item.title}</h3>
+                <p className="mt-2 text-[var(--text-sm)] leading-relaxed text-ink-600">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ─── HOW IT WORKS (for Dealski dealers) ──────────────── */}
+      <section className="py-14">
+        <Container>
+          <div className="mb-8 text-center">
+            <Eyebrow>Already on Dealski?</Eyebrow>
+            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+              Your stock can be live in 5 minutes
+            </h2>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-3">
+            {[
+              { n: "1", title: "Connect your Dealski account", body: "Tell us your Dealski dealer ID. We enable the Vansales feed — no CSV uploads, no copying and pasting." },
+              { n: "2", title: "Stock syncs automatically", body: "Every vehicle appears on Vansales within minutes. Price changes, sold status and new arrivals update in real time." },
+              { n: "3", title: "Receive live enquiries", body: "Lead goes straight to WhatsApp and your Dealski CRM. Nothing to check, nothing to miss." },
             ].map((s) => (
               <div key={s.n} className="rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)]">
-                <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-tint font-mono text-[var(--text-base)] font-bold text-brand-600">
+                <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-tint font-display text-[var(--text-base)] font-bold text-brand-700">
                   {s.n}
                 </span>
                 <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">{s.title}</h3>
@@ -114,102 +415,54 @@ export default function AdvertisePage() {
               </div>
             ))}
           </div>
+          <p className="mt-6 text-center text-[var(--text-sm)] text-ink-500">
+            Not on Dealski yet?{" "}
+            <a
+              href="https://dealski.co.uk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-brand-700 hover:underline"
+            >
+              Visit dealski.co.uk to set up your account
+            </a>
+          </p>
         </Container>
       </section>
 
-      {/* Plans */}
-      <section className="bg-surface-1 py-14">
-        <Container>
-          <div className="mb-8 text-center">
-            <Eyebrow>Pricing</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">Plans for every dealer</h2>
-            <p className="mt-2 text-[var(--text-sm)] text-ink-500">Pricing is tailored to your stock volume. Contact us for exact figures.</p>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-3">
-            {PLANS.map((plan) => (
-              <div
-                key={plan.name}
-                className={`flex flex-col rounded-[var(--radius-xl)] border p-7 shadow-[var(--shadow-xs)] ${
-                  plan.highlight
-                    ? "border-brand-500 bg-white ring-2 ring-brand-200"
-                    : "border-border bg-white"
-                }`}
-              >
-                {plan.highlight && (
-                  <span className="mb-3 inline-flex self-start rounded-full bg-brand-tint px-2.5 py-0.5 text-[var(--text-xs)] font-semibold text-brand-700">
-                    Most popular
-                  </span>
-                )}
-                <h3 className="font-display text-[var(--text-xl)] font-extrabold text-ink-900">{plan.name}</h3>
-                <p className="mt-1 text-[var(--text-sm)] text-ink-500">{plan.vans}</p>
-                <p className="mt-3 font-display text-[var(--text-lg)] font-bold text-ink-900">{plan.price}</p>
-                <ul className="mt-5 flex-1 space-y-2.5">
-                  {plan.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2.5 text-[var(--text-sm)] text-ink-700">
-                      <IconCheck width={15} height={15} className="mt-0.5 shrink-0 text-success-600" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                <Button href="#contact" variant={plan.highlight ? "primary" : "outline"} size="md" className="mt-6 w-full">
-                  Get a quote
-                </Button>
-              </div>
-            ))}
+      {/* ─── CTA BAND ────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-ink-900 py-14">
+        <div className="hero-grid absolute inset-0" aria-hidden />
+        <Container className="relative text-center">
+          <Badge tone="brand" className="mb-4">14-day free trial</Badge>
+          <h2 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-white">
+            Ready to advertise?
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-[var(--text-md)] leading-relaxed text-white/65">
+            Start free. No credit card. Cancel any time.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/dealer-portal/login"
+              className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] bg-brand-500 px-7 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600"
+            >
+              Start free trial <IconArrow width={18} height={18} />
+            </Link>
+            <a
+              href="mailto:dealers@vansales.com"
+              className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] border border-white/25 px-7 text-[var(--text-base)] font-semibold text-white/80 transition-colors hover:border-white/50 hover:text-white"
+            >
+              Email the team
+            </a>
           </div>
         </Container>
       </section>
 
-      {/* Contact */}
-      <section id="contact" className="scroll-mt-20 py-14">
-        <Container>
-          <div className="mx-auto max-w-xl rounded-[var(--radius-2xl)] border border-border bg-white p-8 shadow-[var(--shadow-md)]">
-            <Eyebrow>Get in touch</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">Start advertising today</h2>
-            <p className="mt-1 text-[var(--text-sm)] text-ink-500">
-              Tell us about your dealership and we&apos;ll come back with a tailored quote within one business day.
-            </p>
-            <div className="mt-6 space-y-3">
-              {[
-                { label: "Your name", type: "text" },
-                { label: "Dealership / business name", type: "text" },
-                { label: "Email address", type: "email" },
-                { label: "Phone number", type: "tel" },
-                { label: "Approx. vehicles in stock", type: "number" },
-              ].map(({ label, type }) => (
-                <label key={label} className="block">
-                  <span className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">{label}</span>
-                  <input
-                    type={type}
-                    className="h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-base)] text-ink-800 outline-none focus-visible:border-brand-500"
-                  />
-                </label>
-              ))}
-              <label className="block">
-                <span className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">Are you already on Dealski?</span>
-                <select className="h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-base)] text-ink-800 outline-none focus-visible:border-brand-500">
-                  <option>Yes — I have a Dealski account</option>
-                  <option>No — not yet</option>
-                  <option>Not sure</option>
-                </select>
-              </label>
-              <Button variant="primary" size="lg" className="mt-2 w-full" disabled>
-                Send enquiry
-              </Button>
-              <p className="text-center text-[var(--text-xs)] text-ink-400">
-                Or call <a href="tel:+441656507619" className="font-semibold text-ink-600 underline">01656 507619</a>
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Link to sell page */}
-      <section className="border-t border-border bg-surface-1 py-8">
-        <Container>
-          <p className="text-center text-[var(--text-sm)] text-ink-500">
+      {/* ─── PRIVATE SELLER NOTE ─────────────────────────────── */}
+      <section className="border-t border-border py-7">
+        <Container className="text-center">
+          <p className="text-[var(--text-sm)] text-ink-500">
             Not a dealer?{" "}
-            <Link href="/sell" className="font-semibold text-brand-600 hover:underline">
+            <Link href="/sell" className="font-semibold text-brand-700 hover:underline">
               List your van as a private seller — it&apos;s free →
             </Link>
           </p>
