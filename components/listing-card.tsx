@@ -1,15 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileage, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
-import { cardModelImage } from "@/lib/models/image";
 import { VanPhoto } from "./van-photo";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { SpecReadout } from "./spec-readout";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconPin, IconArrow } from "./icons";
 
-// Colored badge for non-diesel fuel types (diesel is assumed default, omitted)
 const FUEL_PILL: Record<string, string> = {
   electric: "bg-success-500 text-white",
   petrol: "bg-amber-500/90 text-white",
@@ -27,10 +24,10 @@ export function ListingCard({
   priority?: boolean;
   cardIndex?: number;
 }) {
+  void cardIndex;
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
-  const modelImg = hasRealPhoto ? null : cardModelImage(listing, cardIndex);
   const fuelLower = listing.fuel.toLowerCase();
   const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
 
@@ -57,26 +54,24 @@ export function ListingCard({
             className="size-full object-cover"
             loading={priority ? "eager" : "lazy"}
           />
-        ) : modelImg ? (
-          <Image
-            src={modelImg.src}
-            alt={modelImg.alt}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className={modelImg.fit === "contain" ? "object-contain p-4" : "object-cover"}
+        ) : (
+          <VanPhoto
+            listing={listing}
+            index={0}
+            bodyStyle={listing.van_spec.body_style}
+            className="size-full"
             priority={priority}
           />
-        ) : (
-          <VanPhoto listing={listing} index={0} className="size-full" priority={priority} />
         )}
 
+        {/* ONE seller tag + condition + reserved state + optional fuel pill */}
         <div className="absolute left-3 top-3 flex items-center gap-2">
-          <StatusBadge status={listing.status} />
-          {listing.condition === "new" && <Badge tone="brand">New</Badge>}
           {listing.seller_type === "private"
             ? <Badge tone="neutral">Private seller</Badge>
             : <Badge tone="brand">Dealer</Badge>
           }
+          {listing.condition === "new" && <Badge tone="brand">New</Badge>}
+          {listing.status === "reserved" && <StatusBadge status="reserved" />}
           {fuelPill && (
             <span
               className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${fuelPill}`}
@@ -89,12 +84,6 @@ export function ListingCard({
         {listing.ulez && (
           <span className="absolute right-3 top-3 rounded-[var(--radius-pill)] bg-ink-900/85 px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur">
             ULEZ
-          </span>
-        )}
-
-        {modelImg && !hasRealPhoto && !sold && (
-          <span className="absolute bottom-2 left-2 rounded-[var(--radius-xs)] bg-ink-900/65 px-1.5 py-0.5 text-[var(--text-2xs)] font-medium text-white/90 backdrop-blur">
-            Library image
           </span>
         )}
 

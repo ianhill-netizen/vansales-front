@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { FilterRail } from "@/components/filter-rail";
 import { Pagination } from "@/components/pagination";
 import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
+import { VanPhoto } from "@/components/van-photo";
 import { getListings, getFacets } from "@/lib/listings/client";
 import type { ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { listingTitle, listingMeta } from "@/lib/listings/format";
 import { listingPath } from "@/lib/listings/slug";
 import { getModelContent } from "@/lib/models/content.generated";
-import { modelImageSet } from "@/lib/models/image";
 import { SITE, absUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic"; // filters + page live in searchParams
@@ -117,11 +116,6 @@ export async function generateMetadata({
       description,
       url: cleanPageUrl(makeSlug, modelSlug, result.page),
       type: "website",
-      images: (() => {
-        const set = modelImageSet(makeSlug, modelSlug);
-        const img = set?.find((i) => i.fit === "cover") ?? set?.[0];
-        return img ? [{ url: img.src }] : content?.hero ? [{ url: content.hero }] : undefined;
-      })(),
     },
   };
 }
@@ -188,23 +182,20 @@ export default async function ModelPage({
               </p>
             </div>
 
-            {(() => {
-              const set = modelImageSet(makeSlug, modelSlug);
-              const heroImg = set?.find((i) => i.fit === "cover") ?? set?.[0];
-              if (!heroImg) return null;
-              return (
-                <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-border">
-                  <Image
-                    src={heroImg.src}
-                    alt={heroImg.alt || `${makeName} ${modelName}`}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 440px"
-                    className={heroImg.fit === "contain" ? "object-contain p-6" : "object-cover"}
-                  />
-                </div>
-              );
-            })()}
+            <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-border">
+              <VanPhoto
+                listing={{
+                  colour: listings[0]?.colour ?? "Reflex Silver",
+                  make: makeName,
+                  model: modelName,
+                  plate: listings[0]?.plate ?? "",
+                }}
+                bodyStyle={listings[0]?.van_spec.body_style}
+                index={0}
+                className="size-full"
+                priority
+              />
+            </div>
           </div>
         </Container>
       </section>
