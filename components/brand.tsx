@@ -1,8 +1,6 @@
 import Link from "next/link";
 
-/* Wordmark: a number-plate "VS" tile + "vansales" set in the display face,
-   with the amber locator dot. The plate tile ties the logo to the signature. */
-export function Logo({ tone = "light" }: { tone?: "light" | "dark" }) {
+export function Logo({ tone = "dark" }: { tone?: "light" | "dark" }) {
   const word = tone === "light" ? "text-white" : "text-ink-900";
   return (
     <Link href="/" className="inline-flex items-center gap-2.5" aria-label="Vansales home">

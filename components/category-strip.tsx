@@ -18,9 +18,9 @@ export function CategoryStrip() {
         <Link
           key={c.label}
           href={c.href}
-          className="group flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-[var(--dur-base)] hover:-translate-y-0.5 hover:border-accent-500 hover:shadow-[var(--shadow-md)]"
+          className="group flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-[var(--dur-base)] hover:-translate-y-0.5 hover:border-brand-700 hover:shadow-[var(--shadow-md)]"
         >
-          <span className="grid size-10 place-items-center rounded-[var(--radius-md)] bg-brand-tint text-brand-700 transition-colors group-hover:bg-accent-tint group-hover:text-accent-700">
+          <span className="grid size-10 place-items-center rounded-[var(--radius-md)] bg-brand-tint text-brand-700 transition-colors group-hover:bg-brand-tint group-hover:text-brand-600">
             {c.icon}
           </span>
           <span>

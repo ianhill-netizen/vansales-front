@@ -1,10 +1,9 @@
 /* =============================================================================
    VANSALES.COM — DESIGN TOKENS  (single source of truth)
    Reskin the entire product by editing the values in this file alone.
-   A Claude Design palette drops straight into the --color-* ramps below.
 
-   Direction: "Forecourt / Highway" — dark ink chrome, sodium-amber energy,
-   quiet teal secondary, authentic UK number-plate yellow as the signature.
+   Direction: "Clean / Crisp Light" — paper-white surfaces, ink-dark type,
+   hairline borders, plate yellow as the ONE signature accent.
    ========================================================================== */
 
 :root {
@@ -12,46 +11,47 @@
      1. COLOUR
      -------------------------------------------------------------------------*/
 
-  /* Ink — text + dark chrome (header, footer) */
-  --color-ink-900: #0d1620; /* deepest — chrome backgrounds, hero ink   */
-  --color-ink-800: #14202c; /* primary headings, body emphasis          */
-  --color-ink-700: #1f2e3b; /* default body text                        */
-  --color-ink-600: #36495a; /* secondary text                           */
-  --color-ink-500: #5c6b78; /* muted / meta                             */
-  --color-ink-400: #8493a0; /* placeholder, disabled                    */
-  --color-ink-300: #aab7c2; /* faint                                    */
+  /* Ink — text + dark chrome */
+  --color-ink-900: #0e1419; /* deepest — dark CTA band, sold overlay   */
+  --color-ink-800: #1c2730; /* hover states                             */
+  --color-ink-700: #33404c; /* secondary text                           */
+  --color-ink-600: #4a5a69; /* body text, secondary                     */
+  --color-ink-500: #6b7785; /* muted / meta                             */
+  --color-ink-400: #8e9baa; /* placeholder, disabled                    */
+  --color-ink-300: #b8c2cc; /* faint                                    */
 
-  /* Surfaces — cool steel tints, lightest → resting */
-  --color-surface-0: #ffffff; /* cards, top surface        */
-  --color-surface-1: #f6f8fb; /* page background           */
-  --color-surface-2: #edf1f6; /* insets, rails             */
-  --color-surface-3: #e2e9f0; /* pressed / wells           */
+  /* Surfaces — cool off-white */
+  --color-surface-0: #ffffff; /* cards, inputs, top surface */
+  --color-surface-1: #f3f5f8; /* page background (canvas)   */
+  --color-surface-2: #eaecf0; /* insets, rails, hover bg    */
+  --color-surface-3: #e0e3e8; /* pressed / wells            */
 
   /* Borders */
-  --color-border: #dce4ec;
-  --color-border-strong: #c2cdd8;
+  --color-border: #e4e7ec;
+  --color-border-strong: #d3d8df;
 
-  /* Brand — deep teal (structural accents, eyebrows, iconography) */
-  --color-brand-700: #0e4a5a;
-  --color-brand-600: #135e72;
-  --color-brand-500: #1b7f98;
-  --color-brand-tint: #e3f1f4;
+  /* Brand — plate-band blue (structural accents, badges, iconography) */
+  --color-brand-700: #143a8c;
+  --color-brand-600: #1a4ab0;
+  --color-brand-500: #2563eb;
+  --color-brand-tint: #eff3ff;
 
-  /* Accent — sodium amber (primary actions, price, the signature energy) */
-  --color-accent-700: #b8490a;
-  --color-accent-600: #e8650a;
-  --color-accent-500: #ff7a1a;
-  --color-accent-400: #ff9a4d;
-  --color-accent-tint: #fff1e5;
+  /* Accent — plate yellow (ONE signature: hero highlight, dark-band CTA) */
+  --color-accent-700: #b89e00;
+  --color-accent-600: #d4b500;
+  --color-accent-500: #ffd400;
+  --color-accent-400: #ffe566;
+  --color-accent-tint: #fffbeb;
 
-  /* Plate — authentic UK registration yellow (signature badge only) */
-  --color-plate: #f7d117;
-  --color-plate-ink: #14202c;
+  /* Plate — authentic UK registration badge */
+  --color-plate: #ffd400;
+  --color-plate-ink: #0e1419;
+  --color-plate-blue: #143a8c;
 
-  /* Status — available / reserved / sold + danger */
-  --color-success-600: #0f7a4f;
-  --color-success-500: #16a36a;
-  --color-success-tint: #e2f4ec;
+  /* Status — available / reserved / sold */
+  --color-success-600: #0b8a4a;
+  --color-success-500: #0ea05a;
+  --color-success-tint: #e6f7ef;
   --color-reserved-600: #b45309;
   --color-reserved-tint: #fbecd9;
   --color-sold-600: #64748b;
@@ -61,24 +61,23 @@
   /* Semantic role aliases (used by components & Tailwind theme) */
   --color-bg: var(--color-surface-1);
   --color-fg: var(--color-ink-700);
-  --color-heading: var(--color-ink-800);
+  --color-heading: var(--color-ink-900);
   --color-muted: var(--color-ink-500);
   --color-card: var(--color-surface-0);
   --color-accent: var(--color-accent-500);
   --color-accent-strong: var(--color-accent-600);
-  --color-link: var(--color-accent-600);
-  --color-ring: var(--color-accent-500);
+  --color-link: var(--color-brand-700);
+  --color-ring: var(--color-brand-700);
 
   /* ---------------------------------------------------------------------------
      2. TYPOGRAPHY
-     Font families are injected by next/font as --font-display/-sans/-mono.
-     Fallbacks here keep the file usable standalone.
+     Font families injected by next/font as --font-geist / --font-geist-mono.
      -------------------------------------------------------------------------*/
-  --font-display: var(--font-bricolage), "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-hanken), "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-geist), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* Fluid type scale — mobile-first, clamps up for large viewports */
+  /* Fluid type scale */
   --text-2xs: 0.6875rem; /* 11px — plate sub-labels        */
   --text-xs: 0.75rem; /* 12px — meta, eyebrows          */
   --text-sm: 0.8125rem; /* 13px — captions               */
@@ -109,7 +108,7 @@
   --weight-extrabold: 800;
 
   /* ---------------------------------------------------------------------------
-     3. RADII — sturdy, lightly squared (commercial, not bubbly)
+     3. RADII
      -------------------------------------------------------------------------*/
   --radius-xs: 4px;
   --radius-sm: 6px;
@@ -120,14 +119,14 @@
   --radius-pill: 999px;
 
   /* ---------------------------------------------------------------------------
-     4. SHADOWS — cool-tinted (ink, not pure black) for a clean lifted look
+     4. SHADOWS — cool-tinted (ink) for a clean lifted look on white surfaces
      -------------------------------------------------------------------------*/
-  --shadow-xs: 0 1px 2px rgba(13, 22, 32, 0.06);
-  --shadow-sm: 0 1px 3px rgba(13, 22, 32, 0.08), 0 1px 2px rgba(13, 22, 32, 0.04);
-  --shadow-md: 0 6px 16px -4px rgba(13, 22, 32, 0.12), 0 2px 6px -2px rgba(13, 22, 32, 0.08);
-  --shadow-lg: 0 18px 40px -12px rgba(13, 22, 32, 0.22);
-  --shadow-plate: inset 0 0 0 2px rgba(13, 22, 32, 0.85), 0 1px 0 rgba(255, 255, 255, 0.4);
-  --shadow-focus: 0 0 0 3px rgba(255, 122, 26, 0.4);
+  --shadow-xs: 0 1px 2px rgba(14, 20, 25, 0.06);
+  --shadow-sm: 0 1px 3px rgba(14, 20, 25, 0.08), 0 1px 2px rgba(14, 20, 25, 0.04);
+  --shadow-md: 0 6px 16px -4px rgba(14, 20, 25, 0.10), 0 2px 6px -2px rgba(14, 20, 25, 0.06);
+  --shadow-lg: 0 18px 40px -12px rgba(14, 20, 25, 0.16);
+  --shadow-plate: inset 0 0 0 2px rgba(14, 20, 25, 0.85), 0 1px 0 rgba(255, 255, 255, 0.4);
+  --shadow-focus: 0 0 0 3px rgba(20, 58, 140, 0.25);
 
   /* ---------------------------------------------------------------------------
      5. SPACING / LAYOUT
