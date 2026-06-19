@@ -17,8 +17,8 @@ export interface DealerConfig {
     lng: number;
   };
   phone: string;
-  /* TODO: set to the Swiss Vans WhatsApp number in international format,
-     e.g. "447700900000". Pull from Dealski tenant config when available. */
+  /* WhatsApp number in international format, digits only, no + (e.g. 447XXXXXXXXX).
+     Null = button renders disabled. */
   whatsapp: string | null;
   websites: { label: string; url: string }[];
   hours: { mon: DayHours; tue: DayHours; wed: DayHours; thu: DayHours; fri: DayHours; sat: DayHours; sun: DayHours };
@@ -32,8 +32,7 @@ export interface DealerConfig {
   googleReviewCount: number | null;
 }
 
-// TODO: replace null with the Swiss Vans WhatsApp number (intl format, no +)
-const SWISSVANS_WHATSAPP: string | null = null;
+const SWISSVANS_WHATSAPP: string = "447446842888";
 
 export const DEALERS: Record<string, DealerConfig> = {
   "swiss-vans": {
