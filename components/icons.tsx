@@ -169,3 +169,49 @@ export function IconList(p: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+export function IconPhone(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M5 4h4l2 4.5-2.5 1.5a11 11 0 005.5 5.5L15.5 13 20 15v4a2 2 0 01-2 2C9 20 4 11 4 6a2 2 0 011-1.7z" />
+    </svg>
+  );
+}
+export function IconMessage(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </svg>
+  );
+}
+export function IconWhatsApp(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p} strokeWidth={1.5}>
+      <path d="M3 21l1.65-5A9 9 0 1112 21a8.96 8.96 0 01-5-.95z" />
+      <path d="M9 10c.39.9.84 1.73 1.5 2.5s1.6 1.1 2.5 1.5c.2.09.47.04.62-.12l.6-.7c.15-.17.4-.22.6-.12l2.2 1c.2.1.28.35.2.55-.4.9-.9 1.39-1.72 1.39-1.05 0-2.6-.58-4-1.98S9.5 11.05 9.5 10c0-.82.5-1.32 1.39-1.72.2-.08.44 0 .55.2l1 2.2c.1.2.05.45-.12.6l-.7.6c-.16.15-.21.42-.12.62z" />
+    </svg>
+  );
+}
+export function IconClock(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 3" />
+    </svg>
+  );
+}
+export function IconGlobe(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M2 12h20M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z" />
+    </svg>
+  );
+}
+export function IconExternalLink(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+      <path d="M15 3h6v6M10 14L21 3" />
+    </svg>
+  );
+}
