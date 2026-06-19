@@ -1,52 +1,44 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Container, Eyebrow, Button, Badge } from "@/components/ui";
 import { SearchHero } from "@/components/search-hero";
 import { CategoryStrip } from "@/components/category-strip";
 import { ListingCard } from "@/components/listing-card";
+import { VanPhoto } from "@/components/van-photo";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { getListings } from "@/lib/listings/client";
-import { modelImageSet } from "@/lib/models/image";
 
+/* Varied colours for the popular model tiles — one per entry so the grid reads
+   as distinct vehicles rather than identical white vans. */
 const POPULAR_MODELS = [
-  { makeSlug: "volkswagen", modelSlug: "transporter", label: "VW Transporter" },
-  { makeSlug: "ford", modelSlug: "transit", label: "Ford Transit" },
-  { makeSlug: "mercedes-benz", modelSlug: "sprinter", label: "Mercedes Sprinter" },
-  { makeSlug: "ford", modelSlug: "transit-custom", label: "Ford Transit Custom" },
-  { makeSlug: "vauxhall", modelSlug: "vivaro", label: "Vauxhall Vivaro" },
-  { makeSlug: "ford", modelSlug: "ranger", label: "Ford Ranger" },
-];
+  { makeSlug: "volkswagen", modelSlug: "transporter", label: "VW Transporter", colour: "Starlight Blue", bodyStyle: "Panel Van" },
+  { makeSlug: "ford", modelSlug: "transit", label: "Ford Transit", colour: "Frozen White", bodyStyle: "Panel Van" },
+  { makeSlug: "mercedes-benz", modelSlug: "sprinter", label: "Mercedes Sprinter", colour: "Polar White", bodyStyle: "Panel Van" },
+  { makeSlug: "ford", modelSlug: "transit-custom", label: "Ford Transit Custom", colour: "Reflex Silver", bodyStyle: "Panel Van" },
+  { makeSlug: "vauxhall", modelSlug: "vivaro", label: "Vauxhall Vivaro", colour: "Deep Black", bodyStyle: "Panel Van" },
+  { makeSlug: "ford", modelSlug: "ranger", label: "Ford Ranger", colour: "Mojave Beige", bodyStyle: "Pickup" },
+] as const;
+
+const HERO_VAN = { colour: "Ming Blue", make: "Volkswagen", model: "Transporter", plate: "74" };
 
 export default async function HomePage() {
   const { listings, total, servedBy } = await getListings({ sort: "newest", limit: 6 });
   const featured = listings;
 
-  const heroVanSet = modelImageSet("volkswagen", "transporter");
-  const heroVanImg = heroVanSet?.find((i) => i.fit === "cover") ?? heroVanSet?.[0] ?? null;
-
-  const popularModels = POPULAR_MODELS.map((m) => {
-    const set = modelImageSet(m.makeSlug, m.modelSlug);
-    const img = set?.find((i) => i.fit === "cover") ?? set?.[0] ?? null;
-    return { ...m, img };
-  });
-
   return (
     <>
       {/* ─────────────────────────── Hero — light ─────────────────────────── */}
       <section className="relative overflow-hidden bg-white">
-        {heroVanImg && (
-          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] lg:block" aria-hidden>
-            <div className="absolute inset-y-0 left-0 z-10 w-1/3 bg-gradient-to-r from-white to-transparent" />
-            <Image
-              src={heroVanImg.src}
-              alt=""
-              fill
-              priority
-              sizes="48vw"
-              className="object-cover object-center"
-            />
-          </div>
-        )}
+        {/* Van illustration — right side, fades out on its left edge */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] lg:block" aria-hidden>
+          <div className="absolute inset-y-0 left-0 z-10 w-1/3 bg-gradient-to-r from-white to-transparent" />
+          <VanPhoto
+            listing={HERO_VAN}
+            index={0}
+            bodyStyle="Panel Van"
+            className="size-full"
+            priority
+          />
+        </div>
 
         <Container className="relative py-[clamp(3.5rem,8vw,6rem)]">
           <div className="max-w-2xl">
@@ -99,24 +91,19 @@ export default async function HomePage() {
             </h2>
           </div>
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {popularModels.map((m) => (
+            {POPULAR_MODELS.map((m) => (
               <li key={`${m.makeSlug}/${m.modelSlug}`}>
                 <Link
                   href={`/vans/${m.makeSlug}/${m.modelSlug}`}
                   className="group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-xs)] transition-[box-shadow,transform,border-color] duration-[var(--dur-base)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[var(--shadow-md)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
-                    {m.img ? (
-                      <Image
-                        src={m.img.src}
-                        alt={m.img.alt || m.label}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 17vw"
-                        className={m.img.fit === "contain" ? "object-contain p-2" : "object-cover"}
-                      />
-                    ) : (
-                      <div className="size-full bg-surface-2" />
-                    )}
+                    <VanPhoto
+                      listing={{ colour: m.colour, make: m.label.split(" ").slice(1).join(" ") || m.label, model: m.modelSlug, plate: "" }}
+                      index={0}
+                      bodyStyle={m.bodyStyle}
+                      className="size-full"
+                    />
                   </div>
                   <div className="flex items-center justify-between px-3 py-2.5">
                     <span className="text-[var(--text-sm)] font-semibold text-ink-800 group-hover:text-brand-700">

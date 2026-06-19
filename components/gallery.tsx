@@ -1,53 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import type { Listing } from "@/lib/listings/types";
-import type { ModelImage } from "@/lib/models/image";
 import { VanPhoto } from "./van-photo";
 
 type Shot =
   | { kind: "real"; url: string; alt: string }
-  | { kind: "model"; url: string; alt: string; fit: "cover" | "contain" }
   | { kind: "svg"; idx: number; alt: string };
 
-/* Gallery priority: real per-vehicle photos → full curated model image set +
-   SVG detail shots → single fallback model image + SVG shots → pure SVG. */
-export function Gallery({
-  listing,
-  modelImage,
-  modelImages,
-}: {
-  listing: Listing;
-  modelImage?: string | null;
-  modelImages?: ModelImage[] | null;
-}) {
+/* Gallery priority: real per-vehicle photos (from a live feed that supplies them)
+   → 3 SVG detail shots (exterior, load bay, cab). Harvested model images are
+   never used here. */
+export function Gallery({ listing }: { listing: Listing }) {
   const real = listing.images.filter((i) => i.url.startsWith("http"));
   const label = `${listing.make} ${listing.model}`;
 
-  let shots: Shot[];
-  if (real.length) {
-    shots = real.map((i) => ({ kind: "real", url: i.url, alt: i.alt }));
-  } else if (modelImages?.length) {
-    shots = [
-      ...modelImages.map<Shot>((img) => ({
-        kind: "model",
-        url: img.src,
-        alt: img.alt || `${label} (library image)`,
-        fit: img.fit,
-      })),
-      { kind: "svg", idx: 2, alt: `${label} — load bay` },
-      { kind: "svg", idx: 3, alt: `${label} — cab` },
-    ];
-  } else {
-    shots = [
-      modelImage
-        ? ({ kind: "model", url: modelImage, alt: `${label} (library image)`, fit: "cover" } as Shot)
-        : ({ kind: "svg", idx: 0, alt: label } as Shot),
-      { kind: "svg", idx: 2, alt: `${label} — load bay` },
-      { kind: "svg", idx: 3, alt: `${label} — cab` },
-    ];
-  }
+  const shots: Shot[] = real.length
+    ? real.map((i) => ({ kind: "real", url: i.url, alt: i.alt }))
+    : [
+        { kind: "svg", idx: 0, alt: label },
+        { kind: "svg", idx: 2, alt: `${label} — load bay` },
+        { kind: "svg", idx: 3, alt: `${label} — cab` },
+      ];
 
   const [active, setActive] = useState(0);
   const current = shots[Math.min(active, shots.length - 1)];
@@ -59,23 +33,14 @@ export function Gallery({
         {current.kind === "real" ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={current.url} alt={current.alt} className="size-full object-cover" />
-        ) : current.kind === "model" ? (
-          <Image
-            src={current.url}
-            alt={current.alt}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 60vw"
-            className={current.fit === "contain" ? "object-contain p-8" : "object-cover"}
-          />
         ) : (
-          <VanPhoto listing={listing} index={current.idx} className="size-full" priority />
-        )}
-
-        {current.kind === "model" && (
-          <span className="absolute bottom-3 left-3 rounded-[var(--radius-sm)] bg-ink-900/70 px-2 py-1 text-[var(--text-2xs)] font-medium text-white/90 backdrop-blur">
-            Library image — representative of the model
-          </span>
+          <VanPhoto
+            listing={listing}
+            index={current.idx}
+            bodyStyle={listing.van_spec.body_style}
+            className="size-full"
+            priority
+          />
         )}
 
         <span className="absolute bottom-3 right-3 rounded-[var(--radius-pill)] bg-ink-900/80 px-2.5 py-1 font-mono text-[var(--text-xs)] text-white">
@@ -107,16 +72,13 @@ export function Gallery({
                   {shot.kind === "real" ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={shot.url} alt="" className="size-full object-cover" />
-                  ) : shot.kind === "model" ? (
-                    <Image
-                      src={shot.url}
-                      alt=""
-                      fill
-                      sizes="120px"
-                      className={shot.fit === "contain" ? "object-contain p-1" : "object-cover"}
-                    />
                   ) : (
-                    <VanPhoto listing={listing} index={shot.idx} className="size-full" />
+                    <VanPhoto
+                      listing={listing}
+                      index={shot.idx}
+                      bodyStyle={listing.van_spec.body_style}
+                      className="size-full"
+                    />
                   )}
                 </button>
               </li>

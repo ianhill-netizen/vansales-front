@@ -18,15 +18,13 @@ import {
   WHEELBASE_SHORT,
 } from "@/lib/listings/format";
 import { modelPath } from "@/lib/listings/slug";
-import { listingModelImage, modelImageSet, resolveModelSlug } from "@/lib/models/image";
 import { SITE, absUrl } from "@/lib/site";
 
 type Params = { slug: string };
 
-/** Best available representative image URL for a listing (real → model → none). */
+/** Best available per-vehicle photo URL for a listing. */
 function listingImageUrl(listing: Listing): string | null {
-  const real = listing.images.find((i) => i.url.startsWith("http"));
-  return real?.url ?? listingModelImage(listing);
+  return listing.images.find((i) => i.url.startsWith("http"))?.url ?? null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
@@ -59,10 +57,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   if (!listing) notFound();
 
   const title = listingTitle(listing);
-  const modelImg = listingModelImage(listing);
   const ogImage = listingImageUrl(listing);
-  const resolved = resolveModelSlug(listing.make, listing.model);
-  const modelImgSet = resolved ? modelImageSet(resolved.makeSlug, resolved.modelSlug) : null;
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
     { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
@@ -145,7 +140,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_380px]">
           {/* Left: gallery + spec */}
           <div className="min-w-0">
-            <Gallery listing={listing} modelImage={modelImg} modelImages={modelImgSet} />
+            <Gallery listing={listing} />
 
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />
