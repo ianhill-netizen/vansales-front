@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Container } from "./ui";
 import { Logo } from "./brand";
 import { MobileNav } from "./mobile-nav";
-import { IconUser, IconHeart } from "./icons";
+import { IconHeart } from "./icons";
+import { AccountButton } from "./account-button";
 
 const PRIMARY_NAV = [
   { href: "/vans?condition=new", label: "New vans" },
@@ -32,13 +33,7 @@ export function Header() {
             <IconHeart width={16} height={16} />
             Saved
           </Link>
-          <Link
-            href="/sign-in"
-            className="hidden items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-600 transition-colors hover:bg-surface-2 hover:text-ink-900 sm:flex"
-          >
-            <IconUser width={16} height={16} />
-            Sign in
-          </Link>
+          <AccountButton />
           <MobileNav />
         </div>
       </Container>
