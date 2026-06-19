@@ -119,11 +119,10 @@ function statusRank(l: Listing): number {
 export async function getListings(filters: ListingFilters = {}): Promise<ListingResult> {
   const { listings, servedBy, live, feedTotal } = await loadAll();
   let filtered = applyFilters(listings, filters);
+  const total = filtered.length; // count BEFORE hard cap
 
   // Optional hard cap for non-paginated strips (e.g. home "featured").
   if (filters.limit && !filters.pageSize) filtered = filtered.slice(0, filters.limit);
-
-  const total = filtered.length;
   const pageSize = filters.pageSize ?? (filters.limit ? filtered.length || 1 : total || 1);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const page = Math.min(Math.max(1, filters.page ?? 1), totalPages);

@@ -38,13 +38,18 @@ export default async function HomePage() {
   return (
     <>
       {/* ──────────────────────── HERO ──────────────────────────── */}
-      <section className="hero-grid relative overflow-hidden bg-ink-900">
-        {/* Subtle radial highlight — top-left */}
-        <div
-          className="pointer-events-none absolute -left-40 -top-40 size-[600px] rounded-full opacity-20"
-          aria-hidden
-          style={{ background: "radial-gradient(circle, #2563eb 0%, transparent 70%)" }}
-        />
+      {/*
+        NOTE: overflow-hidden is on an INNER div (for the glow) not the section,
+        so the translate-y-1/2 search pill is never clipped.
+      */}
+      <section className="hero-grid relative bg-ink-900">
+        {/* Glow — contained in its own overflow-hidden shell */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="absolute -left-40 -top-40 size-[600px] rounded-full opacity-20"
+            style={{ background: "radial-gradient(circle, #2563eb 0%, transparent 70%)" }}
+          />
+        </div>
 
         <Container className="relative z-10 pb-28 pt-14 sm:pt-20 lg:pb-36 lg:pt-24">
           {/* Eyebrow */}
@@ -79,7 +84,7 @@ export default async function HomePage() {
           </div>
         </Container>
 
-        {/* Search pill — overlaps hero bottom */}
+        {/* Search pill — overlaps hero bottom (section has no overflow-hidden so this renders fully) */}
         <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-1/2 px-[var(--gutter)]">
           <div className="mx-auto max-w-[var(--container-max)]">
             <SearchHero total={total} />
@@ -87,8 +92,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Spacer for the overhanging search pill */}
-      <div className="h-16 bg-surface-1 sm:h-20" />
+      {/*
+        Spacer for the search pill that hangs below the hero.
+        Mobile (1 col): 4 rows × 64px = 256px; half = 128px → h-36 (144px) + margin.
+        Desktop: 1 row × 64px = 64px; half = 32px → h-12 is enough.
+      */}
+      <div className="h-36 bg-surface-1 sm:h-14" />
 
       {/* ──────────────────── BROWSE BY MAKE ────────────────────── */}
       <section className="bg-surface-1 pb-14 pt-4">
