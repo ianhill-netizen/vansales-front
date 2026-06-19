@@ -27,7 +27,6 @@ export function Pagination({
     <nav className="mt-8 flex items-center justify-center gap-1.5" aria-label="Pagination">
       <Link
         href={hrefFor(Math.max(1, page - 1))}
-        rel="prev"
         aria-label="Previous page"
         aria-disabled={page === 1}
         className={`${base} border border-border bg-surface-0 text-ink-700 hover:border-border-strong ${
@@ -60,7 +59,6 @@ export function Pagination({
 
       <Link
         href={hrefFor(Math.min(totalPages, page + 1))}
-        rel="next"
         aria-label="Next page"
         aria-disabled={page === totalPages}
         className={`${base} border border-border bg-surface-0 text-ink-700 hover:border-border-strong ${
