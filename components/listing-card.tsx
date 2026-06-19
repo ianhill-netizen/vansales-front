@@ -1,7 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileage, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
+import { listingModelImage } from "@/lib/models/image";
 import { VanPhoto } from "./van-photo";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { SpecReadout } from "./spec-readout";
@@ -10,7 +12,9 @@ import { IconGauge, IconFuel, IconGearbox, IconRuler, IconPin } from "./icons";
 export function ListingCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
+  // Image fallback chain: real per-vehicle photo → harvested model image → SVG.
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
+  const modelImg = hasRealPhoto ? null : listingModelImage(listing);
 
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
@@ -35,6 +39,15 @@ export function ListingCard({ listing, priority }: { listing: Listing; priority?
             className="size-full object-cover"
             loading={priority ? "eager" : "lazy"}
           />
+        ) : modelImg ? (
+          <Image
+            src={modelImg}
+            alt={`${title} — representative ${listing.make} ${listing.model}`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover"
+            priority={priority}
+          />
         ) : (
           <VanPhoto listing={listing} index={0} className="size-full" priority={priority} />
         )}
@@ -48,6 +61,12 @@ export function ListingCard({ listing, priority }: { listing: Listing; priority?
         {listing.ulez && (
           <span className="absolute right-3 top-3 rounded-[var(--radius-pill)] bg-ink-900/85 px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur">
             ULEZ
+          </span>
+        )}
+
+        {modelImg && !sold && (
+          <span className="absolute bottom-2 left-2 rounded-[var(--radius-xs)] bg-ink-900/65 px-1.5 py-0.5 text-[var(--text-2xs)] font-medium text-white/90 backdrop-blur">
+            Library image
           </span>
         )}
 

@@ -18,9 +18,16 @@ import {
   WHEELBASE_SHORT,
 } from "@/lib/listings/format";
 import { modelPath } from "@/lib/listings/slug";
+import { listingModelImage } from "@/lib/models/image";
 import { SITE, absUrl } from "@/lib/site";
 
 type Params = { slug: string };
+
+/** Best available representative image URL for a listing (real → model → none). */
+function listingImageUrl(listing: Listing): string | null {
+  const real = listing.images.find((i) => i.url.startsWith("http"));
+  return real?.url ?? listingModelImage(listing);
+}
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
@@ -31,11 +38,18 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     listing.mileage,
   )}, ${titleCase(listing.fuel)}, ${titleCase(listing.transmission)}. ${listing.van_spec.body_style} on ${SITE.name}.`;
   const canonical = `/listing/${slug}`;
+  const img = listingImageUrl(listing);
   return {
     title,
     description,
     alternates: { canonical },
-    openGraph: { title: `${title} · ${SITE.name}`, description, url: canonical, type: "website" },
+    openGraph: {
+      title: `${title} · ${SITE.name}`,
+      description,
+      url: canonical,
+      type: "website",
+      images: img ? [{ url: img }] : undefined,
+    },
   };
 }
 
@@ -45,6 +59,8 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   if (!listing) notFound();
 
   const title = listingTitle(listing);
+  const modelImg = listingModelImage(listing);
+  const ogImage = listingImageUrl(listing);
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
     { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
@@ -83,6 +99,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
     description: listing.description,
     category: `${listing.van_spec.body_style} van`,
     brand: { "@type": "Brand", name: listing.make },
+    ...(ogImage ? { image: absUrl(ogImage) } : {}),
     offers: {
       "@type": "Offer",
       url: absUrl(`/listing/${slug}`),
@@ -126,7 +143,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_380px]">
           {/* Left: gallery + spec */}
           <div className="min-w-0">
-            <Gallery listing={listing} />
+            <Gallery listing={listing} modelImage={modelImg} />
 
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />
