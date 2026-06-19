@@ -12,6 +12,7 @@ import type { ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { listingTitle, listingMeta } from "@/lib/listings/format";
 import { listingPath } from "@/lib/listings/slug";
 import { getModelContent } from "@/lib/models/content.generated";
+import { modelImageSet } from "@/lib/models/image";
 import { SITE, absUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic"; // filters + page live in searchParams
@@ -116,7 +117,11 @@ export async function generateMetadata({
       description,
       url: cleanPageUrl(makeSlug, modelSlug, result.page),
       type: "website",
-      images: content?.hero ? [{ url: content.hero }] : undefined,
+      images: (() => {
+        const set = modelImageSet(makeSlug, modelSlug);
+        const img = set?.find((i) => i.fit === "cover") ?? set?.[0];
+        return img ? [{ url: img.src }] : content?.hero ? [{ url: content.hero }] : undefined;
+      })(),
     },
   };
 }
@@ -183,18 +188,23 @@ export default async function ModelPage({
               </p>
             </div>
 
-            {content?.hero && (
-              <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-white/10">
-                <Image
-                  src={content.hero}
-                  alt={content.heroAlt || `${makeName} ${modelName}`}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 440px"
-                  className="object-cover"
-                />
-              </div>
-            )}
+            {(() => {
+              const set = modelImageSet(makeSlug, modelSlug);
+              const heroImg = set?.find((i) => i.fit === "cover") ?? set?.[0];
+              if (!heroImg) return null;
+              return (
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-white/10">
+                  <Image
+                    src={heroImg.src}
+                    alt={heroImg.alt || `${makeName} ${modelName}`}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 440px"
+                    className={heroImg.fit === "contain" ? "object-contain p-6" : "object-cover"}
+                  />
+                </div>
+              );
+            })()}
           </div>
         </Container>
       </section>
@@ -240,7 +250,7 @@ export default async function ModelPage({
               <>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                   {listings.map((l, i) => (
-                    <ListingCard key={l.id} listing={l} priority={i < 3} />
+                    <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={(page - 1) * PAGE_SIZE + i} />
                   ))}
                 </div>
                 <Pagination

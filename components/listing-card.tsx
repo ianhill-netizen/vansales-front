@@ -3,18 +3,36 @@ import Image from "next/image";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileage, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
-import { listingModelImage } from "@/lib/models/image";
+import { cardModelImage } from "@/lib/models/image";
 import { VanPhoto } from "./van-photo";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { SpecReadout } from "./spec-readout";
-import { IconGauge, IconFuel, IconGearbox, IconRuler, IconPin } from "./icons";
+import { IconGauge, IconFuel, IconGearbox, IconRuler, IconPin, IconArrow } from "./icons";
 
-export function ListingCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
+// Colored badge for non-diesel fuel types (diesel is assumed default, omitted)
+const FUEL_PILL: Record<string, string> = {
+  electric: "bg-success-500 text-white",
+  petrol: "bg-amber-500/90 text-white",
+  hybrid: "bg-teal-600 text-white",
+  "plug-in hybrid": "bg-teal-600 text-white",
+  phev: "bg-teal-600 text-white",
+};
+
+export function ListingCard({
+  listing,
+  priority,
+  cardIndex = 0,
+}: {
+  listing: Listing;
+  priority?: boolean;
+  cardIndex?: number;
+}) {
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
-  // Image fallback chain: real per-vehicle photo → harvested model image → SVG.
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
-  const modelImg = hasRealPhoto ? null : listingModelImage(listing);
+  const modelImg = hasRealPhoto ? null : cardModelImage(listing, cardIndex);
+  const fuelLower = listing.fuel.toLowerCase();
+  const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
 
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
@@ -41,11 +59,11 @@ export function ListingCard({ listing, priority }: { listing: Listing; priority?
           />
         ) : modelImg ? (
           <Image
-            src={modelImg}
-            alt={`${title} — representative ${listing.make} ${listing.model}`}
+            src={modelImg.src}
+            alt={modelImg.alt}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover"
+            className={modelImg.fit === "contain" ? "object-contain p-4" : "object-cover"}
             priority={priority}
           />
         ) : (
@@ -56,6 +74,13 @@ export function ListingCard({ listing, priority }: { listing: Listing; priority?
           <StatusBadge status={listing.status} />
           {listing.condition === "new" && <Badge tone="brand">New</Badge>}
           {listing.seller_type === "private" && <Badge tone="neutral">Private</Badge>}
+          {fuelPill && (
+            <span
+              className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${fuelPill}`}
+            >
+              {titleCase(listing.fuel)}
+            </span>
+          )}
         </div>
 
         {listing.ulez && (
@@ -64,7 +89,7 @@ export function ListingCard({ listing, priority }: { listing: Listing; priority?
           </span>
         )}
 
-        {modelImg && !sold && (
+        {modelImg && !hasRealPhoto && !sold && (
           <span className="absolute bottom-2 left-2 rounded-[var(--radius-xs)] bg-ink-900/65 px-1.5 py-0.5 text-[var(--text-2xs)] font-medium text-white/90 backdrop-blur">
             Library image
           </span>
@@ -104,6 +129,14 @@ export function ListingCard({ listing, priority }: { listing: Listing; priority?
         <div className="mt-auto pt-3">
           <SpecReadout items={readouts} className="-mx-1 border-t border-border pt-1" />
         </div>
+
+        {!sold && (
+          <div className="mt-3">
+            <div className="flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-md)] bg-accent-500 px-4 py-2.5 text-[var(--text-sm)] font-semibold text-white transition-colors group-hover:bg-accent-600">
+              Enquire <IconArrow width={14} height={14} />
+            </div>
+          </div>
+        )}
       </div>
     </article>
   );

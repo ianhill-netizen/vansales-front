@@ -1,14 +1,36 @@
+import Image from "next/image";
+import Link from "next/link";
 import { Container, Eyebrow, Button, Badge } from "@/components/ui";
 import { SearchHero } from "@/components/search-hero";
 import { CategoryStrip } from "@/components/category-strip";
 import { ListingCard } from "@/components/listing-card";
-import { VanPhoto } from "@/components/van-photo";
 import { IconShield, IconCheck, IconArrow, IconStar } from "@/components/icons";
 import { getListings } from "@/lib/listings/client";
+import { modelImageSet } from "@/lib/models/image";
+
+const POPULAR_MODELS = [
+  { makeSlug: "volkswagen", modelSlug: "transporter", label: "VW Transporter" },
+  { makeSlug: "ford", modelSlug: "transit", label: "Ford Transit" },
+  { makeSlug: "mercedes-benz", modelSlug: "sprinter", label: "Mercedes Sprinter" },
+  { makeSlug: "ford", modelSlug: "transit-custom", label: "Ford Transit Custom" },
+  { makeSlug: "vauxhall", modelSlug: "vivaro", label: "Vauxhall Vivaro" },
+  { makeSlug: "ford", modelSlug: "ranger", label: "Ford Ranger" },
+];
 
 export default async function HomePage() {
   const { listings, total, servedBy } = await getListings({ sort: "newest", limit: 6 });
   const featured = listings;
+
+  // Hero van image — VW Transporter, first cover photo
+  const heroVanSet = modelImageSet("volkswagen", "transporter");
+  const heroVanImg = heroVanSet?.find((i) => i.fit === "cover") ?? heroVanSet?.[0] ?? null;
+
+  // Popular model tiles — resolve image for each
+  const popularModels = POPULAR_MODELS.map((m) => {
+    const set = modelImageSet(m.makeSlug, m.modelSlug);
+    const img = set?.find((i) => i.fit === "cover") ?? set?.[0] ?? null;
+    return { ...m, img };
+  });
 
   return (
     <>
@@ -23,15 +45,20 @@ export default async function HomePage() {
               "radial-gradient(120% 90% at 85% 0%, rgba(255,122,26,0.18), transparent 55%), radial-gradient(80% 70% at 0% 100%, rgba(27,127,152,0.20), transparent 60%)",
           }}
         />
-        {/* Ghost van — the subject, large and confident, behind the copy */}
-        <div className="pointer-events-none absolute -right-20 bottom-0 hidden w-[640px] opacity-[0.16] lg:block" aria-hidden>
-          <VanPhoto
-            listing={{ colour: "Reflex Silver", make: "VW", model: "Transporter", plate: "" }}
-            index={0}
-            plate={false}
-            className="h-auto w-full"
-          />
-        </div>
+        {/* Real van photo — right-half panel with left-to-right gradient for readability */}
+        {heroVanImg && (
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block" aria-hidden>
+            <div className="absolute inset-0 z-10 bg-gradient-to-r from-ink-900 via-ink-900/50 to-transparent" />
+            <Image
+              src={heroVanImg.src}
+              alt=""
+              fill
+              priority
+              sizes="52vw"
+              className="object-cover object-center"
+            />
+          </div>
+        )}
 
         <Container className="relative py-[clamp(3.5rem,8vw,6.5rem)]">
           <div className="max-w-2xl">
@@ -72,6 +99,48 @@ export default async function HomePage() {
         </Container>
       </section>
 
+      {/* ──────────────────────── Popular models ─────────────────── */}
+      <section className="py-[var(--section-y)]">
+        <Container>
+          <div className="mb-6">
+            <Eyebrow>Browse by model</Eyebrow>
+            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+              Popular models
+            </h2>
+          </div>
+          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {popularModels.map((m) => (
+              <li key={`${m.makeSlug}/${m.modelSlug}`}>
+                <Link
+                  href={`/vans/${m.makeSlug}/${m.modelSlug}`}
+                  className="group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-xs)] transition-[box-shadow,transform,border-color] duration-[var(--dur-base)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[var(--shadow-md)]"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
+                    {m.img ? (
+                      <Image
+                        src={m.img.src}
+                        alt={m.img.alt || m.label}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 17vw"
+                        className={m.img.fit === "contain" ? "object-contain p-2" : "object-cover"}
+                      />
+                    ) : (
+                      <div className="size-full bg-surface-2" />
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between px-3 py-2.5">
+                    <span className="text-[var(--text-sm)] font-semibold text-ink-800 group-hover:text-accent-600">
+                      {m.label}
+                    </span>
+                    <IconArrow width={14} height={14} className="shrink-0 text-ink-400 transition-transform group-hover:translate-x-0.5 group-hover:text-accent-500" />
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
       {/* ───────────────────────── Featured ───────────────────────── */}
       <section className="pb-[var(--section-y)]">
         <Container>
@@ -94,7 +163,7 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((l, i) => (
-              <ListingCard key={l.id} listing={l} priority={i < 3} />
+              <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />
             ))}
           </div>
         </Container>
