@@ -107,7 +107,7 @@ export function ListingCTAButtons({
           className="flex h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[#25D366]/40 text-[var(--text-sm)] font-semibold text-white"
         >
           <IconWhatsApp width={16} height={16} />
-          WhatsApp {/* TODO: wire when SWISSVANS_WHATSAPP is set */}
+          WhatsApp
         </span>
       )}
       <Link
