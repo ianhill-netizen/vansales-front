@@ -7,6 +7,7 @@ export const SITE = {
   description:
     "Buy used and new vans from trusted UK dealers and private sellers. Compare panel vans, dropsides, Lutons and crew cabs by payload, wheelbase, price and ULEZ status.",
   twitter: "@vansales",
+  phone: "01656 507619",
 } as const;
 
 /** Absolute base URL for the running deployment (no trailing slash). */

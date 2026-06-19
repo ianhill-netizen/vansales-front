@@ -4,10 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 
 const LINKS = [
-  { href: "/vans/volkswagen/transporter", label: "VW Transporter" },
-  { href: "/vans/ford/transit-custom", label: "Ford Transit Custom" },
-  { href: "/#browse", label: "Browse by type" },
-  { href: "/#sell", label: "Advertise your van" },
+  { href: "/vans?condition=new", label: "New vans" },
+  { href: "/vans?condition=used", label: "Used vans" },
+  { href: "/van-contract-hire", label: "Van Contract Hire" },
+  { href: "/van-insurance", label: "Van Insurance" },
+  { href: "/sell", label: "Sell your van" },
+  { href: "/advertise", label: "Advertise" },
+  { href: "/van-finance", label: "Van Finance" },
+  { href: "/van-reviews", label: "Van reviews" },
+  { href: "/directory", label: "Van Directory" },
 ];
 
 export function MobileNav() {
@@ -26,18 +31,19 @@ export function MobileNav() {
           {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
         </svg>
       </button>
+
       {open && (
         <div
           id="mobile-menu"
-          className="absolute inset-x-0 top-full z-50 border-t border-border bg-white px-[var(--gutter)] py-3 shadow-[var(--shadow-md)]"
+          className="absolute inset-x-0 top-full z-50 border-t border-border bg-white px-[var(--gutter)] py-2 shadow-[var(--shadow-md)]"
         >
-          <nav className="flex flex-col">
+          <nav className="flex flex-col divide-y divide-border">
             {LINKS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="rounded-[var(--radius-md)] px-3 py-3 text-[var(--text-md)] font-semibold text-ink-700 hover:bg-surface-2 hover:text-ink-900"
+                className="py-3 text-[var(--text-md)] font-semibold text-ink-700 hover:text-brand-600"
               >
                 {l.label}
               </Link>

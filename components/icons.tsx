@@ -137,3 +137,35 @@ export function IconShield(p: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+export function IconUser(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+    </svg>
+  );
+}
+export function IconHeart(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z" />
+    </svg>
+  );
+}
+export function IconChevron(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p} strokeWidth={2}>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+export function IconList(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <rect x="3" y="4" width="4" height="4" rx="1" fill="currentColor" stroke="none" />
+      <rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" stroke="none" />
+      <rect x="3" y="16" width="4" height="4" rx="1" fill="currentColor" stroke="none" />
+      <path d="M10 6h11M10 12h11M10 18h11" />
+    </svg>
+  );
+}
