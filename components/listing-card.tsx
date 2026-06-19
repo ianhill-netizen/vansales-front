@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileage, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
-import { VanPhoto } from "./van-photo";
+import { SpecCard } from "./spec-card";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { SpecReadout } from "./spec-readout";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconPin, IconArrow } from "./icons";
@@ -44,7 +44,7 @@ export function ListingCard({
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-xs)] transition-[box-shadow,transform,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[var(--shadow-md)]">
-      {/* Media */}
+      {/* Media — real photo if available, premium spec card otherwise */}
       <div className="relative aspect-[16/11] overflow-hidden bg-surface-2">
         {hasRealPhoto ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -55,13 +55,7 @@ export function ListingCard({
             loading={priority ? "eager" : "lazy"}
           />
         ) : (
-          <VanPhoto
-            listing={listing}
-            index={0}
-            bodyStyle={listing.van_spec.body_style}
-            className="size-full"
-            priority={priority}
-          />
+          <SpecCard listing={listing} className="size-full" />
         )}
 
         {/* ONE seller tag + condition + reserved state + optional fuel pill */}

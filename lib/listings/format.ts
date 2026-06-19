@@ -8,7 +8,7 @@ const GBP = new Intl.NumberFormat("en-GB", {
 
 /** "£24,995" or "POA" when price is unknown. */
 export function formatPrice(price: number | null): string {
-  return price == null ? "POA" : GBP.format(price);
+  return price == null ? "Contact for price" : GBP.format(price);
 }
 
 /** Short VAT qualifier shown next to a price. */
