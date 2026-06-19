@@ -1,4 +1,6 @@
-import { MODEL_CONTENT, modelImage } from "./content.generated";
+import { MODEL_CONTENT } from "./content.generated";
+import { MODEL_IMAGE_SETS } from "./images.generated";
+export type { ModelImage } from "./images.generated";
 import { slugify } from "@/lib/listings/slug";
 import type { Listing } from "@/lib/listings/types";
 
@@ -29,13 +31,40 @@ export function resolveModelSlug(make: string, model: string): { makeSlug: strin
   return null;
 }
 
+/** Get the full curated image set for a model, or null if none exists. */
+export function modelImageSet(makeSlug: string, modelSlug: string) {
+  return MODEL_IMAGE_SETS[`${makeSlug}/${modelSlug}`] ?? null;
+}
+
 /**
- * Resolve a harvested MODEL-level hero image for a listing's make+model.
- * Inventory image fallback when the live feed has no per-vehicle photo.
- * Returns null when no model image exists (caller falls back to the SVG renderer).
+ * Primary hero image src for a listing's make+model.
+ * Prefers a real cover photo over studio cutouts.
+ * Returns null when no set exists — caller falls back to the SVG renderer.
  */
 export function listingModelImage(listing: Pick<Listing, "make" | "model">): string | null {
   const resolved = resolveModelSlug(listing.make, listing.model);
   if (!resolved) return null;
-  return modelImage(resolved.makeSlug, resolved.modelSlug);
+  const set = modelImageSet(resolved.makeSlug, resolved.modelSlug);
+  if (!set?.length) return null;
+  const cover = set.find((img) => img.fit === "cover") ?? set[0];
+  return cover.src;
+}
+
+/**
+ * Model image for a listing card at position `cardIndex` in a grid.
+ * Cycles through cover photos so a 24-card grid shows varied imagery
+ * rather than the same hero photo repeated on every card.
+ */
+export function cardModelImage(
+  listing: Pick<Listing, "make" | "model">,
+  cardIndex: number,
+): { src: string; alt: string; fit: "cover" | "contain" } | null {
+  const resolved = resolveModelSlug(listing.make, listing.model);
+  if (!resolved) return null;
+  const set = modelImageSet(resolved.makeSlug, resolved.modelSlug);
+  if (!set?.length) return null;
+  const covers = set.filter((img) => img.fit === "cover");
+  const pool = covers.length > 0 ? covers : set;
+  const img = pool[cardIndex % pool.length];
+  return { src: img.src, alt: img.alt, fit: img.fit };
 }

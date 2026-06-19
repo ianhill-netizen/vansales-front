@@ -18,7 +18,7 @@ import {
   WHEELBASE_SHORT,
 } from "@/lib/listings/format";
 import { modelPath } from "@/lib/listings/slug";
-import { listingModelImage } from "@/lib/models/image";
+import { listingModelImage, modelImageSet, resolveModelSlug } from "@/lib/models/image";
 import { SITE, absUrl } from "@/lib/site";
 
 type Params = { slug: string };
@@ -61,6 +61,8 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   const title = listingTitle(listing);
   const modelImg = listingModelImage(listing);
   const ogImage = listingImageUrl(listing);
+  const resolved = resolveModelSlug(listing.make, listing.model);
+  const modelImgSet = resolved ? modelImageSet(resolved.makeSlug, resolved.modelSlug) : null;
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
     { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
@@ -143,7 +145,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_380px]">
           {/* Left: gallery + spec */}
           <div className="min-w-0">
-            <Gallery listing={listing} modelImage={modelImg} />
+            <Gallery listing={listing} modelImage={modelImg} modelImages={modelImgSet} />
 
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />
