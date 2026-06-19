@@ -32,12 +32,12 @@ export function SearchHero() {
   }
 
   const fieldClass =
-    "h-12 w-full appearance-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3.5 text-[var(--text-md)] font-medium text-ink-800 shadow-[var(--shadow-xs)] outline-none focus-visible:border-accent-500";
+    "h-12 w-full appearance-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3.5 text-[var(--text-md)] font-medium text-ink-800 shadow-[var(--shadow-xs)] outline-none focus-visible:border-brand-700";
 
   return (
     <form
       onSubmit={submit}
-      className="rounded-[var(--radius-xl)] border border-border bg-surface-0/95 p-3 shadow-[var(--shadow-lg)] backdrop-blur sm:p-4"
+      className="rounded-[var(--radius-xl)] border border-border bg-surface-0 p-3 shadow-[var(--shadow-lg)] sm:p-4"
     >
       <div className="grid gap-2.5 sm:grid-cols-[1fr_1fr_1fr_auto] sm:gap-3">
         <label className="block">
@@ -84,7 +84,7 @@ export function SearchHero() {
         <div className="flex items-end">
           <button
             type="submit"
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-accent-500 px-6 font-semibold text-white shadow-[var(--shadow-sm)] transition-colors hover:bg-accent-600 sm:w-auto"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 font-semibold text-white shadow-[var(--shadow-sm)] transition-colors hover:bg-ink-800 sm:w-auto"
           >
             <IconSearch width={18} height={18} />
             Search vans

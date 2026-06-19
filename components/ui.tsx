@@ -27,9 +27,10 @@ export function Eyebrow({ children, className = "" }: { children: ReactNode; cla
 }
 
 /* -----------------------------------------------------------------------------
-   Button — primary (amber), dark (ink), and ghost. Renders <Link> or <button>.
+   Button — primary (ink), accent (plate-yellow), dark, ghost, outline.
+   Renders <Link> or <button>.
    -------------------------------------------------------------------------- */
-type ButtonVariant = "primary" | "dark" | "ghost" | "outline";
+type ButtonVariant = "primary" | "accent" | "dark" | "ghost" | "outline";
 type ButtonSize = "sm" | "md" | "lg";
 
 const BTN_BASE =
@@ -37,7 +38,9 @@ const BTN_BASE =
 
 const BTN_VARIANT: Record<ButtonVariant, string> = {
   primary:
-    "bg-accent-500 text-white shadow-[var(--shadow-sm)] hover:bg-accent-600 hover:shadow-[var(--shadow-md)]",
+    "bg-ink-900 text-white shadow-[var(--shadow-sm)] hover:bg-ink-800 hover:shadow-[var(--shadow-md)]",
+  accent:
+    "bg-accent-500 text-plate-ink shadow-[var(--shadow-sm)] hover:bg-accent-400 hover:shadow-[var(--shadow-md)]",
   dark: "bg-ink-900 text-white hover:bg-ink-800 shadow-[var(--shadow-sm)]",
   ghost: "bg-transparent text-ink-800 hover:bg-surface-2",
   outline: "bg-surface-0 text-ink-800 border border-border-strong hover:border-ink-400 hover:bg-surface-1",
@@ -153,7 +156,7 @@ export function PlateBadge({
 }
 
 /* -----------------------------------------------------------------------------
-   Price — amber, confident, with VAT qualifier.
+   Price — mono, confident, with VAT qualifier.
    -------------------------------------------------------------------------- */
 export function Price({
   listing,
@@ -169,7 +172,7 @@ export function Price({
   const poa = listing.price == null;
   return (
     <div className={`flex items-baseline gap-2 ${className}`}>
-      <span className={`font-display font-extrabold leading-none text-ink-900 ${text}`}>
+      <span className={`font-mono font-bold leading-none text-ink-900 ${text}`}>
         {formatPrice(listing.price)}
       </span>
       {!poa && (

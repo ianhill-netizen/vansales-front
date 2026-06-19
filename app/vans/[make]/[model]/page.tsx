@@ -160,30 +160,30 @@ export default async function ModelPage({
       {page > 1 && <link rel="prev" href={absUrl(cleanPageUrl(makeSlug, modelSlug, page - 1))} />}
       {page < totalPages && <link rel="next" href={absUrl(cleanPageUrl(makeSlug, modelSlug, page + 1))} />}
 
-      {/* Page header — hero band */}
-      <section className="border-b border-border bg-ink-900 text-white">
+      {/* Page header — light hero band */}
+      <section className="border-b border-border bg-surface-1">
         <Container className="py-7">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-white/55">
-            <Link href="/" className="hover:text-white">Home</Link>
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+            <Link href="/" className="hover:text-ink-900">Home</Link>
             <span aria-hidden>/</span>
-            <Link href="/#browse" className="hover:text-white">Vans</Link>
+            <Link href="/#browse" className="hover:text-ink-900">Vans</Link>
             <span aria-hidden>/</span>
-            <span className="font-medium text-white/80">{makeName} {modelName}</span>
+            <span className="font-medium text-ink-700">{makeName} {modelName}</span>
           </nav>
 
           <div className="grid items-center gap-6 lg:grid-cols-[1fr_minmax(0,440px)]">
             <div>
-              <Eyebrow className="text-accent-400">{makeName}</Eyebrow>
-              <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight">
+              <Eyebrow>{makeName}</Eyebrow>
+              <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
                 {makeName} {modelName} for sale
               </h1>
               {content?.intro?.[0] && (
-                <p className="mt-3 max-w-xl text-[var(--text-md)] leading-relaxed text-white/70">
+                <p className="mt-3 max-w-xl text-[var(--text-md)] leading-relaxed text-ink-600">
                   {truncate(content.intro[0], 180)}
                 </p>
               )}
-              <p className="mt-4 text-[var(--text-sm)] font-semibold text-white/80">
-                <span className="font-mono text-accent-400">{total}</span>{" "}
+              <p className="mt-4 text-[var(--text-sm)] font-semibold text-ink-600">
+                <span className="font-mono text-brand-700">{total}</span>{" "}
                 {total === 1 ? "van" : "vans"} available now
               </p>
             </div>
@@ -193,7 +193,7 @@ export default async function ModelPage({
               const heroImg = set?.find((i) => i.fit === "cover") ?? set?.[0];
               if (!heroImg) return null;
               return (
-                <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-white/10">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-border">
                   <Image
                     src={heroImg.src}
                     alt={heroImg.alt || `${makeName} ${modelName}`}
@@ -241,7 +241,7 @@ export default async function ModelPage({
                 </p>
                 <Link
                   href={`/vans/${makeSlug}/${modelSlug}`}
-                  className="mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-accent-600 hover:underline"
+                  className="mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline"
                 >
                   Clear filters <IconArrow width={16} height={16} />
                 </Link>
@@ -275,7 +275,7 @@ export default async function ModelPage({
                 {listings[0] && (
                   <p className="mt-4 text-[var(--text-sm)] text-ink-500">
                     Popular pick:{" "}
-                    <Link href={listingPath(listings[0])} className="font-semibold text-accent-600 hover:underline">
+                    <Link href={listingPath(listings[0])} className="font-semibold text-brand-700 hover:underline">
                       {listingTitle(listings[0])}
                     </Link>{" "}
                     — {listingMeta(listings[0])}.

@@ -25,7 +25,7 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
   {
     title: "Vansales",
     links: [
-      { href: "/#sell", label: "Sell your van" },
+      { href: "/#sell", label: "Advertise your van" },
       { href: "/#", label: "Van finance" },
       { href: "/#", label: "Dealer reviews" },
       { href: "/#", label: "Buying guides" },
@@ -35,24 +35,24 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
 
 export function Footer() {
   return (
-    <footer className="mt-[var(--section-y)] border-t border-white/10 bg-ink-900 text-white/70">
+    <footer className="mt-[var(--section-y)] border-t border-border bg-surface-1">
       <Container className="grid gap-10 py-12 md:grid-cols-[1.2fr_repeat(3,1fr)]">
         <div>
-          <Logo tone="light" />
-          <p className="mt-4 max-w-xs text-[var(--text-sm)] leading-relaxed text-white/60">
+          <Logo tone="dark" />
+          <p className="mt-4 max-w-xs text-[var(--text-sm)] leading-relaxed text-ink-500">
             {SITE.tagline}. Compare vans from trusted UK dealers and private sellers by the
             numbers that matter on the job.
           </p>
         </div>
         {COLS.map((col) => (
           <nav key={col.title} aria-label={col.title}>
-            <h2 className="font-display text-[var(--text-sm)] font-bold uppercase tracking-[var(--tracking-wide)] text-white">
+            <h2 className="font-mono text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
               {col.title}
             </h2>
             <ul className="mt-4 space-y-2.5">
               {col.links.map((l) => (
                 <li key={l.label}>
-                  <Link href={l.href} className="text-[var(--text-sm)] text-white/65 hover:text-white">
+                  <Link href={l.href} className="text-[var(--text-sm)] text-ink-600 hover:text-ink-900">
                     {l.label}
                   </Link>
                 </li>
@@ -61,8 +61,8 @@ export function Footer() {
           </nav>
         ))}
       </Container>
-      <div className="border-t border-white/10">
-        <Container className="flex flex-col gap-2 py-5 text-[var(--text-xs)] text-white/45 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-t border-border">
+        <Container className="flex flex-col gap-2 py-5 text-[var(--text-xs)] text-ink-400 sm:flex-row sm:items-center sm:justify-between">
           <p>© {SITE.name}.com — concept marketplace. Listings shown are demonstration data.</p>
           <p className="font-mono tracking-[var(--tracking-wide)]">Built mobile-first · {SITE.domain}</p>
         </Container>

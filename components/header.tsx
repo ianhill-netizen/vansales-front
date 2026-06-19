@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Container, Button } from "./ui";
 import { Logo } from "./brand";
 import { MobileNav } from "./mobile-nav";
-import { IconSearch } from "./icons";
 
 const NAV = [
   { href: "/vans/volkswagen/transporter", label: "VW Transporter" },
@@ -12,16 +11,16 @@ const NAV = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink-900 text-white">
+    <header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur-sm">
       <Container className="relative flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-8">
-          <Logo tone="light" />
+          <Logo tone="dark" />
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
             {NAV.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                className="rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-600 transition-colors hover:bg-surface-2 hover:text-ink-900"
               >
                 {l.label}
               </Link>
@@ -30,15 +29,8 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/vans/volkswagen/transporter"
-            className="hidden size-10 items-center justify-center rounded-[var(--radius-md)] text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex"
-            aria-label="Search vans"
-          >
-            <IconSearch />
-          </Link>
           <Button href="/#sell" variant="primary" size="sm" className="hidden sm:inline-flex">
-            Sell your van
+            Advertise your van
           </Button>
           <MobileNav />
         </div>

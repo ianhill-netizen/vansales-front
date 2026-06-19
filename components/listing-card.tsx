@@ -73,7 +73,10 @@ export function ListingCard({
         <div className="absolute left-3 top-3 flex items-center gap-2">
           <StatusBadge status={listing.status} />
           {listing.condition === "new" && <Badge tone="brand">New</Badge>}
-          {listing.seller_type === "private" && <Badge tone="neutral">Private</Badge>}
+          {listing.seller_type === "private"
+            ? <Badge tone="neutral">Private seller</Badge>
+            : <Badge tone="brand">Dealer</Badge>
+          }
           {fuelPill && (
             <span
               className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${fuelPill}`}
@@ -132,7 +135,7 @@ export function ListingCard({
 
         {!sold && (
           <div className="mt-3">
-            <div className="flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-md)] bg-accent-500 px-4 py-2.5 text-[var(--text-sm)] font-semibold text-white transition-colors group-hover:bg-accent-600">
+            <div className="flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-md)] bg-ink-900 px-4 py-2.5 text-[var(--text-sm)] font-semibold text-white transition-colors group-hover:bg-ink-800">
               Enquire <IconArrow width={14} height={14} />
             </div>
           </div>
