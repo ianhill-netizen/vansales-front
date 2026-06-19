@@ -21,7 +21,7 @@ const BASE =
   process.env.DEALSKI_BASE_URL?.replace(/\/$/, "") ||
   "https://swissvans.dealski.co.uk";
 const PER_PAGE = 20;
-const MAX_PAGES = 8; // cap upstream paging for list views (~160 vehicles)
+const MAX_PAGES = 15; // cap upstream paging for list views (~300 vehicles)
 const TIMEOUT_MS = 8000;
 
 /* The single dealer behind tenant 1 (Swiss Vans, Swansea). The feed has no

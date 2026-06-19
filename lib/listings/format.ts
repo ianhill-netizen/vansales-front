@@ -53,9 +53,14 @@ export function titleCase(input: string): string {
     .join(" ");
 }
 
-/** A clean human title for a listing, e.g. "Volkswagen Transporter T32 Highline". */
+/** A clean human title, e.g. "Volkswagen Transporter T32 Highline".
+   Drops the derivative when the (often verbose) feed model already contains it. */
 export function listingTitle(l: Listing): string {
-  return [l.make, l.model, l.derivative].filter(Boolean).join(" ").trim();
+  const model = (l.model || "").trim();
+  const deriv = (l.derivative || "").trim();
+  const parts = [l.make, model];
+  if (deriv && !model.toLowerCase().includes(deriv.toLowerCase())) parts.push(deriv);
+  return parts.filter(Boolean).join(" ").trim();
 }
 
 /** Compact subtitle used under the price block, e.g. "2024 (73) · 18,420 mi · Diesel". */

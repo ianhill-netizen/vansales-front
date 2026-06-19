@@ -2,6 +2,7 @@ import type { Listing, ListingFilters, ListingResult, ListingSource } from "./ty
 import { getMockListings } from "./sources/mock";
 import { fetchDealskiListings, fetchDealskiBySourceId } from "./sources/dealski";
 import { sourceIdFromSlug, slugify } from "./slug";
+import { resolveModelSlug } from "@/lib/models/image";
 
 /* =============================================================================
    DATA LAYER  — the only module screens import.
@@ -41,7 +42,14 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
   let out = listings.filter((l) => l.status !== "removed");
 
   if (f.make) out = out.filter((l) => slugify(l.make) === slugify(f.make!));
-  if (f.model) out = out.filter((l) => slugify(l.model) === slugify(f.model!));
+  if (f.model) {
+    const want = slugify(f.model);
+    // The live feed reports verbose model strings (e.g. "Transit Custom 320 L2
+    // Diesel FWD"); resolve to the base model so the route collects all variants.
+    out = out.filter(
+      (l) => slugify(l.model) === want || resolveModelSlug(l.make, l.model)?.modelSlug === want,
+    );
+  }
   if (f.bodyStyle) out = out.filter((l) => slugify(l.van_spec.body_style) === slugify(f.bodyStyle!));
   if (f.wheelbase) out = out.filter((l) => l.van_spec.wheelbase === f.wheelbase);
   if (f.fuel) out = out.filter((l) => slugify(l.fuel) === slugify(f.fuel!));
