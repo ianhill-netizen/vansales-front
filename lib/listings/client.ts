@@ -1,8 +1,16 @@
-import type { Listing, ListingFilters, ListingResult, ListingSource } from "./types";
+import type {
+  Listing,
+  ListingFilters,
+  ListingResult,
+  ListingSource,
+  ListingFacets,
+  FacetCount,
+} from "./types";
 import { getMockListings } from "./sources/mock";
-import { fetchDealskiListings, fetchDealskiBySourceId } from "./sources/dealski";
+import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
 import { sourceIdFromSlug, slugify } from "./slug";
 import { resolveModelSlug } from "@/lib/models/image";
+import { WHEELBASE_LABEL, titleCase } from "./format";
 
 /* =============================================================================
    DATA LAYER  — the only module screens import.
@@ -17,25 +25,35 @@ function configuredSource(): ListingSource | "mock" {
   return "mock";
 }
 
-/** Load the full candidate set from the active source, with fallback. */
-async function loadAll(
-  hint: { make?: string; model?: string } = {},
-): Promise<{ listings: Listing[]; servedBy: ListingSource | "mock"; live: boolean }> {
+/** Load the ENTIRE catalogue from the active source (cached), with fallback. */
+async function loadAll(): Promise<{
+  listings: Listing[];
+  servedBy: ListingSource | "mock";
+  live: boolean;
+  feedTotal: number;
+}> {
   const source = configuredSource();
 
   if (source === "dealski") {
     try {
-      const listings = await fetchDealskiListings(hint);
-      if (listings.length > 0) return { listings, servedBy: "dealski", live: true };
+      const { listings, feedTotal } = await fetchDealskiCatalogue();
+      if (listings.length > 0) return { listings, servedBy: "dealski", live: true, feedTotal };
       // Empty upstream → fall through to mock so the UI is never blank.
     } catch {
       /* fall through */
     }
-    return { listings: getMockListings(), servedBy: "mock", live: false };
+    const mock = getMockListings();
+    return { listings: mock, servedBy: "mock", live: false, feedTotal: mock.length };
   }
 
   // 'native' and 'mock' are both served from the local fixtures in this repo.
-  return { listings: getMockListings(), servedBy: source === "native" ? "native" : "mock", live: false };
+  const mock = getMockListings();
+  return {
+    listings: mock,
+    servedBy: source === "native" ? "native" : "mock",
+    live: false,
+    feedTotal: mock.length,
+  };
 }
 
 function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
@@ -98,13 +116,59 @@ function statusRank(l: Listing): number {
    Public API
    -------------------------------------------------------------------------*/
 export async function getListings(filters: ListingFilters = {}): Promise<ListingResult> {
-  const { listings, servedBy, live } = await loadAll({
-    make: filters.make,
-    model: filters.model,
-  });
-  const filtered = applyFilters(listings, filters);
-  const limited = filters.limit ? filtered.slice(0, filters.limit) : filtered;
-  return { listings: limited, total: filtered.length, servedBy, live };
+  const { listings, servedBy, live, feedTotal } = await loadAll();
+  let filtered = applyFilters(listings, filters);
+
+  // Optional hard cap for non-paginated strips (e.g. home "featured").
+  if (filters.limit && !filters.pageSize) filtered = filtered.slice(0, filters.limit);
+
+  const total = filtered.length;
+  const pageSize = filters.pageSize ?? (filters.limit ? filtered.length || 1 : total || 1);
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const page = Math.min(Math.max(1, filters.page ?? 1), totalPages);
+
+  const pageSlice = filters.pageSize
+    ? filtered.slice((page - 1) * pageSize, page * pageSize)
+    : filtered;
+
+  return { listings: pageSlice, total, page, pageSize, totalPages, servedBy, live, feedTotal };
+}
+
+/** Facets derived from the FULL catalogue, scoped to the given base filters. */
+export async function getFacets(base: ListingFilters = {}): Promise<ListingFacets> {
+  const { listings } = await loadAll();
+  // Apply everything EXCEPT the dimension being counted is overkill here; we
+  // scope to make/model context and count the remaining dimensions over matches.
+  const scoped = applyFilters(listings, { make: base.make, model: base.model });
+
+  const tally = (key: (l: Listing) => string | null, label?: (v: string) => string): FacetCount[] => {
+    const m = new Map<string, number>();
+    for (const l of scoped) {
+      const v = key(l);
+      if (!v) continue;
+      m.set(v, (m.get(v) ?? 0) + 1);
+    }
+    return [...m.entries()]
+      .map(([value, count]) => ({ value, label: label ? label(value) : value, count }))
+      .sort((a, b) => b.count - a.count);
+  };
+
+  const prices = scoped.map((l) => l.price).filter((p): p is number => p != null);
+  const years = scoped.map((l) => l.year).filter((y) => y > 0);
+
+  return {
+    makes: tally((l) => l.make),
+    models: tally((l) => l.model),
+    fuels: tally((l) => (l.fuel && l.fuel !== "—" ? titleCase(l.fuel) : null)),
+    bodyStyles: tally((l) => l.van_spec.body_style),
+    wheelbases: tally(
+      (l) => l.van_spec.wheelbase,
+      (v) => WHEELBASE_LABEL[v as keyof typeof WHEELBASE_LABEL] ?? v,
+    ),
+    priceRange: prices.length ? { min: Math.min(...prices), max: Math.max(...prices) } : null,
+    yearRange: years.length ? { min: Math.min(...years), max: Math.max(...years) } : null,
+    total: scoped.length,
+  };
 }
 
 export async function getListingBySlug(slug: string): Promise<{ listing: Listing | null; servedBy: ListingSource | "mock" }> {

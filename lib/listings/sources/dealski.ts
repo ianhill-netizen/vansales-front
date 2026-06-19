@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import type { Listing, ListingImage, Wheelbase } from "../types";
 import { buildSlug } from "../slug";
 import { titleCase } from "../format";
@@ -20,9 +21,11 @@ import { titleCase } from "../format";
 const BASE =
   process.env.DEALSKI_BASE_URL?.replace(/\/$/, "") ||
   "https://swissvans.dealski.co.uk";
-const PER_PAGE = 20;
-const MAX_PAGES = 15; // cap upstream paging for list views (~300 vehicles)
-const TIMEOUT_MS = 8000;
+const PER_PAGE = 50; // upstream caps per_page at 50 regardless of request
+const PAGE_CONCURRENCY = 6; // polite parallelism while paging the whole feed
+const REVALIDATE = 1800; // 30 min — assembled catalogue cache lifetime
+const TIMEOUT_MS = 12000;
+const HARD_PAGE_CAP = 60; // safety backstop (~3000 vehicles) vs a runaway feed
 
 /* The single dealer behind tenant 1 (Swiss Vans, Swansea). The feed has no
    per-vehicle location, so all of this dealer's stock shares their forecourt. */
@@ -78,16 +81,66 @@ async function getJson<T>(url: string): Promise<T> {
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
     const res = await fetch(url, {
+      // Note: with Accept: application/json (and no browser UA) the upstream
+      // returns clean JSON; the site's malware only injects spam HTML for
+      // browser-like requests. Still parse defensively in case that changes.
       headers: { Accept: "application/json" },
       signal: ctrl.signal,
-      // Cache the upstream feed for an hour; it changes slowly.
-      next: { revalidate: 3600 },
+      next: { revalidate: REVALIDATE },
     });
     if (!res.ok) throw new Error(`Dealski ${res.status} for ${url}`);
-    return (await res.json()) as T;
+    const text = await res.text();
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      return extractJson<T>(text);
+    }
   } finally {
     clearTimeout(timer);
   }
+}
+
+/** Extract the first balanced JSON value, tolerating any trailing injected HTML. */
+function extractJson<T>(text: string): T {
+  const candidates = [text.indexOf("["), text.indexOf("{")].filter((i) => i >= 0);
+  if (!candidates.length) throw new Error("Dealski: no JSON in response");
+  const start = Math.min(...candidates);
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = start; i < text.length; i++) {
+    const c = text[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === "\\") esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === "[" || c === "{") depth++;
+    else if (c === "]" || c === "}") {
+      depth--;
+      if (depth === 0) return JSON.parse(text.slice(start, i + 1)) as T;
+    }
+  }
+  throw new Error("Dealski: unbalanced JSON in response");
+}
+
+async function mapWithConcurrency<I, O>(
+  items: I[],
+  limit: number,
+  fn: (item: I) => Promise<O>,
+): Promise<O[]> {
+  const out: O[] = new Array(items.length);
+  let cursor = 0;
+  async function worker() {
+    while (cursor < items.length) {
+      const i = cursor++;
+      out[i] = await fn(items[i]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return out;
 }
 
 /* ---------------------------------------------------------------------------
@@ -109,6 +162,17 @@ function normaliseWheelbase(wb: string | null): Wheelbase | null {
   if (v.includes("swb") || v.includes("short")) return "swb";
   if (v.includes("mwb") || v.includes("med")) return "mwb";
   if (v.includes("lwb") || v.includes("long")) return "lwb";
+  return null;
+}
+
+/* The list endpoint omits wheelbase, but the verbose model/variant strings carry
+   length codes (L1/L2/L3/L4) and SWB/MWB/LWB tokens — infer from those so the
+   wheelbase filter works across the full catalogue without per-vehicle detail. */
+function inferWheelbase(...text: Array<string | null | undefined>): Wheelbase | null {
+  const hay = text.filter(Boolean).join(" ").toLowerCase();
+  if (/\bswb\b|\bl1\b|short/.test(hay)) return "swb";
+  if (/\bmwb\b|\bl2\b|medium/.test(hay)) return "mwb";
+  if (/\blwb\b|\bl3\b|\bl4\b|long|maxi/.test(hay)) return "lwb";
   return null;
 }
 
@@ -204,7 +268,7 @@ function mapDetail(d: DealskiDetail): Listing {
     ulez: year === 0 ? true : year >= 2016,
     van_spec: {
       body_style: bodyStyleFrom(d),
-      wheelbase: normaliseWheelbase(d.wheelbase),
+      wheelbase: normaliseWheelbase(d.wheelbase) ?? inferWheelbase(d.model, d.variant, d.vehicle_type),
       roof_height: null,
       payload_kg: null,
       load_length_mm: null,
@@ -251,28 +315,40 @@ function mapSummary(s: DealskiSummary): Listing {
 /* ---------------------------------------------------------------------------
    Public source API
    -------------------------------------------------------------------------*/
-export async function fetchDealskiListings(opts: {
-  make?: string;
-  model?: string;
-}): Promise<Listing[]> {
-  const params = new URLSearchParams({ per_page: String(PER_PAGE) });
-  if (opts.make) params.set("make", opts.make);
-  // Upstream model codes differ from our normalised "Transporter"; don't pass
-  // model upstream — we normalise + filter in the client instead.
 
-  const first = await getJson<DealskiList>(`${BASE}/api/public/stock?${params}&page=1`);
-  const pages = Math.min(first.meta.last_page, MAX_PAGES);
-  const rest = await Promise.all(
-    Array.from({ length: Math.max(0, pages - 1) }, (_, i) =>
-      getJson<DealskiList>(`${BASE}/api/public/stock?${params}&page=${i + 2}`).then(
-        (r) => r.data,
-        () => [] as DealskiSummary[],
-      ),
+/** Page through the ENTIRE upstream catalogue (all ~1,121 vehicles). */
+async function fetchAllSummaries(): Promise<{ summaries: DealskiSummary[]; feedTotal: number }> {
+  const first = await getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=1`);
+  const lastPage = Math.min(first.meta.last_page || 1, HARD_PAGE_CAP);
+  const restPages = Array.from({ length: Math.max(0, lastPage - 1) }, (_, i) => i + 2);
+  const rest = await mapWithConcurrency(restPages, PAGE_CONCURRENCY, (page) =>
+    getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=${page}`).then(
+      (r) => r.data,
+      () => [] as DealskiSummary[],
     ),
   );
   const summaries = [first.data, ...rest].flat();
-  return summaries.map(mapSummary);
+  return { summaries, feedTotal: first.meta.total ?? summaries.length };
 }
+
+/** Assemble + map the full catalogue, cached so requests don't refetch 1,121 rows. */
+export const fetchDealskiCatalogue = unstable_cache(
+  async (): Promise<{ listings: Listing[]; feedTotal: number }> => {
+    const { summaries, feedTotal } = await fetchAllSummaries();
+    // De-dupe by id (defensive against feed overlap), then map to canonical.
+    const seen = new Set<number>();
+    const listings: Listing[] = [];
+    for (const s of summaries) {
+      if (s.id == null || seen.has(s.id)) continue;
+      seen.add(s.id);
+      listings.push(mapSummary(s));
+    }
+    return { listings, feedTotal };
+  },
+  // Bump this key whenever the feed→canonical mapping changes (busts the cache).
+  ["dealski-catalogue-v2"],
+  { revalidate: REVALIDATE, tags: ["dealski"] },
+);
 
 export async function fetchDealskiBySourceId(sourceId: string): Promise<Listing | null> {
   try {

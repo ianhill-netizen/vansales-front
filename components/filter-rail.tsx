@@ -8,27 +8,40 @@ import { useCallback } from "react";
    query so results stay shareable and SSR-rendered. Server reads the same
    params. Mobile: collapses into a <details> drawer.
    -------------------------------------------------------------------------- */
-const BODY_STYLES = ["Panel Van", "Crew Cab", "Luton", "Dropside", "Pickup", "Kombi"];
+const DEFAULT_BODY_STYLES = ["Panel Van", "Crew Cab", "Luton", "Dropside", "Pickup", "Tipper", "Chassis Cab"];
 const WHEELBASES = [
   { v: "swb", label: "Short (SWB)" },
   { v: "mwb", label: "Medium (MWB)" },
   { v: "lwb", label: "Long (LWB)" },
 ];
-const FUELS = ["Diesel", "Petrol", "Electric", "Hybrid"];
+const DEFAULT_FUELS = ["Diesel", "Petrol", "Electric", "Hybrid"];
 const PRICES = [10000, 15000, 20000, 25000, 30000, 40000, 50000];
 const YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
-export function FilterRail({ resultCount }: { resultCount: number }) {
+export function FilterRail({
+  resultCount,
+  fuels,
+  bodyStyles,
+}: {
+  resultCount: number;
+  fuels?: string[];
+  bodyStyles?: string[];
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+
+  const FUELS = fuels && fuels.length ? fuels : DEFAULT_FUELS;
+  const BODY_STYLES = bodyStyles && bodyStyles.length ? bodyStyles : DEFAULT_BODY_STYLES;
 
   const setParam = useCallback(
     (key: string, value: string) => {
       const next = new URLSearchParams(params.toString());
       if (value) next.set(key, value);
       else next.delete(key);
-      router.push(`${pathname}?${next.toString()}`, { scroll: false });
+      next.delete("page"); // any filter change returns to page 1
+      const qs = next.toString();
+      router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     },
     [params, pathname, router],
   );

@@ -106,12 +106,34 @@ export interface ListingFilters {
   status?: ListingStatus;
   q?: string;
   sort?: "newest" | "price_asc" | "price_desc" | "mileage_asc";
-  limit?: number;
+  limit?: number; // hard cap (e.g. featured strips); independent of pagination
+  page?: number; // 1-based
+  pageSize?: number; // when set, results are paginated to this many per page
 }
 
 export interface ListingResult {
-  listings: Listing[];
-  total: number;
+  listings: Listing[]; // the current page (or all, when unpaginated)
+  total: number; // total matches across the FULL catalogue
+  page: number;
+  pageSize: number;
+  totalPages: number;
   servedBy: ListingSource | "mock";
   live: boolean; // true when the live upstream actually answered
+  feedTotal: number; // size of the upstream catalogue served
+}
+
+export interface FacetCount {
+  value: string;
+  label: string;
+  count: number;
+}
+export interface ListingFacets {
+  makes: FacetCount[];
+  models: FacetCount[];
+  fuels: FacetCount[];
+  bodyStyles: FacetCount[];
+  wheelbases: FacetCount[];
+  priceRange: { min: number; max: number } | null;
+  yearRange: { min: number; max: number } | null;
+  total: number;
 }
