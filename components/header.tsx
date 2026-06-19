@@ -12,9 +12,11 @@ const PRIMARY_NAV = [
   { href: "/vans/luton", label: "Luton vans" },
   { href: "/vans/tipper", label: "Tippers" },
   { href: "/vans/dropside", label: "Dropsides" },
-  { href: "/van-finance", label: "Van Finance" },
-  { href: "/van-reviews", label: "Van reviews" },
-  { href: "/directory", label: "Van Directory" },
+  { href: "/vans/minibus", label: "Minibuses" },
+  { href: "/vans/electric", label: "Electric" },
+  { href: "/new-vans", label: "Model guide" },
+  { href: "/blog", label: "Guides" },
+  { href: "/van-finance", label: "Finance" },
   { href: "/advertise", label: "Advertise" },
 ];
 
