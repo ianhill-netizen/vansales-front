@@ -76,7 +76,7 @@ interface DealskiDetail extends DealskiSummary {
   co2_gkm: number | null;
 }
 
-async function getJson<T>(url: string): Promise<T> {
+async function getJsonOnce<T>(url: string): Promise<T> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
@@ -98,6 +98,20 @@ async function getJson<T>(url: string): Promise<T> {
   } finally {
     clearTimeout(timer);
   }
+}
+
+/** Retry transient failures — a dropped page would silently lose 50 vehicles. */
+async function getJson<T>(url: string, tries = 3): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < tries; i++) {
+    try {
+      return await getJsonOnce<T>(url);
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 300 * (i + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 /** Extract the first balanced JSON value, tolerating any trailing injected HTML. */
@@ -335,6 +349,12 @@ async function fetchAllSummaries(): Promise<{ summaries: DealskiSummary[]; feedT
 export const fetchDealskiCatalogue = unstable_cache(
   async (): Promise<{ listings: Listing[]; feedTotal: number }> => {
     const { summaries, feedTotal } = await fetchAllSummaries();
+    // Don't cache a truncated catalogue: if a page hard-failed (after retries)
+    // the raw row count falls well short of the feed's reported total — throw so
+    // unstable_cache stores nothing and the next request retries.
+    if (feedTotal > 0 && summaries.length < feedTotal - PER_PAGE / 2) {
+      throw new Error(`Dealski: incomplete catalogue (${summaries.length}/${feedTotal})`);
+    }
     // De-dupe by id (defensive against feed overlap), then map to canonical.
     const seen = new Set<number>();
     const listings: Listing[] = [];
@@ -346,7 +366,7 @@ export const fetchDealskiCatalogue = unstable_cache(
     return { listings, feedTotal };
   },
   // Bump this key whenever the feed→canonical mapping changes (busts the cache).
-  ["dealski-catalogue-v2"],
+  ["dealski-catalogue-v3"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
