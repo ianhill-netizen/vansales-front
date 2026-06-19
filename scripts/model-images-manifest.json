@@ -1,0 +1,84 @@
+{
+  "ford": [
+    "/media/ford/01.webp",
+    "/media/ford/02.webp",
+    "/media/ford/03.webp",
+    "/media/ford/04.webp",
+    "/media/ford/05.webp",
+    "/media/ford/06.webp"
+  ],
+  "volkswagen": [
+    "/media/volkswagen/01.webp",
+    "/media/volkswagen/02.webp",
+    "/media/volkswagen/03.webp",
+    "/media/volkswagen/04.webp"
+  ],
+  "citroen": [
+    "/media/citroen/01.webp",
+    "/media/citroen/02.webp",
+    "/media/citroen/03.webp",
+    "/media/citroen/04.webp",
+    "/media/citroen/05.webp",
+    "/media/citroen/06.webp"
+  ],
+  "renault": [
+    "/media/renault/01.webp",
+    "/media/renault/02.webp",
+    "/media/renault/03.webp",
+    "/media/renault/04.webp",
+    "/media/renault/05.webp",
+    "/media/renault/06.webp"
+  ],
+  "toyota": [
+    "/media/toyota/01.webp",
+    "/media/toyota/02.webp",
+    "/media/toyota/03.webp",
+    "/media/toyota/04.webp",
+    "/media/toyota/05.webp",
+    "/media/toyota/06.webp"
+  ],
+  "mercedes-benz": [
+    "/media/mercedes-benz/01.webp",
+    "/media/mercedes-benz/02.webp",
+    "/media/mercedes-benz/03.webp"
+  ],
+  "vauxhall": [
+    "/media/vauxhall/01.webp",
+    "/media/vauxhall/02.webp",
+    "/media/vauxhall/03.webp",
+    "/media/vauxhall/04.webp",
+    "/media/vauxhall/05.webp",
+    "/media/vauxhall/06.webp"
+  ],
+  "peugeot": [
+    "/media/peugeot/01.webp",
+    "/media/peugeot/02.webp",
+    "/media/peugeot/03.webp",
+    "/media/peugeot/04.webp",
+    "/media/peugeot/05.webp",
+    "/media/peugeot/06.webp"
+  ],
+  "fiat": [
+    "/media/fiat/01.webp",
+    "/media/fiat/02.webp",
+    "/media/fiat/03.webp",
+    "/media/fiat/04.webp",
+    "/media/fiat/05.webp",
+    "/media/fiat/06.webp"
+  ],
+  "nissan": [
+    "/media/nissan/01.webp",
+    "/media/nissan/02.webp",
+    "/media/nissan/03.webp",
+    "/media/nissan/04.webp",
+    "/media/nissan/05.webp"
+  ],
+  "iveco": [
+    "/media/iveco/01.webp",
+    "/media/iveco/02.webp",
+    "/media/iveco/03.webp",
+    "/media/iveco/04.webp",
+    "/media/iveco/05.webp",
+    "/media/iveco/06.webp"
+  ]
+}

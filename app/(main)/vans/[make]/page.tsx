@@ -105,7 +105,7 @@ export default async function MakePage({
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {result.listings.map((l, i) => (
-              <ListingCard key={l.id} listing={l} priority={i < 6} />
+              <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />
             ))}
           </div>
         )}

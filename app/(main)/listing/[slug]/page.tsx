@@ -11,6 +11,7 @@ import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck } from "@/compon
 import { ListingCTAButtons } from "@/components/dealer-cta-buttons";
 import { getListingBySlug } from "@/lib/listings/client";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
+import { getModelImages } from "@/lib/media/model-images";
 import type { Listing } from "@/lib/listings/types";
 import {
   listingTitle,
@@ -61,6 +62,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
+  const modelImages = getModelImages(listing.make);
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
     { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
@@ -143,7 +145,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_380px]">
           {/* Left: gallery + spec */}
           <div className="min-w-0">
-            <Gallery listing={listing} />
+            <Gallery listing={listing} modelImages={modelImages} />
 
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />

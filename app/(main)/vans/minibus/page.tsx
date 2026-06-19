@@ -77,7 +77,7 @@ export default async function MinibusCategoryPage() {
               <>
                 <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">Latest minibuses in stock</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {result.listings.map((l, i) => <ListingCard key={l.id} listing={l} priority={i < 2} />)}
+                  {result.listings.map((l, i) => <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />)}
                 </div>
                 <div className="mt-6 text-center">
                   <Link href="/vans?bodyStyle=Minibus" className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">

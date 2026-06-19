@@ -1,8 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileage, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
 import { isFeaturedSeller } from "@/lib/dealers/config";
+import { getModelImage } from "@/lib/media/model-images";
 import { SpecCard } from "./spec-card";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { SpecReadout } from "./spec-readout";
@@ -25,11 +27,11 @@ export function ListingCard({
   priority?: boolean;
   cardIndex?: number;
 }) {
-  void cardIndex;
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
   const featured = isFeaturedSeller(listing.seller.name);
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
+  const modelImage = hasRealPhoto ? null : getModelImage(listing.make, cardIndex);
   const fuelLower = listing.fuel.toLowerCase();
   const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
 
@@ -46,8 +48,8 @@ export function ListingCard({
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-xs)] transition-[box-shadow,transform,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[var(--shadow-md)]">
-      {/* Media — real photo if available, premium spec card otherwise */}
-      <div className="relative aspect-[16/11] overflow-hidden bg-surface-2">
+      {/* Media — real photo → model library image → spec card */}
+      <div className="relative aspect-[16/11] overflow-hidden bg-[var(--color-brand-50,#eff6ff)]">
         {hasRealPhoto ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -56,6 +58,20 @@ export function ListingCard({
             className="size-full object-cover"
             loading={priority ? "eager" : "lazy"}
           />
+        ) : modelImage ? (
+          <>
+            <Image
+              src={modelImage}
+              alt={`${listing.make} ${listing.model} library image`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-contain p-4"
+              priority={priority}
+            />
+            <span className="absolute bottom-2 right-2 rounded-[var(--radius-pill)] bg-ink-900/70 px-2 py-0.5 font-mono text-[var(--text-2xs)] text-white/80 backdrop-blur">
+              Library image
+            </span>
+          </>
         ) : (
           <SpecCard listing={listing} className="size-full" />
         )}
