@@ -7,13 +7,14 @@ import { IconUser, IconHeart } from "./icons";
 const PRIMARY_NAV = [
   { href: "/vans?condition=new", label: "New vans" },
   { href: "/vans?condition=used", label: "Used vans" },
-  { href: "/van-contract-hire", label: "Van Contract Hire" },
-  { href: "/van-insurance", label: "Van Insurance" },
-  { href: "/sell", label: "Sell your van" },
-  { href: "/advertise", label: "Advertise" },
+  { href: "/vans/panel-van", label: "Panel vans" },
+  { href: "/vans/luton", label: "Luton vans" },
+  { href: "/vans/tipper", label: "Tippers" },
+  { href: "/vans/dropside", label: "Dropsides" },
   { href: "/van-finance", label: "Van Finance" },
   { href: "/van-reviews", label: "Van reviews" },
   { href: "/directory", label: "Van Directory" },
+  { href: "/advertise", label: "Advertise" },
 ];
 
 export function Header() {

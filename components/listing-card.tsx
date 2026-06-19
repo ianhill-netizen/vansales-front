@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileage, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
+import { isFeaturedSeller } from "@/lib/dealers/config";
 import { SpecCard } from "./spec-card";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { SpecReadout } from "./spec-readout";
@@ -27,6 +28,7 @@ export function ListingCard({
   void cardIndex;
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
+  const featured = isFeaturedSeller(listing.seller.name);
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
   const fuelLower = listing.fuel.toLowerCase();
   const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
@@ -58,12 +60,15 @@ export function ListingCard({
           <SpecCard listing={listing} className="size-full" />
         )}
 
-        {/* ONE seller tag + condition + reserved state + optional fuel pill */}
+        {/* Badges: seller type, condition, reserved state, fuel */}
         <div className="absolute left-3 top-3 flex items-center gap-2">
-          {listing.seller_type === "private"
-            ? <Badge tone="neutral">Private seller</Badge>
-            : <Badge tone="brand">Dealer</Badge>
-          }
+          {featured ? (
+            <Badge tone="featured">Featured</Badge>
+          ) : listing.seller_type === "private" ? (
+            <Badge tone="neutral">Private seller</Badge>
+          ) : (
+            <Badge tone="brand">Dealer</Badge>
+          )}
           {listing.condition === "new" && <Badge tone="brand">New</Badge>}
           {listing.status === "reserved" && <StatusBadge status="reserved" />}
           {fuelPill && (
