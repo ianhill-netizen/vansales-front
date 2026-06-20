@@ -9,13 +9,22 @@ export function AccountButton() {
 
   if (!isLoggedIn) {
     return (
-      <Link
-        href="/sign-in"
-        className="hidden items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-600 transition-colors hover:bg-surface-2 hover:text-ink-900 sm:flex"
-      >
-        <IconUser width={16} height={16} />
-        Sign in
-      </Link>
+      <div className="hidden items-center gap-1 sm:flex">
+        <Link
+          href="/sign-in"
+          className="flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-600 transition-colors hover:bg-surface-2 hover:text-ink-900"
+        >
+          <IconUser width={16} height={16} />
+          Customer login
+        </Link>
+        <span className="text-border" aria-hidden>|</span>
+        <Link
+          href="/dealer-portal"
+          className="flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-600 transition-colors hover:bg-surface-2 hover:text-ink-900"
+        >
+          Dealer portal
+        </Link>
+      </div>
     );
   }
 

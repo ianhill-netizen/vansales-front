@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 
+/* Mirror of NAV_TOP_LEVEL_LOCK from header.tsx — mobile sections. */
 const SECTIONS = [
   {
-    heading: "Browse by body type",
+    heading: "Used vans — body type",
     links: [
+      { href: "/vans/used", label: "All used vans" },
       { href: "/vans/panel-van", label: "Panel vans" },
       { href: "/vans/luton", label: "Luton vans" },
       { href: "/vans/tipper", label: "Tippers" },
@@ -18,7 +20,7 @@ const SECTIONS = [
     ],
   },
   {
-    heading: "Browse by make",
+    heading: "Used vans — by make",
     links: [
       { href: "/vans/ford", label: "Ford" },
       { href: "/vans/volkswagen", label: "Volkswagen" },
@@ -34,21 +36,36 @@ const SECTIONS = [
     ],
   },
   {
-    heading: "New, used & electric",
+    heading: "New vans",
     links: [
-      { href: "/vans/new", label: "New vans" },
-      { href: "/vans/used", label: "Used vans" },
-      { href: "/vans/electric", label: "Electric vans" },
-      { href: "/vans/ulez", label: "ULEZ-compliant vans" },
+      { href: "/vans/new", label: "All new vans" },
+      { href: "/new-vans", label: "New van model guide" },
+      { href: "/vans/ulez", label: "ULEZ-compliant" },
+    ],
+  },
+  {
+    heading: "Sell your van",
+    links: [
+      { href: "/sell", label: "Advertise your van" },
+      { href: "/sign-up/dealer", label: "List as a dealer" },
+      { href: "/sign-up/private-seller", label: "Private seller" },
     ],
   },
   {
     heading: "More",
     links: [
-      { href: "/new-vans", label: "Model guide" },
+      { href: "/van-reviews", label: "Van reviews" },
+      { href: "/van-contract-hire", label: "Van leasing" },
       { href: "/van-finance", label: "Finance" },
-      { href: "/blog", label: "Guides" },
-      { href: "/advertise", label: "Advertise" },
+      { href: "/vans/electric", label: "Electric vans" },
+      { href: "/van-insurance", label: "Insurance" },
+    ],
+  },
+  {
+    heading: "Account",
+    links: [
+      { href: "/sign-in", label: "Customer login" },
+      { href: "/dealer-portal", label: "Dealer portal" },
     ],
   },
 ];

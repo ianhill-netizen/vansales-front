@@ -114,7 +114,7 @@ export function ListingCTAButtons({
         href={financeLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-brand-500/40 bg-brand-tint text-[var(--text-sm)] font-semibold text-brand-700 transition-colors hover:bg-brand-500 hover:text-white"
+        className="flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-brand-600 text-[var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-700"
       >
         Apply for finance
       </Link>
