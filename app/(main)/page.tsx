@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container, Button, Badge } from "@/components/ui";
+import { Container, Button, Badge, SectionHeader } from "@/components/ui";
 import { SearchHero } from "@/components/search-hero";
 import { ListingCard } from "@/components/listing-card";
 import { SpecCard } from "@/components/spec-card";
 import { JsonLd } from "@/components/json-ld";
-import { IconArrow, IconCheck, IconShield, IconBolt, IconSearch } from "@/components/icons";
+import {
+  IconArrow, IconCheck, IconShield, IconBolt, IconFilter, IconSearch,
+} from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { slugify } from "@/lib/listings/slug";
 import { SITE, absUrl, siteUrl } from "@/lib/site";
@@ -17,24 +19,21 @@ export const metadata: Metadata = {
   alternates: { canonical: absUrl("/") },
   openGraph: {
     title: "Vans for Sale UK | Used & New Vans | Vansales",
-    description:
-      "Browse thousands of used and new vans for sale across the UK from trusted dealers.",
+    description: "Browse thousands of used and new vans for sale across the UK from trusted dealers.",
     url: absUrl("/"),
     type: "website",
   },
 };
 
-/* ── Body-type browse tiles — each links to its static page ── */
-const BODY_TYPES: { label: string; href: string; gradient: string }[] = [
-  { label: "Panel vans",    href: "/vans/panel-van",  gradient: "135deg, #0e2a6e 0%, #143a8c 100%" },
-  { label: "Crew cabs",     href: "/vans/crew-van",   gradient: "135deg, #1e0e3a 0%, #3a1f6e 100%" },
-  { label: "Pickups",       href: "/vans/pickup",     gradient: "135deg, #0c1f42 0%, #163f7a 100%" },
-  { label: "Luton vans",    href: "/vans/luton",      gradient: "135deg, #0a2020 0%, #0f3030 100%" },
-  { label: "Dropsides",     href: "/vans/dropside",   gradient: "135deg, #1a1a0e 0%, #2a2a1a 100%" },
-  { label: "Electric vans", href: "/vans/electric",   gradient: "135deg, #0a2010 0%, #0b5e28 100%" },
+const BODY_TYPES = [
+  { label: "Panel vans",    href: "/vans/panel-van",  accent: "#1b5aa8", desc: "The workhorse" },
+  { label: "Crew cabs",     href: "/vans/crew-van",   accent: "#4f35a8", desc: "Extra seating" },
+  { label: "Pickup trucks", href: "/vans/pickup",     accent: "#0c4f7a", desc: "Open load bed" },
+  { label: "Luton vans",    href: "/vans/luton",      accent: "#0d5050", desc: "Box body" },
+  { label: "Dropsides",     href: "/vans/dropside",   accent: "#b84e07", desc: "Flatbed" },
+  { label: "Electric vans", href: "/vans/electric",   accent: "#0c6030", desc: "ULEZ-free" },
 ] as const;
 
-/* ── Popular models strip ── */
 const POPULAR_MODELS = [
   { make: "Volkswagen",    model: "Transporter",    slug: "volkswagen/transporter",    body_style: "Panel Van" },
   { make: "Ford",          model: "Transit",        slug: "ford/transit",              body_style: "Panel Van" },
@@ -44,6 +43,27 @@ const POPULAR_MODELS = [
   { make: "Ford",          model: "Ranger",         slug: "ford/ranger",               body_style: "Pickup" },
 ] as const;
 
+const TRUST_POINTS = [
+  {
+    icon: <IconShield width={22} height={22} />,
+    title: "Verified dealers only",
+    body: "Every dealer on Vansales is verified and rated — no private sellers hiding problems.",
+    color: "bg-brand-tint text-brand-600",
+  },
+  {
+    icon: <IconBolt width={22} height={22} />,
+    title: "Live stock, not stale listings",
+    body: "Our catalogue syncs directly from dealer stock systems — what you see is what's available today.",
+    color: "bg-accent-tint text-accent-600",
+  },
+  {
+    icon: <IconFilter width={22} height={22} />,
+    title: "Spec-first search",
+    body: "Filter by payload, wheelbase, ULEZ compliance and Euro 6 status — not just price and colour.",
+    color: "bg-success-tint text-success-600",
+  },
+] as const;
+
 export default async function HomePage() {
   const [{ listings, total, servedBy }, facets] = await Promise.all([
     getListings({ sort: "newest", limit: 6 }),
@@ -51,7 +71,6 @@ export default async function HomePage() {
   ]);
 
   const topMakes = facets.makes.slice(0, 10);
-
   const base = siteUrl();
 
   const orgSchema = {
@@ -60,14 +79,8 @@ export default async function HomePage() {
     name: SITE.name,
     url: base,
     logo: `${base}/favicon.ico`,
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: SITE.phone,
-      contactType: "sales",
-      areaServed: "GB",
-    },
+    contactPoint: { "@type": "ContactPoint", telephone: SITE.phone, contactType: "sales", areaServed: "GB" },
   };
-
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -84,44 +97,63 @@ export default async function HomePage() {
     <>
       <JsonLd data={[orgSchema, websiteSchema]} />
 
-      {/* ──────────────────────── HERO ──────────────────────────── */}
-      <section className="hero-grid relative bg-ink-900">
+      {/* ────────────────────────── HERO ─────────────────────────────────────
+          Full-bleed deep navy + diagonal texture + floating search card.
+          Hero copy is large, editorial, left-aligned.
+          ───────────────────────────────────────────────────────────────────── */}
+      <section
+        className="hero-grid hero-lines relative overflow-hidden"
+        style={{ background: "var(--gradient-brand-hero)" }}
+      >
+        {/* Ambient glow orbs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <div
-            className="absolute -left-40 -top-40 size-[600px] rounded-full opacity-20"
-            style={{ background: "radial-gradient(circle, #2563eb 0%, transparent 70%)" }}
+            className="absolute -right-40 -top-40 size-[700px] rounded-full opacity-12"
+            style={{ background: "radial-gradient(circle, #f47c1e 0%, transparent 68%)" }}
+          />
+          <div
+            className="absolute -left-24 bottom-[-5rem] size-[550px] rounded-full opacity-08"
+            style={{ background: "radial-gradient(circle, #1b5aa8 0%, transparent 68%)" }}
           />
         </div>
 
-        <Container className="relative z-10 pb-28 pt-14 sm:pt-20 lg:pb-36 lg:pt-24">
-          <p className="mb-5 inline-block rounded-[var(--radius-pill)] border border-white/20 bg-white/8 px-3 py-1 font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/65">
-            UK&rsquo;s commercial van marketplace
-          </p>
+        <Container className="relative z-10 pt-[var(--hero-y-top)] pb-[var(--hero-y-bottom)]">
+          {/* Eyebrow pill */}
+          <div className="mb-8 inline-flex items-center gap-2.5 rounded-[var(--radius-pill)] border border-white/15 bg-white/08 px-4 py-2 backdrop-blur-sm">
+            <span className="size-1.5 animate-pulse rounded-full bg-accent-500" />
+            <span className="font-mono text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-white/70">
+              UK&rsquo;s commercial van marketplace
+            </span>
+          </div>
 
-          <h1 className="max-w-2xl font-display text-[clamp(2.4rem,1.5rem+4vw,3.8rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white">
-            Vans for Sale.{" "}
-            <span className="text-accent-400">Straight-talking.</span>
+          {/* Headline */}
+          <h1 className="max-w-3xl font-display font-extrabold leading-[1.0] tracking-[var(--tracking-display)] text-white"
+              style={{ fontSize: "clamp(2.6rem, 1.6rem + 5vw, 4.2rem)" }}>
+            Find your next van.{" "}
+            <span className="text-accent-400">By the numbers that matter.</span>
           </h1>
 
-          <p className="mt-5 max-w-xl text-[var(--text-md)] leading-relaxed text-white/65">
-            {total.toLocaleString()}+ used and new vans from verified UK dealers — compare by
-            payload, wheelbase and ULEZ status, not just price.
+          <p className="mt-6 max-w-lg text-[var(--text-lg)] leading-relaxed text-white/60">
+            {total.toLocaleString()}+ vans from verified UK dealers — search by payload,
+            wheelbase and ULEZ status, not just price.
           </p>
 
-          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2">
+          {/* Trust points */}
+          <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2.5">
             {[
-              { icon: <IconShield width={14} height={14} />, label: "Verified dealers only" },
-              { icon: <IconBolt width={14} height={14} />,   label: "Live stock, updated daily" },
-              { icon: <IconSearch width={14} height={14} />, label: "Spec-first search" },
+              { icon: <IconShield  width={14} height={14} />, label: "Verified dealers only" },
+              { icon: <IconBolt    width={14} height={14} />, label: "Live stock, updated daily" },
+              { icon: <IconSearch  width={14} height={14} />, label: "Spec-first search" },
             ].map((t) => (
-              <span key={t.label} className="flex items-center gap-1.5 text-[var(--text-sm)] text-white/55">
-                <span className="text-brand-400">{t.icon}</span>
+              <span key={t.label} className="flex items-center gap-2 text-[var(--text-sm)] text-white/55">
+                <span className="text-accent-400">{t.icon}</span>
                 {t.label}
               </span>
             ))}
           </div>
         </Container>
 
+        {/* Floating search card — hovers over the fold break */}
         <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-1/2 px-[var(--gutter)]">
           <div className="mx-auto max-w-[var(--container-max)]">
             <SearchHero total={total} />
@@ -129,19 +161,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="h-36 bg-surface-1 sm:h-14" />
+      {/* Spacer compensates for floating search card */}
+      <div className="bg-surface-1" style={{ height: "clamp(6rem, 13vw, 10rem)" }} />
 
-      {/* ──────────────────── BROWSE BY MAKE ────────────────────── */}
-      <section className="bg-surface-1 pb-14 pt-4">
+      {/* ──────────────────────── BROWSE BY MAKE ────────────────────────── */}
+      <section className="bg-surface-1 pb-[var(--section-y)] pt-6">
         <Container>
-          <div className="mb-5 flex items-end justify-between">
-            <div>
-              <p className="eyebrow">Browse by make</p>
-              <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-                Vans for sale by manufacturer
-              </h2>
-            </div>
-            <Link href="/directory" className="hidden items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-600 hover:text-brand-700 sm:flex">
+          <div className="mb-8 flex items-end justify-between">
+            <SectionHeader eyebrow="Browse by make" heading="Vans for sale by manufacturer" />
+            <Link
+              href="/directory"
+              className="hidden items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-600 hover:text-brand-700 sm:flex"
+            >
               All makes <IconArrow width={14} height={14} />
             </Link>
           </div>
@@ -151,35 +182,32 @@ export default async function HomePage() {
               <Link
                 key={m.value}
                 href={`/vans/${slugify(m.value)}`}
-                className="group flex flex-col items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-white px-3 py-4 text-center shadow-[var(--shadow-xs)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-brand-500/40 hover:shadow-[var(--shadow-md)]"
+                className="group flex flex-col items-center gap-2.5 rounded-[var(--radius-xl)] border border-border bg-white px-3 py-5 text-center shadow-[var(--shadow-xs)] transition-all duration-[var(--dur-base)] hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[var(--shadow-md)]"
               >
                 <span className="font-display text-[var(--text-base)] font-bold text-ink-800 group-hover:text-brand-600">
                   {m.value}
                 </span>
-                <span className="rounded-full bg-surface-2 px-2 py-0.5 font-mono text-[var(--text-xs)] text-ink-500">
+                <span className="rounded-[var(--radius-pill)] bg-surface-2 px-2.5 py-0.5 font-mono text-[var(--text-xs)] text-ink-500">
                   {m.count}
                 </span>
               </Link>
             ))}
             <Link
               href="/directory"
-              className="flex flex-col items-center justify-center gap-1 rounded-[var(--radius-lg)] border border-dashed border-border bg-white px-3 py-4 text-center shadow-[var(--shadow-xs)] transition-colors hover:border-brand-500/40 hover:text-brand-600"
+              className="flex flex-col items-center justify-center gap-1.5 rounded-[var(--radius-xl)] border border-dashed border-border bg-white px-3 py-5 text-center shadow-[var(--shadow-xs)] transition-all hover:border-brand-300 hover:shadow-[var(--shadow-sm)]"
             >
-              <span className="text-[var(--text-xl)] font-bold text-ink-300">A–Z</span>
+              <span className="font-display text-[var(--text-xl)] font-bold text-ink-300">A–Z</span>
               <span className="text-[var(--text-xs)] font-semibold text-ink-500">All makes</span>
             </Link>
           </div>
         </Container>
       </section>
 
-      {/* ─────────────────────── BROWSE BY TYPE ──────────────────── */}
-      <section className="py-12">
+      {/* ─────────────────────── BROWSE BY TYPE ─────────────────────────── */}
+      <section className="py-[var(--section-y)]">
         <Container>
-          <div className="mb-5">
-            <p className="eyebrow">Browse by body type</p>
-            <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-              Used vans for sale by body type
-            </h2>
+          <div className="mb-8">
+            <SectionHeader eyebrow="Browse by body type" heading="Used vans for sale by body type" />
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -187,22 +215,22 @@ export default async function HomePage() {
               <Link
                 key={bt.label}
                 href={bt.href}
-                className="group overflow-hidden rounded-[var(--radius-lg)] border border-border shadow-[var(--shadow-xs)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-brand-500/40 hover:shadow-[var(--shadow-md)]"
+                className="group overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-xs)] transition-all duration-[var(--dur-base)] hover:-translate-y-1 hover:border-transparent hover:shadow-[var(--shadow-md)]"
               >
+                {/* Coloured accent top bar */}
                 <div
-                  className="flex aspect-[4/3] items-end p-4 text-white"
-                  style={{ background: `linear-gradient(${bt.gradient})` }}
-                  aria-hidden
-                >
-                  <span className="font-display text-[var(--text-base)] font-bold leading-tight text-white/90">
+                  className="h-1.5 transition-all duration-[var(--dur-base)] group-hover:h-2"
+                  style={{ background: bt.accent }}
+                />
+                <div className="p-4">
+                  <p className="font-display text-[var(--text-base)] font-bold text-ink-900 leading-tight group-hover:text-brand-700 transition-colors">
                     {bt.label}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between bg-white px-3 py-2.5">
-                  <span className="text-[var(--text-sm)] font-semibold text-ink-700 group-hover:text-brand-600">
+                  </p>
+                  <p className="mt-1 text-[var(--text-xs)] text-ink-400">{bt.desc}</p>
+                  <p className="mt-3 flex items-center gap-1 text-[var(--text-xs)] font-semibold text-ink-500 transition-colors group-hover:text-accent-600">
                     Browse
-                  </span>
-                  <IconArrow width={13} height={13} className="shrink-0 text-ink-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-600" />
+                    <IconArrow width={12} height={12} className="transition-transform group-hover:translate-x-0.5" />
+                  </p>
                 </div>
               </Link>
             ))}
@@ -210,33 +238,31 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* ─────────────────────── LATEST VANS ─────────────────────── */}
-      <section className="bg-surface-1 py-12">
+      {/* ──────────────────────── LATEST VANS ────────────────────────────── */}
+      <section className="bg-surface-1 py-[var(--section-y)]">
         <Container>
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow">Fresh stock</p>
-              <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-                Used vans for sale — latest added
-              </h2>
-              <p className="mt-1 text-[var(--text-sm)] text-ink-500">
-                {servedBy === "dealski"
-                  ? `Live stock from Swiss Vans · ${total.toLocaleString()} vans available`
-                  : "Showing sample listings."}
-              </p>
-            </div>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <SectionHeader
+              eyebrow="Fresh stock"
+              heading="Latest vans for sale"
+              sub={
+                servedBy === "dealski"
+                  ? `Live stock · ${total.toLocaleString()} vans available`
+                  : "Sample listings from our catalogue."
+              }
+            />
             <Button href="/vans" variant="outline" size="md">
               View all {total.toLocaleString()} vans <IconArrow width={16} height={16} />
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {listings.map((l, i) => (
               <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />
             ))}
           </div>
 
-          <div className="mt-8 text-center">
+          <div className="mt-12 text-center">
             <Button href="/vans" variant="primary" size="lg">
               Browse all vans for sale <IconArrow width={18} height={18} />
             </Button>
@@ -244,131 +270,50 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* ──────────── ABOUT / INTRO COPY (SEO) ───────────────────── */}
-      <section className="py-14">
+      {/* ─────────────────────── TRUST SECTION ───────────────────────────── */}
+      <section className="py-[var(--section-y)]">
         <Container>
-          <div className="mx-auto max-w-3xl">
-            <p className="eyebrow">About Vansales</p>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-              The UK&rsquo;s straight-talking van sales marketplace
-            </h2>
-            <div className="mt-4 space-y-4 text-[var(--text-md)] leading-relaxed text-ink-600">
-              <p>
-                Vansales brings together thousands of used and new vans for sale from trusted UK
-                dealers in one searchable catalogue. Whether you need a compact{" "}
-                <Link href="/vans/panel-van" className="text-brand-600 hover:underline">panel van</Link>{" "}
-                for last-mile deliveries, a{" "}
-                <Link href="/vans/luton" className="text-brand-600 hover:underline">Luton van</Link>{" "}
-                for removals, or a{" "}
-                <Link href="/vans/crew-van" className="text-brand-600 hover:underline">crew cab</Link>{" "}
-                for your trade team, you'll find it here.
-              </p>
-              <p>
-                Every listing shows full spec — payload capacity, wheelbase, roof height, ULEZ
-                compliance and Euro 6 status — so you can match van to job before you even pick
-                up the phone. Popular searches include{" "}
-                <Link href="/vans/ford/transit-custom" className="text-brand-600 hover:underline">Ford Transit Custom for sale</Link>,{" "}
-                <Link href="/vans/volkswagen/transporter" className="text-brand-600 hover:underline">VW Transporter for sale</Link>, and{" "}
-                <Link href="/vans/mercedes-benz/sprinter" className="text-brand-600 hover:underline">Mercedes Sprinter for sale</Link>.
-              </p>
-              <p>
-                Prefer new? Browse our{" "}
-                <Link href="/new-vans" className="text-brand-600 hover:underline">new van deals</Link>{" "}
-                with finance-lease prices from our partner dealers, or explore{" "}
-                <Link href="/vans/electric" className="text-brand-600 hover:underline">electric vans for sale</Link>{" "}
-                if you&rsquo;re planning ahead for ULEZ and ZEV mandates.
-              </p>
-            </div>
-
-            {/* Quick-link category grid */}
-            <div className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {[
-                { label: "Ford vans for sale",         href: "/vans/ford" },
-                { label: "Volkswagen vans for sale",   href: "/vans/volkswagen" },
-                { label: "Mercedes vans for sale",     href: "/vans/mercedes-benz" },
-                { label: "Vauxhall vans for sale",     href: "/vans/vauxhall" },
-                { label: "Renault vans for sale",      href: "/vans/renault" },
-                { label: "Panel vans for sale",        href: "/vans/panel-van" },
-                { label: "Luton vans for sale",        href: "/vans/luton" },
-                { label: "Tipper vans for sale",       href: "/vans/tipper" },
-                { label: "Electric vans for sale",     href: "/vans/electric" },
-                { label: "Crew vans for sale",         href: "/vans/crew-van" },
-                { label: "Dropside vans for sale",     href: "/vans/dropside" },
-                { label: "Pickup trucks for sale",     href: "/vans/pickup" },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-brand-400/40 hover:bg-brand-50 hover:text-brand-700"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+          <div className="mx-auto mb-12 max-w-xl text-center">
+            <SectionHeader eyebrow="Why Vansales" heading="The smarter way to buy a van" centered />
           </div>
-        </Container>
-      </section>
-
-      {/* ─────────────── WHY VANSALES — TRUST SECTION ───────────── */}
-      <section className="bg-surface-1 py-14">
-        <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow">Why Vansales</p>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-              The smarter way to buy a van
-            </h2>
-          </div>
-          <div className="mt-8 grid gap-5 sm:grid-cols-3">
-            {[
-              {
-                title: "Verified dealers only",
-                body: "Every dealer on Vansales is verified and rated. No private sellers hiding problems.",
-                icon: "🛡️",
-              },
-              {
-                title: "Live stock, not stale listings",
-                body: "Our catalogue syncs directly from dealer stock systems — what you see is what&apos;s available.",
-                icon: "⚡",
-              },
-              {
-                title: "Spec-first search",
-                body: "Filter by payload, wheelbase, ULEZ zone compliance and Euro 6 status — not just price.",
-                icon: "🔧",
-              },
-            ].map((item) => (
+          <div className="grid gap-5 sm:grid-cols-3">
+            {TRUST_POINTS.map((item) => (
               <div
                 key={item.title}
-                className="rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)]"
+                className="flex flex-col gap-5 rounded-[var(--radius-2xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)] transition-[box-shadow,transform] duration-[var(--dur-base)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]"
               >
-                <div className="mb-3 text-3xl" role="img" aria-hidden>{item.icon}</div>
-                <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">{item.title}</h3>
-                <p className="mt-2 text-[var(--text-sm)] leading-relaxed text-ink-600"
-                   dangerouslySetInnerHTML={{ __html: item.body }} />
+                <div className={`flex h-12 w-12 items-center justify-center rounded-[var(--radius-lg)] ${item.color}`}>
+                  {item.icon}
+                </div>
+                <div>
+                  <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">{item.title}</h3>
+                  <p className="mt-2 text-[var(--text-sm)] leading-relaxed text-ink-600">{item.body}</p>
+                </div>
               </div>
             ))}
           </div>
         </Container>
       </section>
 
-      {/* ─────────────── SELL / ADVERTISE BLOCK ─────────────────── */}
-      <section className="py-14">
+      {/* ────────────────────── SELL / ADVERTISE ─────────────────────────── */}
+      <section className="bg-surface-1 py-[var(--section-y)]">
         <Container>
-          <div className="mb-7 text-center">
-            <p className="eyebrow">For sellers &amp; dealers</p>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">Two ways to list</h2>
+          <div className="mb-10 text-center">
+            <SectionHeader eyebrow="For sellers & dealers" heading="Two ways to list" centered />
           </div>
           <div className="grid gap-5 md:grid-cols-2">
-            <div className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-sm)]">
-              <Badge tone="success" className="self-start">Free</Badge>
+            {/* Private */}
+            <div className="flex flex-col gap-5 rounded-[var(--radius-2xl)] border border-border bg-white p-8 shadow-[var(--shadow-sm)]">
+              <Badge tone="success" className="self-start">Free to list</Badge>
               <div>
                 <h3 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Sell your van</h3>
                 <p className="mt-2 text-[var(--text-md)] leading-relaxed text-ink-600">
                   List your van for free in under 5 minutes. Full spec, photos, direct enquiries.
                 </p>
               </div>
-              <ul className="space-y-1.5 text-[var(--text-sm)] text-ink-600">
+              <ul className="space-y-2.5 text-[var(--text-sm)] text-ink-600">
                 {["No listing fee — completely free", "Enquiries straight to you", "Photos + full spec published"].map((t) => (
-                  <li key={t} className="flex items-center gap-2">
+                  <li key={t} className="flex items-center gap-2.5">
                     <IconCheck width={15} height={15} className="shrink-0 text-success-600" />{t}
                   </li>
                 ))}
@@ -378,7 +323,8 @@ export default async function HomePage() {
               </Button>
             </div>
 
-            <div className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-sm)]">
+            {/* Dealer */}
+            <div className="flex flex-col gap-5 rounded-[var(--radius-2xl)] border border-brand-200 bg-brand-50 p-8 shadow-[var(--shadow-sm)]">
               <Badge tone="brand" className="self-start">Powered by Dealski</Badge>
               <div>
                 <h3 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Trade &amp; dealer</h3>
@@ -386,14 +332,14 @@ export default async function HomePage() {
                   Dealer stock syncs automatically via the Dealski feed. Your full inventory, live.
                 </p>
               </div>
-              <ul className="space-y-1.5 text-[var(--text-sm)] text-ink-600">
+              <ul className="space-y-2.5 text-[var(--text-sm)] text-ink-600">
                 {["Auto-sync from your DMS", "Full spec, photos and pricing", "Lead management included"].map((t) => (
-                  <li key={t} className="flex items-center gap-2">
+                  <li key={t} className="flex items-center gap-2.5">
                     <IconCheck width={15} height={15} className="shrink-0 text-brand-600" />{t}
                   </li>
                 ))}
               </ul>
-              <Button href="/advertise" variant="outline" size="md" className="mt-auto">
+              <Button href="/advertise" variant="brand" size="md" className="mt-auto">
                 Dealer enquiry
               </Button>
             </div>
@@ -401,12 +347,11 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* ───────────────── POPULAR MODELS STRIP ─────────────────── */}
-      <section className="bg-surface-1 py-14">
+      {/* ──────────────────── POPULAR MODELS STRIP ───────────────────────── */}
+      <section className="py-[var(--section-y)]">
         <Container>
-          <div className="mb-5">
-            <p className="eyebrow">Popular choices</p>
-            <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">Most searched vans for sale</h2>
+          <div className="mb-8">
+            <SectionHeader eyebrow="Popular choices" heading="Most searched vans for sale" />
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {POPULAR_MODELS.map((m) => {
@@ -419,13 +364,13 @@ export default async function HomePage() {
                 <Link
                   key={m.slug}
                   href={`/vans/${m.slug}`}
-                  className="group overflow-hidden rounded-[var(--radius-lg)] border border-border bg-white shadow-[var(--shadow-xs)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-brand-500/40 hover:shadow-[var(--shadow-md)]"
+                  className="group overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-xs)] transition-all duration-[var(--dur-base)] hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[var(--shadow-md)]"
                 >
-                  <div className="aspect-[4/3] overflow-hidden">
+                  <div className="aspect-[4/3] overflow-hidden bg-surface-1">
                     <SpecCard listing={fakeListing as Parameters<typeof SpecCard>[0]["listing"]} className="size-full" />
                   </div>
-                  <div className="flex items-center justify-between bg-white px-3 py-2.5">
-                    <span className="text-[var(--text-sm)] font-bold text-ink-800 group-hover:text-brand-600 truncate">
+                  <div className="flex items-center justify-between bg-white px-3 py-3">
+                    <span className="truncate font-display text-[var(--text-sm)] font-bold text-ink-800 group-hover:text-brand-600">
                       {m.make} {m.model}
                     </span>
                     <IconArrow width={13} height={13} className="ml-1 shrink-0 text-ink-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-600" />
@@ -437,21 +382,77 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* ─────────────────── DARK CTA BAND ──────────────────────── */}
-      <section className="relative overflow-hidden bg-ink-900 py-14">
-        <div className="hero-grid absolute inset-0" aria-hidden />
+      {/* ─────────────────── SEO CONTENT SECTION ─────────────────────────── */}
+      <section className="bg-surface-1 py-[var(--section-y)]">
+        <Container>
+          <div className="mx-auto max-w-3xl">
+            <SectionHeader eyebrow="About Vansales" heading="The UK's straight-talking van marketplace" />
+            <div className="mt-6 space-y-4 text-[var(--text-md)] leading-relaxed text-ink-600">
+              <p>
+                Vansales brings together thousands of used and new vans for sale from trusted UK
+                dealers in one searchable catalogue. Whether you need a compact{" "}
+                <Link href="/vans/panel-van" className="font-semibold text-brand-600 hover:underline">panel van</Link>{" "}
+                for last-mile deliveries, a{" "}
+                <Link href="/vans/luton" className="font-semibold text-brand-600 hover:underline">Luton van</Link>{" "}
+                for removals, or a{" "}
+                <Link href="/vans/crew-van" className="font-semibold text-brand-600 hover:underline">crew cab</Link>{" "}
+                for your trade team, you&rsquo;ll find it here.
+              </p>
+              <p>
+                Every listing shows full spec — payload capacity, wheelbase, roof height, ULEZ
+                compliance and Euro 6 status — so you can match van to job before you pick up the phone.
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {[
+                { label: "Ford vans for sale",     href: "/vans/ford" },
+                { label: "Volkswagen vans",         href: "/vans/volkswagen" },
+                { label: "Mercedes vans",           href: "/vans/mercedes-benz" },
+                { label: "Vauxhall vans",           href: "/vans/vauxhall" },
+                { label: "Panel vans for sale",     href: "/vans/panel-van" },
+                { label: "Luton vans for sale",     href: "/vans/luton" },
+                { label: "Tipper vans for sale",    href: "/vans/tipper" },
+                { label: "Electric vans for sale",  href: "/vans/electric" },
+                { label: "Crew vans for sale",      href: "/vans/crew-van" },
+              ].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ──────────────────────── DARK CTA BAND ──────────────────────────── */}
+      <section
+        className="relative overflow-hidden py-20"
+        style={{ background: "var(--gradient-brand-cta)" }}
+      >
+        <div className="hero-grid hero-lines absolute inset-0" aria-hidden />
+        <div
+          className="pointer-events-none absolute -right-40 top-1/2 -translate-y-1/2 size-[600px] rounded-full opacity-10"
+          style={{ background: "radial-gradient(circle, #f47c1e 0%, transparent 70%)" }}
+          aria-hidden
+        />
         <Container className="relative text-center">
-          <h2 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-white">
+          <h2 className="font-display font-extrabold leading-tight text-white"
+              style={{ fontSize: "var(--text-3xl)" }}>
             {total.toLocaleString()}+ vans for sale — one search.
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-[var(--text-lg)] leading-relaxed text-white/70">
+          <p className="mx-auto mt-5 max-w-md text-[var(--text-lg)] leading-relaxed text-white/60">
             New vans, used vans, contract hire — Vansales brings every option together.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Button href="/vans/used" variant="primary" size="lg">
               Browse used vans
             </Button>
-            <Button href="/vans/new" variant="accent" size="lg">
+            <Button href="/vans/new" variant="outline-light" size="lg">
               Browse new vans
             </Button>
           </div>

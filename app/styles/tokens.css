@@ -1,156 +1,239 @@
 /* =============================================================================
-   VANSALES.COM — DESIGN TOKENS  (single source of truth)
-   Reskin the entire product by editing the values in this file alone.
+   VANSALES.COM — DESIGN TOKENS  v3 (2026)
+   "Ink Navy + Signal Orange" — 2026-premium UK commercial vehicle marketplace.
+   Trustworthy depth (navy) × trade energy (orange) × clean architectural whites.
 
-   Direction: "Clean / Crisp Light" — paper-white surfaces, ink-dark type,
-   hairline borders, plate yellow as the ONE signature accent.
+   SINGLE SOURCE OF TRUTH.  Reskin by editing this file alone.
+   Sections:
+     1. Colour scales
+     2. Semantic aliases
+     3. Typography
+     4. Radii
+     5. Shadows
+     6. Spacing / layout
+     7. Motion
+     8. Gradients
    ========================================================================== */
 
 :root {
   /* ---------------------------------------------------------------------------
-     1. COLOUR
+     1. COLOUR SCALES
      -------------------------------------------------------------------------*/
 
-  /* Ink — text + dark chrome */
-  --color-ink-900: #0e1419; /* deepest — dark CTA band, sold overlay   */
-  --color-ink-800: #1c2730; /* hover states                             */
-  --color-ink-700: #33404c; /* secondary text                           */
-  --color-ink-600: #4a5a69; /* body text, secondary                     */
-  --color-ink-500: #6b7785; /* muted / meta                             */
-  --color-ink-400: #8e9baa; /* placeholder, disabled                    */
-  --color-ink-300: #b8c2cc; /* faint                                    */
+  /* Ink — near-navy-black: warmer than pure black, cooler than warm grey */
+  --color-ink-900: #080e1c; /* deepest — display headlines, dark bands         */
+  --color-ink-800: #121e33; /* strong headings, hover states                   */
+  --color-ink-700: #1f3350; /* bold body text                                  */
+  --color-ink-600: #34506e; /* default body text                               */
+  --color-ink-500: #5a7a9a; /* secondary / meta copy                           */
+  --color-ink-400: #8faacc; /* placeholders, disabled, dividers                */
+  --color-ink-300: #c1d2e8; /* faint separators                                */
+  --color-ink-200: #dde6f0; /* very faint rules                                */
 
-  /* Surfaces — cool off-white */
-  --color-surface-0: #ffffff; /* cards, inputs, top surface */
-  --color-surface-1: #f3f5f8; /* page background (canvas)   */
-  --color-surface-2: #eaecf0; /* insets, rails, hover bg    */
-  --color-surface-3: #e0e3e8; /* pressed / wells            */
+  /* Surfaces — architectural white spectrum */
+  --color-surface-0: #ffffff;   /* cards, inputs, modal surfaces                */
+  --color-surface-1: #f4f7fa;   /* page canvas (slightly cool-blue white)       */
+  --color-surface-2: #eaeff5;   /* sidebar insets, hover backgrounds            */
+  --color-surface-3: #dde4ed;   /* pressed states, deep wells                   */
+
+  /* Portal surfaces — very slightly warmer for dashboard feel */
+  --color-portal-canvas:  #f2f4f8; /* portal page bg                           */
+  --color-portal-surface: #ffffff; /* portal card/panel surface                 */
+  --color-portal-sidebar: #0d1829; /* dark left-rail                            */
+  --color-portal-sidebar-hover: rgba(255, 255, 255, 0.07);
+  --color-portal-sidebar-active: rgba(255, 255, 255, 0.12);
 
   /* Borders */
-  --color-border: #e4e7ec;
-  --color-border-strong: #d3d8df;
+  --color-border:        #dde4ed;
+  --color-border-strong: #c8d3e2;
+  --color-border-medium: #d0d8e4;
 
-  /* Brand — plate-band blue (structural accents, badges, iconography) */
-  --color-brand-700: #143a8c;
-  --color-brand-600: #1a4ab0;
-  --color-brand-500: #2563eb;
-  --color-brand-tint: #eff3ff;
+  /* Brand — Ink Navy (trust, authority, depth) */
+  --color-brand-900: #040e21;
+  --color-brand-800: #081c3a;
+  --color-brand-700: #0d2d5a;
+  --color-brand-600: #13427f;
+  --color-brand-500: #1b5aa8;
+  --color-brand-400: #3474c8;
+  --color-brand-300: #6499e3;
+  --color-brand-200: #a8c6f0;
+  --color-brand-100: #d0e4f8;
+  --color-brand-tint: #eef5ff;
+  --color-brand-50:   #f5f9ff;
 
-  /* Accent — plate yellow (ONE signature: hero highlight, dark-band CTA) */
-  --color-accent-700: #b89e00;
-  --color-accent-600: #d4b500;
-  --color-accent-500: #ffd400;
-  --color-accent-400: #ffe566;
-  --color-accent-tint: #fffbeb;
+  /* Accent — Signal Orange (energy, urgency, primary CTA) */
+  --color-accent-900: #5a2000;
+  --color-accent-800: #8c3900;
+  --color-accent-700: #b84e07;
+  --color-accent-600: #d96410;
+  --color-accent-500: #f47c1e;   /* PRIMARY CTA colour                         */
+  --color-accent-400: #f79849;
+  --color-accent-300: #fab87e;
+  --color-accent-200: #fcd4ae;
+  --color-accent-tint: #fff4ec;
+  --color-accent-50:   #fff9f5;
 
-  /* Plate — authentic UK registration badge */
-  --color-plate: #ffd400;
-  --color-plate-ink: #0e1419;
-  --color-plate-blue: #143a8c;
+  /* Plate — authentic UK registration plate yellow */
+  --color-plate:      #ffd400;
+  --color-plate-ink:  #080e1c;
+  --color-plate-blue: #0d2d5a;
 
-  /* Status — available / reserved / sold */
-  --color-success-600: #0b8a4a;
-  --color-success-500: #0ea05a;
-  --color-success-tint: #e6f7ef;
+  /* Status colours */
+  --color-success-700:  #0a6e3b;
+  --color-success-600:  #0c8a4a;
+  --color-success-500:  #11a859;
+  --color-success-400:  #2dc875;
+  --color-success-tint: #e5f7ee;
+
+  --color-warning-700:  #92400e;
+  --color-warning-600:  #b45309;
+  --color-warning-tint: #fef3c7;
+
   --color-reserved-600: #b45309;
   --color-reserved-tint: #fbecd9;
-  --color-sold-600: #64748b;
-  --color-sold-tint: #eef1f4;
-  --color-danger-600: #c0392b;
 
-  /* Semantic role aliases (used by components & Tailwind theme) */
-  --color-bg: var(--color-surface-1);
-  --color-fg: var(--color-ink-700);
-  --color-heading: var(--color-ink-900);
-  --color-muted: var(--color-ink-500);
-  --color-card: var(--color-surface-0);
-  --color-accent: var(--color-accent-500);
-  --color-accent-strong: var(--color-accent-600);
-  --color-link: var(--color-brand-700);
-  --color-ring: var(--color-brand-700);
+  --color-sold-600:  #5a7090;
+  --color-sold-tint: #eef2f7;
+
+  --color-danger-700:  #991b1b;
+  --color-danger-600:  #c0392b;
+  --color-danger-500:  #ef4444;
+  --color-danger-tint: #fef2f2;
 
   /* ---------------------------------------------------------------------------
-     2. TYPOGRAPHY
-     Font families injected by next/font as --font-geist / --font-geist-mono.
+     2. SEMANTIC ALIASES
+     Map to scales above. Change behaviour site-wide by editing these.
      -------------------------------------------------------------------------*/
-  --font-display: var(--font-geist), "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-geist), "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+  --color-bg:           var(--color-surface-1);
+  --color-fg:           var(--color-ink-600);
+  --color-heading:      var(--color-ink-900);
+  --color-muted:        var(--color-ink-500);
+  --color-card:         var(--color-surface-0);
+  --color-accent:       var(--color-accent-500);
+  --color-accent-strong: var(--color-accent-600);
+  --color-link:         var(--color-brand-600);
+  --color-ring:         var(--color-brand-500);
 
-  /* Fluid type scale */
-  --text-2xs: 0.6875rem; /* 11px — plate sub-labels        */
-  --text-xs: 0.75rem; /* 12px — meta, eyebrows          */
-  --text-sm: 0.8125rem; /* 13px — captions               */
-  --text-base: 0.9375rem; /* 15px — body (mobile-first)    */
-  --text-md: 1rem; /* 16px — lead body              */
-  --text-lg: 1.125rem; /* 18px                          */
-  --text-xl: clamp(1.25rem, 1.05rem + 0.9vw, 1.5rem);
-  --text-2xl: clamp(1.55rem, 1.2rem + 1.7vw, 2.1rem);
-  --text-3xl: clamp(2rem, 1.4rem + 3vw, 3rem);
-  --text-4xl: clamp(2.5rem, 1.6rem + 4.6vw, 4.25rem); /* hero */
+  /* ---------------------------------------------------------------------------
+     3. TYPOGRAPHY
+     Display: Plus Jakarta Sans — rounded geometric, modern marketplace warmth.
+     Body:    Geist — clean, tight, premium UI sans-serif.
+     Mono:    Geist Mono — prices, plates, codes, data.
+     -------------------------------------------------------------------------*/
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    var(--font-geist),   "Geist",             ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    var(--font-geist-mono), "Geist Mono",     ui-monospace, "SFMono-Regular", monospace;
 
-  --leading-tight: 1.05;
-  --leading-snug: 1.2;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.65;
+  /* Type scale — confident, generous */
+  --text-2xs: 0.6875rem;  /* 11px — micro labels, legal                       */
+  --text-xs:  0.75rem;    /* 12px — metadata, captions                        */
+  --text-sm:  0.8125rem;  /* 13px — secondary UI text                         */
+  --text-base:0.9375rem;  /* 15px — default body text                         */
+  --text-md:  1rem;       /* 16px — comfortable reading                       */
+  --text-lg:  1.125rem;   /* 18px — lead paragraphs                           */
+  --text-xl:  clamp(1.25rem, 1.05rem + 0.9vw, 1.5rem);   /* card titles      */
+  --text-2xl: clamp(1.6rem,  1.2rem + 1.9vw, 2.2rem);    /* section heads    */
+  --text-3xl: clamp(2.1rem,  1.4rem + 3.5vw, 3.4rem);    /* page headlines   */
+  --text-4xl: clamp(2.8rem,  1.6rem + 5.5vw, 4.8rem);    /* hero display     */
 
-  --tracking-display: -0.03em;
-  --tracking-tight: -0.015em;
-  --tracking-normal: 0;
-  --tracking-wide: 0.04em;
-  --tracking-eyebrow: 0.16em;
-  --tracking-plate: 0.06em;
+  --leading-tight:   1.05;
+  --leading-snug:    1.15;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.68;
 
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-semibold: 600;
-  --weight-bold: 700;
+  --tracking-display: -0.030em;
+  --tracking-tight:   -0.015em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+  --tracking-eyebrow: 0.12em;
+  --tracking-plate:   0.06em;
+
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
   --weight-extrabold: 800;
 
   /* ---------------------------------------------------------------------------
-     3. RADII
+     4. RADII — generous, premium, approachable
      -------------------------------------------------------------------------*/
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --radius-2xl: 28px;
-  --radius-pill: 999px;
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-2xl:  28px;
+  --radius-3xl:  40px;
+  --radius-pill: 9999px;
 
   /* ---------------------------------------------------------------------------
-     4. SHADOWS — cool-tinted (ink) for a clean lifted look on white surfaces
+     5. SHADOWS — multi-layer, cool-tinted for realism on white surfaces
      -------------------------------------------------------------------------*/
-  --shadow-xs: 0 1px 2px rgba(14, 20, 25, 0.06);
-  --shadow-sm: 0 1px 3px rgba(14, 20, 25, 0.08), 0 1px 2px rgba(14, 20, 25, 0.04);
-  --shadow-md: 0 6px 16px -4px rgba(14, 20, 25, 0.10), 0 2px 6px -2px rgba(14, 20, 25, 0.06);
-  --shadow-lg: 0 18px 40px -12px rgba(14, 20, 25, 0.16);
-  --shadow-plate: inset 0 0 0 2px rgba(14, 20, 25, 0.85), 0 1px 0 rgba(255, 255, 255, 0.4);
-  --shadow-focus: 0 0 0 3px rgba(20, 58, 140, 0.25);
+  --shadow-xs:
+    0 1px 2px rgba(8, 14, 28, 0.06);
+  --shadow-sm:
+    0 2px 4px rgba(8, 14, 28, 0.06),
+    0 1px 2px rgba(8, 14, 28, 0.04);
+  --shadow-md:
+    0 8px 24px -4px rgba(8, 14, 28, 0.11),
+    0 3px 8px  -2px rgba(8, 14, 28, 0.06);
+  --shadow-lg:
+    0 24px 48px -12px rgba(8, 14, 28, 0.18),
+    0 8px  16px  -4px rgba(8, 14, 28, 0.07);
+  --shadow-xl:
+    0 40px 80px -20px rgba(8, 14, 28, 0.22);
+  --shadow-card-hover:
+    0 12px 32px -6px rgba(8, 14, 28, 0.14),
+    0 4px  12px -2px rgba(8, 14, 28, 0.07);
+  --shadow-focus:
+    0 0 0 3px rgba(27, 90, 168, 0.28);
+  --shadow-focus-orange:
+    0 0 0 3px rgba(244, 124, 30, 0.30);
+  --shadow-plate:
+    inset 0 0 0 2px rgba(8, 14, 28, 0.85),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+  --shadow-inset:
+    inset 0 1px 3px rgba(8, 14, 28, 0.08);
 
   /* ---------------------------------------------------------------------------
-     5. SPACING / LAYOUT
+     6. SPACING / LAYOUT
      -------------------------------------------------------------------------*/
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
+  --space-1:  0.25rem;   /*  4px */
+  --space-2:  0.5rem;    /*  8px */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.5rem;    /* 24px */
+  --space-6:  2rem;      /* 32px */
+  --space-7:  3rem;      /* 48px */
+  --space-8:  4rem;      /* 64px */
+  --space-9:  6rem;      /* 96px */
 
-  --container-max: 1200px;
-  --gutter: clamp(1rem, 4vw, 2rem);
-  --section-y: clamp(3rem, 7vw, 5.5rem);
+  --container-max:  1200px;
+  --container-wide: 1360px;
+  --gutter:         clamp(1rem, 4vw, 2rem);
+  --section-y:      clamp(4rem, 8vw, 7rem);
+  --hero-y-top:     clamp(4rem, 8vw, 7rem);
+  --hero-y-bottom:  clamp(7rem, 14vw, 11rem);
+
+  --sidebar-width:  240px;
 
   /* ---------------------------------------------------------------------------
-     6. MOTION
+     7. MOTION — snappy primary interactions, smooth ambience
      -------------------------------------------------------------------------*/
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 120ms;
-  --dur-base: 200ms;
-  --dur-slow: 360ms;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast:    100ms;
+  --dur-base:    180ms;
+  --dur-slow:    320ms;
+  --dur-xslow:   500ms;
+
+  /* ---------------------------------------------------------------------------
+     8. GRADIENTS
+     -------------------------------------------------------------------------*/
+  --gradient-brand-hero: linear-gradient(140deg, #080e1c 0%, #0d2d5a 55%, #121e33 100%);
+  --gradient-brand-cta:  linear-gradient(140deg, #080e1c 0%, #0d2d5a 100%);
+  --gradient-accent-btn: linear-gradient(135deg, #f47c1e 0%, #d96410 100%);
+  --gradient-brand-btn:  linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%);
+  --gradient-card-image: linear-gradient(to top, rgba(8,14,28,0.55) 0%, transparent 50%);
 }
