@@ -70,6 +70,7 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
     );
   }
   if (f.bodyStyle) out = out.filter((l) => slugify(l.van_spec.body_style) === slugify(f.bodyStyle!));
+  if (f.ulez === true) out = out.filter((l) => l.ulez);
   if (f.wheelbase) out = out.filter((l) => l.van_spec.wheelbase === f.wheelbase);
   if (f.fuel) out = out.filter((l) => slugify(l.fuel) === slugify(f.fuel!));
   if (f.status) out = out.filter((l) => l.status === f.status);
