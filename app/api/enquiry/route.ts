@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { prisma } from "@/lib/prisma";
+import { sourceIdFromSlug } from "@/lib/listings/slug";
 
 /* Per-instance rate limit: max 5 submissions per IP per 15 min.
    Serverless means this resets on cold starts — good enough for a contact form. */
@@ -76,6 +78,32 @@ export async function POST(req: Request) {
   ]
     .filter(Boolean)
     .join("\n");
+
+  // If the slug resolves to a native listing in our DB, save locally and skip Dealski.
+  if (slug) {
+    const potentialId = sourceIdFromSlug(slug);
+    const nativeListing = await prisma.listing.findUnique({
+      where: { id: potentialId },
+      select: { id: true, source: true },
+    }).catch(() => null);
+
+    if (nativeListing?.source === "native") {
+      try {
+        await prisma.enquiry.create({
+          data: {
+            listingRef: nativeListing.id,
+            name,
+            contact: email,
+            channel: "Web",
+            message: notes,
+          },
+        });
+      } catch (err) {
+        console.error("[enquiry] Failed to save native enquiry:", err);
+      }
+      return NextResponse.json({ ok: true });
+    }
+  }
 
   try {
     const res = await fetch(DEALSKI_LEADS_URL, {

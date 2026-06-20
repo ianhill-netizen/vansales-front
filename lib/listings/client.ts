@@ -8,6 +8,7 @@ import type {
 } from "./types";
 import { getMockListings } from "./sources/mock";
 import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
+import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
 import { sourceIdFromSlug, slugify } from "./slug";
 import { resolveModelSlug } from "@/lib/models/image";
 import { WHEELBASE_LABEL, titleCase } from "./format";
@@ -25,7 +26,8 @@ function configuredSource(): ListingSource | "mock" {
   return "mock";
 }
 
-/** Load the ENTIRE catalogue from the active source (cached), with fallback. */
+/** Load the ENTIRE catalogue from the active source (cached), with fallback.
+ *  Native DB listings are always merged on top of the configured source. */
 async function loadAll(): Promise<{
   listings: Listing[];
   servedBy: ListingSource | "mock";
@@ -34,25 +36,38 @@ async function loadAll(): Promise<{
 }> {
   const source = configuredSource();
 
+  // Always pull native listings from our DB (portal-added stock).
+  // Failure is non-fatal — the rest of the catalogue still serves.
+  let nativeDb: Listing[] = [];
+  try {
+    nativeDb = await fetchNativeDbListings();
+  } catch {
+    /* non-fatal */
+  }
+
   if (source === "dealski") {
     try {
       const { listings, feedTotal } = await fetchDealskiCatalogue();
-      if (listings.length > 0) return { listings, servedBy: "dealski", live: true, feedTotal };
-      // Empty upstream → fall through to mock so the UI is never blank.
+      if (listings.length > 0) {
+        const merged = [...nativeDb, ...listings];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length };
+      }
     } catch {
       /* fall through */
     }
     const mock = getMockListings();
-    return { listings: mock, servedBy: "mock", live: false, feedTotal: mock.length };
+    const merged = [...nativeDb, ...mock];
+    return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
-  // 'native' and 'mock' are both served from the local fixtures in this repo.
+  // 'native' and 'mock' modes.
   const mock = getMockListings();
+  const merged = [...nativeDb, ...mock];
   return {
-    listings: mock,
+    listings: merged,
     servedBy: source === "native" ? "native" : "mock",
     live: false,
-    feedTotal: mock.length,
+    feedTotal: merged.length,
   };
 }
 
@@ -176,10 +191,13 @@ export async function getListingBySlug(slug: string): Promise<{ listing: Listing
   const source = configuredSource();
   const sourceId = sourceIdFromSlug(slug);
 
+  // Always try native DB first (portal-added listings are always resolvable).
+  const nativeListing = await fetchNativeDbListingById(sourceId).catch(() => null);
+  if (nativeListing) return { listing: nativeListing, servedBy: "native" };
+
   if (source === "dealski") {
     const live = await fetchDealskiBySourceId(sourceId);
     if (live) return { listing: live, servedBy: "dealski" };
-    // fall through to mock by slug/source_id
   }
 
   const all = getMockListings();

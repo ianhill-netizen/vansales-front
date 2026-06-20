@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRole } from "@/lib/roles/context";
-import { useDealerListings } from "@/lib/dealer/listings-context";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 type Step = "entry" | "lookup-result" | "manual-pick" | "details" | "success";
@@ -166,7 +165,6 @@ function stubLookup(reg: string): StubVehicle {
 // ── Main component ─────────────────────────────────────────────────────────────
 export default function AddVanPage() {
   const { isDealer, isSwissVans, isAdmin, isLoggedIn } = useRole();
-  const { addListing } = useDealerListings();
   const router = useRouter();
 
   const [step, setStep] = useState<Step>("entry");
@@ -176,6 +174,8 @@ export default function AddVanPage() {
   const [form, setForm] = useState<VanForm>(EMPTY_FORM);
   const [photoNames, setPhotoNames] = useState<string[]>([]);
   const [photoCount, setPhotoCount] = useState(0);
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoggedIn) router.replace("/dealer-portal/login");
@@ -211,16 +211,43 @@ export default function AddVanPage() {
     setStep("manual-pick");
   }
 
-  function handlePublish() {
-    addListing({
-      make: form.make,
-      model: `${form.model}${form.derivative ? ` ${form.derivative}` : ""}`,
-      year: parseInt(form.year) || 2022,
-      price: parseFloat(form.price) || 0,
-      condition: form.condition,
-      photos: photoCount,
-    });
-    setStep("success");
+  async function handlePublish() {
+    setPublishing(true);
+    setPublishError(null);
+    try {
+      const res = await fetch("/api/portal/listings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          make: form.make,
+          model: form.model,
+          derivative: form.derivative,
+          year: form.year,
+          fuel: form.fuel,
+          colour: form.colour,
+          mileage: form.mileage,
+          price: form.price,
+          conversionType: form.conversionType,
+          wheelbase: form.wheelbase,
+          payload: form.payload,
+          seats: form.seats,
+          description: form.description,
+          towBar: form.towBar,
+          roofRack: form.roofRack,
+          internalRacking: form.internalRacking,
+          bodykit: form.bodykit,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error ?? "Failed to create listing");
+      }
+      setStep("success");
+    } catch (err) {
+      setPublishError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setPublishing(false);
+    }
   }
 
   function resetFlow() {
@@ -721,6 +748,11 @@ export default function AddVanPage() {
             </div>
           </div>
 
+          {publishError && (
+            <div className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-4 py-3 text-[var(--text-sm)] text-danger-700">
+              {publishError}
+            </div>
+          )}
           <div className="flex gap-3 pb-4">
             <button
               onClick={() => setStep(stubResult ? "lookup-result" : "manual-pick")}
@@ -730,10 +762,10 @@ export default function AddVanPage() {
             </button>
             <button
               onClick={handlePublish}
-              disabled={!form.make || !form.model || !form.price}
+              disabled={!form.make || !form.model || !form.price || publishing}
               className="flex-1 rounded-[var(--radius-md)] bg-brand-500 py-3 text-[var(--text-base)] font-bold text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Publish listing
+              {publishing ? "Publishing…" : "Publish listing"}
             </button>
           </div>
         </div>

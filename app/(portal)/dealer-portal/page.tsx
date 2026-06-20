@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRole } from "@/lib/roles/context";
 import {
-  MOCK_DASH_STOCK,
   MOCK_DASH_LEADS,
   MOCK_PERF_TIMELINE,
   MOCK_LISTING_PERF,
@@ -19,6 +18,15 @@ import {
   type PerfMetric,
   type BoostItem,
 } from "@/lib/dealer/mock-dashboard-data";
+
+type RealKPIs = {
+  totalStock: number;
+  activeStock: number;
+  draftStock: number;
+  soldStock: number;
+  totalLeads: number;
+  dealer: { name: string; plan: string; slug: string };
+};
 import { Badge } from "@/components/ui";
 import { IconTrendUp, IconBarChart, IconArrow } from "@/components/icons";
 
@@ -169,15 +177,23 @@ export default function DealerDashboardPage() {
 
   const [leads, setLeads]         = useState<DashLead[]>(MOCK_DASH_LEADS);
   const [boosts, setBoosts]       = useState<BoostItem[]>(MOCK_BOOST_LISTINGS);
-  const [tokens, setTokens]       = useState(MOCK_DASH_STOCK.boostTokens);
+  const [tokens, setTokens]       = useState(120);
   const [perfMetric, setPerfMetric] = useState<PerfMetric>("views");
   const [replyingId, setReplyingId] = useState<string | null>(null);
   const [toastMsg, setToastMsg]   = useState<string | null>(null);
+  const [kpis, setKpis]           = useState<RealKPIs | null>(null);
 
   useEffect(() => {
     if (!isLoggedIn) router.replace("/dealer-portal/login");
     else if (!isDealer && !isSwissVans && !isAdmin) router.replace(persona.accountHref);
   }, [isLoggedIn, isDealer, isSwissVans, isAdmin, persona, router]);
+
+  useEffect(() => {
+    fetch("/api/portal/dashboard")
+      .then((r) => r.json())
+      .then((d: RealKPIs) => setKpis(d))
+      .catch(() => { /* non-fatal — fall back to zeros */ });
+  }, []);
 
   if (!isLoggedIn || (!isDealer && !isSwissVans && !isAdmin)) return null;
 
@@ -197,10 +213,15 @@ export default function DealerDashboardPage() {
     showToast(isSwissVans ? "Listing boosted (free owner boost)" : "Listing boosted — 20 tokens spent");
   }
 
-  const s             = MOCK_DASH_STOCK;
   const newLeadCount  = leads.filter((l) => !l.read).length;
   const totalIssues   = MOCK_QUALITY_ISSUES.reduce((a, i) => a + i.count, 0);
   const perfTotal     = MOCK_PERF_TIMELINE.reduce((sum, d) => sum + d[perfMetric], 0);
+
+  // Real KPIs from DB; fall back to zeros while loading
+  const realTotal      = kpis?.totalStock ?? 0;
+  const realActive     = kpis?.activeStock ?? 0;
+  const realDraft      = kpis?.draftStock ?? 0;
+  const realTotalLeads = kpis?.totalLeads ?? 0;
 
   return (
     <div className="min-h-screen p-5 sm:p-7">
@@ -250,32 +271,31 @@ export default function DealerDashboardPage() {
       <div className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <KPICard
           label="Total stock"
-          value={s.total}
-          sub={`${s.advertised} advertised`}
+          value={realTotal}
+          sub={`${realActive} live`}
           href="/dealer-portal/listings"
         />
         <KPICard
-          label="Advertised"
-          value={s.advertised}
-          sub={`${s.total - s.advertised} unadvertised`}
-          href="/dealer-portal/listings?status=live"
-          warn={s.total - s.advertised > 0}
+          label="Live listings"
+          value={realActive}
+          sub={realDraft > 0 ? `${realDraft} draft` : "all published"}
+          href="/dealer-portal/listings"
+          warn={realDraft > 0}
         />
         <KPICard
-          label="Sold this month"
-          value={s.soldThisMonth}
-          sub="June 2026"
-          href="/dealer-portal/analytics"
+          label="Total leads"
+          value={realTotalLeads}
+          sub="all time"
+          href="/dealer-portal/leads"
         />
         <KPICard
           label="Avg days to sell"
-          value={s.avgDaysToSell}
-          sub="last 3 months"
+          value="—"
+          sub="more data needed"
           href="/dealer-portal/analytics"
-          suffix="d"
         />
         <ScoreCard
-          score={s.qualityScore}
+          score={realTotal > 0 ? 80 : 0}
           issues={totalIssues}
           href="#listing-quality"
         />
