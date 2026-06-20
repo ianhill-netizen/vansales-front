@@ -3,6 +3,7 @@ import "./globals.css";
 import { fontVariables } from "./fonts";
 import { SITE, siteUrl } from "@/lib/site";
 import { Providers } from "@/components/providers";
+import { TrackingScripts, TrackingNoScript } from "@/components/tracking-scripts";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
@@ -27,7 +28,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-GB" className={fontVariables}>
+      <head>
+        <TrackingScripts />
+      </head>
       <body>
+        <TrackingNoScript />
         <Providers>{children}</Providers>
       </body>
     </html>
