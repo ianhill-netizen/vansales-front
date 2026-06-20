@@ -1,84 +1,2446 @@
 {
-  "ford": [
-    "/media/ford/01.webp",
-    "/media/ford/02.webp",
-    "/media/ford/03.webp",
-    "/media/ford/04.webp",
-    "/media/ford/05.webp",
-    "/media/ford/06.webp"
-  ],
-  "volkswagen": [
-    "/media/volkswagen/01.webp",
-    "/media/volkswagen/02.webp",
-    "/media/volkswagen/03.webp",
-    "/media/volkswagen/04.webp"
-  ],
-  "citroen": [
-    "/media/citroen/01.webp",
-    "/media/citroen/02.webp",
-    "/media/citroen/03.webp",
-    "/media/citroen/04.webp",
-    "/media/citroen/05.webp",
-    "/media/citroen/06.webp"
-  ],
-  "renault": [
-    "/media/renault/01.webp",
-    "/media/renault/02.webp",
-    "/media/renault/03.webp",
-    "/media/renault/04.webp",
-    "/media/renault/05.webp",
-    "/media/renault/06.webp"
-  ],
-  "toyota": [
-    "/media/toyota/01.webp",
-    "/media/toyota/02.webp",
-    "/media/toyota/03.webp",
-    "/media/toyota/04.webp",
-    "/media/toyota/05.webp",
-    "/media/toyota/06.webp"
-  ],
-  "mercedes-benz": [
-    "/media/mercedes-benz/01.webp",
-    "/media/mercedes-benz/02.webp",
-    "/media/mercedes-benz/03.webp"
-  ],
-  "vauxhall": [
-    "/media/vauxhall/01.webp",
-    "/media/vauxhall/02.webp",
-    "/media/vauxhall/03.webp",
-    "/media/vauxhall/04.webp",
-    "/media/vauxhall/05.webp",
-    "/media/vauxhall/06.webp"
-  ],
-  "peugeot": [
-    "/media/peugeot/01.webp",
-    "/media/peugeot/02.webp",
-    "/media/peugeot/03.webp",
-    "/media/peugeot/04.webp",
-    "/media/peugeot/05.webp",
-    "/media/peugeot/06.webp"
-  ],
-  "fiat": [
-    "/media/fiat/01.webp",
-    "/media/fiat/02.webp",
-    "/media/fiat/03.webp",
-    "/media/fiat/04.webp",
-    "/media/fiat/05.webp",
-    "/media/fiat/06.webp"
-  ],
-  "nissan": [
-    "/media/nissan/01.webp",
-    "/media/nissan/02.webp",
-    "/media/nissan/03.webp",
-    "/media/nissan/04.webp",
-    "/media/nissan/05.webp"
-  ],
-  "iveco": [
-    "/media/iveco/01.webp",
-    "/media/iveco/02.webp",
-    "/media/iveco/03.webp",
-    "/media/iveco/04.webp",
-    "/media/iveco/05.webp",
-    "/media/iveco/06.webp"
-  ]
+  "by_slug": {
+    "citroen-berlingo-crew-cab": [
+      {
+        "path": "/media/models/citroen-berlingo-crew-cab/01.webp",
+        "alt": "Citroen Dispatch Crew Cab"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-crew-cab/02.webp",
+        "alt": "How to Change Headlight Bulb on Citroen Berlingo Van"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-crew-cab/03.webp",
+        "alt": "Best Citroen Berlingo Van Roof Rack Options for 2023"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-crew-cab/04.webp",
+        "alt": "Citroen Berlingo For Sale"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-crew-cab/05.webp",
+        "alt": "Citroen Berlingo"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-crew-cab/06.webp",
+        "alt": "Citroen Berlingo For Sale"
+      }
+    ],
+    "citroen-berlingo-enterprise": [
+      {
+        "path": "/media/models/citroen-berlingo-enterprise/01.webp",
+        "alt": "How to Change Headlight Bulb on Citroen Berlingo Van"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-enterprise/02.webp",
+        "alt": "Best Citroen Berlingo Van Roof Rack Options for 2023"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-enterprise/03.webp",
+        "alt": "Citroen Berlingo For Sale"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-enterprise/04.webp",
+        "alt": "Citroen Berlingo"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-enterprise/05.webp",
+        "alt": "Citroen Berlingo For Sale"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-enterprise/06.webp",
+        "alt": "Citroen Vans"
+      }
+    ],
+    "citroen-berlingo-lease": [
+      {
+        "path": "/media/models/citroen-berlingo-lease/01.webp",
+        "alt": "How to Change Headlight Bulb on Citroen Berlingo Van"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-lease/02.webp",
+        "alt": "Best Citroen Berlingo Van Roof Rack Options for 2023"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-lease/03.webp",
+        "alt": "Citroen Berlingo For Sale"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-lease/04.webp",
+        "alt": "Citroen Berlingo"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-lease/05.webp",
+        "alt": "Citroen Berlingo For Sale"
+      },
+      {
+        "path": "/media/models/citroen-berlingo-lease/06.webp",
+        "alt": "Citroen Vans"
+      }
+    ],
+    "citroen-dispatch-crew-cab": [
+      {
+        "path": "/media/models/citroen-dispatch-crew-cab/01.webp",
+        "alt": "Citroen Dispatch Crew Cab"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-crew-cab/02.webp",
+        "alt": "Citroen Dispatch"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-crew-cab/03.webp",
+        "alt": "Citroen Dispatch For Sale"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-crew-cab/04.webp",
+        "alt": "Citroen Dispatch"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-crew-cab/05.webp",
+        "alt": "Citroen E Dispatch"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-crew-cab/06.webp",
+        "alt": "Citroen Dispatch For Sale"
+      }
+    ],
+    "citroen-dispatch-lease": [
+      {
+        "path": "/media/models/citroen-dispatch-lease/01.webp",
+        "alt": "Citroen Dispatch"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-lease/02.webp",
+        "alt": "Citroen Dispatch For Sale"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-lease/03.webp",
+        "alt": "Citroen Dispatch"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-lease/04.webp",
+        "alt": "Citroen E Dispatch"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-lease/05.webp",
+        "alt": "Citroen Dispatch For Sale"
+      },
+      {
+        "path": "/media/models/citroen-dispatch-lease/06.webp",
+        "alt": "How to Change Headlight Bulb on Citroen Berlingo Van"
+      }
+    ],
+    "citroen-e-berlingo": [
+      {
+        "path": "/media/models/citroen-e-berlingo/01.webp",
+        "alt": "How to Change Headlight Bulb on Citroen Berlingo Van"
+      },
+      {
+        "path": "/media/models/citroen-e-berlingo/02.webp",
+        "alt": "Best Citroen Berlingo Van Roof Rack Options for 2023"
+      },
+      {
+        "path": "/media/models/citroen-e-berlingo/03.webp",
+        "alt": "Citroen Berlingo For Sale"
+      },
+      {
+        "path": "/media/models/citroen-e-berlingo/04.webp",
+        "alt": "Citroen Berlingo"
+      },
+      {
+        "path": "/media/models/citroen-e-berlingo/05.webp",
+        "alt": "Citroen Berlingo For Sale"
+      },
+      {
+        "path": "/media/models/citroen-e-berlingo/06.webp",
+        "alt": "Citroen Vans"
+      }
+    ],
+    "citroen-relay-lease": [
+      {
+        "path": "/media/models/citroen-relay-lease/01.webp",
+        "alt": "Citroen E Relay"
+      },
+      {
+        "path": "/media/models/citroen-relay-lease/02.webp",
+        "alt": "Citroen Relay For Sale"
+      },
+      {
+        "path": "/media/models/citroen-relay-lease/03.webp",
+        "alt": "Citroen Relay"
+      },
+      {
+        "path": "/media/models/citroen-relay-lease/04.webp",
+        "alt": "Citroen Relay"
+      },
+      {
+        "path": "/media/models/citroen-relay-lease/05.webp",
+        "alt": "How to Change Headlight Bulb on Citroen Berlingo Van"
+      },
+      {
+        "path": "/media/models/citroen-relay-lease/06.webp",
+        "alt": "Best Citroen Berlingo Van Roof Rack Options for 2023"
+      }
+    ],
+    "citroen-relay-tipper": [
+      {
+        "path": "/media/models/citroen-relay-tipper/01.webp",
+        "alt": "Citroen Relay Tipper"
+      },
+      {
+        "path": "/media/models/citroen-relay-tipper/02.webp",
+        "alt": "Citroen Relay Tipper library image"
+      },
+      {
+        "path": "/media/models/citroen-relay-tipper/03.webp",
+        "alt": "Citroen Relay Tipper"
+      },
+      {
+        "path": "/media/models/citroen-relay-tipper/04.webp",
+        "alt": "Citroen E Relay"
+      },
+      {
+        "path": "/media/models/citroen-relay-tipper/05.webp",
+        "alt": "Citroen Relay For Sale"
+      },
+      {
+        "path": "/media/models/citroen-relay-tipper/06.webp",
+        "alt": "Citroen Relay"
+      }
+    ],
+    "fiat-doblo-lease": [
+      {
+        "path": "/media/models/fiat-doblo-lease/01.webp",
+        "alt": "Fiat Doblo For Sale"
+      },
+      {
+        "path": "/media/models/fiat-doblo-lease/02.webp",
+        "alt": "Fiat Doblo For Sale"
+      },
+      {
+        "path": "/media/models/fiat-doblo-lease/03.webp",
+        "alt": "Fiat Doblo"
+      },
+      {
+        "path": "/media/models/fiat-doblo-lease/04.webp",
+        "alt": "Fiat Doblo Crew Van"
+      },
+      {
+        "path": "/media/models/fiat-doblo-lease/05.webp",
+        "alt": "Fiat Doblo Lease"
+      },
+      {
+        "path": "/media/models/fiat-doblo-lease/06.webp",
+        "alt": "Fiat Vans"
+      }
+    ],
+    "fiat-ducato-lease": [
+      {
+        "path": "/media/models/fiat-ducato-lease/01.webp",
+        "alt": "Fiat Ducato"
+      },
+      {
+        "path": "/media/models/fiat-ducato-lease/02.webp",
+        "alt": "Fiat Ducato For Sale"
+      },
+      {
+        "path": "/media/models/fiat-ducato-lease/03.webp",
+        "alt": "Fiat Ducato"
+      },
+      {
+        "path": "/media/models/fiat-ducato-lease/04.webp",
+        "alt": "Fiat Ducato"
+      },
+      {
+        "path": "/media/models/fiat-ducato-lease/05.webp",
+        "alt": "Fiat Ducato For Sale"
+      },
+      {
+        "path": "/media/models/fiat-ducato-lease/06.webp",
+        "alt": "Fiat Ducato"
+      }
+    ],
+    "fiat-ducato-luton": [
+      {
+        "path": "/media/models/fiat-ducato-luton/01.webp",
+        "alt": "Fiat Ducato Luton"
+      },
+      {
+        "path": "/media/models/fiat-ducato-luton/02.webp",
+        "alt": "Fiat Ducato"
+      },
+      {
+        "path": "/media/models/fiat-ducato-luton/03.webp",
+        "alt": "Fiat Ducato For Sale"
+      },
+      {
+        "path": "/media/models/fiat-ducato-luton/04.webp",
+        "alt": "Fiat Ducato"
+      },
+      {
+        "path": "/media/models/fiat-ducato-luton/05.webp",
+        "alt": "Fiat Ducato"
+      },
+      {
+        "path": "/media/models/fiat-ducato-luton/06.webp",
+        "alt": "Fiat Ducato For Sale"
+      }
+    ],
+    "fiat-scudo-crew-cab": [
+      {
+        "path": "/media/models/fiat-scudo-crew-cab/01.webp",
+        "alt": "Fiat Scudo For Sale"
+      },
+      {
+        "path": "/media/models/fiat-scudo-crew-cab/02.webp",
+        "alt": "Fiat Scudo"
+      },
+      {
+        "path": "/media/models/fiat-scudo-crew-cab/03.webp",
+        "alt": "Fiat Scudo"
+      },
+      {
+        "path": "/media/models/fiat-scudo-crew-cab/04.webp",
+        "alt": "Fiat Scudo Crew Van"
+      },
+      {
+        "path": "/media/models/fiat-scudo-crew-cab/05.webp",
+        "alt": "Transit Custom Crew Cab"
+      },
+      {
+        "path": "/media/models/fiat-scudo-crew-cab/06.webp",
+        "alt": "Transit Custom Crew Cab"
+      }
+    ],
+    "fiat-scudo-lease": [
+      {
+        "path": "/media/models/fiat-scudo-lease/01.webp",
+        "alt": "Fiat Scudo For Sale"
+      },
+      {
+        "path": "/media/models/fiat-scudo-lease/02.webp",
+        "alt": "Fiat Scudo"
+      },
+      {
+        "path": "/media/models/fiat-scudo-lease/03.webp",
+        "alt": "Fiat Scudo"
+      },
+      {
+        "path": "/media/models/fiat-scudo-lease/04.webp",
+        "alt": "Fiat Scudo Crew Van"
+      },
+      {
+        "path": "/media/models/fiat-scudo-lease/05.webp",
+        "alt": "Fiat Vans"
+      },
+      {
+        "path": "/media/models/fiat-scudo-lease/06.webp",
+        "alt": "Fiat Ducato"
+      }
+    ],
+    "ford-e-transit": [
+      {
+        "path": "/media/models/ford-e-transit/01.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-e-transit/02.webp",
+        "alt": "Ford E Transit library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit/03.webp",
+        "alt": "Ford E Transit library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit/04.webp",
+        "alt": "Ford E Transit library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit/05.webp",
+        "alt": "Ford E Transit library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit/06.webp",
+        "alt": "Ford E Transit library image"
+      }
+    ],
+    "ford-e-transit-courier": [
+      {
+        "path": "/media/models/ford-e-transit-courier/01.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-e-transit-courier/02.webp",
+        "alt": "New Ford Courier Van"
+      },
+      {
+        "path": "/media/models/ford-e-transit-courier/03.webp",
+        "alt": "Ford Transit Courier"
+      },
+      {
+        "path": "/media/models/ford-e-transit-courier/04.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-e-transit-courier/05.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-e-transit-courier/06.webp",
+        "alt": "Ford Transit Courier Lease"
+      }
+    ],
+    "ford-e-transit-custom": [
+      {
+        "path": "/media/models/ford-e-transit-custom/01.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-e-transit-custom/02.webp",
+        "alt": "Ford E Transit Custom library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit-custom/03.webp",
+        "alt": "Ford E Transit Custom library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit-custom/04.webp",
+        "alt": "Ford E Transit Custom library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit-custom/05.webp",
+        "alt": "Ford E Transit Custom library image"
+      },
+      {
+        "path": "/media/models/ford-e-transit-custom/06.webp",
+        "alt": "Ford E Transit Custom library image"
+      }
+    ],
+    "ford-ranger-lease": [
+      {
+        "path": "/media/models/ford-ranger-lease/01.webp",
+        "alt": "Top Ford Ranger Canopy Options for Your Wildtrak"
+      },
+      {
+        "path": "/media/models/ford-ranger-lease/02.webp",
+        "alt": "Ford Ranger Raptor:"
+      },
+      {
+        "path": "/media/models/ford-ranger-lease/03.webp",
+        "alt": "Ford Ranger Raptor Lease"
+      },
+      {
+        "path": "/media/models/ford-ranger-lease/04.webp",
+        "alt": "Ford Ranger Wildtrak Lease"
+      },
+      {
+        "path": "/media/models/ford-ranger-lease/05.webp",
+        "alt": "Ford Raptor Lease Deals"
+      },
+      {
+        "path": "/media/models/ford-ranger-lease/06.webp",
+        "alt": "Ford Ranger Lease"
+      }
+    ],
+    "ford-ranger-phev": [
+      {
+        "path": "/media/models/ford-ranger-phev/01.webp",
+        "alt": "Ford Ranger PHEV"
+      },
+      {
+        "path": "/media/models/ford-ranger-phev/02.webp",
+        "alt": "Top Ford Ranger Canopy Options for Your Wildtrak"
+      },
+      {
+        "path": "/media/models/ford-ranger-phev/03.webp",
+        "alt": "Ford Ranger Raptor:"
+      },
+      {
+        "path": "/media/models/ford-ranger-phev/04.webp",
+        "alt": "Ford Ranger Raptor Lease"
+      },
+      {
+        "path": "/media/models/ford-ranger-phev/05.webp",
+        "alt": "Ford Ranger Wildtrak Lease"
+      },
+      {
+        "path": "/media/models/ford-ranger-phev/06.webp",
+        "alt": "Ford Raptor Lease Deals"
+      }
+    ],
+    "ford-tourneo-custom": [
+      {
+        "path": "/media/models/ford-tourneo-custom/01.webp",
+        "alt": "Ford Transit Custom Tourneo"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom/02.webp",
+        "alt": "Ford Transit Custom Tourneo"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom/03.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom/04.webp",
+        "alt": "Ford Transit Custom Tourneo"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom/05.webp",
+        "alt": "Ford Tourneo"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom/06.webp",
+        "alt": "Ford Transit Connect Lease"
+      }
+    ],
+    "ford-tourneo-custom-minibus-lease": [
+      {
+        "path": "/media/models/ford-tourneo-custom-minibus-lease/01.webp",
+        "alt": "Ford Minibus For Sale"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom-minibus-lease/02.webp",
+        "alt": "Ford Transit Custom Tourneo"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom-minibus-lease/03.webp",
+        "alt": "Ford Transit Custom Tourneo"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom-minibus-lease/04.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom-minibus-lease/05.webp",
+        "alt": "Ford Transit Custom Tourneo"
+      },
+      {
+        "path": "/media/models/ford-tourneo-custom-minibus-lease/06.webp",
+        "alt": "Ford Tourneo"
+      }
+    ],
+    "ford-transit-connect-lease": [
+      {
+        "path": "/media/models/ford-transit-connect-lease/01.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-lease/02.webp",
+        "alt": "Ford Transit Connect Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-lease/03.webp",
+        "alt": "Ford Transit Connect Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-lease/04.webp",
+        "alt": "Ford Transit Connect Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-lease/05.webp",
+        "alt": "Ford Transit Connect Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-lease/06.webp",
+        "alt": "Ford Transit Connect Lease library image"
+      }
+    ],
+    "ford-transit-connect-phev": [
+      {
+        "path": "/media/models/ford-transit-connect-phev/01.webp",
+        "alt": "Ford Ranger PHEV"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-phev/02.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-phev/03.webp",
+        "alt": "Ford Transit Connect Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-phev/04.webp",
+        "alt": "Ford Transit Connect Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-phev/05.webp",
+        "alt": "Ford Transit Connect Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-connect-phev/06.webp",
+        "alt": "Ford Transit Connect Phev library image"
+      }
+    ],
+    "ford-transit-courier-lease": [
+      {
+        "path": "/media/models/ford-transit-courier-lease/01.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-transit-courier-lease/02.webp",
+        "alt": "New Ford Courier Van"
+      },
+      {
+        "path": "/media/models/ford-transit-courier-lease/03.webp",
+        "alt": "Ford Transit Courier"
+      },
+      {
+        "path": "/media/models/ford-transit-courier-lease/04.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-transit-courier-lease/05.webp",
+        "alt": "Ford Transit Custom Courier"
+      },
+      {
+        "path": "/media/models/ford-transit-courier-lease/06.webp",
+        "alt": "Ford Transit Courier Lease"
+      }
+    ],
+    "ford-transit-custom-automatic": [
+      {
+        "path": "/media/models/ford-transit-custom-automatic/01.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-automatic/02.webp",
+        "alt": "Ford Transit Custom Automatic library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-automatic/03.webp",
+        "alt": "Ford Transit Custom Automatic library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-automatic/04.webp",
+        "alt": "Ford Transit Custom Automatic library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-automatic/05.webp",
+        "alt": "Ford Transit Custom Automatic library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-automatic/06.webp",
+        "alt": "Ford Transit Custom Automatic library image"
+      }
+    ],
+    "ford-transit-custom-crew-cab-lease": [
+      {
+        "path": "/media/models/ford-transit-custom-crew-cab-lease/01.webp",
+        "alt": "Ford Transit Custom Crew Cab Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-crew-cab-lease/02.webp",
+        "alt": "Transit Custom Crew Cab"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-crew-cab-lease/03.webp",
+        "alt": "Transit Custom Crew Cab"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-crew-cab-lease/04.webp",
+        "alt": "Transit Custom Crew Cab"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-crew-cab-lease/05.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-crew-cab-lease/06.webp",
+        "alt": "Ford Transit Custom Crew Cab Lease library image"
+      }
+    ],
+    "ford-transit-custom-dciv-phev": [
+      {
+        "path": "/media/models/ford-transit-custom-dciv-phev/01.webp",
+        "alt": "Ford Ranger PHEV"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-dciv-phev/02.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-dciv-phev/03.webp",
+        "alt": "Ford Transit Custom Dciv Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-dciv-phev/04.webp",
+        "alt": "Ford Transit Custom Dciv Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-dciv-phev/05.webp",
+        "alt": "Ford Transit Custom Dciv Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-dciv-phev/06.webp",
+        "alt": "Ford Transit Custom Dciv Phev library image"
+      }
+    ],
+    "ford-transit-custom-lease": [
+      {
+        "path": "/media/models/ford-transit-custom-lease/01.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-lease/02.webp",
+        "alt": "Ford Transit Custom Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-lease/03.webp",
+        "alt": "Ford Transit Custom Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-lease/04.webp",
+        "alt": "Ford Transit Custom Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-lease/05.webp",
+        "alt": "Ford Transit Custom Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-lease/06.webp",
+        "alt": "Ford Transit Custom Lease library image"
+      }
+    ],
+    "ford-transit-custom-limited": [
+      {
+        "path": "/media/models/ford-transit-custom-limited/01.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-limited/02.webp",
+        "alt": "Ford Transit Custom Limited library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-limited/03.webp",
+        "alt": "Ford Transit Custom Limited library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-limited/04.webp",
+        "alt": "Ford Transit Custom Limited library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-limited/05.webp",
+        "alt": "Ford Transit Custom Limited library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-limited/06.webp",
+        "alt": "Ford Transit Custom Limited library image"
+      }
+    ],
+    "ford-transit-custom-phev": [
+      {
+        "path": "/media/models/ford-transit-custom-phev/01.webp",
+        "alt": "Ford Ranger PHEV"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-phev/02.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-phev/03.webp",
+        "alt": "Ford Transit Custom Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-phev/04.webp",
+        "alt": "Ford Transit Custom Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-phev/05.webp",
+        "alt": "Ford Transit Custom Phev library image"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-phev/06.webp",
+        "alt": "Ford Transit Custom Phev library image"
+      }
+    ],
+    "ford-transit-custom-sport": [
+      {
+        "path": "/media/models/ford-transit-custom-sport/01.webp",
+        "alt": "2024 Ford Transit Custom Sport: What's New and Improved?"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-sport/02.webp",
+        "alt": "Customizing Your Ford Transit Custom Sport"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-sport/03.webp",
+        "alt": "ford transit custom sport colors"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-sport/04.webp",
+        "alt": "Ford Transit Custom Sport Interior:"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-sport/05.webp",
+        "alt": "Ford Transit Custom Sport"
+      },
+      {
+        "path": "/media/models/ford-transit-custom-sport/06.webp",
+        "alt": "Ford Transit Custom Sport"
+      }
+    ],
+    "ford-transit-double-cab": [
+      {
+        "path": "/media/models/ford-transit-double-cab/01.webp",
+        "alt": "Ford Transit Custom Double Cab"
+      },
+      {
+        "path": "/media/models/ford-transit-double-cab/02.webp",
+        "alt": "Ford E Transit Double Cab"
+      },
+      {
+        "path": "/media/models/ford-transit-double-cab/03.webp",
+        "alt": "Ford Transit Custom Double Cab"
+      },
+      {
+        "path": "/media/models/ford-transit-double-cab/04.webp",
+        "alt": "Ford Transit Custom Double Cab Rental"
+      },
+      {
+        "path": "/media/models/ford-transit-double-cab/05.webp",
+        "alt": "Ford E Transit Custom Sport Electric Double Cab"
+      },
+      {
+        "path": "/media/models/ford-transit-double-cab/06.webp",
+        "alt": "Ford Transit Double Cab Lease"
+      }
+    ],
+    "ford-transit-lease": [
+      {
+        "path": "/media/models/ford-transit-lease/01.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-lease/02.webp",
+        "alt": "Ford Transit Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-lease/03.webp",
+        "alt": "Ford Transit Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-lease/04.webp",
+        "alt": "Ford Transit Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-lease/05.webp",
+        "alt": "Ford Transit Lease library image"
+      },
+      {
+        "path": "/media/models/ford-transit-lease/06.webp",
+        "alt": "Ford Transit Lease library image"
+      }
+    ],
+    "ford-transit-luton": [
+      {
+        "path": "/media/models/ford-transit-luton/01.webp",
+        "alt": "Ford Transit Luton"
+      },
+      {
+        "path": "/media/models/ford-transit-luton/02.webp",
+        "alt": "Ford Transit Luton"
+      },
+      {
+        "path": "/media/models/ford-transit-luton/03.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-luton/04.webp",
+        "alt": "Ford Transit Luton library image"
+      },
+      {
+        "path": "/media/models/ford-transit-luton/05.webp",
+        "alt": "Ford Transit Luton library image"
+      },
+      {
+        "path": "/media/models/ford-transit-luton/06.webp",
+        "alt": "Ford Transit Luton library image"
+      }
+    ],
+    "ford-transit-tipper": [
+      {
+        "path": "/media/models/ford-transit-tipper/01.webp",
+        "alt": "Ford Transit Tipper"
+      },
+      {
+        "path": "/media/models/ford-transit-tipper/02.webp",
+        "alt": "Ford Transit Tipper"
+      },
+      {
+        "path": "/media/models/ford-transit-tipper/03.webp",
+        "alt": "Ford Transit Tipper"
+      },
+      {
+        "path": "/media/models/ford-transit-tipper/04.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/models/ford-transit-tipper/05.webp",
+        "alt": "Ford Transit Tipper library image"
+      },
+      {
+        "path": "/media/models/ford-transit-tipper/06.webp",
+        "alt": "Ford Transit Tipper library image"
+      }
+    ],
+    "iveco-daily-lease": [
+      {
+        "path": "/media/models/iveco-daily-lease/01.webp",
+        "alt": "Iveco Daily Lease"
+      },
+      {
+        "path": "/media/models/iveco-daily-lease/02.webp",
+        "alt": "Electric Iveco Daily"
+      },
+      {
+        "path": "/media/models/iveco-daily-lease/03.webp",
+        "alt": "Iveco Daily 4x4 Panel van"
+      },
+      {
+        "path": "/media/models/iveco-daily-lease/04.webp",
+        "alt": "Iveco Daily Lease library image"
+      },
+      {
+        "path": "/media/models/iveco-daily-lease/05.webp",
+        "alt": "Iveco vans"
+      },
+      {
+        "path": "/media/models/iveco-daily-lease/06.webp",
+        "alt": "Iveco Van Lease"
+      }
+    ],
+    "iveco-daily-luton-van": [
+      {
+        "path": "/media/models/iveco-daily-luton-van/01.webp",
+        "alt": "Iveco Daily Luton Van"
+      },
+      {
+        "path": "/media/models/iveco-daily-luton-van/02.webp",
+        "alt": "Iveco Daily Lease"
+      },
+      {
+        "path": "/media/models/iveco-daily-luton-van/03.webp",
+        "alt": "Electric Iveco Daily"
+      },
+      {
+        "path": "/media/models/iveco-daily-luton-van/04.webp",
+        "alt": "Iveco Daily 4x4 Panel van"
+      },
+      {
+        "path": "/media/models/iveco-daily-luton-van/05.webp",
+        "alt": "Iveco Daily Luton Van library image"
+      },
+      {
+        "path": "/media/models/iveco-daily-luton-van/06.webp",
+        "alt": "Luton Box Van Rental"
+      }
+    ],
+    "iveco-daily-minibus": [
+      {
+        "path": "/media/models/iveco-daily-minibus/01.webp",
+        "alt": "Iveco Daily Minibus"
+      },
+      {
+        "path": "/media/models/iveco-daily-minibus/02.webp",
+        "alt": "New Iveco Daily Minibus For Sale"
+      },
+      {
+        "path": "/media/models/iveco-daily-minibus/03.webp",
+        "alt": "New Iveco Minibus For Sale"
+      },
+      {
+        "path": "/media/models/iveco-daily-minibus/04.webp",
+        "alt": "Iveco Daily Lease"
+      },
+      {
+        "path": "/media/models/iveco-daily-minibus/05.webp",
+        "alt": "Electric Iveco Daily"
+      },
+      {
+        "path": "/media/models/iveco-daily-minibus/06.webp",
+        "alt": "Iveco Daily 4x4 Panel van"
+      }
+    ],
+    "iveco-daily-tipper": [
+      {
+        "path": "/media/models/iveco-daily-tipper/01.webp",
+        "alt": "Iveco Daily Tipper"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper/02.webp",
+        "alt": "Iveco Daily Lease"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper/03.webp",
+        "alt": "Electric Iveco Daily"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper/04.webp",
+        "alt": "Iveco Daily 4x4 Panel van"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper/05.webp",
+        "alt": "Iveco Daily Tipper library image"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper/06.webp",
+        "alt": "Large Van Leasing"
+      }
+    ],
+    "iveco-daily-tipper-2": [
+      {
+        "path": "/media/models/iveco-daily-tipper-2/01.webp",
+        "alt": "Iveco Daily Tipper"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper-2/02.webp",
+        "alt": "Iveco Daily Lease"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper-2/03.webp",
+        "alt": "Electric Iveco Daily"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper-2/04.webp",
+        "alt": "Iveco Daily 4x4 Panel van"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper-2/05.webp",
+        "alt": "Iveco Daily Tipper 2 library image"
+      },
+      {
+        "path": "/media/models/iveco-daily-tipper-2/06.webp",
+        "alt": "Large Van Leasing"
+      }
+    ],
+    "mercedes-citan-lease": [
+      {
+        "path": "/media/models/mercedes-citan-lease/01.webp",
+        "alt": "Mercedes Vito 2024"
+      },
+      {
+        "path": "/media/models/mercedes-citan-lease/02.webp",
+        "alt": "Mercedes Citain for sale"
+      },
+      {
+        "path": "/media/models/mercedes-citan-lease/03.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-citan-lease/04.webp",
+        "alt": "Mercedes Vito"
+      },
+      {
+        "path": "/media/models/mercedes-citan-lease/05.webp",
+        "alt": "Mercedes Vito For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-citan-lease/06.webp",
+        "alt": "Mercedes Citain for sale"
+      }
+    ],
+    "mercedes-luton-van": [
+      {
+        "path": "/media/models/mercedes-luton-van/01.webp",
+        "alt": "Mercedes Sprinter Luton"
+      },
+      {
+        "path": "/media/models/mercedes-luton-van/02.webp",
+        "alt": "Mercedes Sprinter Luton"
+      },
+      {
+        "path": "/media/models/mercedes-luton-van/03.webp",
+        "alt": "Mercedes Luton Van"
+      },
+      {
+        "path": "/media/models/mercedes-luton-van/04.webp",
+        "alt": "Luton Box Van Rental"
+      },
+      {
+        "path": "/media/models/mercedes-luton-van/05.webp",
+        "alt": "Crafter luton tail lift"
+      },
+      {
+        "path": "/media/models/mercedes-luton-van/06.webp",
+        "alt": "Maxi Mover Luton"
+      }
+    ],
+    "mercedes-sprinter-lease": [
+      {
+        "path": "/media/models/mercedes-sprinter-lease/01.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-lease/02.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-lease/03.webp",
+        "alt": "Mercedes Sprinter"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-lease/04.webp",
+        "alt": "Mercedes E SprinterLease"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-lease/05.webp",
+        "alt": "mercedes sprinter dimensions"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-lease/06.webp",
+        "alt": "Mercedes Vito 2024"
+      }
+    ],
+    "mercedes-sprinter-luton-rental": [
+      {
+        "path": "/media/models/mercedes-sprinter-luton-rental/01.webp",
+        "alt": "Mercedes Sprinter Luton"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-luton-rental/02.webp",
+        "alt": "Mercedes Sprinter Luton"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-luton-rental/03.webp",
+        "alt": "Mercedes Luton Van"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-luton-rental/04.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-luton-rental/05.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-luton-rental/06.webp",
+        "alt": "Mercedes Sprinter"
+      }
+    ],
+    "mercedes-sprinter-tipper": [
+      {
+        "path": "/media/models/mercedes-sprinter-tipper/01.webp",
+        "alt": "Mercedes Sprinter Tipper"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-tipper/02.webp",
+        "alt": "Mercedes Tipper Vans"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-tipper/03.webp",
+        "alt": "Mercedes Tipper Vans"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-tipper/04.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-tipper/05.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-sprinter-tipper/06.webp",
+        "alt": "Mercedes Sprinter"
+      }
+    ],
+    "mercedes-vito-crew-cab-lease": [
+      {
+        "path": "/media/models/mercedes-vito-crew-cab-lease/01.webp",
+        "alt": "Mercedes Vito 2024"
+      },
+      {
+        "path": "/media/models/mercedes-vito-crew-cab-lease/02.webp",
+        "alt": "Mercedes Vito"
+      },
+      {
+        "path": "/media/models/mercedes-vito-crew-cab-lease/03.webp",
+        "alt": "Mercedes Vito For Sale"
+      },
+      {
+        "path": "/media/models/mercedes-vito-crew-cab-lease/04.webp",
+        "alt": "Mercedes Vito 9 Seater"
+      },
+      {
+        "path": "/media/models/mercedes-vito-crew-cab-lease/05.webp",
+        "alt": "Transit Custom Crew Cab"
+      },
+      {
+        "path": "/media/models/mercedes-vito-crew-cab-lease/06.webp",
+        "alt": "Transit Custom Crew Cab"
+      }
+    ],
+    "new-renault-master": [
+      {
+        "path": "/media/models/new-renault-master/01.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/new-renault-master/02.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/new-renault-master/03.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/new-renault-master/04.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/new-renault-master/05.webp",
+        "alt": "New Renault Master library image"
+      },
+      {
+        "path": "/media/models/new-renault-master/06.webp",
+        "alt": "New Renault Master library image"
+      }
+    ],
+    "new-vauxhall-movano": [
+      {
+        "path": "/media/models/new-vauxhall-movano/01.webp",
+        "alt": "Vauxhall Movano"
+      },
+      {
+        "path": "/media/models/new-vauxhall-movano/02.webp",
+        "alt": "Vauxhall Movano"
+      },
+      {
+        "path": "/media/models/new-vauxhall-movano/03.webp",
+        "alt": "Vauxhall Movano For Sale"
+      },
+      {
+        "path": "/media/models/new-vauxhall-movano/04.webp",
+        "alt": "Vauxhall Movano For Sale"
+      },
+      {
+        "path": "/media/models/new-vauxhall-movano/05.webp",
+        "alt": "Vauxhall Vans"
+      },
+      {
+        "path": "/media/models/new-vauxhall-movano/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "nissan-interstar-lease": [
+      {
+        "path": "/media/models/nissan-interstar-lease/01.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-interstar-lease/02.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-interstar-lease/03.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/models/nissan-interstar-lease/04.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/models/nissan-interstar-lease/05.webp",
+        "alt": "Nissan Primaster"
+      },
+      {
+        "path": "/media/models/nissan-interstar-lease/06.webp",
+        "alt": "Nissan Interstar Lease library image"
+      }
+    ],
+    "nissan-interstar-tipper": [
+      {
+        "path": "/media/models/nissan-interstar-tipper/01.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-interstar-tipper/02.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-interstar-tipper/03.webp",
+        "alt": "Large Van Leasing"
+      },
+      {
+        "path": "/media/models/nissan-interstar-tipper/04.webp",
+        "alt": "Tipper Van Lease"
+      },
+      {
+        "path": "/media/models/nissan-interstar-tipper/05.webp",
+        "alt": "Nissan Interstar Tipper library image"
+      },
+      {
+        "path": "/media/models/nissan-interstar-tipper/06.webp",
+        "alt": "Nissan Interstar Tipper library image"
+      }
+    ],
+    "nissan-primastar-lease": [
+      {
+        "path": "/media/models/nissan-primastar-lease/01.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/models/nissan-primastar-lease/02.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/models/nissan-primastar-lease/03.webp",
+        "alt": "Nissan Primaster"
+      },
+      {
+        "path": "/media/models/nissan-primastar-lease/04.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-primastar-lease/05.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-primastar-lease/06.webp",
+        "alt": "Nissan Primastar Lease library image"
+      }
+    ],
+    "nissan-townstar-lease": [
+      {
+        "path": "/media/models/nissan-townstar-lease/01.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/models/nissan-townstar-lease/02.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/models/nissan-townstar-lease/03.webp",
+        "alt": "Nissan Primaster"
+      },
+      {
+        "path": "/media/models/nissan-townstar-lease/04.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-townstar-lease/05.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/models/nissan-townstar-lease/06.webp",
+        "alt": "Nissan Townstar Lease library image"
+      }
+    ],
+    "peugeot-boxer-lease": [
+      {
+        "path": "/media/models/peugeot-boxer-lease/01.webp",
+        "alt": "Peugeot Boxer"
+      },
+      {
+        "path": "/media/models/peugeot-boxer-lease/02.webp",
+        "alt": "Peugeot Boxer"
+      },
+      {
+        "path": "/media/models/peugeot-boxer-lease/03.webp",
+        "alt": "Peugeot boxer for sale"
+      },
+      {
+        "path": "/media/models/peugeot-boxer-lease/04.webp",
+        "alt": "Peugeot vans"
+      },
+      {
+        "path": "/media/models/peugeot-boxer-lease/05.webp",
+        "alt": "Peugeot Partner"
+      },
+      {
+        "path": "/media/models/peugeot-boxer-lease/06.webp",
+        "alt": "Peugeot Partner"
+      }
+    ],
+    "peugeot-expert-lease": [
+      {
+        "path": "/media/models/peugeot-expert-lease/01.webp",
+        "alt": "Peugeot Expert"
+      },
+      {
+        "path": "/media/models/peugeot-expert-lease/02.webp",
+        "alt": "Peugeot Expert For Sale"
+      },
+      {
+        "path": "/media/models/peugeot-expert-lease/03.webp",
+        "alt": "Peugeot Expert Lease"
+      },
+      {
+        "path": "/media/models/peugeot-expert-lease/04.webp",
+        "alt": "Peugeot Expert For Sale"
+      },
+      {
+        "path": "/media/models/peugeot-expert-lease/05.webp",
+        "alt": "Peugeot vans"
+      },
+      {
+        "path": "/media/models/peugeot-expert-lease/06.webp",
+        "alt": "Peugeot Partner"
+      }
+    ],
+    "peugeot-partner-lease": [
+      {
+        "path": "/media/models/peugeot-partner-lease/01.webp",
+        "alt": "Peugeot Partner"
+      },
+      {
+        "path": "/media/models/peugeot-partner-lease/02.webp",
+        "alt": "Peugeot Partner"
+      },
+      {
+        "path": "/media/models/peugeot-partner-lease/03.webp",
+        "alt": "Peugeot vans"
+      },
+      {
+        "path": "/media/models/peugeot-partner-lease/04.webp",
+        "alt": "Peugeot Boxer"
+      },
+      {
+        "path": "/media/models/peugeot-partner-lease/05.webp",
+        "alt": "Peugeot Boxer"
+      },
+      {
+        "path": "/media/models/peugeot-partner-lease/06.webp",
+        "alt": "Peugeot Vans"
+      }
+    ],
+    "renault-kangoo-lease": [
+      {
+        "path": "/media/models/renault-kangoo-lease/01.webp",
+        "alt": "Renault Kangoo For Sale"
+      },
+      {
+        "path": "/media/models/renault-kangoo-lease/02.webp",
+        "alt": "Renault Kangoo"
+      },
+      {
+        "path": "/media/models/renault-kangoo-lease/03.webp",
+        "alt": "Renault Kangoo For Sale"
+      },
+      {
+        "path": "/media/models/renault-kangoo-lease/04.webp",
+        "alt": "Renault Kangoo"
+      },
+      {
+        "path": "/media/models/renault-kangoo-lease/05.webp",
+        "alt": "Renault Kangoo Electric"
+      },
+      {
+        "path": "/media/models/renault-kangoo-lease/06.webp",
+        "alt": "Renault Trafic Lease"
+      }
+    ],
+    "renault-master-lease": [
+      {
+        "path": "/media/models/renault-master-lease/01.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/renault-master-lease/02.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/renault-master-lease/03.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/renault-master-lease/04.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/renault-master-lease/05.webp",
+        "alt": "Renault Master Lease library image"
+      },
+      {
+        "path": "/media/models/renault-master-lease/06.webp",
+        "alt": "Renault Master Lease library image"
+      }
+    ],
+    "renault-master-low-loader": [
+      {
+        "path": "/media/models/renault-master-low-loader/01.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/renault-master-low-loader/02.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/renault-master-low-loader/03.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/renault-master-low-loader/04.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/renault-master-low-loader/05.webp",
+        "alt": "Renault Master Low Loader library image"
+      },
+      {
+        "path": "/media/models/renault-master-low-loader/06.webp",
+        "alt": "Renault Master Low Loader library image"
+      }
+    ],
+    "renault-master-luton": [
+      {
+        "path": "/media/models/renault-master-luton/01.webp",
+        "alt": "Renault Master Luton"
+      },
+      {
+        "path": "/media/models/renault-master-luton/02.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/renault-master-luton/03.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/renault-master-luton/04.webp",
+        "alt": "Renault Master For Sale"
+      },
+      {
+        "path": "/media/models/renault-master-luton/05.webp",
+        "alt": "Renault Master"
+      },
+      {
+        "path": "/media/models/renault-master-luton/06.webp",
+        "alt": "Renault Master Luton library image"
+      }
+    ],
+    "renault-trafic-crew-cab-lease": [
+      {
+        "path": "/media/models/renault-trafic-crew-cab-lease/01.webp",
+        "alt": "Renault Trafic Crew Cab Lease"
+      },
+      {
+        "path": "/media/models/renault-trafic-crew-cab-lease/02.webp",
+        "alt": "Renault Trafic Lease"
+      },
+      {
+        "path": "/media/models/renault-trafic-crew-cab-lease/03.webp",
+        "alt": "Renault Trafic"
+      },
+      {
+        "path": "/media/models/renault-trafic-crew-cab-lease/04.webp",
+        "alt": "Large Van Lease"
+      },
+      {
+        "path": "/media/models/renault-trafic-crew-cab-lease/05.webp",
+        "alt": "Renault vans"
+      },
+      {
+        "path": "/media/models/renault-trafic-crew-cab-lease/06.webp",
+        "alt": "Renault Trafic For Sale"
+      }
+    ],
+    "renault-trafic-lease": [
+      {
+        "path": "/media/models/renault-trafic-lease/01.webp",
+        "alt": "Renault Trafic Lease"
+      },
+      {
+        "path": "/media/models/renault-trafic-lease/02.webp",
+        "alt": "Renault Trafic"
+      },
+      {
+        "path": "/media/models/renault-trafic-lease/03.webp",
+        "alt": "Large Van Lease"
+      },
+      {
+        "path": "/media/models/renault-trafic-lease/04.webp",
+        "alt": "Renault vans"
+      },
+      {
+        "path": "/media/models/renault-trafic-lease/05.webp",
+        "alt": "Renault Trafic For Sale"
+      },
+      {
+        "path": "/media/models/renault-trafic-lease/06.webp",
+        "alt": "Renault Trafic"
+      }
+    ],
+    "toyota-hilux-lease": [
+      {
+        "path": "/media/models/toyota-hilux-lease/01.webp",
+        "alt": "toyota hilux price"
+      },
+      {
+        "path": "/media/models/toyota-hilux-lease/02.webp",
+        "alt": "Toyota Hilux Lease"
+      },
+      {
+        "path": "/media/models/toyota-hilux-lease/03.webp",
+        "alt": "Business Van Lease"
+      },
+      {
+        "path": "/media/models/toyota-hilux-lease/04.webp",
+        "alt": "Toyota Hilux Lease"
+      },
+      {
+        "path": "/media/models/toyota-hilux-lease/05.webp",
+        "alt": "Toyota Hilux"
+      },
+      {
+        "path": "/media/models/toyota-hilux-lease/06.webp",
+        "alt": "Toyota Hilux for sale"
+      }
+    ],
+    "toyota-proace-city-lease": [
+      {
+        "path": "/media/models/toyota-proace-city-lease/01.webp",
+        "alt": "Toyota Proace City Lease"
+      },
+      {
+        "path": "/media/models/toyota-proace-city-lease/02.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-city-lease/03.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-city-lease/04.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-city-lease/05.webp",
+        "alt": "Toyota Proace Lease"
+      },
+      {
+        "path": "/media/models/toyota-proace-city-lease/06.webp",
+        "alt": "Toyota Proace"
+      }
+    ],
+    "toyota-proace-crew-cab": [
+      {
+        "path": "/media/models/toyota-proace-crew-cab/01.webp",
+        "alt": "Toyota Proace Crew Cab"
+      },
+      {
+        "path": "/media/models/toyota-proace-crew-cab/02.webp",
+        "alt": "Toyota Proace Crew Cab library image"
+      },
+      {
+        "path": "/media/models/toyota-proace-crew-cab/03.webp",
+        "alt": "Toyota Proace Crew Cab library image"
+      },
+      {
+        "path": "/media/models/toyota-proace-crew-cab/04.webp",
+        "alt": "Toyota Proace Crew Cab library image"
+      },
+      {
+        "path": "/media/models/toyota-proace-crew-cab/05.webp",
+        "alt": "Toyota Proace City Lease"
+      },
+      {
+        "path": "/media/models/toyota-proace-crew-cab/06.webp",
+        "alt": "Toyota Proace City"
+      }
+    ],
+    "toyota-proace-lease": [
+      {
+        "path": "/media/models/toyota-proace-lease/01.webp",
+        "alt": "Toyota Proace City Lease"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease/02.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease/03.webp",
+        "alt": "Toyota Proace Lease"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease/04.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease/05.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease/06.webp",
+        "alt": "Toyota Proace"
+      }
+    ],
+    "toyota-proace-lease-2": [
+      {
+        "path": "/media/models/toyota-proace-lease-2/01.webp",
+        "alt": "Toyota Proace City Lease"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease-2/02.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease-2/03.webp",
+        "alt": "Toyota Proace Lease"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease-2/04.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease-2/05.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/models/toyota-proace-lease-2/06.webp",
+        "alt": "Toyota Proace"
+      }
+    ],
+    "vauxhall-combi-lease": [
+      {
+        "path": "/media/models/vauxhall-combi-lease/01.webp",
+        "alt": "Vauxhall Vans"
+      },
+      {
+        "path": "/media/models/vauxhall-combi-lease/02.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-combi-lease/03.webp",
+        "alt": "Vauxhall Movano"
+      },
+      {
+        "path": "/media/models/vauxhall-combi-lease/04.webp",
+        "alt": "Vauxhall Movano"
+      },
+      {
+        "path": "/media/models/vauxhall-combi-lease/05.webp",
+        "alt": "Vauxhall Vans"
+      },
+      {
+        "path": "/media/models/vauxhall-combi-lease/06.webp",
+        "alt": "Vauxhall Vans"
+      }
+    ],
+    "vauxhall-vivaro-lease": [
+      {
+        "path": "/media/models/vauxhall-vivaro-lease/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-lease-2": [
+      {
+        "path": "/media/models/vauxhall-vivaro-lease-2/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease-2/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease-2/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease-2/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease-2/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-lease-2/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-medium-van": [
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-medium-van-2": [
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-2/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-2/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-2/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-2/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-2/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-2/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-medium-van-3": [
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-3/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-3/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-3/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-3/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-3/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-3/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-medium-van-4": [
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-4/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-4/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-4/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-4/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-4/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-4/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-medium-van-5": [
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-5/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-5/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-5/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-5/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-5/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-5/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-medium-van-6": [
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-6/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-6/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-6/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-6/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-6/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-medium-van-6/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vauxhall-vivaro-prime": [
+      {
+        "path": "/media/models/vauxhall-vivaro-prime/01.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-prime/02.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-prime/03.webp",
+        "alt": "Vauxhall Vivaro Lease"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-prime/04.webp",
+        "alt": "Vauxhall Vivaro For Sale"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-prime/05.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/models/vauxhall-vivaro-prime/06.webp",
+        "alt": "Vauxhall Vivaro"
+      }
+    ],
+    "vw-amarok-lease": [
+      {
+        "path": "/media/models/vw-amarok-lease/01.webp",
+        "alt": "VW Amarok For Sale"
+      },
+      {
+        "path": "/media/models/vw-amarok-lease/02.webp",
+        "alt": "VW Amarok Style"
+      },
+      {
+        "path": "/media/models/vw-amarok-lease/03.webp",
+        "alt": "VW Amarok Aventura"
+      },
+      {
+        "path": "/media/models/vw-amarok-lease/04.webp",
+        "alt": "VW Amarok Lease"
+      },
+      {
+        "path": "/media/models/vw-amarok-lease/05.webp",
+        "alt": "VW Amarok"
+      },
+      {
+        "path": "/media/models/vw-amarok-lease/06.webp",
+        "alt": "VW Crafter"
+      }
+    ],
+    "vw-caddy-lease": [
+      {
+        "path": "/media/models/vw-caddy-lease/01.webp",
+        "alt": "VW Caddy"
+      },
+      {
+        "path": "/media/models/vw-caddy-lease/02.webp",
+        "alt": "VW Caddy"
+      },
+      {
+        "path": "/media/models/vw-caddy-lease/03.webp",
+        "alt": "VW Caddy Lease"
+      },
+      {
+        "path": "/media/models/vw-caddy-lease/04.webp",
+        "alt": "VW Caddy"
+      },
+      {
+        "path": "/media/models/vw-caddy-lease/05.webp",
+        "alt": "VW Caddy For Sale"
+      },
+      {
+        "path": "/media/models/vw-caddy-lease/06.webp",
+        "alt": "VW Caddy"
+      }
+    ],
+    "vw-crafter-lease": [
+      {
+        "path": "/media/models/vw-crafter-lease/01.webp",
+        "alt": "VW Crafter"
+      },
+      {
+        "path": "/media/models/vw-crafter-lease/02.webp",
+        "alt": "Top VW Crafter Accessories for Enhanced Van Styling"
+      },
+      {
+        "path": "/media/models/vw-crafter-lease/03.webp",
+        "alt": "VW Crafter Dimensions"
+      },
+      {
+        "path": "/media/models/vw-crafter-lease/04.webp",
+        "alt": "VW Crafter Conversion"
+      },
+      {
+        "path": "/media/models/vw-crafter-lease/05.webp",
+        "alt": "VW Crafter For Sale"
+      },
+      {
+        "path": "/media/models/vw-crafter-lease/06.webp",
+        "alt": "VW Crafter"
+      }
+    ],
+    "vw-crafter-luton": [
+      {
+        "path": "/media/models/vw-crafter-luton/01.webp",
+        "alt": "VW Crafter Luton"
+      },
+      {
+        "path": "/media/models/vw-crafter-luton/02.webp",
+        "alt": "VW Crafter Luton"
+      },
+      {
+        "path": "/media/models/vw-crafter-luton/03.webp",
+        "alt": "Crafter luton tail lift"
+      },
+      {
+        "path": "/media/models/vw-crafter-luton/04.webp",
+        "alt": "VW Crafter"
+      },
+      {
+        "path": "/media/models/vw-crafter-luton/05.webp",
+        "alt": "Top VW Crafter Accessories for Enhanced Van Styling"
+      },
+      {
+        "path": "/media/models/vw-crafter-luton/06.webp",
+        "alt": "VW Crafter Dimensions"
+      }
+    ],
+    "vw-crafter-tipper": [
+      {
+        "path": "/media/models/vw-crafter-tipper/01.webp",
+        "alt": "VW Crafter Tipper"
+      },
+      {
+        "path": "/media/models/vw-crafter-tipper/02.webp",
+        "alt": "VW Crafter Tipper"
+      },
+      {
+        "path": "/media/models/vw-crafter-tipper/03.webp",
+        "alt": "VW Crafter Tipper"
+      },
+      {
+        "path": "/media/models/vw-crafter-tipper/04.webp",
+        "alt": "VW Crafter"
+      },
+      {
+        "path": "/media/models/vw-crafter-tipper/05.webp",
+        "alt": "Top VW Crafter Accessories for Enhanced Van Styling"
+      },
+      {
+        "path": "/media/models/vw-crafter-tipper/06.webp",
+        "alt": "VW Crafter Dimensions"
+      }
+    ],
+    "vw-t7-camper-for-sale": [
+      {
+        "path": "/media/models/vw-t7-camper-for-sale/01.webp",
+        "alt": "VW Crafter"
+      },
+      {
+        "path": "/media/models/vw-t7-camper-for-sale/02.webp",
+        "alt": "Top VW Crafter Accessories for Enhanced Van Styling"
+      },
+      {
+        "path": "/media/models/vw-t7-camper-for-sale/03.webp",
+        "alt": "VW transporter Dimensions"
+      },
+      {
+        "path": "/media/models/vw-t7-camper-for-sale/04.webp",
+        "alt": "VW T7"
+      },
+      {
+        "path": "/media/models/vw-t7-camper-for-sale/05.webp",
+        "alt": "VW Transporter Sportline Black Edition for Sale Today"
+      },
+      {
+        "path": "/media/models/vw-t7-camper-for-sale/06.webp",
+        "alt": "VW Crafter Dimensions"
+      }
+    ],
+    "vw-transporter-kombi-lease": [
+      {
+        "path": "/media/models/vw-transporter-kombi-lease/01.webp",
+        "alt": "VW Transporter Kombi Lease"
+      },
+      {
+        "path": "/media/models/vw-transporter-kombi-lease/02.webp",
+        "alt": "VW Transporter Kombi"
+      },
+      {
+        "path": "/media/models/vw-transporter-kombi-lease/03.webp",
+        "alt": "VW Transporter Kombi"
+      },
+      {
+        "path": "/media/models/vw-transporter-kombi-lease/04.webp",
+        "alt": "VW transporter Dimensions"
+      },
+      {
+        "path": "/media/models/vw-transporter-kombi-lease/05.webp",
+        "alt": "VW Transporter Sportline Black Edition for Sale Today"
+      },
+      {
+        "path": "/media/models/vw-transporter-kombi-lease/06.webp",
+        "alt": "vw transporter for sale"
+      }
+    ],
+    "vw-transporter-lease": [
+      {
+        "path": "/media/models/vw-transporter-lease/01.webp",
+        "alt": "VW transporter Dimensions"
+      },
+      {
+        "path": "/media/models/vw-transporter-lease/02.webp",
+        "alt": "VW Transporter Sportline Black Edition for Sale Today"
+      },
+      {
+        "path": "/media/models/vw-transporter-lease/03.webp",
+        "alt": "vw transporter for sale"
+      },
+      {
+        "path": "/media/models/vw-transporter-lease/04.webp",
+        "alt": "VW Transporter"
+      },
+      {
+        "path": "/media/models/vw-transporter-lease/05.webp",
+        "alt": "VW Transporter For Sale"
+      },
+      {
+        "path": "/media/models/vw-transporter-lease/06.webp",
+        "alt": "Volkswagen Transporter: The Reliable Companion"
+      }
+    ]
+  },
+  "by_make": {
+    "citroen": [
+      {
+        "path": "/media/make/citroen/01.webp",
+        "alt": "Citroen Relay Tipper"
+      },
+      {
+        "path": "/media/make/citroen/02.webp",
+        "alt": "Citroen van"
+      },
+      {
+        "path": "/media/make/citroen/03.webp",
+        "alt": "How to Change Headlight Bulb on Citroen Berlingo Van"
+      },
+      {
+        "path": "/media/make/citroen/04.webp",
+        "alt": "Best Citroen Berlingo Van Roof Rack Options for 2023"
+      },
+      {
+        "path": "/media/make/citroen/05.webp",
+        "alt": "Citroen Vans"
+      },
+      {
+        "path": "/media/make/citroen/06.webp",
+        "alt": "Citroen E Relay"
+      }
+    ],
+    "fiat": [
+      {
+        "path": "/media/make/fiat/01.webp",
+        "alt": "Fiat Ducato Luton"
+      },
+      {
+        "path": "/media/make/fiat/02.webp",
+        "alt": "Fiat Vans"
+      },
+      {
+        "path": "/media/make/fiat/03.webp",
+        "alt": "Fiat Scudo For Sale"
+      },
+      {
+        "path": "/media/make/fiat/04.webp",
+        "alt": "Fiat Ducato"
+      },
+      {
+        "path": "/media/make/fiat/05.webp",
+        "alt": "Fiat Scudo"
+      },
+      {
+        "path": "/media/make/fiat/06.webp",
+        "alt": "Fiat Scudo"
+      }
+    ],
+    "ford": [
+      {
+        "path": "/media/make/ford/01.webp",
+        "alt": "Ford Transit Custom Crew Cab Lease"
+      },
+      {
+        "path": "/media/make/ford/02.webp",
+        "alt": "Ford Transit Tipper"
+      },
+      {
+        "path": "/media/make/ford/03.webp",
+        "alt": "Ford Transit Connect Lease"
+      },
+      {
+        "path": "/media/make/ford/04.webp",
+        "alt": "Ford Ranger Lease"
+      },
+      {
+        "path": "/media/make/ford/05.webp",
+        "alt": "Ford van"
+      },
+      {
+        "path": "/media/make/ford/06.webp",
+        "alt": "Ford van"
+      }
+    ],
+    "iveco": [
+      {
+        "path": "/media/make/iveco/01.webp",
+        "alt": "Iveco Daily Lease"
+      },
+      {
+        "path": "/media/make/iveco/02.webp",
+        "alt": "Iveco Daily Minibus"
+      },
+      {
+        "path": "/media/make/iveco/03.webp",
+        "alt": "New Iveco Minibus For Sale"
+      },
+      {
+        "path": "/media/make/iveco/04.webp",
+        "alt": "Iveco Daily Luton Van"
+      },
+      {
+        "path": "/media/make/iveco/05.webp",
+        "alt": "Iveco vans"
+      },
+      {
+        "path": "/media/make/iveco/06.webp",
+        "alt": "Iveco Van Lease"
+      }
+    ],
+    "mercedes": [
+      {
+        "path": "/media/make/mercedes/01.webp",
+        "alt": "Mercedes Sprinter Tipper"
+      },
+      {
+        "path": "/media/make/mercedes/02.webp",
+        "alt": "Mercedes Vito 2024"
+      },
+      {
+        "path": "/media/make/mercedes/03.webp",
+        "alt": "Mercedes Citain for sale"
+      },
+      {
+        "path": "/media/make/mercedes/04.webp",
+        "alt": "Mercedes Tipper Vans"
+      },
+      {
+        "path": "/media/make/mercedes/05.webp",
+        "alt": "Mercedes Sprinter For Sale"
+      },
+      {
+        "path": "/media/make/mercedes/06.webp",
+        "alt": "Mercedes Vito"
+      }
+    ],
+    "nissan": [
+      {
+        "path": "/media/make/nissan/01.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/make/nissan/02.webp",
+        "alt": "Nissan Vans"
+      },
+      {
+        "path": "/media/make/nissan/03.webp",
+        "alt": "Nissan Primaster"
+      },
+      {
+        "path": "/media/make/nissan/04.webp",
+        "alt": "Nissan Interstar"
+      },
+      {
+        "path": "/media/make/nissan/05.webp",
+        "alt": "Nissan Interstar"
+      }
+    ],
+    "peugeot": [
+      {
+        "path": "/media/make/peugeot/01.webp",
+        "alt": "Peugeot vans"
+      },
+      {
+        "path": "/media/make/peugeot/02.webp",
+        "alt": "Peugeot Partner"
+      },
+      {
+        "path": "/media/make/peugeot/03.webp",
+        "alt": "Peugeot Boxer"
+      },
+      {
+        "path": "/media/make/peugeot/04.webp",
+        "alt": "Peugeot Boxer"
+      },
+      {
+        "path": "/media/make/peugeot/05.webp",
+        "alt": "Peugeot Partner"
+      },
+      {
+        "path": "/media/make/peugeot/06.webp",
+        "alt": "Peugeot Vans"
+      }
+    ],
+    "renault": [
+      {
+        "path": "/media/make/renault/01.webp",
+        "alt": "Renault Trafic Crew Cab Lease"
+      },
+      {
+        "path": "/media/make/renault/02.webp",
+        "alt": "Renault Trafic Lease"
+      },
+      {
+        "path": "/media/make/renault/03.webp",
+        "alt": "Renault Master Luton"
+      },
+      {
+        "path": "/media/make/renault/04.webp",
+        "alt": "Renault Trafic"
+      },
+      {
+        "path": "/media/make/renault/05.webp",
+        "alt": "Renault Vans"
+      },
+      {
+        "path": "/media/make/renault/06.webp",
+        "alt": "Large Van Lease"
+      }
+    ],
+    "toyota": [
+      {
+        "path": "/media/make/toyota/01.webp",
+        "alt": "Toyota Proace City Lease"
+      },
+      {
+        "path": "/media/make/toyota/02.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/make/toyota/03.webp",
+        "alt": "Toyota Proace Lease"
+      },
+      {
+        "path": "/media/make/toyota/04.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/make/toyota/05.webp",
+        "alt": "Toyota Proace City"
+      },
+      {
+        "path": "/media/make/toyota/06.webp",
+        "alt": "Toyota Proace Crew Cab"
+      }
+    ],
+    "vauxhall": [
+      {
+        "path": "/media/make/vauxhall/01.webp",
+        "alt": "Vauxhall Movano Luton"
+      },
+      {
+        "path": "/media/make/vauxhall/02.webp",
+        "alt": "Vauxhall Vans"
+      },
+      {
+        "path": "/media/make/vauxhall/03.webp",
+        "alt": "Vauxhall Vivaro"
+      },
+      {
+        "path": "/media/make/vauxhall/04.webp",
+        "alt": "Vauxhall Movano"
+      },
+      {
+        "path": "/media/make/vauxhall/05.webp",
+        "alt": "Vauxhall Movano"
+      },
+      {
+        "path": "/media/make/vauxhall/06.webp",
+        "alt": "Vauxhall Vans"
+      }
+    ],
+    "vw": [
+      {
+        "path": "/media/make/vw/01.webp",
+        "alt": "VW Crafter Luton"
+      },
+      {
+        "path": "/media/make/vw/02.webp",
+        "alt": "VW Crafter"
+      },
+      {
+        "path": "/media/make/vw/03.webp",
+        "alt": "VW Crafter Tipper"
+      },
+      {
+        "path": "/media/make/vw/04.webp",
+        "alt": "VW Transporter Kombi Lease"
+      },
+      {
+        "path": "/media/make/vw/05.webp",
+        "alt": "Top VW Crafter Accessories for Enhanced Van Styling"
+      },
+      {
+        "path": "/media/make/vw/06.webp",
+        "alt": "VW transporter Dimensions"
+      }
+    ]
+  }
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import type { Listing } from "@/lib/listings/types";
+import type { ModelImage } from "@/lib/media/model-images";
 import { SpecCard } from "./spec-card";
 
 type Shot = { kind: "real" | "library"; url: string; alt: string };
@@ -12,16 +13,16 @@ export function Gallery({
   modelImages = [],
 }: {
   listing: Listing;
-  modelImages?: string[];
+  modelImages?: ModelImage[];
 }) {
   const realShots: Shot[] = listing.images
     .filter((i) => i.url.startsWith("http"))
     .map((i) => ({ kind: "real", url: i.url, alt: i.alt }));
 
-  const libShots: Shot[] = modelImages.map((src) => ({
+  const libShots: Shot[] = modelImages.map((img) => ({
     kind: "library",
-    url: src,
-    alt: `${listing.make} ${listing.model} — library image`,
+    url: img.path,
+    alt: img.alt || `${listing.make} ${listing.model} — library image`,
   }));
 
   const shots: Shot[] = realShots.length > 0 ? realShots : libShots;

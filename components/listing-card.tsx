@@ -4,7 +4,7 @@ import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileage, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
 import { isFeaturedSeller } from "@/lib/dealers/config";
-import { getModelImage } from "@/lib/media/model-images";
+import { getListingCardImage } from "@/lib/media/model-images";
 import { SpecCard } from "./spec-card";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { SpecReadout } from "./spec-readout";
@@ -31,7 +31,7 @@ export function ListingCard({
   const sold = listing.status === "sold";
   const featured = isFeaturedSeller(listing.seller.name);
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
-  const modelImage = hasRealPhoto ? null : getModelImage(listing.make, cardIndex);
+  const modelImage = hasRealPhoto ? null : getListingCardImage(listing.make, listing.model, cardIndex);
   const fuelLower = listing.fuel.toLowerCase();
   const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
 
@@ -61,8 +61,8 @@ export function ListingCard({
         ) : modelImage ? (
           <>
             <Image
-              src={modelImage}
-              alt={`${listing.make} ${listing.model} library image`}
+              src={modelImage.path}
+              alt={modelImage.alt}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-contain p-4"

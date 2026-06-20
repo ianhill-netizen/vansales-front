@@ -11,7 +11,7 @@ import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck } from "@/compon
 import { ListingCTAButtons } from "@/components/dealer-cta-buttons";
 import { getListingBySlug } from "@/lib/listings/client";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
-import { getModelImages } from "@/lib/media/model-images";
+import { getMakeModelImages } from "@/lib/media/model-images";
 import type { Listing } from "@/lib/listings/types";
 import {
   listingTitle,
@@ -62,7 +62,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
-  const modelImages = getModelImages(listing.make);
+  const modelImages = getMakeModelImages(listing.make, listing.model);
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
     { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
