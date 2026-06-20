@@ -2,15 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useRole } from "@/lib/roles/context";
+import { signIn } from "next-auth/react";
 
 export function DealerLoginForm() {
-  const { setPersona } = useRole();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
@@ -22,16 +21,20 @@ export function DealerLoginForm() {
     setError(null);
     setLoading(true);
 
-    // Mock auth — any valid email + password combination works for the prototype.
-    // swiss-vans email activates the owner persona; everything else → trade dealer.
-    setTimeout(() => {
-      if (email.includes("swissvans") || email.includes("ian@")) {
-        setPersona("swiss-vans");
-      } else {
-        setPersona("dealer");
-      }
-      router.push("/dealer-portal");
-    }, 350);
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Invalid email or password.");
+      setLoading(false);
+      return;
+    }
+
+    router.push("/dealer-portal");
+    router.refresh();
   }
 
   const inputCls =

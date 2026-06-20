@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  customer
+  dealer
+  admin
+}
+
+enum DealerPlan {
+  basic
+  pro
+  dealski
+}
+
+enum IntegrationCategory {
+  api
+  ai
+  tracking
+}
+
+enum IntegrationStatus {
+  untested
+  connected
+  failed
+}
+
+enum ListingStatus {
+  active
+  sold
+  draft
+}
+
+enum ListingSource {
+  native
+  dealski
+  feed
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          UserRole  @default(customer)
+  createdAt     DateTime  @default(now())
+
+  accounts      Account[]
+  sessions      Session[]
+  dealer        Dealer?
+  savedVans     SavedVan[]
+  savedSearches SavedSearch[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Dealer {
+  id           String     @id @default(cuid())
+  slug         String     @unique
+  name         String
+  location     String?
+  lat          Float?
+  lng          Float?
+  phone        String?
+  googleRating Float?
+  plan         DealerPlan @default(basic)
+  ownerUserId  String     @unique
+
+  owner    User      @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  listings Listing[]
+}
+
+model Integration {
+  id           String              @id @default(cuid())
+  category     IntegrationCategory
+  provider     String              @unique
+  label        String
+  value        String?
+  baseUrl      String?
+  status       IntegrationStatus   @default(untested)
+  lastTestedAt DateTime?
+  updatedAt    DateTime            @updatedAt
+}
+
+model Listing {
+  id           String        @id @default(cuid())
+  dealerId     String
+  vrm          String?
+  make         String
+  model        String
+  derivative   String?
+  bodyType     String?
+  fuel         String?
+  transmission String?
+  mileage      Int?
+  price        Int?
+  payload      Int?
+  wheelbase    String?
+  year         Int?
+  colour       String?
+  doors        Int?
+  seats        Int?
+  engineSize   Float?
+  bhp          Int?
+  description  String?       @db.Text
+  features     String[]
+  images       Json          @default("[]")
+  status       ListingStatus @default(active)
+  source       ListingSource @default(native)
+  createdAt    DateTime      @default(now())
+
+  dealer Dealer @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+}
+
+model SavedVan {
+  userId     String
+  listingRef String
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, listingRef])
+}
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  userId    String
+  query     Json
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Enquiry {
+  id         String   @id @default(cuid())
+  listingRef String
+  name       String
+  contact    String
+  channel    String
+  message    String   @db.Text
+  createdAt  DateTime @default(now())
+}

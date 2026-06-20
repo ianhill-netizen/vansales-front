@@ -2,28 +2,40 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRole } from "@/lib/roles/context";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 export default function SignInPage() {
-  const { setPersona } = useRole();
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
+    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
 
-    // Mock auth: route by email content. Any password accepted for the prototype.
-    if (email.includes("admin")) {
-      setPersona("admin");
-      router.push("/admin");
-    } else if (email.includes("swissvans") || email.includes("dealer")) {
-      setPersona("swiss-vans");
-      router.push("/dealer-portal");
-    } else {
-      setPersona("buyer");
-      router.push("/account");
+    if (!email) { setError("Please enter your email address."); return; }
+    if (!password) { setError("Please enter your password."); return; }
+
+    setError(null);
+    setLoading(true);
+
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Invalid email or password.");
+      setLoading(false);
+      return;
     }
+
+    router.push("/account");
+    router.refresh();
   }
 
   const inputCls =
@@ -38,6 +50,12 @@ export default function SignInPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 px-6 py-5" noValidate>
+          {error && (
+            <div role="alert" className="rounded-[var(--radius-md)] border border-red-200 bg-red-50 px-3 py-2.5 text-[var(--text-sm)] font-medium text-red-700">
+              {error}
+            </div>
+          )}
+
           <div>
             <label htmlFor="email" className="block text-[var(--text-xs)] font-semibold text-ink-600">
               Email address
@@ -75,9 +93,10 @@ export default function SignInPage() {
 
           <button
             type="submit"
-            className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600"
+            disabled={loading}
+            className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600 disabled:opacity-60"
           >
-            Sign in
+            {loading ? "Signing in…" : "Sign in"}
           </button>
 
           <div className="relative flex items-center gap-3 py-1">
@@ -88,7 +107,7 @@ export default function SignInPage() {
 
           <button
             type="button"
-            onClick={() => { setPersona("buyer"); router.push("/account"); }}
+            onClick={() => signIn("google", { callbackUrl: "/account" })}
             className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[var(--radius-md)] border border-border bg-white text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-ink-400"
           >
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
