@@ -6,6 +6,9 @@ import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { getListings } from "@/lib/listings/client";
 import { getNewVanIndex } from "@/lib/content/new-vans";
+import { getBlogIndex } from "@/lib/content/blog";
+import { matchBlogPosts } from "@/lib/content/cross-links";
+import { RelatedLinks } from "@/components/related-links";
 import { SITE, absUrl } from "@/lib/site";
 import { slugify } from "@/lib/listings/slug";
 
@@ -71,6 +74,9 @@ export default async function MakePage({
 
   // If no results and likely not a real make, 404
   if (result.total === 0 && result.servedBy !== "mock") notFound();
+
+  // Blog posts mentioning this make
+  const relatedBlog = matchBlogPosts(getBlogIndex(), [make, makeName.toLowerCase()], undefined, 3);
 
   // New-van model guide entries for this make
   const makeNewVans = getNewVanIndex().filter(
@@ -150,23 +156,27 @@ export default async function MakePage({
             )}
           </div>
 
-          {makeNewVans.length > 0 && (
+          {(makeNewVans.length > 0 || relatedBlog.length > 0) && (
             <div className="space-y-5">
-              <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
-                <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">{makeName} model guide</h3>
-                <ul className="mt-3 space-y-1.5">
-                  {makeNewVans.map((e) => (
-                    <li key={e.slug}>
-                      <Link href={`/new-vans/${e.slug}`} className="text-[var(--text-sm)] text-brand-700 hover:underline">
-                        {e.title} →
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/new-vans" className="mt-4 block text-[var(--text-sm)] font-semibold text-ink-500 hover:text-ink-900">
-                  All new van models →
-                </Link>
-              </div>
+              {makeNewVans.length > 0 && (
+                <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+                  <RelatedLinks
+                    title={`${makeName} model guide`}
+                    links={makeNewVans.map((e) => ({ href: `/new-vans/${e.slug}`, label: e.title }))}
+                  />
+                  <Link href="/new-vans" className="mt-4 block text-[var(--text-sm)] font-semibold text-ink-500 hover:text-ink-900">
+                    All new van models →
+                  </Link>
+                </div>
+              )}
+              {relatedBlog.length > 0 && (
+                <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+                  <RelatedLinks
+                    title="Related guides"
+                    links={relatedBlog.map((p) => ({ href: `/blog/${p.slug}`, label: p.title }))}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

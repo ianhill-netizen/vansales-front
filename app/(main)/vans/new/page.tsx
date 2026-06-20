@@ -3,7 +3,10 @@ import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
+import { RelatedLinks } from "@/components/related-links";
 import { getListings } from "@/lib/listings/client";
+import { getBlogIndex } from "@/lib/content/blog";
+import { matchBlogPosts } from "@/lib/content/cross-links";
 import { SITE, absUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +25,7 @@ export const metadata: Metadata = {
 
 export default async function NewVansPage() {
   const result = await getListings({ condition: "new", pageSize: 6 });
+  const relatedBlog = matchBlogPosts(getBlogIndex(), ["new van", "new deal", "0 finance", "deals", "2024", "2025"], undefined, 3);
 
   const breadcrumbs = [
     { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
@@ -136,6 +140,19 @@ export default async function NewVansPage() {
           </div>
         </div>
       </Container>
+
+      {relatedBlog.length > 0 && (
+        <section className="border-t border-border bg-surface-1 py-8">
+          <Container>
+            <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5 md:max-w-sm">
+              <RelatedLinks
+                title="Related guides"
+                links={relatedBlog.map((p) => ({ href: `/blog/${p.slug}`, label: p.title }))}
+              />
+            </div>
+          </Container>
+        </section>
+      )}
     </>
   );
 }
