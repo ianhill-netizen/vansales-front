@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getDealerConfig, whatsappUrl, financeUrl } from "@/lib/dealers/config";
 import { getListings } from "@/lib/listings/client";
+import { fetchNativeDbListings } from "@/lib/listings/sources/db";
+import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
@@ -24,15 +26,17 @@ type Params = { slug: string };
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
   const dealer = getDealerConfig(slug);
-  if (!dealer) return { title: "Dealer not found" };
-  const title = `${dealer.name} — Van Dealer in ${dealer.location.town}`;
-  const description = `${dealer.name} is a van dealer in ${dealer.location.town}, ${dealer.location.county}. Browse their stock on ${SITE.name}.`;
-  return {
-    title,
-    description,
-    alternates: { canonical: `/dealer/${slug}` },
-    openGraph: { title, description, url: `/dealer/${slug}`, type: "website" },
-  };
+  if (dealer) {
+    const title = `${dealer.name} — Van Dealer in ${dealer.location.town}`;
+    const description = `${dealer.name} is a van dealer in ${dealer.location.town}, ${dealer.location.county}. Browse their stock on ${SITE.name}.`;
+    return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website" } };
+  }
+  const dbDealer = await prisma.dealer.findUnique({ where: { slug } });
+  if (!dbDealer) return { title: "Dealer not found" };
+  const town = (dbDealer.location ?? "").split(",")[0].trim() || "UK";
+  const title = `${dbDealer.name} — Van Dealer${town ? ` in ${town}` : ""}`;
+  const description = `Browse ${dbDealer.name}'s stock on ${SITE.name}.`;
+  return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website" } };
 }
 
 const DAY_LABELS: Record<string, string> = {
@@ -48,38 +52,82 @@ const DAY_LABELS: Record<string, string> = {
 export default async function DealerPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const dealer = getDealerConfig(slug);
-  if (!dealer) notFound();
 
-  const { listings } = await getListings({ pageSize: 24, sort: "newest" });
+  // If not in static config, fall back to DB dealer record.
+  const dbDealer = dealer
+    ? null
+    : await prisma.dealer.findUnique({ where: { slug } });
 
-  const mapSrc = `https://maps.google.com/maps?q=${dealer.location.lat},${dealer.location.lng}&z=15&output=embed`;
+  if (!dealer && !dbDealer) notFound();
+
+  // For DB-only dealers, build a minimal config-compatible shape.
+  const effectiveDealer = dealer ?? {
+    name: dbDealer!.name,
+    slug: dbDealer!.slug,
+    dealskiTenant: "",
+    location: {
+      line1: dbDealer!.location ?? "",
+      town: (dbDealer!.location ?? "").split(",")[0].trim(),
+      county: "",
+      postcode: "",
+      lat: dbDealer!.lat ?? 51.5,
+      lng: dbDealer!.lng ?? -3.5,
+    },
+    phone: dbDealer!.phone ?? "",
+    whatsapp: null,
+    featured: false,
+    websites: [],
+    hours: { mon: null, tue: null, wed: null, thu: null, fri: null, sat: null, sun: null },
+    about: `Welcome to ${dbDealer!.name}.`,
+    services: [],
+    sellerNames: [dbDealer!.name],
+    googleRating: dbDealer!.googleRating,
+    googleReviewCount: null,
+  };
+
+  // Fetch stock: for config dealers with Dealski, use the feed; always include native DB listings.
+  let listings: import("@/lib/listings/types").Listing[] = [];
+  if (dealer?.dealskiTenant) {
+    const result = await getListings({ pageSize: 24, sort: "newest" });
+    const dealerDbRecord = await prisma.dealer.findUnique({ where: { slug } });
+    const nativeListings = dealerDbRecord
+      ? await fetchNativeDbListings(dealerDbRecord.id)
+      : [];
+    listings = [...nativeListings, ...result.listings];
+  } else if (dbDealer) {
+    listings = await fetchNativeDbListings(dbDealer.id);
+  } else {
+    listings = [];
+  }
+
+  const mapSrc = `https://maps.google.com/maps?q=${effectiveDealer.location.lat},${effectiveDealer.location.lng}&z=15&output=embed`;
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    `${dealer.name} ${dealer.location.postcode}`,
+    `${effectiveDealer.name} ${effectiveDealer.location.postcode}`,
   )}`;
-  const waUrl = whatsappUrl(dealer.whatsapp, `Hi, I found you on Vansales and I'd like to enquire about a van.`);
+  const waUrl = whatsappUrl(effectiveDealer.whatsapp, `Hi, I found you on Vansales and I'd like to enquire about a van.`);
 
   const dealerLd = {
     "@context": "https://schema.org",
     "@type": "AutoDealer",
     "@id": absUrl(`/dealer/${slug}`),
-    name: dealer.name,
+    name: effectiveDealer.name,
     url: absUrl(`/dealer/${slug}`),
-    telephone: dealer.phone,
+    telephone: effectiveDealer.phone,
     address: {
       "@type": "PostalAddress",
-      streetAddress: dealer.location.line1,
-      addressLocality: dealer.location.town,
-      addressRegion: dealer.location.county,
-      postalCode: dealer.location.postcode,
+      streetAddress: effectiveDealer.location.line1,
+      addressLocality: effectiveDealer.location.town,
+      addressRegion: effectiveDealer.location.county,
+      postalCode: effectiveDealer.location.postcode,
       addressCountry: "GB",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: dealer.location.lat,
-      longitude: dealer.location.lng,
+      latitude: effectiveDealer.location.lat,
+      longitude: effectiveDealer.location.lng,
     },
     openingHoursSpecification: (
-      Object.entries(dealer.hours) as [string, { open: string; close: string } | null][]
+      Object.entries(effectiveDealer.hours) as [string, { open: string; close: string } | null][]
     )
       .filter(([, h]) => h !== null)
       .map(([day, h]) => ({
@@ -88,12 +136,12 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
         opens: h!.open,
         closes: h!.close,
       })),
-    ...(dealer.googleRating
+    ...(effectiveDealer.googleRating
       ? {
           aggregateRating: {
             "@type": "AggregateRating",
-            ratingValue: dealer.googleRating,
-            reviewCount: dealer.googleReviewCount,
+            ratingValue: effectiveDealer.googleRating,
+            reviewCount: effectiveDealer.googleReviewCount,
           },
         }
       : {}),
@@ -109,22 +157,24 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="mb-2 font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
-                Van dealer · {dealer.location.town}
+                Van dealer · {effectiveDealer.location.town}
               </p>
               <h1 className="font-display text-[clamp(2rem,1rem+4vw,3rem)] font-extrabold leading-tight tracking-[-0.03em] text-white">
-                {dealer.name}
+                {effectiveDealer.name}
               </h1>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[var(--text-sm)] text-white/65">
                 <span className="flex items-center gap-1.5">
                   <IconPin width={15} height={15} />
-                  {dealer.location.line1}, {dealer.location.town}, {dealer.location.postcode}
+                  {effectiveDealer.location.line1}, {effectiveDealer.location.town}, {effectiveDealer.location.postcode}
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <IconPhone width={15} height={15} />
-                  <a href={`tel:${dealer.phone.replace(/[^\d+]/g, "")}`} className="hover:text-white">
-                    {dealer.phone}
-                  </a>
-                </span>
+                {effectiveDealer.phone && (
+                  <span className="flex items-center gap-1.5">
+                    <IconPhone width={15} height={15} />
+                    <a href={`tel:${effectiveDealer.phone.replace(/[^\d+]/g, "")}`} className="hover:text-white">
+                      {effectiveDealer.phone}
+                    </a>
+                  </span>
+                )}
               </div>
             </div>
 
@@ -157,24 +207,26 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
 
             {/* ── 4. ABOUT ──────────────────────────────────────────── */}
             <section>
-              <SectionHeading>About {dealer.name}</SectionHeading>
+              <SectionHeading>About {effectiveDealer.name}</SectionHeading>
               <p className="mt-4 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">
-                {dealer.about}
+                {effectiveDealer.about}
               </p>
             </section>
 
             {/* ── 5. SERVICES ───────────────────────────────────────── */}
-            <section>
-              <SectionHeading>What we offer</SectionHeading>
-              <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {dealer.services.map((svc) => (
-                  <li key={svc} className="flex items-center gap-2.5 text-[var(--text-md)] text-ink-700">
-                    <IconCheck width={16} height={16} className="shrink-0 text-success-500" />
-                    {svc}
-                  </li>
-                ))}
-              </ul>
-            </section>
+            {effectiveDealer.services.length > 0 && (
+              <section>
+                <SectionHeading>What we offer</SectionHeading>
+                <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {effectiveDealer.services.map((svc) => (
+                    <li key={svc} className="flex items-center gap-2.5 text-[var(--text-md)] text-ink-700">
+                      <IconCheck width={16} height={16} className="shrink-0 text-success-500" />
+                      {svc}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
             {/* ── 3. GOOGLE MAP ─────────────────────────────────────── */}
             <section>
@@ -187,7 +239,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   style={{ border: 0 }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title={`Map showing ${dealer.name} in ${dealer.location.town}`}
+                  title={`Map showing ${effectiveDealer.name} in ${effectiveDealer.location.town}`}
                 />
               </div>
               <a
@@ -239,22 +291,22 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                 Get in touch
               </h2>
               <p className="mt-1 text-[var(--text-sm)] text-ink-500">
-                {dealer.name} · {dealer.location.town}
+                {effectiveDealer.name} · {effectiveDealer.location.town}
               </p>
 
               {/* ── 2. CTA BUTTONS ──────────────────────────────────── */}
               <div className="mt-5">
-                <DealerCTAButtons dealer={dealer} />
+                <DealerCTAButtons dealer={effectiveDealer} />
               </div>
 
               {/* Websites */}
-              {dealer.websites.length > 0 && (
+              {effectiveDealer.websites.length > 0 && (
                 <div className="mt-5 border-t border-border pt-4">
                   <p className="mb-2 text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
                     Websites
                   </p>
                   <ul className="space-y-1.5">
-                    {dealer.websites.map((site) => (
+                    {effectiveDealer.websites.map((site) => (
                       <li key={site.url}>
                         <a
                           href={site.url}
@@ -279,7 +331,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   Opening hours
                 </p>
                 <ul className="space-y-1">
-                  {(Object.entries(dealer.hours) as [string, { open: string; close: string } | null][]).map(
+                  {(Object.entries(effectiveDealer.hours) as [string, { open: string; close: string } | null][]).map(
                     ([day, hours]) => (
                       <li key={day} className="flex justify-between text-[var(--text-sm)]">
                         <span className="text-ink-600">{DAY_LABELS[day]}</span>
@@ -294,8 +346,9 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
 
               {/* Finance link */}
               <div className="mt-4 border-t border-border pt-4">
+                {effectiveDealer.dealskiTenant && (
                 <a
-                  href={financeUrl(dealer.dealskiTenant)}
+                  href={financeUrl(effectiveDealer.dealskiTenant)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-brand-500/40 bg-brand-tint py-2.5 text-[var(--text-sm)] font-semibold text-brand-700 transition-colors hover:bg-brand-500 hover:text-white"
@@ -303,6 +356,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   Apply for finance
                   <IconExternalLink width={13} height={13} />
                 </a>
+                )}
               </div>
             </div>
           </aside>

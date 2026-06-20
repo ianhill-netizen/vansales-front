@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand";
-import { DealerListingsProvider } from "@/lib/dealer/listings-context";
 import {
   IconBarChart, IconGrid, IconLeads, IconSettings, IconPlus, IconChevronLeft,
 } from "@/components/icons";
@@ -105,16 +104,14 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       </header>
 
       {/* Main content — offset by sidebar on desktop */}
-      <DealerListingsProvider>
-        <main
-          className="flex-1 md:ml-[var(--sidebar-width)]"
-          style={{ minHeight: "100vh" }}
-        >
-          <div className="pt-14 md:pt-0">
-            {children}
-          </div>
-        </main>
-      </DealerListingsProvider>
+      <main
+        className="flex-1 md:ml-[var(--sidebar-width)]"
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="pt-14 md:pt-0">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
