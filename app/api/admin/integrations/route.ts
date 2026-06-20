@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   });
 
   return Response.json({
-    rows: rows.map((row) => ({
+    rows: rows.map((row: typeof rows[0]) => ({
       id: row.id,
       category: row.category,
       provider: row.provider,
