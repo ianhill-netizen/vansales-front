@@ -106,6 +106,7 @@ export interface ListingFilters {
   maxYear?: number;
   status?: ListingStatus;
   q?: string;
+  ulez?: boolean;
   sort?: "newest" | "price_asc" | "price_desc" | "mileage_asc";
   limit?: number; // hard cap (e.g. featured strips); independent of pagination
   page?: number; // 1-based

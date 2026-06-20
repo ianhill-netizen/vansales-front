@@ -3,16 +3,54 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const LINKS = [
-  { href: "/vans?condition=new", label: "New vans" },
-  { href: "/vans?condition=used", label: "Used vans" },
-  { href: "/van-contract-hire", label: "Van Contract Hire" },
-  { href: "/van-insurance", label: "Van Insurance" },
-  { href: "/sell", label: "Sell your van" },
-  { href: "/advertise", label: "Advertise" },
-  { href: "/van-finance", label: "Van Finance" },
-  { href: "/van-reviews", label: "Van reviews" },
-  { href: "/directory", label: "Van Directory" },
+const SECTIONS = [
+  {
+    heading: "Browse by body type",
+    links: [
+      { href: "/vans/panel-van", label: "Panel vans" },
+      { href: "/vans/luton", label: "Luton vans" },
+      { href: "/vans/tipper", label: "Tippers" },
+      { href: "/vans/dropside", label: "Dropsides" },
+      { href: "/vans/crew-van", label: "Crew vans" },
+      { href: "/vans/pickup", label: "Pickups" },
+      { href: "/vans/minibus", label: "Minibuses" },
+      { href: "/vans/chassis-cab", label: "Chassis cabs" },
+    ],
+  },
+  {
+    heading: "Browse by make",
+    links: [
+      { href: "/vans/ford", label: "Ford" },
+      { href: "/vans/volkswagen", label: "Volkswagen" },
+      { href: "/vans/mercedes-benz", label: "Mercedes-Benz" },
+      { href: "/vans/vauxhall", label: "Vauxhall" },
+      { href: "/vans/renault", label: "Renault" },
+      { href: "/vans/citroen", label: "Citroën" },
+      { href: "/vans/peugeot", label: "Peugeot" },
+      { href: "/vans/fiat", label: "Fiat" },
+      { href: "/vans/nissan", label: "Nissan" },
+      { href: "/vans/toyota", label: "Toyota" },
+      { href: "/vans/iveco", label: "Iveco" },
+    ],
+  },
+  {
+    heading: "New, used & electric",
+    links: [
+      { href: "/vans/new", label: "New vans" },
+      { href: "/vans/used", label: "Used vans" },
+      { href: "/vans/electric", label: "Electric vans" },
+      { href: "/vans/ulez", label: "ULEZ-compliant vans" },
+    ],
+  },
+  {
+    heading: "More",
+    links: [
+      { href: "/new-vans", label: "Model guide" },
+      { href: "/van-finance", label: "Finance" },
+      { href: "/blog", label: "Guides" },
+      { href: "/advertise", label: "Advertise" },
+    ],
+  },
 ];
 
 export function MobileNav() {
@@ -35,18 +73,27 @@ export function MobileNav() {
       {open && (
         <div
           id="mobile-menu"
-          className="absolute inset-x-0 top-full z-50 border-t border-border bg-white px-[var(--gutter)] py-2 shadow-[var(--shadow-md)]"
+          className="absolute inset-x-0 top-full z-50 max-h-[80vh] overflow-y-auto border-t border-border bg-white px-[var(--gutter)] py-4 shadow-[var(--shadow-md)]"
         >
-          <nav className="flex flex-col divide-y divide-border">
-            {LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="py-3 text-[var(--text-md)] font-semibold text-ink-700 hover:text-brand-600"
-              >
-                {l.label}
-              </Link>
+          <nav className="space-y-5">
+            {SECTIONS.map((section) => (
+              <div key={section.heading}>
+                <p className="mb-2 text-[var(--text-xs)] font-bold uppercase tracking-wider text-ink-400">
+                  {section.heading}
+                </p>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  {section.links.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className="py-1.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:text-brand-600"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             ))}
           </nav>
         </div>

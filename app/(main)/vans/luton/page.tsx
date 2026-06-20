@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
+import { JsonLd } from "@/components/json-ld";
 import { getListings } from "@/lib/listings/client";
 import { SITE, absUrl } from "@/lib/site";
 
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Luton Vans for Sale",
-  description: "Browse Luton box vans for sale. High cube volume, tail-lift options, ideal for removals and furniture delivery. All makes and prices.",
+  description: "Browse Luton box vans for sale. High cube volume, tail-lift options, ideal for removals and furniture delivery. Ford, Mercedes, Renault, Iveco and more.",
   alternates: { canonical: absUrl("/vans/luton") },
   openGraph: {
     title: `Luton Vans for Sale · ${SITE.name}`,
@@ -22,8 +23,23 @@ export const metadata: Metadata = {
 export default async function LutonCategoryPage() {
   const result = await getListings({ bodyStyle: "Luton", pageSize: 6 });
 
+  const breadcrumbs = [
+    { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
+    { "@type": "ListItem", position: 2, name: "Vans", item: absUrl("/vans") },
+    { "@type": "ListItem", position: 3, name: "Luton vans", item: absUrl("/vans/luton") },
+  ];
+
   return (
     <>
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "Luton Vans for Sale",
+        url: absUrl("/vans/luton"),
+        description: "Luton box vans for sale in the UK.",
+        breadcrumb: { "@type": "BreadcrumbList", itemListElement: breadcrumbs },
+      }} />
+
       <section className="border-b border-border bg-surface-1">
         <Container className="py-10">
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
@@ -41,16 +57,10 @@ export default async function LutonCategoryPage() {
             Luton box vans offer the highest cubic load capacity of any van body type, making them the go-to choice for removals, furniture delivery and logistics. Often fitted with a tail-lift for easy loading without a dock.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link
-              href="/vans?bodyStyle=Luton"
-              className="rounded-[var(--radius-pill)] bg-ink-900 px-5 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700"
-            >
+            <Link href="/vans?bodyStyle=Luton" className="rounded-[var(--radius-pill)] bg-ink-900 px-5 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">
               Browse {result.total > 0 ? `all ${result.total}` : ""} Luton vans →
             </Link>
-            <Link
-              href="/vans?bodyStyle=Luton&condition=used"
-              className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
-            >
+            <Link href="/vans?bodyStyle=Luton&condition=used" className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               Used Luton vans
             </Link>
           </div>
@@ -58,36 +68,64 @@ export default async function LutonCategoryPage() {
       </section>
 
       <Container className="py-10">
-        {result.listings.length > 0 && (
-          <>
-            <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">Latest Luton vans</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {result.listings.map((l, i) => (
-                <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <Link
-                href="/vans?bodyStyle=Luton"
-                className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700"
-              >
-                View all {result.total} Luton vans
-              </Link>
-            </div>
-          </>
-        )}
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            {result.listings.length > 0 ? (
+              <>
+                <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">Latest Luton vans</h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {result.listings.map((l, i) => <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />)}
+                </div>
+                <div className="mt-8 text-center">
+                  <Link href="/vans?bodyStyle=Luton" className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">
+                    View all {result.total} Luton vans →
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <p className="text-[var(--text-sm)] text-ink-400">No Luton vans in stock right now — check back soon.</p>
+            )}
+          </div>
 
-        <div className="mt-12 rounded-[var(--radius-xl)] border border-border bg-card p-6">
-          <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Popular Luton van makes</h3>
-          <ul className="mt-3 grid gap-1.5 sm:grid-cols-2">
-            {["Ford Transit Luton", "Renault Master Luton", "Mercedes-Benz Sprinter Luton", "Iveco Daily Luton", "Vauxhall Movano Luton", "Fiat Ducato Luton"].map((m) => (
-              <li key={m}>
-                <Link href={`/vans?bodyStyle=Luton&q=${encodeURIComponent(m)}`} className="text-[var(--text-sm)] text-brand-700 hover:underline">
-                  {m} →
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="space-y-5">
+            <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+              <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">New Luton models</h3>
+              <ul className="mt-3 space-y-1.5">
+                {[
+                  ["Fiat Ducato Luton", "fiat-ducato-luton"],
+                  ["Ford Transit Luton", "ford-transit-luton"],
+                  ["Iveco Daily Luton", "iveco-daily-luton-van"],
+                  ["Mercedes Luton Van", "mercedes-luton-van"],
+                  ["Mercedes Sprinter Luton", "mercedes-sprinter-luton-rental"],
+                  ["Renault Master Luton", "renault-master-luton"],
+                  ["VW Crafter Luton", "vw-crafter-luton"],
+                ].map(([label, slug]) => (
+                  <li key={slug as string}>
+                    <Link href={`/new-vans/${slug}`} className="text-[var(--text-sm)] text-brand-700 hover:underline">
+                      {label} →
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+              <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">Related body types</h3>
+              <ul className="mt-3 space-y-1.5">
+                {[
+                  ["Tipper vans", "/vans/tipper"],
+                  ["Dropside vans", "/vans/dropside"],
+                  ["Chassis cab vans", "/vans/chassis-cab"],
+                ].map(([label, href]) => (
+                  <li key={href as string}>
+                    <Link href={href as string} className="text-[var(--text-sm)] text-brand-700 hover:underline">
+                      {label} →
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </Container>
     </>
