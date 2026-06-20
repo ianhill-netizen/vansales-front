@@ -102,7 +102,7 @@ export default async function HomePage() {
           Hero copy is large, editorial, left-aligned.
           ───────────────────────────────────────────────────────────────────── */}
       <section
-        className="hero-grid hero-lines relative overflow-hidden"
+        className="hero-grid hero-lines relative"
         style={{ background: "var(--gradient-brand-hero)" }}
       >
         {/* Ambient glow orbs */}
@@ -161,8 +161,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Spacer compensates for floating search card */}
-      <div className="bg-surface-1" style={{ height: "clamp(6rem, 13vw, 10rem)" }} />
+      {/* Spacer compensates for floating search card.
+          Mobile: card stacks to ~22rem, half (11rem) hangs below section → need ≥14rem.
+          Desktop (sm+): card is one 5rem row, half (3.5rem) hangs below → 7rem is generous. */}
+      <div className="h-56 bg-surface-1 sm:h-28" />
 
       {/* ──────────────────────── BROWSE BY MAKE ────────────────────────── */}
       <section className="bg-surface-1 pb-[var(--section-y)] pt-6">
