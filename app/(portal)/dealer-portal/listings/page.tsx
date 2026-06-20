@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { MOCK_DEALER_LISTINGS } from "@/lib/roles/mock-data";
+import Link from "next/link";
+import { useDealerListings } from "@/lib/dealer/listings-context";
 
 const STATUS_COLOR: Record<string, string> = {
   live: "bg-success-tint text-success-700",
@@ -9,8 +10,9 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 export default function DealerListingsPage() {
+  const { listings } = useDealerListings();
   const [filter, setFilter] = useState<"all" | "live" | "unadvertised">("all");
-  const filtered = MOCK_DEALER_LISTINGS.filter((l) => filter === "all" || l.status === filter);
+  const filtered = listings.filter((l) => filter === "all" || l.status === filter);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -20,12 +22,12 @@ export default function DealerListingsPage() {
           {(["all", "live", "unadvertised"] as const).map((f) => (
             <button key={f} onClick={() => setFilter(f)}
               className={`rounded-full px-4 py-1.5 text-[var(--text-xs)] font-semibold capitalize transition-colors ${filter === f ? "bg-ink-900 text-white" : "border border-border bg-white text-ink-600 hover:border-ink-400"}`}>
-              {f} {f !== "all" && `(${MOCK_DEALER_LISTINGS.filter((l) => l.status === f).length})`}
+              {f} {f !== "all" && `(${listings.filter((l) => l.status === f).length})`}
             </button>
           ))}
-          <button className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-1.5 text-[var(--text-xs)] font-bold text-white hover:bg-brand-600">
+          <Link href="/dealer-portal/add-van" className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-1.5 text-[var(--text-xs)] font-bold text-white hover:bg-brand-600">
             + Add van
-          </button>
+          </Link>
         </div>
       </div>
 
