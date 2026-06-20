@@ -4,8 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container, Eyebrow } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
+import { RelatedLinks } from "@/components/related-links";
 import { ListingCard } from "@/components/listing-card";
-import { getNewVanBySlug, getNewVanSlugs } from "@/lib/content/new-vans";
+import { getNewVanBySlug, getNewVanIndex, getNewVanSlugs } from "@/lib/content/new-vans";
+import { getBlogIndex } from "@/lib/content/blog";
+import { inferBodyType, makeToSlug, matchBlogPosts, matchRelatedVans } from "@/lib/content/cross-links";
 import { getListings } from "@/lib/listings/client";
 import { mdToHtml } from "@/lib/content/markdown";
 import { SITE, absUrl } from "@/lib/site";
@@ -41,11 +44,28 @@ export default async function NewVanDetailPage({ params }: Props) {
   const van = getNewVanBySlug(slug);
   if (!van) notFound();
 
-  // Fetch live Dealski stock for this make/model
   const stockResult = await getListings({
     make: van.make !== "Van" ? van.make : undefined,
     pageSize: 6,
   });
+
+  // Cross-link data (synchronous)
+  const allVans = getNewVanIndex();
+  const allBlog = getBlogIndex();
+  const bodyType = inferBodyType(slug, van.model);
+  const makeSlug = makeToSlug(van.make);
+  const isElectric = /electric|e-transit|e-crafter|e-berlingo|e-tech|kangoo-e/i.test(slug);
+
+  const relatedModels = matchRelatedVans(allVans, [van.make.toLowerCase()], slug, 4);
+  const modelKeywords = van.model.toLowerCase().split(/\s+/).filter((w) => w.length > 3);
+  const relatedBlog = matchBlogPosts(allBlog, [van.make.toLowerCase(), ...modelKeywords], undefined, 3);
+
+  const categoryLinks = [
+    { href: `/vans/${bodyType.slug}`, label: bodyType.label },
+    { href: `/vans/${makeSlug}`, label: `${van.make} vans` },
+    { href: "/vans/new", label: "New vans" },
+    ...(isElectric ? [{ href: "/vans/electric", label: "Electric vans" }, { href: "/vans/ulez", label: "ULEZ-compliant" }] : []),
+  ];
 
   const breadcrumbs = [
     { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
@@ -53,28 +73,22 @@ export default async function NewVanDetailPage({ params }: Props) {
     { "@type": "ListItem", position: 3, name: van.title, item: absUrl(`/new-vans/${slug}`) },
   ];
 
-  const jsonLd = [
-    {
-      "@context": "https://schema.org",
-      "@type": "Vehicle",
-      name: van.title,
-      brand: { "@type": "Brand", name: van.make },
-      model: van.model,
-      vehicleConfiguration: "Van",
-      url: absUrl(`/new-vans/${slug}`),
-      ...(van.heroImage ? { image: absUrl(van.heroImage) } : {}),
-      description: van.description,
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: breadcrumbs,
-    },
-  ];
-
   return (
     <>
-      <JsonLd data={jsonLd} />
+      <JsonLd data={[
+        {
+          "@context": "https://schema.org",
+          "@type": "Vehicle",
+          name: van.title,
+          brand: { "@type": "Brand", name: van.make },
+          model: van.model,
+          vehicleConfiguration: "Van",
+          url: absUrl(`/new-vans/${slug}`),
+          ...(van.heroImage ? { image: absUrl(van.heroImage) } : {}),
+          description: van.description,
+        },
+        { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: breadcrumbs },
+      ]} />
 
       {/* Hero */}
       <section className="border-b border-border bg-surface-1">
@@ -116,7 +130,7 @@ export default async function NewVanDetailPage({ params }: Props) {
               <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-[var(--radius-2xl)] bg-gradient-to-br from-brand-50 to-surface-1 lg:h-72">
                 <Image
                   src={van.heroImage}
-                  alt={`${van.title}`}
+                  alt={van.title}
                   fill
                   priority
                   className="object-contain p-6"
@@ -162,6 +176,35 @@ export default async function NewVanDetailPage({ params }: Props) {
           />
         </div>
       </Container>
+
+      {/* Related cross-links */}
+      <section className="border-t border-border bg-surface-1 py-10">
+        <Container>
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+              <RelatedLinks title="Browse categories" links={categoryLinks} variant="list" />
+            </div>
+
+            {relatedModels.length > 0 && (
+              <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+                <RelatedLinks
+                  title={`Other ${van.make} models`}
+                  links={relatedModels.map((e) => ({ href: `/new-vans/${e.slug}`, label: e.title }))}
+                />
+              </div>
+            )}
+
+            {relatedBlog.length > 0 && (
+              <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+                <RelatedLinks
+                  title="Related guides"
+                  links={relatedBlog.map((p) => ({ href: `/blog/${p.slug}`, label: p.title }))}
+                />
+              </div>
+            )}
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

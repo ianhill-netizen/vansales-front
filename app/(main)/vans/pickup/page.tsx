@@ -3,7 +3,10 @@ import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
+import { RelatedLinks } from "@/components/related-links";
 import { getListings } from "@/lib/listings/client";
+import { getBlogIndex } from "@/lib/content/blog";
+import { matchBlogPosts } from "@/lib/content/cross-links";
 import { SITE, absUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +25,7 @@ export const metadata: Metadata = {
 
 export default async function PickupCategoryPage() {
   const result = await getListings({ bodyStyle: "Pickup", pageSize: 6 });
+  const relatedBlog = matchBlogPosts(getBlogIndex(), ["ranger", "pickup", "hilux", "amarok", "4x4", "off-road", "canopy"], undefined, 3);
 
   const breadcrumbs = [
     { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
@@ -128,6 +132,32 @@ export default async function PickupCategoryPage() {
           </div>
         </div>
       </Container>
+
+      <section className="border-t border-border bg-surface-1 py-8">
+        <Container>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+              <RelatedLinks
+                title="Related body types"
+                links={[
+                  { href: "/vans/tipper", label: "Tipper vans" },
+                  { href: "/vans/dropside", label: "Dropside vans" },
+                  { href: "/vans/chassis-cab", label: "Chassis cabs" },
+                ]}
+                variant="pills"
+              />
+            </div>
+            {relatedBlog.length > 0 && (
+              <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
+                <RelatedLinks
+                  title="Related guides"
+                  links={relatedBlog.map((p) => ({ href: `/blog/${p.slug}`, label: p.title }))}
+                />
+              </div>
+            )}
+          </div>
+        </Container>
+      </section>
     </>
   );
 }
