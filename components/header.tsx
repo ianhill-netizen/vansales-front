@@ -63,7 +63,12 @@ const NAV_LINK_CLS =
 const DROP_ITEM_CLS =
   "block px-4 py-2.5 text-[var(--text-sm)] font-medium text-ink-700 hover:bg-surface-1 hover:text-brand-700 transition-colors duration-[var(--dur-fast)] rounded-[var(--radius-sm)]";
 
-type OpenId = "used" | "new" | "sell" | null;
+const GUIDES_ITEMS = [
+  { href: "/van-reviews", label: "Van reviews" },
+  { href: "/blog",        label: "Guides & news" },
+];
+
+type OpenId = "used" | "new" | "sell" | "guides" | null;
 
 function NavDropdown({
   label,
@@ -242,7 +247,14 @@ export function Header() {
             onToggle={() => toggle("sell")}
             onClose={close}
           />
-          <Link href="/van-reviews"       className={NAV_LINK_CLS} onClick={close}>Van reviews</Link>
+          <NavDropdown
+            id="guides"
+            label="Van reviews"
+            items={GUIDES_ITEMS}
+            open={openMenu === "guides"}
+            onToggle={() => toggle("guides")}
+            onClose={close}
+          />
           <Link href="/van-contract-hire" className={NAV_LINK_CLS} onClick={close}>Van leasing</Link>
           <Link href="/van-finance"       className={NAV_LINK_CLS} onClick={close}>Finance</Link>
           <Link href="/vans/electric"     className={`${NAV_LINK_CLS} text-success-600 hover:text-success-700`} onClick={close}>
