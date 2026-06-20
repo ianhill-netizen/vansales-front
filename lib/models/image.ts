@@ -23,11 +23,9 @@ export function resolveModelSlug(make: string, model: string): { makeSlug: strin
   const known = MODELS_BY_MAKE[makeSlug];
   if (!known) return null;
   if (known.includes(want)) return { makeSlug, modelSlug: want };
-  // longest known model that the verbose string starts with, then contains
+  // longest known model that the verbose string starts with (longest first, so transit-custom beats transit)
   const starts = known.find((m) => want.startsWith(`${m}-`) || want === m);
   if (starts) return { makeSlug, modelSlug: starts };
-  const contains = known.find((m) => want.includes(m));
-  if (contains) return { makeSlug, modelSlug: contains };
   return null;
 }
 
