@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRole } from "@/lib/roles/context";
+import { Button } from "@/components/ui";
 
 export default function PrivateSellerSignUpPage() {
   const { setPersona } = useRole();
@@ -17,7 +18,9 @@ export default function PrivateSellerSignUpPage() {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-6 text-center">
-        <span className="text-4xl" aria-hidden>🚐</span>
+        <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-[var(--radius-xl)] bg-success-tint">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0c8a4a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><rect x="1" y="3" width="22" height="13" rx="2"/><path d="M5 16v2"/><path d="M19 16v2"/><path d="M1 13h22"/><circle cx="6" cy="18" r="1"/><circle cx="18" cy="18" r="1"/></svg>
+        </div>
         <h1 className="mt-3 font-display text-[var(--text-xl)] font-extrabold text-ink-900">Sell your van</h1>
         <p className="mt-1 text-[var(--text-sm)] text-ink-500">Free listing. No subscription. Ready in 5 minutes.</p>
       </div>
@@ -53,10 +56,9 @@ export default function PrivateSellerSignUpPage() {
             <input id="password" name="password" type="password" autoComplete="new-password" required placeholder="Min. 8 characters"
               className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
           </div>
-          <button type="submit"
-            className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-success-600 text-[var(--text-sm)] font-bold text-white hover:bg-success-700">
-            Create free account & list my van →
-          </button>
+          <Button type="submit" variant="brand" size="md" className="w-full">
+            Create free account &amp; list my van →
+          </Button>
         </form>
       </div>
       <p className="mt-4 text-center text-[var(--text-xs)] text-ink-400">

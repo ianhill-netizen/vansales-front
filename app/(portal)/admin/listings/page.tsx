@@ -45,7 +45,7 @@ export default function AdminListingsPage() {
                     Approve
                   </button>
                   <button onClick={() => setRejected((r) => [...r, item.id])}
-                    className="rounded-[var(--radius-md)] border border-red-200 px-3 py-1.5 text-[var(--text-xs)] font-bold text-red-600 hover:bg-red-50">
+                    className="rounded-[var(--radius-md)] border border-danger-500/20 px-3 py-1.5 text-[var(--text-xs)] font-bold text-danger-700 hover:bg-danger-tint">
                     Reject
                   </button>
                 </div>
