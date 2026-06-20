@@ -12,7 +12,16 @@ import { RelatedLinks } from "@/components/related-links";
 import { SITE, absUrl } from "@/lib/site";
 import { slugify } from "@/lib/listings/slug";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 1800;
+
+const KNOWN_MAKES = [
+  "ford", "volkswagen", "mercedes-benz", "vauxhall", "renault",
+  "citroen", "peugeot", "fiat", "nissan", "toyota", "iveco",
+];
+
+export async function generateStaticParams() {
+  return KNOWN_MAKES.map((make) => ({ make }));
+}
 
 // Static category slugs handled by their own pages — prevent them falling through to here
 const CATEGORY_SLUGS = new Set([

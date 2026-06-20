@@ -22,6 +22,24 @@ export function formatMileage(mileage: number | null): string {
   return `${new Intl.NumberFormat("en-GB").format(mileage)} mi`;
 }
 
+/** New vans with no mileage show "100 mi" (delivery miles), used shows "—". */
+export function formatMileageDisplay(mileage: number | null, condition: "used" | "new"): string {
+  if (mileage == null) return condition === "new" ? "100 mi" : "—";
+  return `${new Intl.NumberFormat("en-GB").format(mileage)} mi`;
+}
+
+/** Returns "Manual" as default when the feed omits transmission. */
+export function formatGearbox(transmission: string): string {
+  if (!transmission || transmission === "—") return "Manual";
+  return titleCase(transmission);
+}
+
+/** Engine cc → "2.0L", "2.2L", etc. */
+export function formatEngineCC(cc: number | null): string {
+  if (cc == null) return "—";
+  return `${(cc / 1000).toFixed(1)}L`;
+}
+
 /** UK plate display: a year turns into a registration prefix, e.g. 2024 → "73 / 24". */
 export function plateDisplay(plate: string): string {
   return plate ? plate.toUpperCase() : "—";

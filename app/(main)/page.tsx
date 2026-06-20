@@ -1,23 +1,40 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Button, Badge } from "@/components/ui";
 import { SearchHero } from "@/components/search-hero";
 import { ListingCard } from "@/components/listing-card";
 import { SpecCard } from "@/components/spec-card";
+import { JsonLd } from "@/components/json-ld";
 import { IconArrow, IconCheck, IconShield, IconBolt, IconSearch } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { slugify } from "@/lib/listings/slug";
+import { SITE, absUrl, siteUrl } from "@/lib/site";
 
-/* Body-type browse tiles — gradient per body style */
+export const metadata: Metadata = {
+  title: "Vans for Sale UK | Used & New Vans | Vansales",
+  description:
+    "Browse thousands of used and new vans for sale across the UK. Panel vans, crew cabs, Lutons, dropsides and pickups from trusted dealers. Compare by payload, wheelbase and ULEZ status.",
+  alternates: { canonical: absUrl("/") },
+  openGraph: {
+    title: "Vans for Sale UK | Used & New Vans | Vansales",
+    description:
+      "Browse thousands of used and new vans for sale across the UK from trusted dealers.",
+    url: absUrl("/"),
+    type: "website",
+  },
+};
+
+/* ── Body-type browse tiles — each links to its static page ── */
 const BODY_TYPES: { label: string; href: string; gradient: string }[] = [
-  { label: "Panel vans",   href: "/vans?bodyStyle=panel-van",  gradient: "135deg, #0e2a6e 0%, #143a8c 100%" },
-  { label: "Crew cabs",    href: "/vans?bodyStyle=crew-cab",   gradient: "135deg, #1e0e3a 0%, #3a1f6e 100%" },
-  { label: "Pickups",      href: "/vans?bodyStyle=pickup",     gradient: "135deg, #0c1f42 0%, #163f7a 100%" },
-  { label: "Luton vans",   href: "/vans?bodyStyle=luton",      gradient: "135deg, #0a2020 0%, #0f3030 100%" },
-  { label: "Dropsides",    href: "/vans?bodyStyle=dropside",   gradient: "135deg, #1a1a0e 0%, #2a2a1a 100%" },
-  { label: "Electric vans",href: "/vans?fuel=electric",        gradient: "135deg, #0a2010 0%, #0b5e28 100%" },
+  { label: "Panel vans",    href: "/vans/panel-van",  gradient: "135deg, #0e2a6e 0%, #143a8c 100%" },
+  { label: "Crew cabs",     href: "/vans/crew-van",   gradient: "135deg, #1e0e3a 0%, #3a1f6e 100%" },
+  { label: "Pickups",       href: "/vans/pickup",     gradient: "135deg, #0c1f42 0%, #163f7a 100%" },
+  { label: "Luton vans",    href: "/vans/luton",      gradient: "135deg, #0a2020 0%, #0f3030 100%" },
+  { label: "Dropsides",     href: "/vans/dropside",   gradient: "135deg, #1a1a0e 0%, #2a2a1a 100%" },
+  { label: "Electric vans", href: "/vans/electric",   gradient: "135deg, #0a2010 0%, #0b5e28 100%" },
 ] as const;
 
-/* Popular models strip — distinct spec-card style tiles */
+/* ── Popular models strip ── */
 const POPULAR_MODELS = [
   { make: "Volkswagen",    model: "Transporter",    slug: "volkswagen/transporter",    body_style: "Panel Van" },
   { make: "Ford",          model: "Transit",        slug: "ford/transit",              body_style: "Panel Van" },
@@ -35,15 +52,40 @@ export default async function HomePage() {
 
   const topMakes = facets.makes.slice(0, 10);
 
+  const base = siteUrl();
+
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE.name,
+    url: base,
+    logo: `${base}/favicon.ico`,
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: SITE.phone,
+      contactType: "sales",
+      areaServed: "GB",
+    },
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE.name,
+    url: base,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: `${base}/vans?q={search_term_string}` },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <>
+      <JsonLd data={[orgSchema, websiteSchema]} />
+
       {/* ──────────────────────── HERO ──────────────────────────── */}
-      {/*
-        NOTE: overflow-hidden is on an INNER div (for the glow) not the section,
-        so the translate-y-1/2 search pill is never clipped.
-      */}
       <section className="hero-grid relative bg-ink-900">
-        {/* Glow — contained in its own overflow-hidden shell */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <div
             className="absolute -left-40 -top-40 size-[600px] rounded-full opacity-20"
@@ -52,24 +94,20 @@ export default async function HomePage() {
         </div>
 
         <Container className="relative z-10 pb-28 pt-14 sm:pt-20 lg:pb-36 lg:pt-24">
-          {/* Eyebrow */}
           <p className="mb-5 inline-block rounded-[var(--radius-pill)] border border-white/20 bg-white/8 px-3 py-1 font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/65">
             UK&rsquo;s commercial van marketplace
           </p>
 
-          {/* Headline */}
           <h1 className="max-w-2xl font-display text-[clamp(2.4rem,1.5rem+4vw,3.8rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white">
-            Find your next van.{" "}
+            Vans for Sale.{" "}
             <span className="text-accent-400">Straight-talking.</span>
           </h1>
 
-          {/* Sub-headline */}
           <p className="mt-5 max-w-xl text-[var(--text-md)] leading-relaxed text-white/65">
             {total.toLocaleString()}+ used and new vans from verified UK dealers — compare by
             payload, wheelbase and ULEZ status, not just price.
           </p>
 
-          {/* Trust strip */}
           <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2">
             {[
               { icon: <IconShield width={14} height={14} />, label: "Verified dealers only" },
@@ -84,7 +122,6 @@ export default async function HomePage() {
           </div>
         </Container>
 
-        {/* Search pill — overlaps hero bottom (section has no overflow-hidden so this renders fully) */}
         <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-1/2 px-[var(--gutter)]">
           <div className="mx-auto max-w-[var(--container-max)]">
             <SearchHero total={total} />
@@ -92,11 +129,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/*
-        Spacer for the search pill that hangs below the hero.
-        Mobile (1 col): 4 rows × 64px = 256px; half = 128px → h-36 (144px) + margin.
-        Desktop: 1 row × 64px = 64px; half = 32px → h-12 is enough.
-      */}
       <div className="h-36 bg-surface-1 sm:h-14" />
 
       {/* ──────────────────── BROWSE BY MAKE ────────────────────── */}
@@ -106,7 +138,7 @@ export default async function HomePage() {
             <div>
               <p className="eyebrow">Browse by make</p>
               <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-                Your trusted van marketplace
+                Vans for sale by manufacturer
               </h2>
             </div>
             <Link href="/directory" className="hidden items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-600 hover:text-brand-700 sm:flex">
@@ -146,7 +178,7 @@ export default async function HomePage() {
           <div className="mb-5">
             <p className="eyebrow">Browse by body type</p>
             <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-              Start with the shape of the job
+              Used vans for sale by body type
             </h2>
           </div>
 
@@ -157,7 +189,6 @@ export default async function HomePage() {
                 href={bt.href}
                 className="group overflow-hidden rounded-[var(--radius-lg)] border border-border shadow-[var(--shadow-xs)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-brand-500/40 hover:shadow-[var(--shadow-md)]"
               >
-                {/* Gradient panel */}
                 <div
                   className="flex aspect-[4/3] items-end p-4 text-white"
                   style={{ background: `linear-gradient(${bt.gradient})` }}
@@ -167,7 +198,6 @@ export default async function HomePage() {
                     {bt.label}
                   </span>
                 </div>
-                {/* Footer */}
                 <div className="flex items-center justify-between bg-white px-3 py-2.5">
                   <span className="text-[var(--text-sm)] font-semibold text-ink-700 group-hover:text-brand-600">
                     Browse
@@ -187,7 +217,7 @@ export default async function HomePage() {
             <div>
               <p className="eyebrow">Fresh stock</p>
               <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">
-                Latest vans added
+                Used vans for sale — latest added
               </h2>
               <p className="mt-1 text-[var(--text-sm)] text-ink-500">
                 {servedBy === "dealski"
@@ -208,14 +238,79 @@ export default async function HomePage() {
 
           <div className="mt-8 text-center">
             <Button href="/vans" variant="primary" size="lg">
-              Browse all vans <IconArrow width={18} height={18} />
+              Browse all vans for sale <IconArrow width={18} height={18} />
             </Button>
           </div>
         </Container>
       </section>
 
-      {/* ─────────────── WHY VANSALES — TRUST SECTION ───────────── */}
+      {/* ──────────── ABOUT / INTRO COPY (SEO) ───────────────────── */}
       <section className="py-14">
+        <Container>
+          <div className="mx-auto max-w-3xl">
+            <p className="eyebrow">About Vansales</p>
+            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+              The UK&rsquo;s straight-talking van sales marketplace
+            </h2>
+            <div className="mt-4 space-y-4 text-[var(--text-md)] leading-relaxed text-ink-600">
+              <p>
+                Vansales brings together thousands of used and new vans for sale from trusted UK
+                dealers in one searchable catalogue. Whether you need a compact{" "}
+                <Link href="/vans/panel-van" className="text-brand-600 hover:underline">panel van</Link>{" "}
+                for last-mile deliveries, a{" "}
+                <Link href="/vans/luton" className="text-brand-600 hover:underline">Luton van</Link>{" "}
+                for removals, or a{" "}
+                <Link href="/vans/crew-van" className="text-brand-600 hover:underline">crew cab</Link>{" "}
+                for your trade team, you'll find it here.
+              </p>
+              <p>
+                Every listing shows full spec — payload capacity, wheelbase, roof height, ULEZ
+                compliance and Euro 6 status — so you can match van to job before you even pick
+                up the phone. Popular searches include{" "}
+                <Link href="/vans/ford/transit-custom" className="text-brand-600 hover:underline">Ford Transit Custom for sale</Link>,{" "}
+                <Link href="/vans/volkswagen/transporter" className="text-brand-600 hover:underline">VW Transporter for sale</Link>, and{" "}
+                <Link href="/vans/mercedes-benz/sprinter" className="text-brand-600 hover:underline">Mercedes Sprinter for sale</Link>.
+              </p>
+              <p>
+                Prefer new? Browse our{" "}
+                <Link href="/new-vans" className="text-brand-600 hover:underline">new van deals</Link>{" "}
+                with finance-lease prices from our partner dealers, or explore{" "}
+                <Link href="/vans/electric" className="text-brand-600 hover:underline">electric vans for sale</Link>{" "}
+                if you&rsquo;re planning ahead for ULEZ and ZEV mandates.
+              </p>
+            </div>
+
+            {/* Quick-link category grid */}
+            <div className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {[
+                { label: "Ford vans for sale",         href: "/vans/ford" },
+                { label: "Volkswagen vans for sale",   href: "/vans/volkswagen" },
+                { label: "Mercedes vans for sale",     href: "/vans/mercedes-benz" },
+                { label: "Vauxhall vans for sale",     href: "/vans/vauxhall" },
+                { label: "Renault vans for sale",      href: "/vans/renault" },
+                { label: "Panel vans for sale",        href: "/vans/panel-van" },
+                { label: "Luton vans for sale",        href: "/vans/luton" },
+                { label: "Tipper vans for sale",       href: "/vans/tipper" },
+                { label: "Electric vans for sale",     href: "/vans/electric" },
+                { label: "Crew vans for sale",         href: "/vans/crew-van" },
+                { label: "Dropside vans for sale",     href: "/vans/dropside" },
+                { label: "Pickup trucks for sale",     href: "/vans/pickup" },
+              ].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-brand-400/40 hover:bg-brand-50 hover:text-brand-700"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ─────────────── WHY VANSALES — TRUST SECTION ───────────── */}
+      <section className="bg-surface-1 py-14">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
             <p className="eyebrow">Why Vansales</p>
@@ -256,14 +351,13 @@ export default async function HomePage() {
       </section>
 
       {/* ─────────────── SELL / ADVERTISE BLOCK ─────────────────── */}
-      <section className="bg-surface-1 py-14">
+      <section className="py-14">
         <Container>
           <div className="mb-7 text-center">
             <p className="eyebrow">For sellers &amp; dealers</p>
             <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">Two ways to list</h2>
           </div>
           <div className="grid gap-5 md:grid-cols-2">
-            {/* Private */}
             <div className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-sm)]">
               <Badge tone="success" className="self-start">Free</Badge>
               <div>
@@ -284,7 +378,6 @@ export default async function HomePage() {
               </Button>
             </div>
 
-            {/* Trade */}
             <div className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-sm)]">
               <Badge tone="brand" className="self-start">Powered by Dealski</Badge>
               <div>
@@ -309,11 +402,11 @@ export default async function HomePage() {
       </section>
 
       {/* ───────────────── POPULAR MODELS STRIP ─────────────────── */}
-      <section className="py-14">
+      <section className="bg-surface-1 py-14">
         <Container>
           <div className="mb-5">
             <p className="eyebrow">Popular choices</p>
-            <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">Most searched vans</h2>
+            <h2 className="mt-1 font-display text-[var(--text-2xl)] font-bold text-ink-900">Most searched vans for sale</h2>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {POPULAR_MODELS.map((m) => {
@@ -331,7 +424,7 @@ export default async function HomePage() {
                   <div className="aspect-[4/3] overflow-hidden">
                     <SpecCard listing={fakeListing as Parameters<typeof SpecCard>[0]["listing"]} className="size-full" />
                   </div>
-                  <div className="flex items-center justify-between px-3 py-2.5 bg-white">
+                  <div className="flex items-center justify-between bg-white px-3 py-2.5">
                     <span className="text-[var(--text-sm)] font-bold text-ink-800 group-hover:text-brand-600 truncate">
                       {m.make} {m.model}
                     </span>
@@ -349,16 +442,16 @@ export default async function HomePage() {
         <div className="hero-grid absolute inset-0" aria-hidden />
         <Container className="relative text-center">
           <h2 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-white">
-            {total.toLocaleString()}+ vans, one search.
+            {total.toLocaleString()}+ vans for sale — one search.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[var(--text-lg)] leading-relaxed text-white/70">
             New vans, used vans, contract hire — Vansales brings every option together.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/vans?condition=used" variant="primary" size="lg">
+            <Button href="/vans/used" variant="primary" size="lg">
               Browse used vans
             </Button>
-            <Button href="/vans?condition=new" variant="accent" size="lg">
+            <Button href="/vans/new" variant="accent" size="lg">
               Browse new vans
             </Button>
           </div>

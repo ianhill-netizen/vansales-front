@@ -10,7 +10,7 @@ import { getListings, getFacets } from "@/lib/listings/client";
 import type { Condition, ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { SITE, absUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 1800;
 const PAGE_SIZE = 24;
 
 type Search = { [k: string]: string | string[] | undefined };

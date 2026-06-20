@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
+import { getDealerConfigBySeller } from "@/lib/dealers/config";
 import { Button } from "./ui";
 import { IconCheck, IconShield, IconStar, IconArrow } from "./icons";
 
@@ -14,6 +16,12 @@ export function EnquiryPanel({ listing }: { listing: Listing }) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const sold = listing.status === "sold";
+
+  const dealerConfig = getDealerConfigBySeller(listing.seller.name);
+  const displayLocation = dealerConfig
+    ? `${dealerConfig.location.town}, ${dealerConfig.location.county}`
+    : `${listing.location.town}, ${listing.location.region}`;
+  const displayRating = listing.seller.rating ?? dealerConfig?.googleRating ?? null;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,14 +68,20 @@ export function EnquiryPanel({ listing }: { listing: Listing }) {
         </span>
         <div className="min-w-0">
           <p className="truncate font-display text-[var(--text-base)] font-bold text-ink-900">
-            {listing.seller.name}
+            {dealerConfig ? (
+              <Link href={`/dealer/${dealerConfig.slug}`} className="hover:text-brand-600">
+                {listing.seller.name}
+              </Link>
+            ) : (
+              listing.seller.name
+            )}
           </p>
           <p className="flex items-center gap-1.5 text-[var(--text-sm)] text-ink-500">
             {listing.seller_type === "dealer" ? "Trusted dealer" : "Private seller"}
-            {listing.seller.rating != null && (
+            {displayRating != null && (
               <span className="inline-flex items-center gap-0.5 text-ink-700">
                 <IconStar width={13} height={13} className="text-accent-500" />
-                {listing.seller.rating.toFixed(1)}
+                {displayRating.toFixed(1)}
               </span>
             )}
           </p>
@@ -76,7 +90,7 @@ export function EnquiryPanel({ listing }: { listing: Listing }) {
 
       <p className="mt-3 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-500">
         <IconShield width={15} height={15} className="text-brand-600" />
-        {listing.location.town}, {listing.location.region}
+        {displayLocation}
       </p>
 
       {/* Phone CTA — always visible */}
