@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand";
+import { DealerListingsProvider } from "@/lib/dealer/listings-context";
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -31,7 +32,9 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           </Link>
         </div>
       </header>
-      <main className="flex-1">{children}</main>
+      <DealerListingsProvider>
+        <main className="flex-1">{children}</main>
+      </DealerListingsProvider>
     </div>
   );
 }

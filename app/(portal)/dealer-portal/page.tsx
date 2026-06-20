@@ -50,9 +50,9 @@ export default function DealerDashboardPage() {
           <Link href="/dealer-portal/listings" className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-brand-500">
             Manage listings
           </Link>
-          <button className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-2 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600">
+          <Link href="/dealer-portal/add-van" className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-2 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600">
             + Add van
-          </button>
+          </Link>
         </div>
       </div>
 
