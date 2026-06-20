@@ -1,32 +1,92 @@
-import manifest from "../../scripts/model-images-manifest.json";
+import rawManifest from "../../scripts/model-images-manifest.json";
 
-/** Normalise a catalogue make name ("Mercedes-Benz", "Citroën"…) to the slug used in public/media/. */
-function makeToSlug(make: string): string {
-  return make
+export type ModelImage = { path: string; alt: string };
+
+type ManifestShape = {
+  by_slug: Record<string, ModelImage[]>;
+  by_make: Record<string, ModelImage[]>;
+};
+
+const MANIFEST = rawManifest as ManifestShape;
+
+// Catalogue make → slug used as key in by_make
+const MAKE_OVERRIDES: Record<string, string> = {
+  volkswagen: "vw",
+  "mercedes-benz": "mercedes",
+  citroën: "citroen",
+};
+
+function toMakeSlug(make: string): string {
+  const n = make.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return MAKE_OVERRIDES[make.toLowerCase()] ?? n;
+}
+
+function toModelSlug(model: string): string {
+  return model
     .toLowerCase()
-    .replace(/ë/g, "e")
+    .trim()
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 }
 
-type ManifestMap = Record<string, string[]>;
-const MAP = manifest as ManifestMap;
+// For listings with make="Van" (two misassigned entries), extract the real make from model text
+function resolveVanMake(model: string): string {
+  const m = model.toLowerCase();
+  if (m.includes("renault")) return "renault";
+  if (m.includes("vauxhall")) return "vauxhall";
+  return "van";
+}
 
-/**
- * Return public paths for library images for a given make.
- * Returns [] when no images exist (orange SpecCard fallback applies).
- */
-export function getModelImages(make: string): string[] {
-  const slug = makeToSlug(make);
-  return MAP[slug] ?? [];
+/** Images for an exact catalogue slug — for /new-vans/[slug] product pages. */
+export function getSlugImages(slug: string): ModelImage[] {
+  return MANIFEST.by_slug[slug] ?? [];
 }
 
 /**
- * Pick one image from the model set, rotating by index.
- * Returns null when no images exist.
+ * Images matching make + model across all slug variants for that model.
+ * E.g. make="Ford" model="Transit Custom" returns images from all
+ * ford-transit-custom-* slugs combined (sport, lease, crew-cab, etc.).
+ * Falls back to make-level images, then empty array.
  */
-export function getModelImage(make: string, index: number): string | null {
-  const images = getModelImages(make);
-  if (images.length === 0) return null;
-  return images[index % images.length];
+export function getMakeModelImages(make: string, model: string): ModelImage[] {
+  const effectiveMake = make === "Van" ? resolveVanMake(model) : make;
+  const ms = toMakeSlug(effectiveMake);
+
+  // Strip leading "New " and redundant make name that sometimes appears in model strings
+  const cleanModel = model
+    .replace(/^new\s+/i, "")
+    .replace(new RegExp(`^(renault|vauxhall|ford)\\s+`, "i"), "")
+    .trim();
+  const mslug = toModelSlug(cleanModel);
+  const prefix = `${ms}-${mslug}`;
+
+  const seen = new Set<string>();
+  const result: ModelImage[] = [];
+
+  for (const [slug, imgs] of Object.entries(MANIFEST.by_slug)) {
+    if (slug === prefix || slug.startsWith(prefix + "-")) {
+      for (const img of imgs) {
+        if (!seen.has(img.path)) {
+          seen.add(img.path);
+          result.push(img);
+        }
+      }
+    }
+  }
+
+  if (result.length > 0) return result;
+
+  // Make-level fallback
+  return MANIFEST.by_make[ms] ?? [];
+}
+
+/** One image for a listing card, rotating by index. Returns null when no images. */
+export function getListingCardImage(
+  make: string,
+  model: string,
+  index: number,
+): ModelImage | null {
+  const imgs = getMakeModelImages(make, model);
+  if (imgs.length === 0) return null;
+  return imgs[index % imgs.length];
 }
