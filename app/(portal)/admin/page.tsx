@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRole } from "@/lib/roles/context";
 import { MOCK_DEALERS, MOCK_PENDING_LISTINGS } from "@/lib/roles/mock-data";
+import { IconList, IconSettings } from "@/components/icons";
 
 export default function AdminDashboardPage() {
   const { isAdmin, isLoggedIn } = useRole();
@@ -21,7 +22,7 @@ export default function AdminDashboardPage() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Admin dashboard</h1>
-        <span className="rounded-full bg-red-100 px-3 py-1 text-[var(--text-xs)] font-bold text-red-700">SIMULATION — not real data</span>
+        <span className="rounded-[var(--radius-pill)] bg-danger-tint px-3 py-1 text-[var(--text-xs)] font-bold text-danger-700">SIMULATION — not real data</span>
       </div>
 
       {/* Stat cards */}
@@ -78,7 +79,7 @@ export default function AdminDashboardPage() {
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">
               Pending moderation
-              <span className="ml-2 inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-[var(--text-xs)] font-bold text-white">
+              <span className="ml-2 inline-flex items-center rounded-full bg-warning-600 px-2 py-0.5 text-[var(--text-xs)] font-bold text-white">
                 {MOCK_PENDING_LISTINGS.length}
               </span>
             </h2>
@@ -95,7 +96,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="flex flex-shrink-0 gap-2">
                     <button className="rounded-[var(--radius-sm)] bg-success-600 px-2 py-1 text-[var(--text-2xs)] font-bold text-white hover:bg-success-700">Approve</button>
-                    <button className="rounded-[var(--radius-sm)] border border-red-200 px-2 py-1 text-[var(--text-2xs)] font-bold text-red-600 hover:bg-red-50">Reject</button>
+                    <button className="rounded-[var(--radius-sm)] border border-danger-500/20 px-2 py-1 text-[var(--text-2xs)] font-bold text-danger-700 hover:bg-danger-tint">Reject</button>
                   </div>
                 </li>
               ))}
@@ -107,13 +108,13 @@ export default function AdminDashboardPage() {
         <section className="lg:col-span-2">
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: "Dealer management", href: "/admin/dealers", icon: "🏪" },
-              { label: "Listing moderation", href: "/admin/listings", icon: "📋" },
-              { label: "API & integrations", href: "/admin/integrations", icon: "⚡" },
+              { label: "Dealer management", href: "/admin/dealers", Icon: IconSettings },
+              { label: "Listing moderation", href: "/admin/listings", Icon: IconList },
+              { label: "API & integrations", href: "/admin/integrations", Icon: IconSettings },
             ].map((item) => (
               <Link key={item.href} href={item.href}
                 className="flex items-center gap-3 rounded-[var(--radius-xl)] border border-border bg-white px-5 py-4 shadow-[var(--shadow-sm)] hover:border-brand-400/40 hover:shadow-[var(--shadow-md)]">
-                <span className="text-2xl" aria-hidden>{item.icon}</span>
+                <item.Icon width={20} height={20} className="shrink-0 text-ink-400" aria-hidden />
                 <span className="font-semibold text-ink-800">{item.label}</span>
                 <span className="ml-auto text-ink-400">→</span>
               </Link>

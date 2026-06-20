@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui";
 
 export default function DealerGroupSignUpPage() {
   const router = useRouter();
@@ -13,9 +14,11 @@ export default function DealerGroupSignUpPage() {
   return (
     <div className="w-full max-w-lg">
       <div className="mb-6 text-center">
-        <span className="text-4xl" aria-hidden>🏢</span>
+        <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-[var(--radius-xl)] bg-ink-900 text-white">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
         <h1 className="mt-3 font-display text-[var(--text-xl)] font-extrabold text-ink-900">Dealer group enquiry</h1>
-        <p className="mt-1 text-[var(--text-sm)] text-ink-500">Multi-site, bulk stock, custom lead routing. We'll come back within one business day.</p>
+        <p className="mt-1 text-[var(--text-sm)] text-ink-500">Multi-site, bulk stock, custom lead routing. We&apos;ll come back within one business day.</p>
       </div>
       <div className="rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-md)]">
         <form onSubmit={handleSubmit} className="space-y-4 px-6 py-6">
@@ -46,10 +49,9 @@ export default function DealerGroupSignUpPage() {
             <textarea id="notes" name="notes" rows={3} placeholder="Current DMS, current advertising platforms, lead routing requirements…"
               className="mt-1 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 py-2 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
           </div>
-          <button type="submit"
-            className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-ink-900 text-[var(--text-sm)] font-bold text-white hover:bg-ink-700">
+          <Button type="submit" variant="brand" size="md" className="w-full">
             Send enquiry →
-          </button>
+          </Button>
         </form>
       </div>
       <p className="mt-4 text-center text-[var(--text-xs)] text-ink-400">

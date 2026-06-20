@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRole } from "@/lib/roles/context";
 import { useRouter } from "next/navigation";
 import type { Category } from "@/lib/integrations/providers";
+import { IconSettings, IconBarChart, IconBolt } from "@/components/icons";
 
 type CategorySummary = {
   category: Category;
   label: string;
   description: string;
   href: string;
-  icon: string;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   connected: number;
   total: number;
 };
@@ -22,21 +23,21 @@ const PILL_CONFIG: Omit<CategorySummary, "connected" | "total">[] = [
     label: "APIs",
     description: "Vehicle data, payments, email and feed integrations.",
     href: "/admin/integrations/apis",
-    icon: "🔌",
+    Icon: IconBolt,
   },
   {
     category: "ai",
     label: "AI",
     description: "Language models for content and image generation.",
     href: "/admin/integrations/ai",
-    icon: "🤖",
+    Icon: IconSettings,
   },
   {
     category: "tracking",
     label: "Tracking",
     description: "GTM, GA4, and Meta Pixel — injected into <head> site-wide.",
     href: "/admin/integrations/tracking",
-    icon: "📊",
+    Icon: IconBarChart,
   },
 ];
 
@@ -105,7 +106,7 @@ export default function IntegrationsHubPage() {
               className="group flex flex-col rounded-[var(--radius-xl)] border border-border bg-white px-6 py-5 shadow-[var(--shadow-xs)] transition-[box-shadow,border-color] hover:border-brand-400/40 hover:shadow-[var(--shadow-md)]"
             >
               <div className="mb-3 flex items-start justify-between gap-2">
-                <span className="text-2xl" aria-hidden>{pill.icon}</span>
+                <pill.Icon width={24} height={24} className="text-ink-500" aria-hidden />
                 {supabaseConfigured && !loading ? (
                   <span className={`rounded-full px-2.5 py-0.5 text-[var(--text-2xs)] font-semibold ${count.connected > 0 ? "bg-success-tint text-success-700" : "bg-surface-2 text-ink-400"}`}>
                     {count.connected}/{count.total} connected

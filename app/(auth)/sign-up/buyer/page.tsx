@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui";
 
 export default function BuyerSignUpPage() {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function BuyerSignUpPage() {
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-md)]">
         <form onSubmit={handleSubmit} className="space-y-4 px-6 py-6" noValidate>
           {error && (
-            <div role="alert" className="rounded-[var(--radius-md)] border border-red-200 bg-red-50 px-3 py-2.5 text-[var(--text-sm)] font-medium text-red-700">
+            <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-danger-700">
               {error}
             </div>
           )}
@@ -89,10 +90,9 @@ export default function BuyerSignUpPage() {
               I agree to the <Link href="/legal/terms" className="text-brand-600 hover:underline">terms</Link> and <Link href="/legal/privacy" className="text-brand-600 hover:underline">privacy policy</Link>
             </span>
           </label>
-          <button type="submit" disabled={loading}
-            className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-sm)] font-bold text-white transition-colors hover:bg-brand-600 disabled:opacity-60">
+          <Button type="submit" variant="brand" size="md" className="w-full" disabled={loading}>
             {loading ? "Creating account…" : "Create account →"}
-          </button>
+          </Button>
           <div className="relative flex items-center gap-3">
             <div className="h-px flex-1 bg-border" />
             <span className="text-[var(--text-xs)] text-ink-400">or</span>

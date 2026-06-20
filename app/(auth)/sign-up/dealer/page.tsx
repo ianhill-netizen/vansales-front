@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { IconCheck } from "@/components/icons";
+import { Button } from "@/components/ui";
 
 const PLANS = [
   { id: "trial", label: "Free 14-day trial", price: "Free", desc: "Try Pro free, cancel any time", popular: true },
@@ -82,6 +83,8 @@ export default function DealerSignUpPage() {
   const inputCls = "mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500";
   const labelCls = "block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500";
 
+  const loadingText = `Start ${plan === "trial" ? "free trial" : plan === "payg" ? "listing" : "plan"} →`;
+
   return (
     <div className="w-full max-w-lg">
       <div className="mb-6 text-center">
@@ -113,15 +116,14 @@ export default function DealerSignUpPage() {
                 <input id={f.id} name={f.id} type={f.type} autoComplete={f.auto} required className={inputCls} />
               </div>
             ))}
-            <button type="submit"
-              className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600">
+            <Button type="submit" variant="brand" size="md" className="w-full">
               Next: Choose plan →
-            </button>
+            </Button>
           </form>
         ) : (
           <form onSubmit={handleStep2} className="space-y-3 px-6 py-6" noValidate>
             {error && (
-              <div role="alert" className="rounded-[var(--radius-md)] border border-red-200 bg-red-50 px-3 py-2.5 text-[var(--text-sm)] font-medium text-red-700">
+              <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-danger-700">
                 {error}
               </div>
             )}
@@ -139,14 +141,12 @@ export default function DealerSignUpPage() {
               </label>
             ))}
             <div className="flex gap-3 pt-2">
-              <button type="button" onClick={() => setStep(1)}
-                className="flex h-11 flex-1 items-center justify-center rounded-[var(--radius-md)] border border-border text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
+              <Button type="button" variant="outline" size="md" className="flex-1" onClick={() => setStep(1)}>
                 ← Back
-              </button>
-              <button type="submit" disabled={loading}
-                className="flex h-11 flex-1 items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600 disabled:opacity-60">
-                {loading ? "Creating…" : `Start ${plan === "trial" ? "free trial" : plan === "payg" ? "listing" : "plan"} →`}
-              </button>
+              </Button>
+              <Button type="submit" variant="brand" size="md" className="flex-1" disabled={loading}>
+                {loading ? "Creating…" : loadingText}
+              </Button>
             </div>
           </form>
         )}

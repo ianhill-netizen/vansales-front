@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function SignInPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4 px-6 py-5" noValidate>
           {error && (
-            <div role="alert" className="rounded-[var(--radius-md)] border border-red-200 bg-red-50 px-3 py-2.5 text-[var(--text-sm)] font-medium text-red-700">
+            <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-danger-700">
               {error}
             </div>
           )}
@@ -91,13 +92,9 @@ export default function SignInPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600 disabled:opacity-60"
-          >
+          <Button type="submit" variant="brand" size="md" className="w-full" disabled={loading}>
             {loading ? "Signing in…" : "Sign in"}
-          </button>
+          </Button>
 
           <div className="relative flex items-center gap-3 py-1">
             <div className="h-px flex-1 bg-border" />
@@ -108,7 +105,7 @@ export default function SignInPage() {
           <button
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/account" })}
-            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[var(--radius-md)] border border-border bg-white text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-ink-400"
+            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[var(--radius-md)] border border-ink-300 bg-white text-[var(--text-sm)] font-semibold text-ink-800 transition-colors hover:border-ink-500 hover:bg-surface-1"
           >
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

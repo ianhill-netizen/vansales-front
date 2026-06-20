@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
-import { IconArrow, IconStar } from "@/components/icons";
+import { IconArrow, IconCheck, IconStar } from "@/components/icons";
 import { getModelIndex } from "@/lib/listings/client";
 import { slugify } from "@/lib/listings/slug";
 import { SITE } from "@/lib/site";
@@ -123,11 +123,11 @@ export default async function VanReviewsPage() {
                 <div className="mt-4 space-y-1">
                   {r.pros.map((p) => (
                     <p key={p} className="flex items-start gap-2 text-[var(--text-xs)] text-success-700">
-                      <span className="mt-0.5 shrink-0">✓</span>{p}
+                      <IconCheck width={13} height={13} className="mt-0.5 shrink-0 text-success-600" />{p}
                     </p>
                   ))}
                   <p className="flex items-start gap-2 text-[var(--text-xs)] text-ink-500">
-                    <span className="mt-0.5 shrink-0">✕</span>{r.con}
+                    <span className="mt-0.5 shrink-0 text-[var(--text-base)] leading-none text-ink-300">—</span>{r.con}
                   </p>
                 </div>
                 <Link

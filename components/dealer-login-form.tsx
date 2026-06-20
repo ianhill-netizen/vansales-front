@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui";
 
 export function DealerLoginForm() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export function DealerLoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {error && (
-        <div role="alert" className="rounded-[var(--radius-md)] border border-red-200 bg-red-50 px-3 py-2.5 text-[var(--text-sm)] font-medium text-red-700">
+        <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-danger-700">
           {error}
         </div>
       )}
@@ -98,13 +99,9 @@ export function DealerLoginForm() {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600 disabled:opacity-60"
-      >
+      <Button type="submit" variant="brand" size="md" className="w-full" disabled={loading}>
         {loading ? "Logging in…" : "Log in"}
-      </button>
+      </Button>
 
       <p className="text-center text-[var(--text-xs)] text-ink-400">
         Don&apos;t have an account?{" "}

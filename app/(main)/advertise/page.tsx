@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import type React from "react";
 import Link from "next/link";
-import { Container, Eyebrow, Badge } from "@/components/ui";
-import { IconCheck, IconArrow } from "@/components/icons";
+import { Container, Eyebrow, Badge, Button } from "@/components/ui";
+import { IconCheck, IconArrow, IconBolt, IconTruck, IconUser } from "@/components/icons";
 import { SITE, absUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -89,37 +90,37 @@ const PRICING = [
   },
 ];
 
-const SELLER_TYPES = [
+const SELLER_TYPES: { Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; who: string; body: string; cta: string; ctaHref: string }[] = [
   {
-    icon: "⚡",
+    Icon: IconBolt,
     who: "Already on Dealski?",
     body: "Your stock feeds in automatically — live prices, photos and spec with no manual uploads.",
     cta: "Connect my Dealski stock",
     ctaHref: "/dealer-portal/login",
   },
   {
-    icon: "🏪",
+    Icon: IconTruck,
     who: "Independent dealer",
     body: "From 20 to 75 vans. Dealer profile page, WhatsApp leads, finance module. No contract.",
     cta: "Start free trial",
     ctaHref: "/dealer-portal/login",
   },
   {
-    icon: "🏢",
+    Icon: IconTruck,
     who: "Dealer group (multi-site)",
-    body: "Volume pricing, multiple locations, white-label lead routing. Let's talk.",
+    body: "Volume pricing, multiple locations, white-label lead routing. Let’s talk.",
     cta: "Talk to us",
     ctaHref: "mailto:dealers@vansales.com",
   },
   {
-    icon: "🚐",
+    Icon: IconUser,
     who: "Private seller",
     body: "Selling one van? List it free in under 5 minutes — no subscription needed.",
     cta: "List one van",
     ctaHref: "/sell",
   },
   {
-    icon: "💸",
+    Icon: IconTruck,
     who: "Finance / hire / fleet disposal",
     body: "Bulk disposals, fleet remarketing, wholesale. Custom volume arrangements available.",
     cta: "Talk to us",
@@ -175,18 +176,12 @@ export default function AdvertisePage() {
                 who filter by payload and ULEZ — not just colour.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <Link
-                  href="/dealer-portal/login"
-                  className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] bg-brand-500 px-6 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600"
-                >
+                <Button href="/dealer-portal/login" variant="primary" size="lg">
                   Start free 14-day trial <IconArrow width={18} height={18} />
-                </Link>
-                <a
-                  href="mailto:dealers@vansales.com"
-                  className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] border border-white/30 px-6 text-[var(--text-base)] font-semibold text-white/80 transition-colors hover:border-white/60 hover:text-white"
-                >
+                </Button>
+                <Button href="mailto:dealers@vansales.com" variant="outline-light" size="lg">
                   Talk to the team
-                </a>
+                </Button>
               </div>
               <p className="mt-4 text-[var(--text-xs)] text-white/40">
                 14-day free trial · No credit card · Cancel anytime
@@ -226,7 +221,9 @@ export default function AdvertisePage() {
                 key={s.who}
                 className="flex flex-col rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-[var(--shadow-md)]"
               >
-                <div className="mb-3 text-3xl" role="img" aria-hidden>{s.icon}</div>
+                <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-brand-tint">
+                  <s.Icon width={20} height={20} className="text-brand-700" aria-hidden />
+                </div>
                 <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">{s.who}</h3>
                 <p className="mt-1.5 flex-1 text-[var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
                 <Link
@@ -318,16 +315,15 @@ export default function AdvertisePage() {
                   ))}
                 </ul>
 
-                <Link
-                  href={plan.ctaHref}
-                  className={`mt-6 flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] text-[var(--text-sm)] font-bold transition-colors ${
-                    plan.highlight
-                      ? "bg-brand-500 text-white hover:bg-brand-600"
-                      : "border border-border bg-surface-1 text-ink-800 hover:border-ink-400 hover:bg-surface-2"
-                  }`}
-                >
-                  {plan.cta}
-                </Link>
+                {plan.highlight ? (
+                  <Button href={plan.ctaHref} variant="primary" size="md" className="mt-6 w-full">
+                    {plan.cta}
+                  </Button>
+                ) : (
+                  <Button href={plan.ctaHref} variant="outline" size="md" className="mt-6 w-full">
+                    {plan.cta}
+                  </Button>
+                )}
               </div>
             ))}
           </div>
@@ -340,12 +336,11 @@ export default function AdvertisePage() {
             <p className="mt-1.5 text-[var(--text-sm)] text-ink-500">
               Multi-location stock, bulk lead routing, API integration, white-label options. Custom pricing.
             </p>
-            <a
-              href="mailto:dealers@vansales.com"
-              className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-2.5 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700"
-            >
-              Talk to us <IconArrow width={14} height={14} />
-            </a>
+            <div className="mt-4 flex justify-center">
+              <Button href="mailto:dealers@vansales.com" variant="dark" size="md">
+                Talk to us <IconArrow width={14} height={14} />
+              </Button>
+            </div>
           </div>
         </Container>
       </section>
@@ -441,18 +436,12 @@ export default function AdvertisePage() {
             Start free. No credit card. Cancel any time.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/dealer-portal/login"
-              className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] bg-brand-500 px-7 text-[var(--text-base)] font-bold text-white transition-colors hover:bg-brand-600"
-            >
+            <Button href="/dealer-portal/login" variant="primary" size="lg">
               Start free trial <IconArrow width={18} height={18} />
-            </Link>
-            <a
-              href="mailto:dealers@vansales.com"
-              className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-md)] border border-white/25 px-7 text-[var(--text-base)] font-semibold text-white/80 transition-colors hover:border-white/50 hover:text-white"
-            >
+            </Button>
+            <Button href="mailto:dealers@vansales.com" variant="outline-light" size="lg">
               Email the team
-            </a>
+            </Button>
           </div>
         </Container>
       </section>

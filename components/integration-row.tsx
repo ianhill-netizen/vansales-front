@@ -16,12 +16,12 @@ export type RowData = {
 const STATUS_CHIP: Record<string, string> = {
   connected: "bg-success-tint text-success-700",
   untested: "bg-surface-2 text-ink-500",
-  failed: "bg-red-50 text-red-600",
+  failed: "bg-danger-tint text-danger-700",
 };
 const STATUS_DOT: Record<string, string> = {
   connected: "bg-success-500",
   untested: "bg-ink-300",
-  failed: "bg-red-500",
+  failed: "bg-danger-500",
 };
 
 export function IntegrationRow({
@@ -180,7 +180,7 @@ export function IntegrationRow({
       </div>
 
       {toast && (
-        <div className={`mt-3 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-xs)] font-medium ${toast.ok ? "bg-success-tint text-success-700" : "bg-red-50 text-red-600"}`}>
+        <div className={`mt-3 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-xs)] font-medium ${toast.ok ? "bg-success-tint text-success-700" : "bg-danger-tint text-danger-700"}`}>
           {toast.msg}
         </div>
       )}
