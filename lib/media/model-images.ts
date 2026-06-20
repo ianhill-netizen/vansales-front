@@ -16,6 +16,26 @@ const MAKE_OVERRIDES: Record<string, string> = {
   citroën: "citroen",
 };
 
+// When a listing model name is a string-prefix of a sibling model name,
+// the startsWith scan would bleed into sibling images. List the sibling
+// prefixes to exclude so each model only gets its own source-page images.
+// E.g. "ford-transit" starts with same chars as "ford-transit-custom" —
+// without this, a Transit card shows Transit Custom / Connect / Courier photos.
+const SIBLING_PREFIXES: Record<string, string[]> = {
+  "ford-transit": [
+    "ford-transit-custom",
+    "ford-transit-connect",
+    "ford-transit-courier",
+  ],
+};
+
+// A handful of manifest slugs carry a non-standard prefix (e.g. seeded from
+// a "new-" WP product page). Map the canonical model prefix to the manifest
+// slug so the prefix scan can find images for those models.
+const SLUG_REMAPS: Record<string, string> = {
+  "vauxhall-movano": "new-vauxhall-movano",
+};
+
 function toMakeSlug(make: string): string {
   const n = make.toLowerCase().replace(/[^a-z0-9]/g, "");
   return MAKE_OVERRIDES[make.toLowerCase()] ?? n;
@@ -60,21 +80,31 @@ export function getMakeModelImages(make: string, model: string): ModelImage[] {
   const mslug = toModelSlug(cleanModel);
   const prefix = `${ms}-${mslug}`;
 
+  const siblings = SIBLING_PREFIXES[prefix] ?? [];
   const seen = new Set<string>();
   const result: ModelImage[] = [];
 
   for (const [slug, imgs] of Object.entries(MANIFEST.by_slug)) {
-    if (slug === prefix || slug.startsWith(prefix + "-")) {
-      for (const img of imgs) {
-        if (!seen.has(img.path)) {
-          seen.add(img.path);
-          result.push(img);
-        }
+    if (slug !== prefix && !slug.startsWith(prefix + "-")) continue;
+    // Source-page identity: skip slugs that belong to a more-specific sibling model
+    if (siblings.some((s) => slug === s || slug.startsWith(s + "-"))) continue;
+    for (const img of imgs) {
+      if (!seen.has(img.path)) {
+        seen.add(img.path);
+        result.push(img);
       }
     }
   }
 
   if (result.length > 0) return result;
+
+  // Some models live under a non-standard manifest slug (e.g. "new-vauxhall-movano").
+  // Fall back to the remapped slug before dropping to make-level images.
+  const remapped = SLUG_REMAPS[prefix];
+  if (remapped) {
+    const imgs = MANIFEST.by_slug[remapped] ?? [];
+    return [...new Map(imgs.map((i) => [i.path, i])).values()];
+  }
 
   // Make-level fallback
   return MANIFEST.by_make[ms] ?? [];
