@@ -3,9 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 import type { Listing } from "@/lib/listings/types";
 import { formatPrice, vatLabel, STATUS_LABEL } from "@/lib/listings/format";
 
-/* -----------------------------------------------------------------------------
-   Layout
-   -------------------------------------------------------------------------- */
+/* ── Layout ─────────────────────────────────────────────────────────────────── */
 export function Container({
   children,
   className = "",
@@ -16,9 +14,13 @@ export function Container({
   size?: "default" | "wide" | "narrow";
 }) {
   const max =
-    size === "wide" ? "max-w-[1320px]" : size === "narrow" ? "max-w-[760px]" : "max-w-[var(--container-max)]";
+    size === "wide"   ? "max-w-[var(--container-wide)]"
+    : size === "narrow" ? "max-w-[760px]"
+    : "max-w-[var(--container-max)]";
   return (
-    <div className={`mx-auto w-full ${max} px-[var(--gutter)] ${className}`}>{children}</div>
+    <div className={`mx-auto w-full ${max} px-[var(--gutter)] ${className}`}>
+      {children}
+    </div>
   );
 }
 
@@ -31,34 +33,54 @@ export function Eyebrow({
   className?: string;
   light?: boolean;
 }) {
-  return <p className={`eyebrow ${light ? "text-white/50" : ""} ${className}`}>{children}</p>;
+  return (
+    <p className={`eyebrow ${light ? "!text-white/50" : ""} ${className}`}>
+      {children}
+    </p>
+  );
 }
 
-/* -----------------------------------------------------------------------------
-   Button — primary (ink), accent (plate-yellow), dark, ghost, outline.
-   Renders <Link> or <button>.
-   -------------------------------------------------------------------------- */
-type ButtonVariant = "primary" | "accent" | "dark" | "ghost" | "outline" | "outline-light";
+/* ── Button ──────────────────────────────────────────────────────────────────
+   Variants: primary (orange), brand (navy), dark, ghost, outline, outline-light.
+   Renders as <Link> when href is provided, otherwise <button>.
+   ──────────────────────────────────────────────────────────────────────────── */
+type ButtonVariant = "primary" | "brand" | "accent" | "dark" | "ghost" | "outline" | "outline-light";
 type ButtonSize = "sm" | "md" | "lg";
 
 const BTN_BASE =
-  "inline-flex items-center justify-center gap-2 font-semibold rounded-[var(--radius-md)] transition-[transform,background-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] active:translate-y-px disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap";
+  "inline-flex items-center justify-center gap-2 font-semibold rounded-[var(--radius-md)] transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 select-none";
 
 const BTN_VARIANT: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-500 text-white shadow-[var(--shadow-sm)] hover:bg-brand-600 hover:shadow-[var(--shadow-md)]",
+    "text-white shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] focus-visible:ring-accent-500 hover:brightness-105",
+  brand:
+    "text-white shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] focus-visible:ring-brand-500 hover:brightness-110",
   accent:
-    "bg-accent-500 text-plate-ink shadow-[var(--shadow-sm)] hover:bg-accent-400 hover:shadow-[var(--shadow-md)]",
-  dark: "bg-ink-900 text-white hover:bg-ink-800 shadow-[var(--shadow-sm)]",
-  ghost: "bg-transparent text-ink-800 hover:bg-surface-2",
-  outline: "bg-surface-0 text-ink-800 border border-border-strong hover:border-ink-400 hover:bg-surface-1",
-  "outline-light": "bg-transparent text-white border border-white/30 hover:border-white/60 hover:bg-white/10",
+    "text-white shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] focus-visible:ring-accent-500 hover:brightness-105",
+  dark:
+    "bg-ink-900 text-white hover:bg-ink-800 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] focus-visible:ring-ink-700",
+  ghost:
+    "bg-transparent text-ink-700 hover:bg-surface-2 focus-visible:ring-brand-500",
+  outline:
+    "bg-surface-0 text-ink-800 border border-border-strong hover:border-ink-400 hover:bg-surface-1 focus-visible:ring-brand-500",
+  "outline-light":
+    "bg-transparent text-white border border-white/30 hover:border-white/70 hover:bg-white/10 focus-visible:ring-white",
+};
+
+const BTN_GRADIENT: Record<ButtonVariant, string> = {
+  primary:       "background: var(--gradient-accent-btn)",
+  brand:         "background: var(--gradient-brand-btn)",
+  accent:        "background: var(--gradient-accent-btn)",
+  dark:          "",
+  ghost:         "",
+  outline:       "",
+  "outline-light": "",
 };
 
 const BTN_SIZE: Record<ButtonSize, string> = {
-  sm: "text-[var(--text-sm)] h-9 px-3.5",
+  sm: "text-[var(--text-sm)] h-9 px-4",
   md: "text-[var(--text-base)] h-11 px-5",
-  lg: "text-[var(--text-md)] h-13 px-7 [height:3.25rem]",
+  lg: "text-[var(--text-md)] px-7 py-3.5",
 };
 
 type ButtonProps = {
@@ -75,35 +97,118 @@ export function Button({
   href,
   className = "",
   children,
+  style,
   ...rest
-}: ButtonProps) {
+}: ButtonProps & { style?: React.CSSProperties }) {
+  const variantStyle =
+    variant === "primary" || variant === "brand" || variant === "accent"
+      ? { background: variant === "brand" ? "linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%)" : "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)", ...style }
+      : style;
+
   const cls = `${BTN_BASE} ${BTN_VARIANT[variant]} ${BTN_SIZE[size]} ${className}`;
+
   if (href) {
     return (
-      <Link href={href} className={cls}>
+      <Link href={href} className={cls} style={variantStyle}>
         {children}
       </Link>
     );
   }
   return (
-    <button className={cls} {...rest}>
+    <button className={cls} style={variantStyle} {...rest}>
       {children}
     </button>
   );
 }
 
-/* -----------------------------------------------------------------------------
-   Badge + StatusBadge
-   -------------------------------------------------------------------------- */
-type BadgeTone = "neutral" | "brand" | "accent" | "success" | "reserved" | "sold" | "featured";
+/* ── Input ───────────────────────────────────────────────────────────────────
+   Standard text input with optional label. Accessible, focus-ringed.
+   ──────────────────────────────────────────────────────────────────────────── */
+type InputProps = {
+  label?: string;
+  hint?: string;
+  error?: string;
+  className?: string;
+} & Omit<ComponentProps<"input">, "ref">;
+
+export function Input({ label, hint, error, className = "", id, ...rest }: InputProps) {
+  const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+  return (
+    <div className={`flex flex-col gap-1 ${className}`}>
+      {label && (
+        <label htmlFor={inputId} className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">
+          {label}
+        </label>
+      )}
+      <input
+        id={inputId}
+        className={`h-11 w-full rounded-[var(--radius-md)] border bg-surface-0 px-3.5 text-[var(--text-base)] font-medium text-ink-800 placeholder:text-ink-400 outline-none transition-colors duration-[var(--dur-fast)] ${
+          error
+            ? "border-danger-500 focus-visible:border-danger-500 focus-visible:shadow-[0_0_0_3px_rgba(239,68,68,0.2)]"
+            : "border-border focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)]"
+        }`}
+        {...rest}
+      />
+      {(hint || error) && (
+        <p className={`text-[var(--text-xs)] ${error ? "text-danger-600" : "text-ink-500"}`}>
+          {error ?? hint}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/* ── Select ──────────────────────────────────────────────────────────────────
+   Styled native select.
+   ──────────────────────────────────────────────────────────────────────────── */
+type SelectProps = {
+  label?: string;
+  hint?: string;
+  className?: string;
+  options: { value: string; label: string }[];
+} & Omit<ComponentProps<"select">, "ref">;
+
+export function Select({ label, hint, className = "", options, id, ...rest }: SelectProps) {
+  const selectId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+  return (
+    <div className={`flex flex-col gap-1 ${className}`}>
+      {label && (
+        <label htmlFor={selectId} className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">
+          {label}
+        </label>
+      )}
+      <div className="relative">
+        <select
+          id={selectId}
+          className="h-11 w-full appearance-none rounded-[var(--radius-md)] border border-border bg-surface-0 pl-3.5 pr-8 text-[var(--text-base)] font-medium text-ink-800 outline-none transition-colors duration-[var(--dur-fast)] focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)] cursor-pointer"
+          {...rest}
+        >
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+        <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </div>
+      {hint && <p className="text-[var(--text-xs)] text-ink-500">{hint}</p>}
+    </div>
+  );
+}
+
+/* ── Badge + StatusBadge ─────────────────────────────────────────────────────
+   Pill-style labels for conditions, dealer type, fuel type, status.
+   ──────────────────────────────────────────────────────────────────────────── */
+type BadgeTone = "neutral" | "brand" | "accent" | "success" | "reserved" | "sold" | "featured" | "warning";
 const BADGE_TONE: Record<BadgeTone, string> = {
-  neutral: "bg-surface-2 text-ink-600",
-  brand: "bg-brand-tint text-brand-700",
-  accent: "bg-accent-tint text-accent-700",
-  success: "bg-success-tint text-success-600",
+  neutral:  "bg-surface-2 text-ink-600",
+  brand:    "bg-brand-tint text-brand-700",
+  accent:   "bg-accent-tint text-accent-700",
+  success:  "bg-success-tint text-success-700",
   reserved: "bg-reserved-tint text-reserved-600",
-  sold: "bg-sold-tint text-sold-600",
-  featured: "bg-amber-400 text-amber-900",
+  sold:     "bg-sold-tint text-sold-600",
+  featured: "bg-amber-100 text-amber-800 border border-amber-200",
+  warning:  "bg-warning-tint text-warning-600",
 };
 
 export function Badge({
@@ -137,9 +242,9 @@ export function StatusBadge({ status, className = "" }: { status: Listing["statu
   );
 }
 
-/* -----------------------------------------------------------------------------
-   PlateBadge — the signature: an authentic UK registration plate.
-   -------------------------------------------------------------------------- */
+/* ── PlateBadge ──────────────────────────────────────────────────────────────
+   Authentic UK registration plate treatment.
+   ──────────────────────────────────────────────────────────────────────────── */
 export function PlateBadge({
   text,
   size = "md",
@@ -165,9 +270,9 @@ export function PlateBadge({
   );
 }
 
-/* -----------------------------------------------------------------------------
-   Price — mono, confident, with VAT qualifier.
-   -------------------------------------------------------------------------- */
+/* ── Price ───────────────────────────────────────────────────────────────────
+   Monospaced, confident price display with VAT qualifier.
+   ──────────────────────────────────────────────────────────────────────────── */
 export function Price({
   listing,
   size = "md",
@@ -178,7 +283,11 @@ export function Price({
   className?: string;
 }) {
   const text =
-    size === "lg" ? "text-[var(--text-3xl)]" : size === "sm" ? "text-[var(--text-lg)]" : "text-[var(--text-2xl)]";
+    size === "lg"
+      ? "text-[var(--text-3xl)]"
+      : size === "sm"
+        ? "text-[var(--text-lg)]"
+        : "text-[var(--text-2xl)]";
   const poa = listing.price == null;
   return (
     <div className={`flex items-baseline gap-2 ${className}`}>
@@ -186,10 +295,50 @@ export function Price({
         {formatPrice(listing.price)}
       </span>
       {!poa && (
-        <span className="text-[var(--text-sm)] font-semibold text-ink-500">
+        <span className="text-[var(--text-xs)] font-medium text-ink-500">
           {vatLabel(listing.price_type, listing.vat_qualifying)}
         </span>
       )}
     </div>
   );
+}
+
+/* ── SectionHeader ───────────────────────────────────────────────────────────
+   Eyebrow + h2 pairing used on most content sections.
+   ──────────────────────────────────────────────────────────────────────────── */
+export function SectionHeader({
+  eyebrow,
+  heading,
+  sub,
+  centered = false,
+  light = false,
+  className = "",
+}: {
+  eyebrow?: string;
+  heading: ReactNode;
+  sub?: ReactNode;
+  centered?: boolean;
+  light?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`${centered ? "text-center" : ""} ${className}`}>
+      {eyebrow && <Eyebrow light={light}>{eyebrow}</Eyebrow>}
+      <h2
+        className={`mt-2 font-display text-[var(--text-2xl)] font-extrabold leading-[1.1] tracking-[var(--tracking-display)] ${light ? "text-white" : "text-ink-900"}`}
+      >
+        {heading}
+      </h2>
+      {sub && (
+        <p className={`mt-2 text-[var(--text-md)] leading-relaxed ${light ? "text-white/65" : "text-ink-500"}`}>
+          {sub}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/* ── Divider ─────────────────────────────────────────────────────────────────*/
+export function Divider({ className = "" }: { className?: string }) {
+  return <hr className={`border-border ${className}`} />;
 }
