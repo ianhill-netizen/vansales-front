@@ -17,6 +17,7 @@ import {
   listingTitle,
   formatPrice,
   formatMileage,
+  formatMileageDisplay,
   titleCase,
   WHEELBASE_SHORT,
 } from "@/lib/listings/format";
@@ -60,11 +61,12 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   if (!listing) notFound();
 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
+  const displayTown = dealerConfig?.location.town ?? listing.location.town;
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
   const modelImages = getMakeModelImages(listing.make, listing.model);
   const readouts = [
-    { icon: <IconGauge />, label: "Mileage", value: formatMileage(listing.mileage) },
+    { icon: <IconGauge />, label: "Mileage", value: formatMileageDisplay(listing.mileage, listing.condition) },
     { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
     { icon: <IconFuel />, label: "Fuel", value: titleCase(listing.fuel) },
     {
@@ -139,7 +141,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
 
         {/* Single page header band (one H1 for the page) */}
         <div className="mt-5">
-          <ListingHeader listing={listing} title={title} />
+          <ListingHeader listing={listing} title={title} displayTown={displayTown} />
         </div>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_380px]">
@@ -204,7 +206,7 @@ export default async function ListingPage({ params }: { params: Promise<Params> 
   );
 }
 
-function ListingHeader({ listing, title }: { listing: Listing; title: string }) {
+function ListingHeader({ listing, title, displayTown }: { listing: Listing; title: string; displayTown: string }) {
   return (
     <div>
       <Eyebrow>{listing.van_spec.body_style}</Eyebrow>
@@ -214,7 +216,7 @@ function ListingHeader({ listing, title }: { listing: Listing; title: string }) 
       </div>
       <p className="mt-1.5 text-[var(--text-sm)] text-ink-500">
         {listing.year > 0 ? `${listing.year} · ` : ""}
-        {listing.location.town}
+        {displayTown}
         {listing.colour !== "—" ? ` · ${listing.colour}` : ""}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-3">

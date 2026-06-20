@@ -78,8 +78,8 @@ export const DEALERS: Record<string, DealerConfig> = {
     ],
     sellerNames: ["Swiss Vans", "Swiss Vans Ltd"],
     featured: true,
-    googleRating: null,
-    googleReviewCount: null,
+    googleRating: 4.9,
+    googleReviewCount: 312,
   },
 };
 
