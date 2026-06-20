@@ -11,10 +11,18 @@ import { getListings, getFacets } from "@/lib/listings/client";
 import type { ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { listingTitle, listingMeta } from "@/lib/listings/format";
 import { listingPath } from "@/lib/listings/slug";
-import { getModelContent } from "@/lib/models/content.generated";
+import { MODEL_CONTENT, getModelContent } from "@/lib/models/content.generated";
 import { SITE, absUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic"; // filters + page live in searchParams
+export const revalidate = 1800; // ISR — rebuild every 30 min
+
+/** Pre-render all 35 known make/model paths; unknown combos render on demand. */
+export async function generateStaticParams() {
+  return Object.values(MODEL_CONTENT).map((c) => ({
+    make: c.makeSlug,
+    model: c.modelSlug,
+  }));
+}
 
 const PAGE_SIZE = 24;
 

@@ -9,7 +9,7 @@ import { getBlogIndex } from "@/lib/content/blog";
 import { matchBlogPosts } from "@/lib/content/cross-links";
 import { SITE, absUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "Dropside Vans for Sale",

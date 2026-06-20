@@ -11,6 +11,7 @@ import { getBlogIndex } from "@/lib/content/blog";
 import { inferBodyType, makeToSlug, matchBlogPosts, matchRelatedVans } from "@/lib/content/cross-links";
 import { getListings } from "@/lib/listings/client";
 import { mdToHtml } from "@/lib/content/markdown";
+import { getNewVanPrice } from "@/lib/content/prices";
 import { SITE, absUrl } from "@/lib/site";
 
 interface Props { params: Promise<{ slug: string }> }
@@ -43,6 +44,8 @@ export default async function NewVanDetailPage({ params }: Props) {
   const { slug } = await params;
   const van = getNewVanBySlug(slug);
   if (!van) notFound();
+
+  const price = getNewVanPrice(slug);
 
   const stockResult = await getListings({
     make: van.make !== "Van" ? van.make : undefined,
@@ -109,6 +112,15 @@ export default async function NewVanDetailPage({ params }: Props) {
               </h1>
               {van.description && (
                 <p className="mt-3 text-[var(--text-md)] text-ink-600">{van.description}</p>
+              )}
+              {price != null && (
+                <div className="mt-4 inline-flex items-baseline gap-1.5 rounded-[var(--radius-lg)] bg-brand-50 px-4 py-2.5 ring-1 ring-brand-200">
+                  <span className="text-[var(--text-xs)] font-semibold uppercase tracking-wide text-brand-600">From</span>
+                  <span className="font-display text-[var(--text-2xl)] font-extrabold text-brand-700">
+                    £{price.toLocaleString("en-GB")}
+                  </span>
+                  <span className="text-[var(--text-xs)] text-brand-600">/month exc. VAT</span>
+                </div>
               )}
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
