@@ -4,18 +4,17 @@ import { buildSlug } from "../slug";
 import { titleCase } from "../format";
 
 /* =============================================================================
-   DEALSKI SOURCE  — live stock feed behind swissvans.dealski.co.uk/stock
+   DEALSKI SOURCE  — live stock feed behind swissvans.dealski.co.uk
    Verified endpoints (public, unauthenticated):
-     LIST   GET {BASE}/api/public/stock?make=&model=&page=&per_page=
-     DETAIL GET {BASE}/api/public/stock/{id}
+     LIST   GET {BASE}/api/public/stock/vehicles?make=&model=&page=&per_page=
+     DETAIL GET {BASE}/api/public/stock/vehicles/{id}
      FACETS GET {BASE}/api/public/stock/vehicles/facets
    ALL feed→canonical mapping lives in this one file.
 
-   Reality check (captured at build time): the live feed serves rich
-   make/model/spec data but currently NO photos and NO prices, so mapped
-   listings legitimately come through with price=null (POA) and image-less
-   (the <VanPhoto> SVG renderer covers that). VW Transporters are coded
-   T28/T30/T32/T34 upstream and are normalised to model "Transporter" here.
+   Price field: `price` is in GBP (pounds) as an integer.
+   Photos: `primary_photo` on list; `photos[].preview_url` on detail.
+   Photo preview_url values are 24-hour S3 presigned URLs — the feed cache
+   (REVALIDATE) is kept at 6 h so they are re-signed well within their TTL.
    ========================================================================== */
 
 const BASE =
@@ -23,7 +22,7 @@ const BASE =
   "https://swissvans.dealski.co.uk";
 const PER_PAGE = 50; // upstream caps per_page at 50 regardless of request
 const PAGE_CONCURRENCY = 6; // polite parallelism while paging the whole feed
-const REVALIDATE = 1800; // 30 min — assembled catalogue cache lifetime
+const REVALIDATE = 21600; // 6 h — must be < 24 h (S3 presigned photo TTL)
 const TIMEOUT_MS = 12000;
 const HARD_PAGE_CAP = 60; // safety backstop (~3000 vehicles) vs a runaway feed
 
@@ -43,37 +42,51 @@ interface DealskiList {
   data: DealskiSummary[];
   meta: { current_page: number; last_page: number; per_page: number; total: number };
 }
+
+/* Shape returned by GET /api/public/stock/vehicles (publicIndex).
+   All spec fields are present in the summary — no second detail fetch needed
+   for card rendering. `price` is in GBP (pounds). `primary_photo` is the raw
+   S3 key (may be null when no photos uploaded yet). */
 interface DealskiSummary {
   id: number;
+  stock_number: string | null;
   make: string | null;
   model: string | null;
   variant: string | null;
+  display_name: string | null;
+  seats: number | null;
   colour: string | null;
   fuel: string | null;
-  availability_status: string | null;
-  primary_photo: string | null;
-  photo_count: number;
-  our_price: number | null;
-  rrp: number | null;
-  customer_ref: string | null;
-  created_at: string;
-  updated_at: string;
-}
-interface DealskiDetail extends DealskiSummary {
-  description: string | null;
   gearbox: string | null;
-  seats: number | null;
-  mileage: number | null;
-  side_doors: number | null;
-  rear_doors: number | null;
-  rear_door_type: string | null;
-  photos: Array<string | { url?: string; alt?: string }> | null;
   vehicle_type: string | null;
   wheelbase: string | null;
   bhp: number | null;
   engine_cc: number | null;
-  weight_kg: number | null;
   co2_gkm: number | null;
+  weight_kg: number | null;
+  mileage: number | null;
+  side_doors: number | null;
+  rear_doors: number | null;
+  rear_door_type: string | null;
+  first_registration_date: string | null; // YYYY-MM-DD from DVLA enrichment
+  mot_expires: string | null;
+  factory_extras: string | null;
+  swiss_extras: string | null;
+  availability_status: string | null;
+  rrp: number | null;
+  price: number | null; // GBP pounds (computed selling price)
+  customer_ref: string | null;
+  primary_photo: string | null;
+  photo_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+/* Shape returned by GET /api/public/stock/vehicles/{id} (publicShow).
+   Extends the summary with a full description and photos with 24-h presigned URLs. */
+interface DealskiDetail extends DealskiSummary {
+  description: string | null;
+  photos: Array<{ id: number; preview_url: string; sort_order: number; is_primary: boolean }> | null;
 }
 
 async function getJsonOnce<T>(url: string): Promise<T> {
@@ -212,7 +225,7 @@ function normaliseStatus(s: string | null): Listing["status"] {
 }
 
 function bodyStyleFrom(d: DealskiDetail | DealskiSummary): string {
-  const t = ("vehicle_type" in d ? d.vehicle_type : null) ?? "";
+  const t = d.vehicle_type ?? "";
   const v = (d.variant ?? "").toLowerCase();
   const hay = `${t} ${v}`.toLowerCase();
   if (hay.includes("luton")) return "Luton";
@@ -224,8 +237,12 @@ function bodyStyleFrom(d: DealskiDetail | DealskiSummary): string {
   return "Panel Van";
 }
 
-/** Pull a 4-digit registration year from any text field, else 0 (unknown). */
-function yearFrom(...fields: Array<string | null | undefined>): number {
+/** Pull registration year: prefer the DVLA-verified date, fall back to text scan. */
+function yearFrom(firstRegDate: string | null, ...fields: Array<string | null | undefined>): number {
+  if (firstRegDate) {
+    const y = parseInt(firstRegDate.slice(0, 4), 10);
+    if (y >= 2000 && y <= 2099) return y;
+  }
   for (const f of fields) {
     const m = (f ?? "").match(/\b(20[12]\d)\b/);
     if (m) return Number(m[1]);
@@ -238,7 +255,7 @@ function imagesFrom(d: DealskiDetail | DealskiSummary, alt: string): ListingImag
   if (d.primary_photo) out.push({ url: d.primary_photo, alt });
   if ("photos" in d && Array.isArray(d.photos)) {
     for (const p of d.photos) {
-      const url = typeof p === "string" ? p : p?.url;
+      const url = p?.preview_url;
       if (url && url !== d.primary_photo) out.push({ url, alt });
     }
   }
@@ -249,7 +266,7 @@ function mapDetail(d: DealskiDetail): Listing {
   const make = titleCase(d.make ?? "Van");
   const { model, codeDerivative } = normaliseModel(make, d.model);
   const derivative = [codeDerivative, titleCase(d.variant ?? "")].filter(Boolean).join(" ").trim();
-  const year = yearFrom(d.variant, d.vehicle_type, d.description);
+  const year = yearFrom(d.first_registration_date, d.variant, d.vehicle_type, d.description);
   const source_id = String(d.id);
   const alt = `${make} ${model} ${derivative}`.trim();
   const doors =
@@ -269,7 +286,7 @@ function mapDetail(d: DealskiDetail): Listing {
     condition: "used",
     year,
     plate: "",
-    price: d.our_price ?? d.rrp ?? null,
+    price: d.price ?? null,
     price_type: "inc_vat",
     vat_qualifying: true,
     mileage: d.mileage ?? null,
@@ -305,25 +322,9 @@ function mapDetail(d: DealskiDetail): Listing {
   };
 }
 
-/** Summaries lack detail fields; map what we have (detail is fetched on demand). */
+/** Summary rows have all spec fields; just fill the detail-only fields with null. */
 function mapSummary(s: DealskiSummary): Listing {
-  return mapDetail({
-    ...s,
-    description: null,
-    gearbox: null,
-    seats: null,
-    mileage: null,
-    side_doors: null,
-    rear_doors: null,
-    rear_door_type: null,
-    photos: null,
-    vehicle_type: null,
-    wheelbase: null,
-    bhp: null,
-    engine_cc: null,
-    weight_kg: null,
-    co2_gkm: null,
-  });
+  return mapDetail({ ...s, description: null, photos: null });
 }
 
 /* ---------------------------------------------------------------------------
@@ -332,11 +333,11 @@ function mapSummary(s: DealskiSummary): Listing {
 
 /** Page through the ENTIRE upstream catalogue (all ~1,121 vehicles). */
 async function fetchAllSummaries(): Promise<{ summaries: DealskiSummary[]; feedTotal: number }> {
-  const first = await getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=1`);
+  const first = await getJson<DealskiList>(`${BASE}/api/public/stock/vehicles?per_page=${PER_PAGE}&page=1`);
   const lastPage = Math.min(first.meta.last_page || 1, HARD_PAGE_CAP);
   const restPages = Array.from({ length: Math.max(0, lastPage - 1) }, (_, i) => i + 2);
   const rest = await mapWithConcurrency(restPages, PAGE_CONCURRENCY, (page) =>
-    getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=${page}`).then(
+    getJson<DealskiList>(`${BASE}/api/public/stock/vehicles?per_page=${PER_PAGE}&page=${page}`).then(
       (r) => r.data,
       () => [] as DealskiSummary[],
     ),
@@ -366,13 +367,13 @@ export const fetchDealskiCatalogue = unstable_cache(
     return { listings, feedTotal };
   },
   // Bump this key whenever the feed→canonical mapping changes (busts the cache).
-  ["dealski-catalogue-v3"],
+  ["dealski-catalogue-v4"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
 export async function fetchDealskiBySourceId(sourceId: string): Promise<Listing | null> {
   try {
-    const d = await getJson<DealskiDetail>(`${BASE}/api/public/stock/${sourceId}`);
+    const d = await getJson<DealskiDetail>(`${BASE}/api/public/stock/vehicles/${sourceId}`);
     if (!d || !d.id) return null;
     return mapDetail(d);
   } catch {
