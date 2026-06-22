@@ -41,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         Authorization: `Bearer ${apiKey}`,
         ...(realIp ? { "X-Forwarded-For": realIp } : {}),
       },
-      body: JSON.stringify({ ...body, source: "swissvans" }),
+      body: JSON.stringify({ ...body, source: "vansales" }),
     });
 
     const data = await upstream.json().catch(() => ({}));
