@@ -1,5 +1,6 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { ComingSoonBanner } from "@/components/coming-soon-banner";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       >
         Skip to content
       </a>
+      <ComingSoonBanner />
       <Header />
       <main id="main">{children}</main>
       <Footer />
