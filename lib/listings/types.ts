@@ -84,6 +84,8 @@ export interface Listing {
   images: ListingImage[];
   seller: Seller;
   enquiry_route: EnquiryRoute;
+  /** Direct backend URL for submitting a lead. Populated for marketplace listings; null for other sources. */
+  enquiry_url: string | null;
 
   published_at: string; // ISO
   updated_at: string; // ISO
