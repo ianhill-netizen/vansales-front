@@ -282,7 +282,7 @@ function mapVehicle(d: MarketplaceVehicle): Listing {
     features: [],
     images: imagesFrom(d, alt),
     seller: { name: sellerName, type: "dealer", logo: null, rating: null },
-    enquiry_route: { to: "marketplace", ref: d.customer_ref ?? source_id },
+    enquiry_route: { to: "marketplace", ref: d.stock_number ?? d.customer_ref ?? source_id },
     enquiry_url: d.enquiry_url ?? null,
     published_at: d.created_at,
     updated_at: d.updated_at,
