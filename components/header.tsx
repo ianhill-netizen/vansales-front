@@ -200,7 +200,7 @@ export function Header() {
   const close = () => setOpenMenu(null);
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-40 bg-white/97 backdrop-blur-md">
+    <header ref={headerRef} className="sticky z-40 bg-white/97 backdrop-blur-md" style={{ top: "var(--coming-soon-h, 0px)" }}>
       {/* Top accent line — brand identity stripe */}
       <div className="h-0.5" style={{ background: "linear-gradient(to right, #1b5aa8, #f47c1e)" }} />
 
