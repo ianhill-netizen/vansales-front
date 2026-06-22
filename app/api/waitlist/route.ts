@@ -67,7 +67,7 @@ export async function POST(req: Request) {
         source: "vansales-waitlist",
         notes,
         page_url: "https://vansales.com/",
-        page_name: `Vansales — Opening July 2026`,
+        page_name: `Vansales — Opening August 2026`,
       }),
       signal: AbortSignal.timeout(10_000),
     });
