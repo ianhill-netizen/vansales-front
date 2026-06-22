@@ -6,13 +6,12 @@ import { titleCase } from "../format";
 /* =============================================================================
    DEALSKI SOURCE  — live stock feed behind swissvans.dealski.co.uk
    Verified endpoints (public, unauthenticated):
-     LIST   GET {BASE}/api/public/stock/vehicles?make=&model=&page=&per_page=
-     DETAIL GET {BASE}/api/public/stock/vehicles/{id}
-     FACETS GET {BASE}/api/public/stock/vehicles/facets
+     LIST   GET {BASE}/api/public/stock?page=&per_page=
+     DETAIL GET {BASE}/api/public/stock/vehicles/{id}  → wrapped in { data: {...} }
    ALL feed→canonical mapping lives in this one file.
 
-   Price field: `price` is in GBP (pounds) as an integer.
-   Photos: `primary_photo` on list; `photos[].preview_url` on detail.
+   List price field: `our_price` (GBP pounds). Detail price field: `price`.
+   List is sparse (15 fields). Detail has full spec + photos[].preview_url.
    Photo preview_url values are 24-hour S3 presigned URLs — the feed cache
    (REVALIDATE) is kept at 6 h so they are re-signed well within their TTL.
    ========================================================================== */
@@ -43,11 +42,32 @@ interface DealskiList {
   meta: { current_page: number; last_page: number; per_page: number; total: number };
 }
 
-/* Shape returned by GET /api/public/stock/vehicles (publicIndex).
-   All spec fields are present in the summary — no second detail fetch needed
-   for card rendering. `price` is in GBP (pounds). `primary_photo` is the raw
-   S3 key (may be null when no photos uploaded yet). */
+/* Shape returned by GET /api/public/stock (list endpoint — sparse).
+   Only 15 fields. Spec data (gearbox, wheelbase, year, mileage, etc.) is
+   absent — those come from the per-vehicle detail endpoint.
+   Price field is `our_price`; `primary_photo` is the raw S3 key or null. */
 interface DealskiSummary {
+  id: number;
+  make: string | null;
+  model: string | null;
+  variant: string | null;
+  seats: number | null;
+  colour: string | null;
+  fuel: string | null;
+  availability_status: string | null;
+  primary_photo: string | null;
+  photo_count: number;
+  created_at: string;
+  updated_at: string;
+  our_price: number | null; // GBP pounds; named `price` on the detail endpoint
+  rrp: number | null;
+  customer_ref: string | null;
+}
+
+/* Shape returned by GET /api/public/stock/vehicles/{id} — response is wrapped
+   in { data: DealskiDetail }. Full spec including gearbox, wheelbase, year,
+   mileage, description, and presigned photo URLs. Price field is `price`. */
+interface DealskiDetail {
   id: number;
   stock_number: string | null;
   make: string | null;
@@ -68,24 +88,18 @@ interface DealskiSummary {
   side_doors: number | null;
   rear_doors: number | null;
   rear_door_type: string | null;
-  first_registration_date: string | null; // YYYY-MM-DD from DVLA enrichment
+  first_registration_date: string | null;
   mot_expires: string | null;
   factory_extras: string | null;
   swiss_extras: string | null;
-  condition: string | null; // "used" when Dealski marks stock explicitly; absent → null → defaults to "new"
   availability_status: string | null;
   rrp: number | null;
-  price: number | null; // GBP pounds (computed selling price)
+  price: number | null; // GBP pounds (named `our_price` on the list endpoint)
   customer_ref: string | null;
   primary_photo: string | null;
   photo_count: number;
   created_at: string;
   updated_at: string;
-}
-
-/* Shape returned by GET /api/public/stock/vehicles/{id} (publicShow).
-   Extends the summary with a full description and photos with 24-h presigned URLs. */
-interface DealskiDetail extends DealskiSummary {
   description: string | null;
   photos: Array<{ id: number; preview_url: string; sort_order: number; is_primary: boolean }> | null;
 }
@@ -225,10 +239,8 @@ function normaliseStatus(s: string | null): Listing["status"] {
   }
 }
 
-function bodyStyleFrom(d: DealskiDetail | DealskiSummary): string {
-  const t = d.vehicle_type ?? "";
-  const v = (d.variant ?? "").toLowerCase();
-  const hay = `${t} ${v}`.toLowerCase();
+function bodyStyleFrom(vehicleType: string | null | undefined, variant: string | null | undefined): string {
+  const hay = `${vehicleType ?? ""} ${variant ?? ""}`.toLowerCase();
   if (hay.includes("luton")) return "Luton";
   if (hay.includes("dropside")) return "Dropside";
   if (hay.includes("tipper")) return "Tipper";
@@ -263,12 +275,10 @@ function imagesFrom(d: DealskiDetail | DealskiSummary, alt: string): ListingImag
   return out;
 }
 
-/* "used" only when the feed carries an explicit used signal; absent/null → "new".
-   Checked in priority order: dedicated condition field, then availability_status.
-   When Dealski adds condition:"used" for pre-owned stock those vehicles flip automatically. */
-function conditionFrom(d: DealskiSummary): "new" | "used" {
-  const c = (d.condition ?? d.availability_status ?? "").toLowerCase();
-  return c === "used" ? "used" : "new";
+/* Neither the list nor detail endpoint carries an explicit condition field.
+   Default to "new"; will flip to "used" if Dealski adds the field in future. */
+function conditionFrom(availability_status: string | null): "new" | "used" {
+  return (availability_status ?? "").toLowerCase() === "used" ? "used" : "new";
 }
 
 function mapDetail(d: DealskiDetail): Listing {
@@ -292,7 +302,7 @@ function mapDetail(d: DealskiDetail): Listing {
     make,
     model,
     derivative,
-    condition: conditionFrom(d),
+    condition: conditionFrom(d.availability_status),
     year,
     plate: "",
     price: d.price ?? null,
@@ -307,7 +317,7 @@ function mapDetail(d: DealskiDetail): Listing {
     euro_status: null,
     ulez: year === 0 ? true : year >= 2016,
     van_spec: {
-      body_style: bodyStyleFrom(d),
+      body_style: bodyStyleFrom(d.vehicle_type, d.variant),
       wheelbase: normaliseWheelbase(d.wheelbase) ?? inferWheelbase(d.model, d.variant, d.vehicle_type),
       roof_height: null,
       payload_kg: null,
@@ -332,9 +342,64 @@ function mapDetail(d: DealskiDetail): Listing {
   };
 }
 
-/** Summary rows have all spec fields; just fill the detail-only fields with null. */
+/** Map a sparse list-endpoint row. Spec fields absent from the list are left
+ *  null/defaulted; the detail fetch on the listing page fills them in. */
 function mapSummary(s: DealskiSummary): Listing {
-  return mapDetail({ ...s, description: null, photos: null });
+  const make = titleCase(s.make ?? "Van");
+  const { model, codeDerivative } = normaliseModel(make, s.model);
+  const derivative = [codeDerivative, titleCase(s.variant ?? "")].filter(Boolean).join(" ").trim();
+  const source_id = String(s.id);
+  const alt = `${make} ${model} ${derivative}`.trim();
+
+  return {
+    id: `dealski:${source_id}`,
+    source: "dealski",
+    source_id,
+    tenant_id: DEALER.tenant_id,
+    seller_type: "dealer",
+    slug: buildSlug({ make, model, derivative, town: DEALER.town, source_id }),
+    status: normaliseStatus(s.availability_status),
+    make,
+    model,
+    derivative,
+    condition: conditionFrom(s.availability_status),
+    year: 0,   // not present in list endpoint; resolved on detail page
+    plate: "",
+    price: s.our_price ?? null,
+    price_type: "inc_vat",
+    vat_qualifying: true,
+    mileage: null,   // not present in list endpoint
+    fuel: s.fuel ? titleCase(s.fuel) : "—",
+    transmission: "—", // not present in list endpoint
+    drivetrain: "FWD",
+    colour: s.colour ? titleCase(s.colour) : "—",
+    engine_cc: null,
+    euro_status: null,
+    ulez: true, // optimistic default — no year from list; resolved on detail page
+    van_spec: {
+      body_style: bodyStyleFrom(null, s.variant), // vehicle_type absent from list
+      wheelbase: inferWheelbase(s.model, s.variant),
+      roof_height: null,
+      payload_kg: null,
+      load_length_mm: null,
+      doors: null,
+    },
+    location: {
+      town: DEALER.town,
+      region: DEALER.region,
+      postcode_area: DEALER.postcode_area,
+      lat: DEALER.lat,
+      lng: DEALER.lng,
+    },
+    description: `${alt}. Contact ${DEALER.seller} for full details and availability.`,
+    features: [],
+    images: s.primary_photo ? [{ url: s.primary_photo, alt }] : [],
+    seller: { name: DEALER.seller, type: "dealer", logo: null, rating: 4.8 },
+    enquiry_route: { to: "dealski_tenant", ref: s.customer_ref ?? source_id },
+    enquiry_url: null,
+    published_at: s.created_at,
+    updated_at: s.updated_at,
+  };
 }
 
 /* ---------------------------------------------------------------------------
@@ -343,11 +408,11 @@ function mapSummary(s: DealskiSummary): Listing {
 
 /** Page through the ENTIRE upstream catalogue (all ~1,121 vehicles). */
 async function fetchAllSummaries(): Promise<{ summaries: DealskiSummary[]; feedTotal: number }> {
-  const first = await getJson<DealskiList>(`${BASE}/api/public/stock/vehicles?per_page=${PER_PAGE}&page=1`);
+  const first = await getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=1`);
   const lastPage = Math.min(first.meta.last_page || 1, HARD_PAGE_CAP);
   const restPages = Array.from({ length: Math.max(0, lastPage - 1) }, (_, i) => i + 2);
   const rest = await mapWithConcurrency(restPages, PAGE_CONCURRENCY, (page) =>
-    getJson<DealskiList>(`${BASE}/api/public/stock/vehicles?per_page=${PER_PAGE}&page=${page}`).then(
+    getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=${page}`).then(
       (r) => r.data,
       () => [] as DealskiSummary[],
     ),
@@ -377,13 +442,15 @@ export const fetchDealskiCatalogue = unstable_cache(
     return { listings, feedTotal };
   },
   // Bump this key whenever the feed→canonical mapping changes (busts the cache).
-  ["dealski-catalogue-v4"],
+  ["dealski-catalogue-v5"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
 export async function fetchDealskiBySourceId(sourceId: string): Promise<Listing | null> {
   try {
-    const d = await getJson<DealskiDetail>(`${BASE}/api/public/stock/vehicles/${sourceId}`);
+    // Detail endpoint wraps the vehicle in { data: {...} }
+    const wrapper = await getJson<{ data: DealskiDetail }>(`${BASE}/api/public/stock/vehicles/${sourceId}`);
+    const d = wrapper?.data;
     if (!d || !d.id) return null;
     return mapDetail(d);
   } catch {
