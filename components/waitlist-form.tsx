@@ -49,7 +49,7 @@ export function WaitlistForm() {
         <div>
           <p className="font-display font-bold text-white">You&apos;re on the list.</p>
           <p className="mt-1 text-[var(--text-sm)] text-white/65">
-            We&apos;ll email you when Vansales goes live in July 2026. No spam, ever.
+            We&apos;ll email you when Vansales goes live in August 2026. No spam, ever.
           </p>
         </div>
       </div>

@@ -4,12 +4,12 @@ import { Logo } from "@/components/brand";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Vansales — Opening July 2026",
+  title: "Vansales — Opening August 2026",
   description:
-    "The UK marketplace for new and used vans. Dealers and private sellers in one place. Launching July 2026 — register to be notified.",
+    "The UK marketplace for new and used vans. Dealers and private sellers in one place. Launching August 2026 — register to be notified.",
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Vansales — Opening July 2026",
+    title: "Vansales — Opening August 2026",
     description:
       "The UK marketplace for new and used vans — dealers and private sellers — launching soon.",
     type: "website",
@@ -65,7 +65,7 @@ export default function ComingSoonPage() {
                 {SITE.name}
               </p>
               <h1 className="mt-2 font-display text-[clamp(2.2rem,1rem+5vw,3.6rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white">
-                Opening July&nbsp;2026
+                Opening August&nbsp;2026
                 <span className="text-accent-400">.</span>
               </h1>
               <p className="mt-4 max-w-lg text-[var(--text-md)] leading-relaxed text-white/65">
@@ -77,7 +77,7 @@ export default function ComingSoonPage() {
             {/* Spec-row — evokes the listing card design language */}
             <div className="flex flex-wrap gap-0 border-t border-white/10">
               {[
-                { label: "Launch", value: "July 2026" },
+                { label: "Launch", value: "August 2026" },
                 { label: "Market", value: "UK-wide" },
                 { label: "Stock", value: "Dealers + Private" },
                 { label: "Price", value: "Free to browse" },
