@@ -4,6 +4,7 @@ import { fontVariables } from "./fonts";
 import { SITE, siteUrl } from "@/lib/site";
 import { Providers } from "@/components/providers";
 import { TrackingScripts, TrackingNoScript } from "@/components/tracking-scripts";
+import DkTracker from "@/components/dk-tracker";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <TrackingNoScript />
+        <DkTracker />
         <Providers>{children}</Providers>
       </body>
     </html>
