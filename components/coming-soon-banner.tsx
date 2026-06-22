@@ -30,6 +30,7 @@ export function ComingSoonBanner() {
   const [open, setOpen] = useState(false);
   const [formState, setFormState] = useState<FormState>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [enquiryType, setEnquiryType] = useState<"retail" | "trade" | null>(null);
 
   // Keep header's sticky offset in sync with banner visibility.
   useEffect(() => {
@@ -48,6 +49,11 @@ export function ComingSoonBanner() {
     e.preventDefault();
     if (formState === "submitting") return;
     setFormState("submitting");
+    if (!enquiryType) {
+      setErrorMsg("Please select whether you're retail or trade.");
+      setFormState("error");
+      return;
+    }
     const fd = new FormData(e.currentTarget);
     try {
       const res = await fetch("/api/register-interest", {
@@ -57,6 +63,7 @@ export function ComingSoonBanner() {
           name: fd.get("name"),
           email: fd.get("email"),
           message: fd.get("message"),
+          enquiry_type: enquiryType,
           website: fd.get("website"), // honeypot
         }),
       });
@@ -173,6 +180,29 @@ export function ComingSoonBanner() {
                     autoComplete="off"
                     className="sr-only"
                   />
+
+                  {/* Enquiry type toggle */}
+                  <div>
+                    <p className="mb-1.5 text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
+                      I am a&hellip; <span className="text-accent-500">*</span>
+                    </p>
+                    <div className="flex gap-2">
+                      {(["retail", "trade"] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setEnquiryType(t)}
+                          className={`flex-1 rounded-[var(--radius-md)] border py-2.5 text-[var(--text-sm)] font-semibold transition ${
+                            enquiryType === t
+                              ? "border-brand-500 bg-brand-500 text-white"
+                              : "border-border bg-surface-0 text-ink-600 hover:border-brand-400"
+                          }`}
+                        >
+                          {t === "retail" ? "Retail (buying a van)" : "Trade (dealer)"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
                   <div>
                     <label className="mb-1.5 block text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">

@@ -52,6 +52,9 @@ export async function POST(req: Request) {
   const name = String(body.name ?? "").trim();
   const email = String(body.email ?? "").trim();
   const message = String(body.message ?? "").trim();
+  const rawType = body.enquiry_type;
+  const enquiryType: "retail" | "trade" | null =
+    rawType === "retail" || rawType === "trade" ? rawType : null;
 
   if (!name || name.length < 2) {
     return NextResponse.json(
@@ -65,9 +68,19 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
+  if (!enquiryType) {
+    return NextResponse.json(
+      { ok: false, error: "Please select whether you're retail or trade." },
+      { status: 400 },
+    );
+  }
 
   const { first_name, last_name } = splitName(name);
-  const notes = message || "Registered interest via vansales.com opening banner.";
+  const enquiryLabel = enquiryType === "retail" ? "Retail (buying a van)" : "Trade (dealer)";
+  const notes = [
+    `Enquiry type: ${enquiryLabel}`,
+    message || "Registered interest via vansales.com opening banner.",
+  ].join("\n");
 
   const payload = {
     first_name,
@@ -75,6 +88,7 @@ export async function POST(req: Request) {
     name,
     email,
     source: "vansales-register-interest",
+    enquiry_type: enquiryType,
     notes,
     page_url: "https://vansales.com",
     page_name: "Register Interest — Opening August 2026",
