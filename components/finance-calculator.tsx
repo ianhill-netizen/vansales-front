@@ -20,9 +20,10 @@ const DEPOSIT_PCTS = [10, 15, 20, 25];
 interface Props {
   vanPrice?: number | null;
   applyUrl?: string;
+  condition?: "new" | "used";
 }
 
-export function FinanceCalculator({ vanPrice, applyUrl }: Props) {
+export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
   const defaultPrice = vanPrice ?? 25000;
   const [price, setPrice] = useState(defaultPrice);
   const [depositPct, setDepositPct] = useState(20);
@@ -32,7 +33,7 @@ export function FinanceCalculator({ vanPrice, applyUrl }: Props) {
 
   const deposit = Math.round((price * depositPct) / 100);
   const borrowed = price - deposit;
-  const residual = type === "pcp" ? Math.round(price * 0.3) : 0;
+  const residual = type === "pcp" && condition === "new" ? Math.round(price * 0.3) : 0;
   const financed = borrowed - residual;
   const monthly = Math.round(pmt(apr, term, financed) * 100) / 100;
   const totalRepayable = deposit + monthly * term + residual;
@@ -131,7 +132,7 @@ export function FinanceCalculator({ vanPrice, applyUrl }: Props) {
         <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[var(--text-xs)] text-white/55">
           <span>Deposit</span><span className="text-right text-white/80">{fmt(deposit)}</span>
           <span>Borrowed</span><span className="text-right text-white/80">{fmt(borrowed)}</span>
-          {type === "pcp" && <><span>Optional final pmt</span><span className="text-right text-white/80">{fmt(residual)}</span></>}
+          {type === "pcp" && condition === "new" && <><span>Optional final pmt</span><span className="text-right text-white/80">{fmt(residual)}</span></>}
           <span>APR</span><span className="text-right text-white/80">{apr}%</span>
           <span>Total repayable</span><span className="text-right text-white/80">{fmt(totalRepayable)}</span>
           <span>Cost of credit</span><span className="text-right text-white/80">{fmt(totalCostOfCredit)}</span>
@@ -140,7 +141,7 @@ export function FinanceCalculator({ vanPrice, applyUrl }: Props) {
 
       <p className="mt-2 text-[var(--text-2xs)] leading-relaxed text-ink-400">
         Representative example for illustration only. Subject to status. Finance arranged through Dealski Finance Ltd.
-        {type === "pcp" && " PCP residual estimated at 30% of purchase price — actual value varies."}
+        {type === "pcp" && condition === "new" && " PCP residual estimated at 30% of purchase price — actual value varies."}
       </p>
 
       {applyUrl && (
