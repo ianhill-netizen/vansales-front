@@ -317,6 +317,7 @@ function mapDetail(d: DealskiDetail): Listing {
     images: imagesFrom(d, alt),
     seller: { name: DEALER.seller, type: "dealer", logo: null, rating: 4.8 },
     enquiry_route: { to: "dealski_tenant", ref: d.customer_ref ?? source_id },
+    enquiry_url: null,
     published_at: d.created_at,
     updated_at: d.updated_at,
   };

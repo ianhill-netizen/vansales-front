@@ -111,6 +111,7 @@ export async function fetchNativeDbListings(dealerId?: string): Promise<Listing[
         to: "native",
         ref: row.id,
       },
+      enquiry_url: null,
       published_at: row.createdAt.toISOString(),
       updated_at: row.createdAt.toISOString(),
     };
@@ -178,6 +179,7 @@ export async function fetchNativeDbListingById(id: string): Promise<Listing | nu
     images,
     seller: { name: row.dealer.name, type: "dealer", logo: null, rating: row.dealer.googleRating ?? null },
     enquiry_route: { to: "native", ref: row.id },
+    enquiry_url: null,
     published_at: row.createdAt.toISOString(),
     updated_at: row.createdAt.toISOString(),
   };

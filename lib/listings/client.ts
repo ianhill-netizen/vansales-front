@@ -8,6 +8,7 @@ import type {
 } from "./types";
 import { getMockListings } from "./sources/mock";
 import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
+import { fetchMarketplaceCatalogue } from "./sources/dealski-marketplace";
 import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
 import { sourceIdFromSlug, slugify } from "./slug";
 import { resolveModelSlug } from "@/lib/models/image";
@@ -15,13 +16,17 @@ import { WHEELBASE_LABEL, titleCase } from "./format";
 
 /* =============================================================================
    DATA LAYER  — the only module screens import.
-   Source is chosen by env LISTINGS_SOURCE ('dealski' | 'native' | 'mock').
-   The live source falls back to mock when the upstream is unreachable, and
-   every result reports which source actually served it.
+   Source is chosen by env LISTINGS_SOURCE:
+     'marketplace'  — live aggregate feed (dealski-marketplace.ts, authenticated)
+     'dealski'      — single-tenant Swiss Vans feed (dealski.ts, unauthenticated)
+     'native'       — local DB only
+     'mock'         — static fixture data (default / fallback)
+   The live source falls back to mock when the upstream is unreachable.
    ========================================================================== */
 
-function configuredSource(): ListingSource | "mock" {
+function configuredSource(): ListingSource | "mock" | "marketplace" {
   const v = (process.env.LISTINGS_SOURCE || "mock").toLowerCase();
+  if (v === "marketplace") return "marketplace";
   if (v === "dealski" || v === "native") return v;
   return "mock";
 }
@@ -43,6 +48,21 @@ async function loadAll(): Promise<{
     nativeDb = await fetchNativeDbListings();
   } catch {
     /* non-fatal */
+  }
+
+  if (source === "marketplace") {
+    try {
+      const { listings, feedTotal } = await fetchMarketplaceCatalogue();
+      if (listings.length > 0) {
+        const merged = [...nativeDb, ...listings];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length };
+      }
+    } catch {
+      /* fall through to mock */
+    }
+    const mock = getMockListings();
+    const merged = [...nativeDb, ...mock];
+    return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
   if (source === "dealski") {
@@ -194,6 +214,19 @@ export async function getListingBySlug(slug: string): Promise<{ listing: Listing
   // Always try native DB first (portal-added listings are always resolvable).
   const nativeListing = await fetchNativeDbListingById(sourceId).catch(() => null);
   if (nativeListing) return { listing: nativeListing, servedBy: "native" };
+
+  if (source === "marketplace") {
+    // Hit the per-tenant detail endpoint for full spec + multi-photo support.
+    // Works for SwissVans (the only current marketplace tenant) since vehicle
+    // IDs are stable across the aggregate and per-tenant endpoints.
+    const live = await fetchDealskiBySourceId(sourceId);
+    if (live) return { listing: { ...live, enquiry_url: live.enquiry_url }, servedBy: "dealski" };
+    // Fall through to the cached catalogue (covers the case when the per-tenant
+    // endpoint is temporarily unavailable).
+    const { listings: catalogue } = await fetchMarketplaceCatalogue().catch(() => ({ listings: [] as Listing[] }));
+    const cached = catalogue.find((l) => l.source_id === sourceId || l.slug === slug);
+    if (cached) return { listing: cached, servedBy: "dealski" };
+  }
 
   if (source === "dealski") {
     const live = await fetchDealskiBySourceId(sourceId);

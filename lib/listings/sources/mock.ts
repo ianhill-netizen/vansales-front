@@ -114,6 +114,7 @@ function build(seed: Seed): Listing {
       rating: seed.seller.rating,
     },
     enquiry_route: { to: "native_inbox", ref: `native:${seed.source_id}` },
+    enquiry_url: null,
     published_at: seed.published_at,
     updated_at: seed.updated_at,
   };
