@@ -21,7 +21,24 @@ function rateCheck(ip: string): boolean {
   return false;
 }
 
-const DEALSKI_LEADS_URL = "https://swissvans.dealski.co.uk/api/leads/website";
+// Fallback for non-marketplace Dealski listings (dealski source without an enquiry_url).
+const DEALSKI_LEADS_FALLBACK = "https://swissvans.dealski.co.uk/api/leads/website";
+
+// SSRF guard: only forward to known Dealski tenant lead endpoints.
+const ALLOWED_ENQUIRY_URL = /^https:\/\/[a-z0-9][a-z0-9-]*\.dealski\.co\.uk\/api\/leads\/website$/;
+
+function validateEnquiryUrl(raw: unknown): string | null {
+  if (typeof raw !== "string" || !raw) return null;
+  return ALLOWED_ENQUIRY_URL.test(raw) ? raw : null;
+}
+
+function splitName(full: string): { first_name: string; last_name: string } {
+  const parts = full.trim().split(/\s+/);
+  return {
+    first_name: parts[0] ?? "",
+    last_name: parts.slice(1).join(" "),
+  };
+}
 
 export async function POST(req: Request) {
   const h = await headers();
@@ -66,20 +83,32 @@ export async function POST(req: Request) {
   const derivative = String(body.derivative ?? "").trim();
   const slug = String(body.slug ?? "").trim();
   const location = String(body.location ?? "").trim();
+  // vehicle_ref carries enquiry_route.ref (customer_ref or source_id from the marketplace)
+  const vehicleRef = String(body.vehicle_ref ?? [make, model, derivative].filter(Boolean).join(" ")).trim();
 
-  const vehicleRef = [make, model, derivative].filter(Boolean).join(" ");
+  // enquiry_url is set only for marketplace listings; validated server-side.
+  const enquiryUrl = validateEnquiryUrl(body.enquiry_url);
 
+  // UTM params forwarded from the listing page URL
+  const utms: Record<string, string> = {};
+  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
+    const v = body[key];
+    if (typeof v === "string" && v) utms[key] = v;
+  }
+
+  const vehicleLabel = [make, model, derivative].filter(Boolean).join(" ");
   const notes = [
-    message || `Hi, I'm interested in the ${vehicleRef}. Is it still available?`,
+    message || `Hi, I'm interested in the ${vehicleLabel || "van"}. Is it still available?`,
     "",
-    vehicleRef ? `Vehicle: ${vehicleRef}` : "",
+    vehicleLabel ? `Vehicle: ${vehicleLabel}` : "",
+    vehicleRef && vehicleRef !== vehicleLabel ? `Ref: ${vehicleRef}` : "",
     location ? `Location: ${location}` : "",
-    slug ? `Ref: ${slug}` : "",
+    slug ? `Listing: https://vansales.com/listing/${slug}` : "",
   ]
     .filter(Boolean)
     .join("\n");
 
-  // If the slug resolves to a native listing in our DB, save locally and skip Dealski.
+  // Native DB listings: save locally and bypass Dealski entirely.
   if (slug) {
     const potentialId = sourceIdFromSlug(slug);
     const nativeListing = await prisma.listing.findUnique({
@@ -105,26 +134,40 @@ export async function POST(req: Request) {
     }
   }
 
+  // Marketplace and Dealski listings forward to the dealer's Dealski inbox.
+  // Marketplace listings supply a per-tenant enquiry_url; Dealski-source listings
+  // fall back to the SwissVans URL (single tenant, no enquiry_url set).
+  const forwardUrl = enquiryUrl ?? DEALSKI_LEADS_FALLBACK;
+  const { first_name, last_name } = splitName(name);
+  const pageUrl = slug ? `https://vansales.com/listing/${slug}` : "https://vansales.com";
+
+  const payload = {
+    first_name,
+    last_name,
+    name,
+    email,
+    mobile: phone || undefined,
+    source: "vansales",
+    notes,
+    vehicle_ref: vehicleRef || undefined,
+    page_url: pageUrl,
+    page_name: vehicleLabel ? `Van listing — ${vehicleLabel}` : "Vansales",
+    ...utms,
+  };
+
   try {
-    const res = await fetch(DEALSKI_LEADS_URL, {
+    const res = await fetch(forwardUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        name,
-        email,
-        mobile: phone || undefined,
-        source: "vansales",
-        notes,
-        vehicle_ref: vehicleRef || undefined,
-        page_url: slug ? `https://vansales.com/listing/${slug}` : "https://vansales.com",
-        page_name: vehicleRef ? `Van listing — ${vehicleRef}` : "Vansales",
-      }),
+      body: JSON.stringify(payload),
       signal: AbortSignal.timeout(10_000),
     });
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      console.error(`[enquiry] Dealski ${res.status}:`, text.slice(0, 200));
+      console.error(`[enquiry] Forward ${res.status} to ${forwardUrl}:`, text.slice(0, 200));
+      // Log full lead so it's never lost even if the downstream is unavailable.
+      console.error("[enquiry] LEAD_FALLBACK", JSON.stringify({ ...payload, forward_url: forwardUrl }));
       return NextResponse.json(
         { ok: false, error: "Could not submit — please call us on 01656 507619." },
         { status: 502 },
@@ -135,6 +178,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, leadId: data.lead_id });
   } catch (err) {
     console.error("[enquiry] fetch failed:", err);
+    console.error("[enquiry] LEAD_FALLBACK", JSON.stringify({ ...payload, forward_url: forwardUrl }));
     return NextResponse.json(
       { ok: false, error: "Network error — please call us on 01656 507619." },
       { status: 502 },
