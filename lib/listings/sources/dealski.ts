@@ -72,6 +72,7 @@ interface DealskiSummary {
   mot_expires: string | null;
   factory_extras: string | null;
   swiss_extras: string | null;
+  condition: string | null; // "used" when Dealski marks stock explicitly; absent → null → defaults to "new"
   availability_status: string | null;
   rrp: number | null;
   price: number | null; // GBP pounds (computed selling price)
@@ -262,6 +263,14 @@ function imagesFrom(d: DealskiDetail | DealskiSummary, alt: string): ListingImag
   return out;
 }
 
+/* "used" only when the feed carries an explicit used signal; absent/null → "new".
+   Checked in priority order: dedicated condition field, then availability_status.
+   When Dealski adds condition:"used" for pre-owned stock those vehicles flip automatically. */
+function conditionFrom(d: DealskiSummary): "new" | "used" {
+  const c = (d.condition ?? d.availability_status ?? "").toLowerCase();
+  return c === "used" ? "used" : "new";
+}
+
 function mapDetail(d: DealskiDetail): Listing {
   const make = titleCase(d.make ?? "Van");
   const { model, codeDerivative } = normaliseModel(make, d.model);
@@ -283,7 +292,7 @@ function mapDetail(d: DealskiDetail): Listing {
     make,
     model,
     derivative,
-    condition: d.mileage === 0 ? "new" : "used",
+    condition: conditionFrom(d),
     year,
     plate: "",
     price: d.price ?? null,
