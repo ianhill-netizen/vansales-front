@@ -3,6 +3,7 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { Button } from "./ui";
 import { IconCheck } from "./icons";
+import { trackEnquiry } from "./dk-tracker";
 
 type State = "idle" | "submitting" | "success" | "error";
 
@@ -48,8 +49,14 @@ export function EnquiryModal({
         }),
       });
       const data = (await res.json()) as { ok: boolean; error?: string };
-      if (data.ok) setState("success");
-      else { setErrorMsg(data.error ?? "Something went wrong."); setState("error"); }
+      if (data.ok) {
+        setState("success");
+        trackEnquiry({
+          name: fd.get("name") as string | null,
+          email: fd.get("email") as string | null,
+          mobile: fd.get("phone") as string | null,
+        });
+      } else { setErrorMsg(data.error ?? "Something went wrong."); setState("error"); }
     } catch {
       setErrorMsg("Network error — please call us directly.");
       setState("error");
