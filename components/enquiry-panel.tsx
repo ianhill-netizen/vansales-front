@@ -29,6 +29,17 @@ export function EnquiryPanel({ listing }: { listing: Listing }) {
     setState("submitting");
 
     const fd = new FormData(e.currentTarget);
+
+    // Capture UTM params from the current page URL so the dealer sees the referral source.
+    const utms: Record<string, string> = {};
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
+        const v = sp.get(key);
+        if (v) utms[key] = v;
+      }
+    } catch { /* non-fatal */ }
+
     try {
       const res = await fetch("/api/enquiry", {
         method: "POST",
@@ -44,6 +55,10 @@ export function EnquiryPanel({ listing }: { listing: Listing }) {
           derivative: listing.derivative,
           slug: listing.slug,
           location: `${listing.location.town}, ${listing.location.region}`,
+          // Marketplace-specific fields; null for native/dealski listings.
+          enquiry_url: listing.enquiry_url ?? undefined,
+          vehicle_ref: listing.enquiry_route.ref,
+          ...utms,
         }),
       });
       const data = (await res.json()) as { ok: boolean; error?: string };
