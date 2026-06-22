@@ -283,7 +283,7 @@ function mapDetail(d: DealskiDetail): Listing {
     make,
     model,
     derivative,
-    condition: "used",
+    condition: d.mileage === 0 ? "new" : "used",
     year,
     plate: "",
     price: d.price ?? null,
