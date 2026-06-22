@@ -36,6 +36,8 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/van-reviews",       label: "Van reviews" },
       { href: "/blog",              label: "Guides & news" },
       { href: "/dealer-portal",     label: "Dealer portal" },
+      { href: "/signup/trade",       label: "List my stock free" },
+      { href: "/signup/advertise",   label: "Advertise with us" },
     ],
   },
 ];

@@ -41,7 +41,8 @@ const NEW_VAN_ITEMS = [
 
 const SELL_ITEMS = [
   { href: "/sell",                   label: "Advertise your van" },
-  { href: "/sign-up/dealer",         label: "List as a dealer" },
+  { href: "/signup/trade",           label: "List my stock free" },
+  { href: "/sign-up/dealer",         label: "Dealer portal sign-up" },
   { href: "/sign-up/private-seller", label: "Private seller listing" },
 ];
 
