@@ -5,7 +5,7 @@ import { getModelIndex } from "@/lib/listings/client";
 import { slugify } from "@/lib/listings/slug";
 import { SITE } from "@/lib/site";
 
-export const revalidate = 1800;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Van Directory — All Makes & Models",

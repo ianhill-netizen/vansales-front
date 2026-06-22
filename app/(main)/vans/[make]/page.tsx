@@ -12,7 +12,7 @@ import { RelatedLinks } from "@/components/related-links";
 import { SITE, absUrl } from "@/lib/site";
 import { slugify } from "@/lib/listings/slug";
 
-export const revalidate = 1800;
+export const revalidate = 3600;
 
 const KNOWN_MAKES = [
   "ford", "volkswagen", "mercedes-benz", "vauxhall", "renault",

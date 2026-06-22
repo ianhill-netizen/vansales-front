@@ -14,7 +14,7 @@ import { listingPath } from "@/lib/listings/slug";
 import { MODEL_CONTENT, getModelContent } from "@/lib/models/content.generated";
 import { SITE, absUrl } from "@/lib/site";
 
-export const revalidate = 1800; // ISR — rebuild every 30 min
+export const revalidate = 3600; // ISR — rebuild every 1 h
 
 /** Pre-render all 35 known make/model paths; unknown combos render on demand. */
 export async function generateStaticParams() {
