@@ -19,7 +19,7 @@ import {
 } from "@/components/icons";
 import { SITE, absUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type Params = { slug: string };
 

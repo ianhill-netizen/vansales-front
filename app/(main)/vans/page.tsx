@@ -10,7 +10,7 @@ import { getListings, getFacets } from "@/lib/listings/client";
 import type { Condition, ListingFilters } from "@/lib/listings/types";
 import { SITE, absUrl } from "@/lib/site";
 
-export const revalidate = 1800;
+export const revalidate = 3600;
 const PAGE_SIZE = 24;
 
 type Search = { [k: string]: string | string[] | undefined };

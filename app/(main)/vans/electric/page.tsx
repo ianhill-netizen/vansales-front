@@ -9,7 +9,7 @@ import { getBlogIndex } from "@/lib/content/blog";
 import { matchBlogPosts } from "@/lib/content/cross-links";
 import { SITE, absUrl } from "@/lib/site";
 
-export const revalidate = 1800;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Electric Vans for Sale",
