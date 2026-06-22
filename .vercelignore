@@ -1,0 +1,6 @@
+# Prevent local secret files from being uploaded to Vercel build servers.
+# Secrets must be configured in Vercel project settings (Environment Variables),
+# not bundled into the deployment payload.
+.env
+.env.local
+.env.*.local
