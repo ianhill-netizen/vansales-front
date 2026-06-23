@@ -57,16 +57,9 @@ function hrefFor(sp: Search, page: number): string {
   return `/vans${qs ? `?${qs}` : ""}`;
 }
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<Search>;
-}): Promise<Metadata> {
-  const sp = await searchParams;
-  const condition = one(sp.condition);
-  const label = condition === "new" ? "New" : condition === "used" ? "Used" : "New & used";
-  const title = `${label} vans for sale`;
-  const description = `Browse ${label.toLowerCase()} vans for sale across the UK on ${SITE.name}. Filter by make, model, price, wheelbase and ULEZ status.`;
+export async function generateMetadata(): Promise<Metadata> {
+  const title = "Vans for sale";
+  const description = `Browse new and used vans for sale across the UK on ${SITE.name}. Filter by make, model, price, wheelbase and more.`;
   return {
     title,
     description,
@@ -87,8 +80,6 @@ export default async function VansPage({
     getFacets(),
   ]);
   const { listings, total, page, totalPages } = result;
-  const condition = one(sp.condition);
-  const conditionLabel = condition === "new" ? "New vans" : condition === "used" ? "Used vans" : "All vans";
   const firstOnPage = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const lastOnPage  = (page - 1) * PAGE_SIZE + listings.length;
 
@@ -101,42 +92,16 @@ export default async function VansPage({
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-700">Home</Link>
             <span aria-hidden className="text-ink-300">/</span>
-            <span className="font-medium text-ink-600">{conditionLabel} for sale</span>
+            <span className="font-medium text-ink-600">Vans for sale</span>
           </nav>
 
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
-                {conditionLabel} for sale
-              </h1>
-              <p className="mt-2 text-[var(--text-md)] text-ink-500">
-                <span className="font-display font-bold text-brand-600">{total.toLocaleString()}</span>{" "}
-                {total === 1 ? "van" : "vans"} available
-              </p>
-            </div>
-
-            {/* Condition tabs */}
-            <div className="flex gap-2">
-              {[
-                { label: "All",  href: "/vans",                match: !condition },
-                { label: "Used", href: "/vans?condition=used", match: condition === "used" },
-                { label: "New",  href: "/vans?condition=new",  match: condition === "new" },
-              ].map((tab) => (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className={`rounded-[var(--radius-pill)] px-4 py-1.5 text-[var(--text-sm)] font-semibold transition-all ${
-                    tab.match
-                      ? "text-white shadow-[var(--shadow-sm)]"
-                      : "border border-border bg-surface-1 text-ink-600 hover:border-brand-300 hover:text-brand-700"
-                  }`}
-                  style={tab.match ? { background: "linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%)" } : undefined}
-                >
-                  {tab.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+          <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
+            Vans for sale
+          </h1>
+          <p className="mt-2 text-[var(--text-md)] text-ink-500">
+            <span className="font-display font-bold text-brand-600">{total.toLocaleString()}</span>{" "}
+            {total === 1 ? "van" : "vans"} available
+          </p>
         </Container>
       </section>
 
