@@ -238,8 +238,8 @@ export const VAN_MAKES: VanMake[] = [
 
   make("Farizon", false, [
     // Geely's commercial vehicle brand, entering UK EV van market
-    "FV",
     "SV",
+    "V7E",
   ]),
 
   make("Hyundai", false, [
