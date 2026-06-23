@@ -1,7 +1,6 @@
-// HP monthly payment estimate: 10% deposit, 48-month term, 9.9% APR.
-// These figures are indicative only — exact quotes depend on lender criteria.
+// HP monthly payment estimate — 48-month term, 9.9% APR, variable deposit.
+// Figures are indicative only; exact quotes depend on lender criteria.
 
-const DEPOSIT_PCT = 0.10;
 const TERM_MONTHS = 48;
 const ANNUAL_APR = 9.9;
 
@@ -9,26 +8,25 @@ function monthlyRate() {
   return ANNUAL_APR / 100 / 12;
 }
 
-/** Estimate HP monthly payment for a vehicle at the given price (GBP). */
-export function estimateMonthly(pricePounds: number): number {
-  const principal = pricePounds * (1 - DEPOSIT_PCT);
+/** Estimate HP monthly payment given vehicle price and deposit amount (GBP). */
+export function estimateMonthly(pricePounds: number, depositPounds = 0): number {
+  const principal = Math.max(0, pricePounds - depositPounds);
   const r = monthlyRate();
   if (r === 0) return principal / TERM_MONTHS;
   return (principal * r) / (1 - Math.pow(1 + r, -TERM_MONTHS));
 }
 
-/** Inverse: given a max monthly payment, return the corresponding max vehicle price. */
-export function priceFromMonthly(monthlyPounds: number): number {
+/** Inverse: given max monthly payment and deposit amount, return the max affordable price. */
+export function priceFromMonthly(monthlyPounds: number, depositPounds = 0): number {
   const r = monthlyRate();
   const principal =
     r === 0
       ? monthlyPounds * TERM_MONTHS
       : (monthlyPounds * (1 - Math.pow(1 + r, -TERM_MONTHS))) / r;
-  return Math.round(principal / (1 - DEPOSIT_PCT));
+  return Math.round(principal + depositPounds);
 }
 
 export const FINANCE_ASSUMPTIONS = {
-  depositPct: DEPOSIT_PCT,
   termMonths: TERM_MONTHS,
   apr: ANNUAL_APR,
 };

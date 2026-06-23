@@ -23,7 +23,8 @@ const num = (v: string | string[] | undefined) => {
 
 function parseFilters(sp: Search): ListingFilters {
   const monthlyMax = num(sp.monthlyMax);
-  const derivedMaxPrice = monthlyMax ? priceFromMonthly(monthlyMax) : undefined;
+  const deposit = num(sp.deposit) ?? 3000;
+  const derivedMaxPrice = monthlyMax ? priceFromMonthly(monthlyMax, deposit) : undefined;
   return {
     make:      one(sp.make)      || undefined,
     model:     one(sp.model)     || undefined,
