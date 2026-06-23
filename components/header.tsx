@@ -34,9 +34,9 @@ const USED_VAN_MAKES = [
 ];
 
 const NEW_VAN_ITEMS = [
-  { href: "/vans/new",  label: "All new vans" },
-  { href: "/new-vans",  label: "New van model guide" },
-  { href: "/vans/ulez", label: "ULEZ-compliant" },
+  { href: "/vans?condition=new", label: "All new vans" },
+  { href: "/new-vans",           label: "New van model guide" },
+  { href: "/vans/ulez",          label: "ULEZ-compliant" },
 ];
 
 const SELL_ITEMS = [
@@ -113,7 +113,7 @@ function NavDropdown({
   );
 }
 
-function UsedVansDropdown({
+function BrowseVansDropdown({
   open,
   onToggle,
   onClose,
@@ -131,7 +131,7 @@ function UsedVansDropdown({
         onClick={onToggle}
         className={`${NAV_LINK_CLS} gap-1.5 ${open ? "text-ink-900" : ""}`}
       >
-        Used vans
+        Browse vans
         <Chevron open={open} />
         {open && <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-accent-500" />}
       </button>
@@ -139,14 +139,19 @@ function UsedVansDropdown({
         className="nav-drop absolute left-0 top-full z-50 w-[400px] rounded-[var(--radius-lg)] border border-border bg-white shadow-[var(--shadow-lg)]"
         data-open={open ? "true" : "false"}
       >
-        <div className="border-b border-border px-4 py-3">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <Link
-            href="/vans/used"
+            href="/vans"
             className="text-[var(--text-sm)] font-bold text-brand-600 hover:text-brand-700"
             onClick={onClose}
           >
-            Browse all used vans →
+            Browse all vans →
           </Link>
+          <span className="flex items-center gap-3 text-[var(--text-xs)] font-semibold text-ink-400">
+            <Link href="/vans?condition=new" className="hover:text-brand-700" onClick={onClose}>New</Link>
+            <span aria-hidden>·</span>
+            <Link href="/vans?condition=used" className="hover:text-brand-700" onClick={onClose}>Used</Link>
+          </span>
         </div>
         <div className="grid grid-cols-2 divide-x divide-border p-1">
           <div className="py-1.5 pr-1">
@@ -227,7 +232,7 @@ export function Header() {
       {/* ── Row 2: Primary nav ──────────────────────────────────────────── */}
       <div className="hidden border-b border-border bg-white md:block">
         <Container className="flex h-10 items-stretch">
-          <UsedVansDropdown
+          <BrowseVansDropdown
             open={openMenu === "used"}
             onToggle={() => toggle("used")}
             onClose={close}

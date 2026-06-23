@@ -67,7 +67,7 @@ export default async function ElectricVansPage() {
             <Link href="/vans/ulez" className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               All ULEZ-compliant vans
             </Link>
-            <Link href="/vans/new" className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
+            <Link href="/vans?condition=new" className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               New vans
             </Link>
           </div>
@@ -121,7 +121,7 @@ export default async function ElectricVansPage() {
                 {[
                   ["All ULEZ-compliant vans", "/vans/ulez"],
                   ["Plug-in hybrids (PHEV)", "/vans?fuel=plug-in+hybrid"],
-                  ["New vans", "/vans/new"],
+                  ["New vans", "/vans?condition=new"],
                   ["Electric panel vans", "/vans?fuel=electric&bodyStyle=Panel+Van"],
                 ].map(([label, href]) => (
                   <li key={href as string}>
