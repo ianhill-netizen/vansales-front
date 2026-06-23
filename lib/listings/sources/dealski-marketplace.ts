@@ -132,10 +132,19 @@ function normaliseModel(make: string, model: string | null): { model: string; co
 }
 
 function normaliseWheelbase(wb: string | null): Wheelbase | null {
-  const v = (wb ?? "").toLowerCase();
-  if (v.includes("swb") || v.includes("short")) return "swb";
-  if (v.includes("mwb") || v.includes("med")) return "mwb";
-  if (v.includes("lwb") || v.includes("long")) return "lwb";
+  const v = (wb ?? "").trim();
+  // Feed sends L-codes (L1/L2/L3/L4) — map these first.
+  const upper = v.toUpperCase();
+  if (upper === "L1") return "swb";
+  if (upper === "L2") return "mwb";
+  if (upper === "L3") return "lwb";
+  if (upper === "L4") return "xlwb";
+  // Fallback: plain-text strings from older feed versions or manual entries.
+  const lower = v.toLowerCase();
+  if (lower.includes("swb") || lower.includes("short")) return "swb";
+  if (lower.includes("mwb") || lower.includes("med")) return "mwb";
+  if (lower.includes("xlwb") || lower.includes("extra")) return "xlwb";
+  if (lower.includes("lwb") || lower.includes("long")) return "lwb";
   return null;
 }
 

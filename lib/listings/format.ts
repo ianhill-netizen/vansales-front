@@ -49,12 +49,14 @@ export const WHEELBASE_LABEL: Record<Wheelbase, string> = {
   swb: "Short wheelbase",
   mwb: "Medium wheelbase",
   lwb: "Long wheelbase",
+  xlwb: "Extra-long wheelbase",
 };
 
 export const WHEELBASE_SHORT: Record<Wheelbase, string> = {
   swb: "SWB",
   mwb: "MWB",
   lwb: "LWB",
+  xlwb: "XLWB",
 };
 
 export const ROOF_LABEL: Record<RoofHeight, string> = {

@@ -10,7 +10,7 @@ export type SellerType = "dealer" | "private";
 export type ListingStatus = "active" | "reserved" | "sold" | "removed";
 export type Condition = "used" | "new";
 export type PriceType = "inc_vat" | "no_vat";
-export type Wheelbase = "swb" | "mwb" | "lwb";
+export type Wheelbase = "swb" | "mwb" | "lwb" | "xlwb";
 export type RoofHeight = "low" | "medium" | "high";
 
 export interface VanSpec {
