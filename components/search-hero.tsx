@@ -1,23 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
 import { IconSearch, IconChevron } from "./icons";
 
-const TAXONOMY: Record<string, string[]> = {
-  "Any make": [],
-  Volkswagen:      ["Any model", "Transporter", "Caddy", "Crafter"],
-  Ford:            ["Any model", "Transit Custom", "Transit", "Ranger"],
-  "Mercedes-Benz": ["Any model", "Sprinter", "Vito"],
-  Vauxhall:        ["Any model", "Vivaro", "Combo"],
-  Renault:         ["Any model", "Master", "Trafic"],
-  Citroën:         ["Any model", "Berlingo", "Relay"],
-  Nissan:          ["Any model", "NV200", "NV300"],
-  Peugeot:         ["Any model", "Expert", "Boxer"],
-  Fiat:            ["Any model", "Doblo", "Ducato"],
-  Toyota:          ["Any model", "Proace"],
-};
+const ALL_MAKE_NAMES = ALL_MAKES.map((m) => m.name);
 
 const LABEL_CLS =
   "pointer-events-none absolute left-4 top-3 text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400";
@@ -27,23 +16,24 @@ const FIELD_CLS =
 
 export function SearchHero({ total }: { total: number }) {
   const router = useRouter();
-  const makes = useMemo(() => Object.keys(TAXONOMY), []);
-  const [make, setMake]   = useState("Any make");
-  const [model, setModel] = useState("Any model");
+  const [make, setMake]   = useState("");
+  const [model, setModel] = useState("");
   const [where, setWhere] = useState("");
 
-  const models = make === "Any make" ? [] : TAXONOMY[make] ?? [];
+  const makeData = make ? getMakeBySlug(slugify(make)) : null;
+  const models = makeData ? makeData.models.map((m) => m.name) : [];
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (make === "Any make" || make === "") {
-      const params = where.trim() ? `?near=${encodeURIComponent(where.trim())}` : "";
-      router.push(`/vans${params}`);
-    } else if (model === "Any model" || model === "") {
-      router.push(`/vans/${slugify(make)}`);
+    const makePath = make ? slugify(make) : null;
+    const modelPath = model && makePath ? slugify(model) : null;
+    const near = where.trim() ? `?near=${encodeURIComponent(where.trim())}` : "";
+    if (!makePath) {
+      router.push(`/vans${near}`);
+    } else if (!modelPath) {
+      router.push(`/vans/${makePath}${near}`);
     } else {
-      const params = where.trim() ? `?near=${encodeURIComponent(where.trim())}` : "";
-      router.push(`/vans/${slugify(make)}/${slugify(model)}${params}`);
+      router.push(`/vans/${makePath}/${modelPath}${near}`);
     }
   }
 
@@ -60,11 +50,12 @@ export function SearchHero({ total }: { total: number }) {
             <span className={LABEL_CLS}>Make</span>
             <select
               value={make}
-              onChange={(e) => { setMake(e.target.value); setModel("Any model"); }}
+              onChange={(e) => { setMake(e.target.value); setModel(""); }}
               className={FIELD_CLS}
               aria-label="Make"
             >
-              {makes.map((m) => <option key={m}>{m}</option>)}
+              <option value="">Any make</option>
+              {ALL_MAKE_NAMES.map((m) => <option key={m} value={m}>{m}</option>)}
             </select>
             <IconChevron width={15} height={15} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
           </div>
@@ -75,15 +66,12 @@ export function SearchHero({ total }: { total: number }) {
             <select
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              disabled={make === "Any make"}
+              disabled={!make}
               className={`${FIELD_CLS} disabled:cursor-not-allowed disabled:text-ink-400`}
               aria-label="Model"
             >
-              {make === "Any make" ? (
-                <option>Any model</option>
-              ) : (
-                models.map((m) => <option key={m}>{m}</option>)
-              )}
+              <option value="">Any model</option>
+              {models.map((m) => <option key={m} value={m}>{m}</option>)}
             </select>
             <IconChevron width={15} height={15} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
           </div>
@@ -124,7 +112,7 @@ export function SearchHero({ total }: { total: number }) {
         )}
         <span className="hidden h-3 w-px bg-white/20 sm:block" aria-hidden />
         {[
-          { href: "/directory",    label: "Browse by make" },
+          { href: "/directory",      label: "Browse by make" },
           { href: "/vans/panel-van", label: "Panel vans" },
           { href: "/vans/electric",  label: "Electric vans" },
           { href: "/vans/luton",     label: "Luton vans" },

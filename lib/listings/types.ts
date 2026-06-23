@@ -109,6 +109,9 @@ export interface ListingFilters {
   minYear?: number;
   maxYear?: number;
   status?: ListingStatus;
+  gearbox?: string;
+  colour?: string;
+  maxMileage?: number;
   q?: string;
   ulez?: boolean;
   sort?: "newest" | "price_asc" | "price_desc" | "mileage_asc";
