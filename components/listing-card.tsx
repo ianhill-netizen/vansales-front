@@ -1,12 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
-import { getListingCardImage } from "@/lib/media/model-images";
-import { SpecCard } from "./spec-card";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconArrow } from "./icons";
 
@@ -32,7 +29,6 @@ export function ListingCard({
   const featured = isFeaturedSeller(listing.seller.name);
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
-  const modelImage = hasRealPhoto ? null : getListingCardImage(listing.make, listing.model, cardIndex);
   const fuelLower = listing.fuel.toLowerCase();
   const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
 
@@ -61,22 +57,19 @@ export function ListingCard({
             className="size-full object-cover transition-transform duration-[var(--dur-slow)] group-hover:scale-[1.03]"
             loading={priority ? "eager" : "lazy"}
           />
-        ) : modelImage ? (
-          <>
-            <Image
-              src={modelImage.path}
-              alt={modelImage.alt}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-contain p-6 transition-transform duration-[var(--dur-slow)] group-hover:scale-[1.04]"
-              priority={priority}
-            />
-            <span className="absolute bottom-2.5 right-2.5 rounded-[var(--radius-pill)] bg-ink-900/50 px-2 py-0.5 font-mono text-[var(--text-2xs)] text-white/70 backdrop-blur-sm">
-              Library image
-            </span>
-          </>
         ) : (
-          <SpecCard listing={listing} className="size-full" />
+          <div className="flex size-full flex-col items-center justify-center gap-2.5">
+            <svg viewBox="0 0 64 32" fill="none" className="h-8 w-16 text-ink-200" aria-hidden>
+              <rect x="1" y="11" width="62" height="18" rx="3" stroke="currentColor" strokeWidth="2"/>
+              <rect x="8" y="3" width="28" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
+              <circle cx="14" cy="29" r="3" stroke="currentColor" strokeWidth="2"/>
+              <circle cx="50" cy="29" r="3" stroke="currentColor" strokeWidth="2"/>
+              <line x1="36" y1="11" x2="36" y2="17" stroke="currentColor" strokeWidth="1.5"/>
+            </svg>
+            <p className="font-mono text-[var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-300">
+              Photo coming soon
+            </p>
+          </div>
         )}
 
         {/* Bottom gradient for badge legibility */}
