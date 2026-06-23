@@ -70,7 +70,10 @@ export default async function HomePage() {
     getFacets(),
   ]);
 
-  const topMakes = facets.makes.slice(0, 10);
+  // Only show makes with meaningful stock — hides single-vehicle outliers.
+  // All makes remain discoverable via /directory.
+  const MIN_MAKE_COUNT = 5;
+  const topMakes = facets.makes.filter((m) => m.count >= MIN_MAKE_COUNT).slice(0, 12);
   const base = siteUrl();
 
   const orgSchema = {
