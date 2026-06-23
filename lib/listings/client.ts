@@ -128,6 +128,9 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
   if (f.ulez === true) out = out.filter((l) => l.ulez);
   if (f.wheelbase) out = out.filter((l) => l.van_spec.wheelbase === f.wheelbase);
   if (f.fuel) out = out.filter((l) => slugify(l.fuel) === slugify(f.fuel!));
+  if (f.gearbox) out = out.filter((l) => l.transmission.toLowerCase() === f.gearbox!.toLowerCase());
+  if (f.colour) out = out.filter((l) => l.colour !== "—" && slugify(l.colour) === slugify(f.colour!));
+  if (f.maxMileage != null) out = out.filter((l) => l.mileage == null || l.mileage <= f.maxMileage!);
   if (f.status) out = out.filter((l) => l.status === f.status);
   if (f.minYear) out = out.filter((l) => l.year >= f.minYear!);
   if (f.maxYear) out = out.filter((l) => l.year <= f.maxYear!);

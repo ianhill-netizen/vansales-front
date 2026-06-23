@@ -128,10 +128,18 @@ export function isFeaturedSeller(sellerName: string): boolean {
   return getDealerConfigBySeller(sellerName)?.featured === true;
 }
 
-/** Look up dealer config by the seller name appearing in a Dealski listing. */
+/** Look up dealer config by the seller name appearing in a Dealski listing.
+ *  Also matches the dealskiTenant slug so marketplace listings that carry a
+ *  tenant slug as their seller name (e.g. "swissvans") still resolve. */
 export function getDealerConfigBySeller(sellerName: string): DealerConfig | null {
-  const lower = sellerName.toLowerCase();
-  return Object.values(DEALERS).find((d) => d.sellerNames.some((n) => n.toLowerCase() === lower)) ?? null;
+  const lower = sellerName.trim().toLowerCase();
+  return (
+    Object.values(DEALERS).find(
+      (d) =>
+        d.sellerNames.some((n) => n.toLowerCase() === lower) ||
+        (d.dealskiTenant && d.dealskiTenant.toLowerCase() === lower),
+    ) ?? null
+  );
 }
 
 export function getDealerConfig(slug: string): DealerConfig | null {
