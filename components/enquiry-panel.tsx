@@ -4,11 +4,19 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
-import { supplierCode } from "@/lib/listings/supplier-code";
 import { Button } from "./ui";
-import { IconCheck, IconShield, IconStar, IconArrow } from "./icons";
+import { IconCheck, IconShield, IconArrow } from "./icons";
 
 type FormState = "idle" | "open" | "submitting" | "success" | "error";
+
+function dealerInitials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => (w[0] ?? "").toUpperCase())
+    .join("");
+}
 
 const PHONE_DISPLAY = "01656 507619";
 const PHONE_TEL = "tel:+441656507619";
@@ -28,10 +36,10 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
   const sold = listing.status === "sold";
 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
+  const displayName = dealerConfig?.name ?? listing.seller.name;
   const displayLocation = dealerConfig
     ? `${dealerConfig.location.town}, ${dealerConfig.location.county}`
     : `${listing.location.town}, ${listing.location.region}`;
-  const displayRating = listing.seller.rating ?? dealerConfig?.googleRating ?? null;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -89,26 +97,20 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
       {/* Seller */}
       <div className="flex items-center gap-3">
         <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] bg-ink-900 font-display text-[var(--text-lg)] font-bold text-white">
-          VS
+          {dealerInitials(displayName)}
         </span>
         <div className="min-w-0">
           <p className="truncate font-display text-[var(--text-base)] font-bold text-ink-900">
             {dealerConfig ? (
               <Link href={`/dealer/${dealerConfig.slug}`} className="hover:text-brand-600">
-                {supplierCode(listing.seller.name)}
+                {displayName}
               </Link>
             ) : (
-              supplierCode(listing.seller.name)
+              displayName
             )}
           </p>
-          <p className="flex items-center gap-1.5 text-[var(--text-sm)] text-ink-500">
-            {listing.seller_type === "dealer" ? "Trusted dealer" : "Private seller"}
-            {displayRating != null && (
-              <span className="inline-flex items-center gap-0.5 text-ink-700">
-                <IconStar width={13} height={13} className="text-accent-500" />
-                {displayRating.toFixed(1)}
-              </span>
-            )}
+          <p className="text-[var(--text-sm)] text-ink-500">
+            {listing.seller_type === "dealer" ? "Van dealer" : "Private seller"}
           </p>
         </div>
       </div>
@@ -117,6 +119,12 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
         <IconShield width={15} height={15} className="text-brand-600" />
         {displayLocation}
       </p>
+
+      {/* Reviews placeholder — no fabricated ratings */}
+      <div className="mt-3 rounded-[var(--radius-md)] bg-surface-1 px-4 py-3">
+        <p className="text-[var(--text-sm)] font-semibold text-ink-700">Reviews</p>
+        <p className="mt-0.5 text-[var(--text-sm)] text-ink-400">No reviews yet.</p>
+      </div>
 
       {/* Phone CTA — always visible */}
       <a
@@ -144,7 +152,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
           <div>
             <p className="font-semibold text-success-600">Enquiry sent!</p>
             <p className="mt-1 text-[var(--text-sm)] text-ink-600">
-              {supplierCode(listing.seller.name)} has your details and will be in touch shortly. For a faster
+              {displayName} has your details and will be in touch shortly. For a faster
               reply, call <a href={PHONE_TEL} className="font-bold text-ink-800 underline">{PHONE_DISPLAY}</a>.
             </p>
           </div>
