@@ -2,48 +2,34 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
 
-/* Mirror of NAV_TOP_LEVEL_LOCK from header.tsx — mobile sections. */
+const BODY_TYPE_LINKS = [
+  { href: "/vans", label: "All vans for sale" },
+  { href: "/vans/panel-van", label: "Panel vans" },
+  { href: "/vans/luton", label: "Luton vans" },
+  { href: "/vans/tipper", label: "Tippers" },
+  { href: "/vans/dropside", label: "Dropsides" },
+  { href: "/vans/crew-van", label: "Crew vans" },
+  { href: "/vans/pickup", label: "Pickups" },
+  { href: "/vans/minibus", label: "Minibuses" },
+  { href: "/vans/chassis-cab", label: "Chassis cabs" },
+];
+
+const MAKE_LINKS = POPULAR_MAKES.map((m) => ({
+  href: `/vans/${m.slug}`,
+  label: `${m.name} vans for sale`,
+}));
+
+/* Mirror of header.tsx nav — mobile sections. */
 const SECTIONS = [
   {
-    heading: "Browse vans",
-    links: [
-      { href: "/vans", label: "All vans" },
-      { href: "/vans?condition=new", label: "New vans" },
-      { href: "/vans?condition=used", label: "Used vans" },
-      { href: "/vans/panel-van", label: "Panel vans" },
-      { href: "/vans/luton", label: "Luton vans" },
-      { href: "/vans/tipper", label: "Tippers" },
-      { href: "/vans/dropside", label: "Dropsides" },
-      { href: "/vans/crew-van", label: "Crew vans" },
-      { href: "/vans/pickup", label: "Pickups" },
-      { href: "/vans/minibus", label: "Minibuses" },
-      { href: "/vans/chassis-cab", label: "Chassis cabs" },
-    ],
+    heading: "Vans for sale",
+    links: BODY_TYPE_LINKS,
   },
   {
     heading: "Browse by make",
-    links: [
-      { href: "/vans/ford", label: "Ford" },
-      { href: "/vans/volkswagen", label: "Volkswagen" },
-      { href: "/vans/mercedes-benz", label: "Mercedes-Benz" },
-      { href: "/vans/vauxhall", label: "Vauxhall" },
-      { href: "/vans/renault", label: "Renault" },
-      { href: "/vans/citroen", label: "Citroën" },
-      { href: "/vans/peugeot", label: "Peugeot" },
-      { href: "/vans/fiat", label: "Fiat" },
-      { href: "/vans/nissan", label: "Nissan" },
-      { href: "/vans/toyota", label: "Toyota" },
-      { href: "/vans/iveco", label: "Iveco" },
-    ],
-  },
-  {
-    heading: "New vans",
-    links: [
-      { href: "/vans?condition=new", label: "All new vans" },
-      { href: "/new-vans",           label: "New van model guide" },
-      { href: "/vans/ulez",          label: "ULEZ-compliant" },
-    ],
+    links: MAKE_LINKS,
   },
   {
     heading: "Sell your van",

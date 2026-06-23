@@ -7,8 +7,9 @@ import { Logo } from "./brand";
 import { MobileNav } from "./mobile-nav";
 import { IconHeart } from "./icons";
 import { AccountButton } from "./account-button";
+import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
 
-const USED_VAN_BODY_TYPES = [
+const VAN_BODY_TYPES = [
   { href: "/vans/panel-van",    label: "Panel vans" },
   { href: "/vans/luton",        label: "Luton vans" },
   { href: "/vans/tipper",       label: "Tippers" },
@@ -17,26 +18,6 @@ const USED_VAN_BODY_TYPES = [
   { href: "/vans/pickup",       label: "Pickups" },
   { href: "/vans/minibus",      label: "Minibuses" },
   { href: "/vans/chassis-cab",  label: "Chassis cabs" },
-];
-
-const USED_VAN_MAKES = [
-  { href: "/vans/ford",          label: "Ford" },
-  { href: "/vans/volkswagen",    label: "Volkswagen" },
-  { href: "/vans/mercedes-benz", label: "Mercedes-Benz" },
-  { href: "/vans/vauxhall",      label: "Vauxhall" },
-  { href: "/vans/renault",       label: "Renault" },
-  { href: "/vans/citroen",       label: "Citroën" },
-  { href: "/vans/peugeot",       label: "Peugeot" },
-  { href: "/vans/fiat",          label: "Fiat" },
-  { href: "/vans/nissan",        label: "Nissan" },
-  { href: "/vans/toyota",        label: "Toyota" },
-  { href: "/vans/iveco",         label: "Iveco" },
-];
-
-const NEW_VAN_ITEMS = [
-  { href: "/vans?condition=new", label: "All new vans" },
-  { href: "/new-vans",           label: "New van model guide" },
-  { href: "/vans/ulez",          label: "ULEZ-compliant" },
 ];
 
 const SELL_ITEMS = [
@@ -67,7 +48,7 @@ const GUIDES_ITEMS = [
   { href: "/blog",        label: "Guides & news" },
 ];
 
-type OpenId = "used" | "new" | "sell" | "guides" | null;
+type OpenId = "used" | "sell" | "guides" | null;
 
 function NavDropdown({
   label,
@@ -111,7 +92,7 @@ function NavDropdown({
   );
 }
 
-function BrowseVansDropdown({
+function VansForSaleDropdown({
   open,
   onToggle,
   onClose,
@@ -129,12 +110,12 @@ function BrowseVansDropdown({
         onClick={onToggle}
         className={`${NAV_LINK_CLS} gap-1.5 ${open ? "text-ink-900" : ""}`}
       >
-        Browse vans
+        Vans for sale
         <Chevron open={open} />
         {open && <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-accent-500" />}
       </button>
       <div
-        className="nav-drop absolute left-0 top-full z-50 w-[400px] rounded-[var(--radius-lg)] border border-border bg-white shadow-[var(--shadow-lg)]"
+        className="nav-drop absolute left-0 top-full z-50 w-[480px] rounded-[var(--radius-lg)] border border-border bg-white shadow-[var(--shadow-lg)]"
         data-open={open ? "true" : "false"}
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
@@ -143,20 +124,15 @@ function BrowseVansDropdown({
             className="text-[var(--text-sm)] font-bold text-brand-600 hover:text-brand-700"
             onClick={onClose}
           >
-            Browse all vans →
+            All vans for sale →
           </Link>
-          <span className="flex items-center gap-3 text-[var(--text-xs)] font-semibold text-ink-400">
-            <Link href="/vans?condition=new" className="hover:text-brand-700" onClick={onClose}>New</Link>
-            <span aria-hidden>·</span>
-            <Link href="/vans?condition=used" className="hover:text-brand-700" onClick={onClose}>Used</Link>
-          </span>
         </div>
         <div className="grid grid-cols-2 divide-x divide-border p-1">
           <div className="py-1.5 pr-1">
             <p className="px-3 pb-1.5 pt-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
               By body type
             </p>
-            {USED_VAN_BODY_TYPES.map((item) => (
+            {VAN_BODY_TYPES.map((item) => (
               <Link key={item.href} href={item.href} className={DROP_ITEM_CLS} onClick={onClose}>
                 {item.label}
               </Link>
@@ -166,11 +142,14 @@ function BrowseVansDropdown({
             <p className="px-3 pb-1.5 pt-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
               By make
             </p>
-            {USED_VAN_MAKES.map((item) => (
-              <Link key={item.href} href={item.href} className={DROP_ITEM_CLS} onClick={onClose}>
-                {item.label}
+            {POPULAR_MAKES.map((m) => (
+              <Link key={m.slug} href={`/vans/${m.slug}`} className={DROP_ITEM_CLS} onClick={onClose}>
+                {m.name} vans for sale
               </Link>
             ))}
+            <Link href="/vans" className={`${DROP_ITEM_CLS} mt-1 border-t border-border font-semibold text-brand-600 hover:text-brand-700`} onClick={onClose}>
+              All makes →
+            </Link>
           </div>
         </div>
       </div>
@@ -230,17 +209,9 @@ export function Header() {
       {/* ── Row 2: Primary nav ──────────────────────────────────────────── */}
       <div className="hidden border-b border-border bg-white md:block">
         <Container className="flex h-10 items-stretch">
-          <BrowseVansDropdown
+          <VansForSaleDropdown
             open={openMenu === "used"}
             onToggle={() => toggle("used")}
-            onClose={close}
-          />
-          <NavDropdown
-            id="new"
-            label="New vans"
-            items={NEW_VAN_ITEMS}
-            open={openMenu === "new"}
-            onToggle={() => toggle("new")}
             onClose={close}
           />
           <NavDropdown

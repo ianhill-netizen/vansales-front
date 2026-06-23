@@ -11,16 +11,12 @@ import { matchBlogPosts } from "@/lib/content/cross-links";
 import { RelatedLinks } from "@/components/related-links";
 import { SITE, absUrl } from "@/lib/site";
 import { slugify } from "@/lib/listings/slug";
+import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
 
 export const revalidate = 3600;
 
-const KNOWN_MAKES = [
-  "ford", "volkswagen", "mercedes-benz", "vauxhall", "renault",
-  "citroen", "peugeot", "fiat", "nissan", "toyota", "iveco",
-];
-
 export async function generateStaticParams() {
-  return KNOWN_MAKES.map((make) => ({ make }));
+  return ALL_MAKES.map((m) => ({ make: m.slug }));
 }
 
 // Static category slugs handled by their own pages — prevent them falling through to here
@@ -29,22 +25,8 @@ const CATEGORY_SLUGS = new Set([
   "pickup", "minibus", "electric", "new", "used", "ulez",
 ]);
 
-const MAKE_DISPLAY: Record<string, string> = {
-  ford: "Ford",
-  volkswagen: "Volkswagen",
-  "mercedes-benz": "Mercedes-Benz",
-  vauxhall: "Vauxhall",
-  renault: "Renault",
-  citroen: "Citroën",
-  peugeot: "Peugeot",
-  fiat: "Fiat",
-  nissan: "Nissan",
-  toyota: "Toyota",
-  iveco: "Iveco",
-};
-
 function slugToMake(slug: string): string {
-  return MAKE_DISPLAY[slug] ?? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return getMakeBySlug(slug)?.name ?? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export async function generateMetadata({
