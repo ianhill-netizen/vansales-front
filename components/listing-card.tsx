@@ -122,7 +122,6 @@ export function ListingCard({
             <span className="relative z-10 inline-flex">
               <Link
                 href={`/dealer/${dealerConfig.slug}`}
-                onClick={(e) => e.stopPropagation()}
                 className="font-semibold text-ink-500 hover:text-brand-600"
               >
                 {listing.seller.name}
