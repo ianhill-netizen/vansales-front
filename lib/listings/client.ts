@@ -147,11 +147,18 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
 
   // Keep active stock ahead of sold/reserved regardless of sort.
   out = [...out].sort((a, b) => statusRank(a) - statusRank(b));
+  // Keep live feed stock ahead of demo/native listings within each status tier.
+  out = [...out].sort((a, b) => sourceRank(a) - sourceRank(b));
   return out;
 }
 
 function statusRank(l: Listing): number {
   return l.status === "active" ? 0 : l.status === "reserved" ? 1 : 2;
+}
+
+// Live feed stock (dealski) sorts before demo/native listings.
+function sourceRank(l: Listing): number {
+  return l.source === "dealski" ? 0 : 1;
 }
 
 /* ---------------------------------------------------------------------------
