@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { getDealerConfig, whatsappUrl, financeUrl } from "@/lib/dealers/config";
 import { getListings } from "@/lib/listings/client";
 import { fetchNativeDbListings } from "@/lib/listings/sources/db";
@@ -11,6 +10,7 @@ import { Container } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { DealerCTAButtons } from "@/components/dealer-cta-buttons";
+import { DealerMapClient } from "@/components/dealer-map-wrapper";
 import {
   IconPin,
   IconClock,
@@ -20,16 +20,6 @@ import {
   IconPhone,
 } from "@/components/icons";
 import { SITE, absUrl } from "@/lib/site";
-
-const DealerMapClient = dynamic(
-  () => import("@/components/dealer-map").then((m) => m.DealerMap),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-[340px] w-full animate-pulse rounded-[var(--radius-xl)] bg-surface-2" />
-    ),
-  },
-);
 
 export const revalidate = 3600;
 
