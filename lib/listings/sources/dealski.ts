@@ -337,6 +337,7 @@ function mapDetail(d: DealskiDetail): Listing {
     seller: { name: DEALER.seller, type: "dealer", logo: null, rating: 4.8 },
     enquiry_route: { to: "dealski_tenant", ref: d.customer_ref ?? source_id },
     enquiry_url: null,
+    stock_ref: d.customer_ref ?? null,
     published_at: d.created_at,
     updated_at: d.updated_at,
   };
@@ -397,6 +398,7 @@ function mapSummary(s: DealskiSummary): Listing {
     seller: { name: DEALER.seller, type: "dealer", logo: null, rating: 4.8 },
     enquiry_route: { to: "dealski_tenant", ref: s.customer_ref ?? source_id },
     enquiry_url: null,
+    stock_ref: s.customer_ref ?? null,
     published_at: s.created_at,
     updated_at: s.updated_at,
   };

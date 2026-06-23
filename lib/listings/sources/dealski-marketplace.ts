@@ -284,6 +284,7 @@ function mapVehicle(d: MarketplaceVehicle): Listing {
     seller: { name: sellerName, type: "dealer", logo: null, rating: null },
     enquiry_route: { to: "marketplace", ref: d.stock_number ?? d.customer_ref ?? source_id },
     enquiry_url: d.enquiry_url ?? null,
+    stock_ref: d.stock_number ?? d.customer_ref ?? null,
     published_at: d.created_at,
     updated_at: d.updated_at,
   };

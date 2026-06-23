@@ -86,6 +86,8 @@ export interface Listing {
   enquiry_route: EnquiryRoute;
   /** Direct backend URL for submitting a lead. Populated for marketplace listings; null for other sources. */
   enquiry_url: string | null;
+  /** Dealer's own stock reference (e.g. "SV-2606-1147"). Null when the source doesn't provide one. */
+  stock_ref: string | null;
 
   published_at: string; // ISO
   updated_at: string; // ISO
