@@ -56,15 +56,30 @@ async function loadAll(): Promise<{
   const demo = getAcmeDemoListings();
 
   if (source === "marketplace") {
+    // Primary: authenticated aggregate feed (cursor-paginated, multi-tenant).
     try {
       const { listings, feedTotal } = await fetchMarketplaceCatalogue();
       if (listings.length > 0) {
+        console.info(`[listings] served by marketplace feed (${listings.length} vehicles)`);
+        const merged = [...listings, ...nativeDb, ...demo];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
+      }
+      console.warn("[listings] marketplace returned 0 vehicles — falling back to legacy feed");
+    } catch (err) {
+      console.warn("[listings] marketplace feed error, falling back to legacy feed:", (err as Error).message);
+    }
+    // Secondary: unauthenticated single-tenant legacy feed (keeps site live if key/endpoint breaks).
+    try {
+      const { listings, feedTotal } = await fetchDealskiCatalogue();
+      if (listings.length > 0) {
+        console.info(`[listings] served by legacy dealski feed (${listings.length} vehicles)`);
         const merged = [...listings, ...nativeDb, ...demo];
         return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
       }
     } catch {
       /* fall through to mock */
     }
+    console.warn("[listings] both dealski feeds failed — serving mock data");
     const mock = getMockListings();
     const merged = [...mock, ...nativeDb, ...demo];
     return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };

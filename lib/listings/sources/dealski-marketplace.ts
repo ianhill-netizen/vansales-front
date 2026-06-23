@@ -15,15 +15,16 @@ import { titleCase } from "../format";
    per-tenant endpoint (not done here — catalogue serves the primary photo only).
    ========================================================================== */
 
-const MARKETPLACE_URL =
-  (process.env.DEALSKI_MARKETPLACE_URL ?? "").replace(/\/$/, "");
+const MARKETPLACE_URL = (
+  process.env.DEALSKI_MARKETPLACE_URL ||
+  `${(process.env.DEALSKI_API_URL ?? "https://swissvans.dealski.co.uk").replace(/\/$/, "")}/api/marketplace/stock`
+).replace(/\/$/, "");
 const MARKETPLACE_KEY = process.env.DEALSKI_MARKETPLACE_KEY ?? "";
 
 const PER_PAGE = 100; // marketplace endpoint caps at 100
-const PAGE_CONCURRENCY = 4; // polite parallelism across pages
 const REVALIDATE = 21600; // 6 h — must be < 24 h (presigned photo URL TTL)
 const TIMEOUT_MS = 15000;
-const HARD_PAGE_CAP = 50; // backstop (~5 000 vehicles)
+const HARD_CURSOR_CAP = 50; // safety backstop (~5 000 vehicles)
 
 /* ---------------------------------------------------------------------------
    API response types
@@ -40,7 +41,9 @@ interface MarketplaceDealer {
 
 interface MarketplaceVehicle {
   id: number;
-  tenant_slug: string;
+  dealer_id: string;   // Dealski tenant primary key, e.g. "swissvans"
+  dealer_slug: string; // domain-derived slug, same value as dealer_id today
+  tenant_slug: string; // retained for backward compat
   stock_number: string | null;
   make: string | null;
   model: string | null;
@@ -76,7 +79,7 @@ interface MarketplaceVehicle {
 
 interface MarketplacePage {
   data: MarketplaceVehicle[];
-  meta: { current_page: number; last_page: number; per_page: number; total: number };
+  meta: { per_page: number; total: number; has_more: boolean; next_cursor: string | null };
 }
 
 /* ---------------------------------------------------------------------------
@@ -102,7 +105,7 @@ async function fetchPageOnce(url: string): Promise<MarketplacePage> {
     const res = await fetch(url, {
       headers: {
         Accept: "application/json",
-        "X-API-Key": MARKETPLACE_KEY,
+        Authorization: `Bearer ${MARKETPLACE_KEY}`,
       },
       signal: ctrl.signal,
       next: { revalidate: REVALIDATE },
@@ -112,23 +115,6 @@ async function fetchPageOnce(url: string): Promise<MarketplacePage> {
   } finally {
     clearTimeout(timer);
   }
-}
-
-async function mapWithConcurrency<I, O>(
-  items: I[],
-  limit: number,
-  fn: (item: I) => Promise<O>,
-): Promise<O[]> {
-  const out: O[] = new Array(items.length);
-  let cursor = 0;
-  async function worker() {
-    while (cursor < items.length) {
-      const i = cursor++;
-      out[i] = await fn(items[i]);
-    }
-  }
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
-  return out;
 }
 
 /* ---------------------------------------------------------------------------
@@ -235,7 +221,9 @@ function mapVehicle(d: MarketplaceVehicle): Listing {
   const source_id = String(d.id);
   const alt = `${make} ${model} ${derivative}`.trim();
   const doors = (d.side_doors ?? 0) + (d.rear_doors ?? 0) || (d.rear_door_type ? 2 : null);
-  const sellerName = d.dealer?.name ?? d.tenant_slug;
+  // Use dealer.name for display (enables existing getDealerConfigBySeller lookup).
+  // Fall back through dealer_slug → tenant_slug for tenants without a dealer record.
+  const sellerName = d.dealer?.name ?? d.dealer_slug ?? d.tenant_slug;
   const { town, region, postcode_area } = locationFromDealer(d.dealer);
 
   return {
@@ -291,26 +279,38 @@ function mapVehicle(d: MarketplaceVehicle): Listing {
 }
 
 /* ---------------------------------------------------------------------------
-   Pagination
+   Pagination — cursor-based (has_more / next_cursor).
+   Sequential by design: each cursor encodes position in the previous page,
+   so pages cannot be fetched in parallel.
    -------------------------------------------------------------------------*/
 async function fetchAllVehicles(): Promise<{ vehicles: MarketplaceVehicle[]; feedTotal: number }> {
-  if (!MARKETPLACE_URL || !MARKETPLACE_KEY) {
-    throw new Error("Marketplace: DEALSKI_MARKETPLACE_URL or DEALSKI_MARKETPLACE_KEY not configured");
+  if (!MARKETPLACE_KEY) {
+    throw new Error("Marketplace: DEALSKI_MARKETPLACE_KEY not configured");
   }
 
-  const first = await fetchPage(`${MARKETPLACE_URL}?per_page=${PER_PAGE}&page=1`);
-  const lastPage = Math.min(first.meta.last_page || 1, HARD_PAGE_CAP);
-  const restPages = Array.from({ length: Math.max(0, lastPage - 1) }, (_, i) => i + 2);
+  const vehicles: MarketplaceVehicle[] = [];
+  let nextCursor: string | null = null;
+  let feedTotal = 0;
+  let pages = 0;
 
-  const rest = await mapWithConcurrency(restPages, PAGE_CONCURRENCY, (page) =>
-    fetchPage(`${MARKETPLACE_URL}?per_page=${PER_PAGE}&page=${page}`).then(
-      (r) => r.data,
-      () => [] as MarketplaceVehicle[],
-    ),
-  );
+  do {
+    const url = new URL(MARKETPLACE_URL);
+    url.searchParams.set("per_page", String(PER_PAGE));
+    if (nextCursor) url.searchParams.set("cursor", nextCursor);
 
-  const vehicles = [first.data, ...rest].flat();
-  return { vehicles, feedTotal: first.meta.total ?? vehicles.length };
+    const page = await fetchPage(url.toString());
+    vehicles.push(...page.data);
+    feedTotal = page.meta.total;
+    nextCursor = page.meta.has_more ? page.meta.next_cursor : null;
+    pages++;
+
+    if (pages >= HARD_CURSOR_CAP) {
+      console.warn(`[dealski-marketplace] hit cursor cap (${HARD_CURSOR_CAP} pages) — stopping early`);
+      break;
+    }
+  } while (nextCursor);
+
+  return { vehicles, feedTotal };
 }
 
 /* ---------------------------------------------------------------------------
@@ -336,6 +336,6 @@ export const fetchMarketplaceCatalogue = unstable_cache(
 
     return { listings, feedTotal };
   },
-  ["dealski-marketplace-v1"],
+  ["dealski-marketplace-v2"],
   { revalidate: REVALIDATE, tags: ["dealski-marketplace"] },
 );
