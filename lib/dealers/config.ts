@@ -81,6 +81,46 @@ export const DEALERS: Record<string, DealerConfig> = {
     googleRating: null,
     googleReviewCount: null,
   },
+
+  "acme-road-runner-vans": {
+    name: "ACME Road Runner Vans",
+    slug: "acme-road-runner-vans",
+    dealskiTenant: "",
+    location: {
+      line1: "Unit 7, Rowley Drive Industrial Estate",
+      town: "Coventry",
+      county: "West Midlands",
+      postcode: "CV3 4FJ",
+      lat: 52.4068,
+      lng: -1.5197,
+    },
+    phone: "(024) 7600 0000",
+    whatsapp: null,
+    featured: false,
+    websites: [
+      { label: "acmeroadrunnervans.co.uk", url: "https://acmeroadrunnervans.co.uk" },
+    ],
+    hours: {
+      mon: { open: "08:30", close: "17:30" },
+      tue: { open: "08:30", close: "17:30" },
+      wed: { open: "08:30", close: "17:30" },
+      thu: { open: "08:30", close: "17:30" },
+      fri: { open: "08:30", close: "17:00" },
+      sat: { open: "09:00", close: "13:00" },
+      sun: null,
+    },
+    about:
+      "ACME Road Runner Vans is a Coventry-based commercial vehicle dealer with a hand-picked selection of panel vans, dropsides and specialist conversions. We pride ourselves on transparent pricing, thorough prep and no-pressure sales. [Demo dealer — replace with real copy when onboarding.]",
+    services: [
+      "Used van sales",
+      "Van preparation & PDI",
+      "Part exchange welcome",
+      "Fleet supply",
+    ],
+    sellerNames: ["ACME Road Runner Vans"],
+    googleRating: null,
+    googleReviewCount: null,
+  },
 };
 
 /** True when the seller's dealer is in the featured set. */

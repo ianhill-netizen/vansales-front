@@ -7,6 +7,7 @@ import type {
   FacetCount,
 } from "./types";
 import { getMockListings } from "./sources/mock";
+import { getAcmeDemoListings } from "./sources/acme-demo";
 import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
 import { fetchMarketplaceCatalogue } from "./sources/dealski-marketplace";
 import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
@@ -50,18 +51,22 @@ async function loadAll(): Promise<{
     /* non-fatal */
   }
 
+  // Always include demo dealer listings so the multi-dealer layout
+  // is visible alongside the live feed.
+  const demo = getAcmeDemoListings();
+
   if (source === "marketplace") {
     try {
       const { listings, feedTotal } = await fetchMarketplaceCatalogue();
       if (listings.length > 0) {
-        const merged = [...nativeDb, ...listings];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length };
+        const merged = [...demo, ...nativeDb, ...listings];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
       }
     } catch {
       /* fall through to mock */
     }
     const mock = getMockListings();
-    const merged = [...nativeDb, ...mock];
+    const merged = [...demo, ...nativeDb, ...mock];
     return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
@@ -69,20 +74,20 @@ async function loadAll(): Promise<{
     try {
       const { listings, feedTotal } = await fetchDealskiCatalogue();
       if (listings.length > 0) {
-        const merged = [...nativeDb, ...listings];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length };
+        const merged = [...demo, ...nativeDb, ...listings];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
       }
     } catch {
       /* fall through */
     }
     const mock = getMockListings();
-    const merged = [...nativeDb, ...mock];
+    const merged = [...demo, ...nativeDb, ...mock];
     return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
   // 'native' and 'mock' modes.
   const mock = getMockListings();
-  const merged = [...nativeDb, ...mock];
+  const merged = [...demo, ...nativeDb, ...mock];
   return {
     listings: merged,
     servedBy: source === "native" ? "native" : "mock",
@@ -233,7 +238,7 @@ export async function getListingBySlug(slug: string): Promise<{ listing: Listing
     if (live) return { listing: live, servedBy: "dealski" };
   }
 
-  const all = getMockListings();
+  const all = [...getMockListings(), ...getAcmeDemoListings()];
   const listing =
     all.find((l) => l.slug === slug) ||
     all.find((l) => l.source_id === sourceId) ||

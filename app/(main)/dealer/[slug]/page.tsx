@@ -85,19 +85,22 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
     googleReviewCount: null,
   };
 
-  // Fetch stock: for config dealers with Dealski, use the feed; always include native DB listings.
+  // Fetch stock for this specific dealer, filtered by their seller names.
   let listings: import("@/lib/listings/types").Listing[] = [];
-  if (dealer?.dealskiTenant) {
-    const result = await getListings({ pageSize: 24, sort: "newest" });
-    const dealerDbRecord = await prisma.dealer.findUnique({ where: { slug } });
-    const nativeListings = dealerDbRecord
-      ? await fetchNativeDbListings(dealerDbRecord.id)
-      : [];
-    listings = [...nativeListings, ...result.listings];
+  if (dealer) {
+    const result = await getListings({ sort: "newest" });
+    const bySellerName = result.listings.filter((l) =>
+      effectiveDealer.sellerNames.some((n) => n.toLowerCase() === l.seller.name.toLowerCase()),
+    );
+    if (dealer.dealskiTenant) {
+      const dealerDbRecord = await prisma.dealer.findUnique({ where: { slug } });
+      const nativeListings = dealerDbRecord ? await fetchNativeDbListings(dealerDbRecord.id) : [];
+      listings = [...nativeListings, ...bySellerName];
+    } else {
+      listings = bySellerName;
+    }
   } else if (dbDealer) {
     listings = await fetchNativeDbListings(dbDealer.id);
-  } else {
-    listings = [];
   }
 
   const mapSrc = `https://maps.google.com/maps?q=${effectiveDealer.location.lat},${effectiveDealer.location.lng}&z=15&output=embed`;
@@ -182,8 +185,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
             <div className="flex shrink-0 flex-wrap gap-3">
               {[
                 { label: "In stock", value: String(listings.length) },
-                { label: "Experience", value: "20+ yrs" },
-                { label: "Location", value: "Bridgend" },
+                { label: "Location", value: effectiveDealer.location.town.split(",").pop()?.trim() ?? effectiveDealer.location.town },
               ].map(({ label, value }) => (
                 <div
                   key={label}
