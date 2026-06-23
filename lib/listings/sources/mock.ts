@@ -115,6 +115,7 @@ function build(seed: Seed): Listing {
     },
     enquiry_route: { to: "native_inbox", ref: `native:${seed.source_id}` },
     enquiry_url: null,
+    stock_ref: null,
     published_at: seed.published_at,
     updated_at: seed.updated_at,
   };
