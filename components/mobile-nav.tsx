@@ -48,9 +48,8 @@ const SECTIONS = [
   {
     heading: "Sell your van",
     links: [
-      { href: "/sell", label: "Advertise your van" },
-      { href: "/sign-up/dealer", label: "List as a dealer" },
-      { href: "/sign-up/private-seller", label: "Private seller" },
+      { href: "/sign-up/private-seller", label: "List privately — free" },
+      { href: "/signup/trade",           label: "List my dealer stock" },
     ],
   },
   {

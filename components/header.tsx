@@ -40,10 +40,8 @@ const NEW_VAN_ITEMS = [
 ];
 
 const SELL_ITEMS = [
-  { href: "/sell",                   label: "Advertise your van" },
-  { href: "/signup/trade",           label: "List my stock free" },
-  { href: "/sign-up/dealer",         label: "Dealer portal sign-up" },
-  { href: "/sign-up/private-seller", label: "Private seller listing" },
+  { href: "/sign-up/private-seller", label: "List privately — free" },
+  { href: "/signup/trade",           label: "List my dealer stock" },
 ];
 
 function Chevron({ open }: { open: boolean }) {
