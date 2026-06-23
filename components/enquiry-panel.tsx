@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
+import { supplierCode } from "@/lib/listings/supplier-code";
 import { Button } from "./ui";
 import { IconCheck, IconShield, IconStar, IconArrow } from "./icons";
 
@@ -12,9 +13,18 @@ type FormState = "idle" | "open" | "submitting" | "success" | "error";
 const PHONE_DISPLAY = "01656 507619";
 const PHONE_TEL = "tel:+441656507619";
 
-export function EnquiryPanel({ listing }: { listing: Listing }) {
-  const [state, setState] = useState<FormState>("idle");
+export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; autoOpen?: boolean }) {
+  const [state, setState] = useState<FormState>(autoOpen ? "open" : "idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!autoOpen) return;
+    const t = setTimeout(() => {
+      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
+    return () => clearTimeout(t);
+  }, [autoOpen]);
   const sold = listing.status === "sold";
 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
@@ -75,20 +85,20 @@ export function EnquiryPanel({ listing }: { listing: Listing }) {
   }
 
   return (
-    <div className="rounded-[var(--radius-xl)] border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
+    <div ref={panelRef} id="enquire" className="rounded-[var(--radius-xl)] border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
       {/* Seller */}
       <div className="flex items-center gap-3">
         <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] bg-ink-900 font-display text-[var(--text-lg)] font-bold text-white">
-          {listing.seller.name.slice(0, 1)}
+          VS
         </span>
         <div className="min-w-0">
           <p className="truncate font-display text-[var(--text-base)] font-bold text-ink-900">
             {dealerConfig ? (
               <Link href={`/dealer/${dealerConfig.slug}`} className="hover:text-brand-600">
-                {listing.seller.name}
+                {supplierCode(listing.seller.name)}
               </Link>
             ) : (
-              listing.seller.name
+              supplierCode(listing.seller.name)
             )}
           </p>
           <p className="flex items-center gap-1.5 text-[var(--text-sm)] text-ink-500">
@@ -134,7 +144,7 @@ export function EnquiryPanel({ listing }: { listing: Listing }) {
           <div>
             <p className="font-semibold text-success-600">Enquiry sent!</p>
             <p className="mt-1 text-[var(--text-sm)] text-ink-600">
-              {listing.seller.name} has your details and will be in touch shortly. For a faster
+              {supplierCode(listing.seller.name)} has your details and will be in touch shortly. For a faster
               reply, call <a href={PHONE_TEL} className="font-bold text-ink-800 underline">{PHONE_DISPLAY}</a>.
             </p>
           </div>

@@ -167,9 +167,12 @@ export function ListingCard({
         {/* Enquire CTA — fills to orange on card hover */}
         {!sold && (
           <div className="relative mt-4 z-10 overflow-hidden rounded-[var(--radius-md)]">
-            <div className="flex w-full items-center justify-center gap-2 border border-border bg-surface-1 py-2.5 text-[var(--text-sm)] font-semibold text-ink-600 transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:border-transparent group-hover:text-white relative z-10 rounded-[var(--radius-md)]">
+            <Link
+              href={`${listingPath(listing)}?enquire=1#enquire`}
+              className="relative z-10 flex w-full items-center justify-center gap-2 border border-border bg-surface-1 py-2.5 text-[var(--text-sm)] font-semibold text-ink-600 transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:border-transparent group-hover:text-white rounded-[var(--radius-md)]"
+            >
               Enquire <IconArrow width={14} height={14} className="transition-transform group-hover:translate-x-0.5" />
-            </div>
+            </Link>
             <div
               className="absolute inset-0 opacity-0 transition-opacity duration-[var(--dur-base)] group-hover:opacity-100 rounded-[var(--radius-md)]"
               style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
