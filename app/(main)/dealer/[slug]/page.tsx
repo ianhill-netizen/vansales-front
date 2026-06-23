@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { getDealerConfig, whatsappUrl, financeUrl } from "@/lib/dealers/config";
 import { getListings } from "@/lib/listings/client";
 import { fetchNativeDbListings } from "@/lib/listings/sources/db";
 import { prisma } from "@/lib/prisma";
+import { geocodeTown } from "@/lib/geocoding";
 import { Container } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
@@ -18,6 +20,16 @@ import {
   IconPhone,
 } from "@/components/icons";
 import { SITE, absUrl } from "@/lib/site";
+
+const DealerMapClient = dynamic(
+  () => import("@/components/dealer-map").then((m) => m.DealerMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[340px] w-full animate-pulse rounded-[var(--radius-xl)] bg-surface-2" />
+    ),
+  },
+);
 
 export const revalidate = 3600;
 
@@ -103,7 +115,24 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
     listings = await fetchNativeDbListings(dbDealer.id);
   }
 
-  const mapSrc = `https://maps.google.com/maps?q=${effectiveDealer.location.lat},${effectiveDealer.location.lng}&z=15&output=embed`;
+  // Resolve map coordinates.
+  // Priority: explicit lat/lng from the dealer record → geocoded from town.
+  // Config dealers always have real coordinates; DB dealers may have null
+  // lat/lng (Dealski hasn't populated them yet), so we geocode as fallback.
+  let mapLat: number = effectiveDealer.location.lat;
+  let mapLng: number = effectiveDealer.location.lng;
+  if (dbDealer && (dbDealer.lat == null || dbDealer.lng == null)) {
+    const townQuery = effectiveDealer.location.town || effectiveDealer.name;
+    const geocoded = await geocodeTown(townQuery);
+    if (geocoded) {
+      mapLat = geocoded.lat;
+      mapLng = geocoded.lng;
+    }
+  }
+  const mapAddress = [effectiveDealer.location.line1, effectiveDealer.location.town, effectiveDealer.location.postcode]
+    .filter(Boolean)
+    .join(", ");
+
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     `${effectiveDealer.name} ${effectiveDealer.location.postcode}`,
   )}`;
@@ -230,29 +259,33 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               </section>
             )}
 
-            {/* ── 3. GOOGLE MAP ─────────────────────────────────────── */}
+            {/* ── 3. MAP ────────────────────────────────────────────── */}
             <section>
               <SectionHeading>Find us</SectionHeading>
               <div className="mt-4 overflow-hidden rounded-[var(--radius-xl)] border border-border">
-                <iframe
-                  src={mapSrc}
-                  width="100%"
-                  height="340"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title={`Map showing ${effectiveDealer.name} in ${effectiveDealer.location.town}`}
+                <DealerMapClient
+                  lat={mapLat}
+                  lng={mapLng}
+                  name={effectiveDealer.name}
+                  address={mapAddress}
                 />
               </div>
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-flex items-center gap-1.5 text-[var(--text-sm)] text-brand-700 hover:underline"
-              >
-                Open in Google Maps
-                <IconExternalLink width={13} height={13} />
-              </a>
+              <div className="mt-3 flex items-start gap-1.5 text-[var(--text-sm)] text-ink-500">
+                <IconPin width={14} height={14} className="mt-0.5 shrink-0 text-ink-400" />
+                <span>
+                  {mapAddress}
+                  {" · "}
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-700 hover:underline"
+                  >
+                    Open in Google Maps
+                    <IconExternalLink width={12} height={12} className="ml-1 inline-block align-middle" />
+                  </a>
+                </span>
+              </div>
             </section>
 
             {/* ── 6. STOCK GRID ─────────────────────────────────────── */}
