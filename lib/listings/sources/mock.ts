@@ -147,7 +147,7 @@ const SEEDS: Seed[] = [
     description:
       "One-owner T32 Highline in Reflex Silver with the desirable DSG gearbox. Full VW service history, ply-lined load bay and a tow bar already fitted. Drives faultlessly.",
     features: ["Air conditioning", "Apple CarPlay", "Tow bar", "Ply lining", "Cruise control", "Front + rear sensors"],
-    seller: { name: "Severn Commercials", rating: 4.8 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-09T09:10:00.000Z",
     updated_at: "2026-06-16T08:00:00.000Z",
   },
@@ -175,7 +175,7 @@ const SEEDS: Seed[] = [
     description:
       "Tidy short-wheelbase T28 Trendline, ideal first van for a sole trader. Twin side loading doors and a clean, unmarked load area. MOT until March.",
     features: ["Twin side doors", "Bluetooth", "DAB radio", "Bulkhead", "Electric windows"],
-    seller: { name: "Bristol Van Centre", rating: 4.5 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-04T11:30:00.000Z",
     updated_at: "2026-06-15T10:15:00.000Z",
   },
@@ -207,7 +207,7 @@ const SEEDS: Seed[] = [
     description:
       "Range-topping Sportline with the 204PS engine, 4MOTION and full body styling kit. Finished in Deep Black Pearl on factory 18\" Springfield alloys. A genuinely stunning van.",
     features: ["4MOTION all-wheel drive", "18\" alloys", "Sportline body kit", "Heated seats", "Sat nav", "LED headlights", "Reversing camera"],
-    seller: { name: "Northern VW Vans", rating: 4.9 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-05-28T14:00:00.000Z",
     updated_at: "2026-06-17T09:45:00.000Z",
   },
@@ -267,7 +267,7 @@ const SEEDS: Seed[] = [
     description:
       "Nearly-new Kombi with removable second-row seats — five seats plus a proper load bay. Perfect for crews who carry both people and kit. Balance of VW warranty remaining.",
     features: ["5 seats", "Removable rear bench", "Air conditioning", "Apple CarPlay", "Adaptive cruise", "Twin side doors"],
-    seller: { name: "Clyde Commercial", rating: 4.7 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-10T08:05:00.000Z",
     updated_at: "2026-06-16T12:00:00.000Z",
   },
@@ -296,7 +296,7 @@ const SEEDS: Seed[] = [
     description:
       "Top-spec Limited Custom with the 170PS auto, heated seats and full Ford SYNC. The benchmark medium van — comfortable, quick and well looked after.",
     features: ["Heated seats", "SYNC 4 nav", "Reversing camera", "LED load light", "Cruise control", "Ply lining"],
-    seller: { name: "Midland Van Hub", rating: 4.6 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-07T09:50:00.000Z",
     updated_at: "2026-06-14T11:00:00.000Z",
   },
@@ -325,7 +325,7 @@ const SEEDS: Seed[] = [
     description:
       "Long-wheelbase high-roof Transit with stand-up load space and over 1.2 tonnes of payload. Honest fleet-maintained van with full history.",
     features: ["High roof", "Air conditioning", "Bluetooth", "Bulkhead", "Cargo tie-downs"],
-    seller: { name: "Steel City Commercials", rating: 4.3 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-02T13:15:00.000Z",
     updated_at: "2026-06-13T09:30:00.000Z",
   },
@@ -356,7 +356,7 @@ const SEEDS: Seed[] = [
     description:
       "Rear-wheel-drive Sprinter 315 in Progressive trim with MBUX, keyless start and a huge L3 H2 load area. Ideal for couriers and removals working inside the ULEZ.",
     features: ["MBUX touchscreen", "Keyless start", "Reversing camera", "Cruise control", "LED load lighting", "Wood-lined floor"],
-    seller: { name: "Capital Vans London", rating: 4.4 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-11T10:40:00.000Z",
     updated_at: "2026-06-17T07:20:00.000Z",
   },
@@ -385,7 +385,7 @@ const SEEDS: Seed[] = [
     description:
       "Well-priced Vivaro Dynamic with twin side doors and a tidy load bay. Great value medium van with plenty of life left. Drives well, ready for work.",
     features: ["Twin side doors", "Apple CarPlay", "Air conditioning", "Bulkhead", "Rear parking sensors"],
-    seller: { name: "Mersey Van Sales", rating: 4.1 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-05-30T15:25:00.000Z",
     updated_at: "2026-06-12T14:10:00.000Z",
   },
@@ -414,7 +414,7 @@ const SEEDS: Seed[] = [
     description:
       "Master Luton box van with tail-lift — removals-ready and barn-door access at the cab. Big cubic capacity and an easy-to-drive 145PS engine.",
     features: ["Tail lift", "Box body", "Bluetooth", "Reversing camera", "Cruise control"],
-    seller: { name: "Trent Commercial Vehicles", rating: 4.2 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-05T12:00:00.000Z",
     updated_at: "2026-06-14T16:45:00.000Z",
   },
@@ -443,7 +443,7 @@ const SEEDS: Seed[] = [
     description:
       "Economical Berlingo Enterprise — the small-van workhorse. Twin side doors, sensors and CarPlay as standard. Fantastic running costs for urban work.",
     features: ["Twin side doors", "Apple CarPlay", "Parking sensors", "Bulkhead", "Air conditioning"],
-    seller: { name: "Thames Valley Vans", rating: 4.0 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-06-08T09:00:00.000Z",
     updated_at: "2026-06-15T08:30:00.000Z",
   },
@@ -475,7 +475,7 @@ const SEEDS: Seed[] = [
     description:
       "Wildtrak double cab with the 10-speed auto, load-bed liner and roller shutter. Equally at home on site or on the school run. Now sold — similar wanted.",
     features: ["4WD", "Roller shutter", "Load liner", "Heated seats", "Sat nav", "Tow pack", "360 camera"],
-    seller: { name: "Granite City 4x4", rating: 4.7 },
+    seller: { name: "Swiss Vans", rating: null },
     published_at: "2026-05-20T10:00:00.000Z",
     updated_at: "2026-06-10T13:00:00.000Z",
   },

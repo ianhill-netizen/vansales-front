@@ -52,35 +52,6 @@ async function main() {
   });
   console.log("Swiss Vans dealer:", svUser.email);
 
-  // Second test dealer for isolation testing
-  const testHash = await bcrypt.hash("TestDealer123!", 12);
-  const testUser = await prisma.user.upsert({
-    where: { email: "dealer@test-vans.co.uk" },
-    update: {},
-    create: {
-      email: "dealer@test-vans.co.uk",
-      name: "Test Vans",
-      passwordHash: testHash,
-      role: "dealer",
-    },
-  });
-
-  await prisma.dealer.upsert({
-    where: { slug: "test-vans" },
-    update: {},
-    create: {
-      slug: "test-vans",
-      name: "Test Vans",
-      location: "Manchester",
-      lat: 53.4808,
-      lng: -2.2426,
-      phone: "01234 567890",
-      plan: "basic",
-      ownerUserId: testUser.id,
-    },
-  });
-  console.log("Test dealer:", testUser.email);
-
   // Integration provider rows (upsert so re-running is safe)
   for (const p of PROVIDERS) {
     await prisma.integration.upsert({
