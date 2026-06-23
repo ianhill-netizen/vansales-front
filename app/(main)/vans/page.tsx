@@ -39,6 +39,7 @@ function parseFilters(sp: Search): ListingFilters {
     minYear:   num(sp.minYear),
     maxYear:   num(sp.maxYear),
     maxMileage: num(sp.maxMileage),
+    q: one(sp.q) || undefined,
     sort: (one(sp.sort) as ListingFilters["sort"]) || "newest",
     page: num(sp.page) ?? 1,
     pageSize: PAGE_SIZE,
