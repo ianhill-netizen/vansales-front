@@ -15,8 +15,6 @@ const BODY_TYPE_PAGES = [
   "/vans/minibus",
   "/vans/chassis-cab",
   "/vans/electric",
-  "/vans/new",
-  "/vans/used",
   "/vans/ulez",
 ];
 

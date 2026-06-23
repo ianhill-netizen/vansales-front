@@ -454,10 +454,10 @@ export default async function HomePage() {
             New vans, used vans, contract hire — Vansales brings every option together.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <Button href="/vans/used" variant="primary" size="lg">
+            <Button href="/vans?condition=used" variant="primary" size="lg">
               Browse used vans
             </Button>
-            <Button href="/vans/new" variant="outline-light" size="lg">
+            <Button href="/vans?condition=new" variant="outline-light" size="lg">
               Browse new vans
             </Button>
           </div>

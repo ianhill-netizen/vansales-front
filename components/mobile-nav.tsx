@@ -6,9 +6,11 @@ import Link from "next/link";
 /* Mirror of NAV_TOP_LEVEL_LOCK from header.tsx — mobile sections. */
 const SECTIONS = [
   {
-    heading: "Used vans — body type",
+    heading: "Browse vans",
     links: [
-      { href: "/vans/used", label: "All used vans" },
+      { href: "/vans", label: "All vans" },
+      { href: "/vans?condition=new", label: "New vans" },
+      { href: "/vans?condition=used", label: "Used vans" },
       { href: "/vans/panel-van", label: "Panel vans" },
       { href: "/vans/luton", label: "Luton vans" },
       { href: "/vans/tipper", label: "Tippers" },
@@ -20,7 +22,7 @@ const SECTIONS = [
     ],
   },
   {
-    heading: "Used vans — by make",
+    heading: "Browse by make",
     links: [
       { href: "/vans/ford", label: "Ford" },
       { href: "/vans/volkswagen", label: "Volkswagen" },
@@ -38,9 +40,9 @@ const SECTIONS = [
   {
     heading: "New vans",
     links: [
-      { href: "/vans/new", label: "All new vans" },
-      { href: "/new-vans", label: "New van model guide" },
-      { href: "/vans/ulez", label: "ULEZ-compliant" },
+      { href: "/vans?condition=new", label: "All new vans" },
+      { href: "/new-vans",           label: "New van model guide" },
+      { href: "/vans/ulez",          label: "ULEZ-compliant" },
     ],
   },
   {

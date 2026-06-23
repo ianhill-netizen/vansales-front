@@ -66,7 +66,7 @@ export default async function NewVanDetailPage({ params }: Props) {
   const categoryLinks = [
     { href: `/vans/${bodyType.slug}`, label: bodyType.label },
     { href: `/vans/${makeSlug}`, label: `${van.make} vans` },
-    { href: "/vans/new", label: "New vans" },
+    { href: "/vans?condition=new", label: "New vans" },
     ...(isElectric ? [{ href: "/vans/electric", label: "Electric vans" }, { href: "/vans/ulez", label: "ULEZ-compliant" }] : []),
   ];
 
