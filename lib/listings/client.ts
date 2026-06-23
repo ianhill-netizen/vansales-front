@@ -59,14 +59,14 @@ async function loadAll(): Promise<{
     try {
       const { listings, feedTotal } = await fetchMarketplaceCatalogue();
       if (listings.length > 0) {
-        const merged = [...demo, ...nativeDb, ...listings];
+        const merged = [...listings, ...nativeDb, ...demo];
         return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
       }
     } catch {
       /* fall through to mock */
     }
     const mock = getMockListings();
-    const merged = [...demo, ...nativeDb, ...mock];
+    const merged = [...mock, ...nativeDb, ...demo];
     return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
@@ -74,20 +74,20 @@ async function loadAll(): Promise<{
     try {
       const { listings, feedTotal } = await fetchDealskiCatalogue();
       if (listings.length > 0) {
-        const merged = [...demo, ...nativeDb, ...listings];
+        const merged = [...listings, ...nativeDb, ...demo];
         return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
       }
     } catch {
       /* fall through */
     }
     const mock = getMockListings();
-    const merged = [...demo, ...nativeDb, ...mock];
+    const merged = [...mock, ...nativeDb, ...demo];
     return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
   // 'native' and 'mock' modes.
   const mock = getMockListings();
-  const merged = [...demo, ...nativeDb, ...mock];
+  const merged = [...mock, ...nativeDb, ...demo];
   return {
     listings: merged,
     servedBy: source === "native" ? "native" : "mock",
