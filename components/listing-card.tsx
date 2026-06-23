@@ -119,12 +119,15 @@ export function ListingCard({
         {/* Seller + location meta */}
         <p className="mb-2 flex flex-wrap items-center gap-x-1.5 text-[var(--text-xs)] text-ink-400">
           {dealerConfig ? (
-            <Link
-              href={`/dealer/${dealerConfig.slug}`}
-              className="relative z-10 font-semibold text-ink-500 hover:text-brand-600"
-            >
-              {listing.seller.name}
-            </Link>
+            <span className="relative z-10 inline-flex">
+              <Link
+                href={`/dealer/${dealerConfig.slug}`}
+                onClick={(e) => e.stopPropagation()}
+                className="font-semibold text-ink-500 hover:text-brand-600"
+              >
+                {listing.seller.name}
+              </Link>
+            </span>
           ) : (
             <span className="font-semibold text-ink-500">{listing.seller.name}</span>
           )}
