@@ -1,76 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import type { Listing } from "@/lib/listings/types";
-import type { ModelImage } from "@/lib/media/model-images";
-import { SpecCard } from "./spec-card";
 
-type Shot = { kind: "real" | "library"; url: string; alt: string };
+type Shot = { url: string; alt: string };
 
-export function Gallery({
-  listing,
-  modelImages = [],
-}: {
-  listing: Listing;
-  modelImages?: ModelImage[];
-}) {
-  const realShots: Shot[] = listing.images
+export function Gallery({ listing }: { listing: Listing }) {
+  const shots: Shot[] = listing.images
     .filter((i) => i.url.startsWith("http"))
-    .map((i) => ({ kind: "real", url: i.url, alt: i.alt }));
-
-  const libShots: Shot[] = modelImages.map((img) => ({
-    kind: "library",
-    url: img.path,
-    alt: img.alt || `${listing.make} ${listing.model} — library image`,
-  }));
-
-  const shots: Shot[] = realShots.length > 0 ? realShots : libShots;
+    .map((i) => ({ url: i.url, alt: i.alt }));
 
   const [active, setActive] = useState(0);
 
-  /* No photos at all — tasteful spec card */
   if (shots.length === 0) {
     return (
-      <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] border border-border">
-        <SpecCard listing={listing} className="size-full" />
+      <div className="relative flex aspect-[16/10] flex-col items-center justify-center gap-3 overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-2">
+        <svg viewBox="0 0 80 40" fill="none" className="h-10 w-20 text-ink-200" aria-hidden>
+          <rect x="1" y="13" width="78" height="23" rx="4" stroke="currentColor" strokeWidth="2"/>
+          <rect x="9" y="3" width="35" height="17" rx="3" stroke="currentColor" strokeWidth="2"/>
+          <circle cx="17" cy="36" r="4" stroke="currentColor" strokeWidth="2"/>
+          <circle cx="63" cy="36" r="4" stroke="currentColor" strokeWidth="2"/>
+          <line x1="44" y1="13" x2="44" y2="20" stroke="currentColor" strokeWidth="1.5"/>
+        </svg>
+        <p className="font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-300">
+          Photo coming soon
+        </p>
       </div>
     );
   }
 
   const current = shots[Math.min(active, shots.length - 1)];
-  const isLib = shots[0]?.kind === "library";
 
   return (
     <div className="flex flex-col gap-3">
-      {isLib && (
-        <p className="text-[var(--text-xs)] text-ink-400">
-          Library images shown — actual vehicle may differ.
-        </p>
-      )}
-
       {/* Main viewer */}
-      <div
-        className={`relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] border border-border ${
-          isLib ? "bg-[#eff6ff]" : "bg-surface-2"
-        }`}
-      >
-        {current.kind === "real" ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={current.url} alt={current.alt} className="size-full object-cover" />
-        ) : (
-          <Image
-            src={current.url}
-            alt={current.alt}
-            fill
-            sizes="(max-width: 1024px) 100vw, 65vw"
-            className="object-contain p-6"
-            priority={active === 0}
-          />
+      <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-2">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={current.url} alt={current.alt} className="size-full object-cover" />
+        {shots.length > 1 && (
+          <span className="absolute bottom-3 right-3 rounded-[var(--radius-pill)] bg-ink-900/80 px-2.5 py-1 font-mono text-[var(--text-xs)] text-white">
+            {active + 1} / {shots.length}
+          </span>
         )}
-        <span className="absolute bottom-3 right-3 rounded-[var(--radius-pill)] bg-ink-900/80 px-2.5 py-1 font-mono text-[var(--text-xs)] text-white">
-          {active + 1} / {shots.length}
-        </span>
       </div>
 
       {/* Thumbnails — only when >1 shot */}
@@ -90,22 +61,12 @@ export function Gallery({
                   aria-selected={selected}
                   aria-label={shot.alt}
                   onClick={() => setActive(i)}
-                  className={`relative block aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-md)] border-2 transition-colors ${
+                  className={`relative block aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-md)] border-2 bg-surface-2 transition-colors ${
                     selected ? "border-accent-500" : "border-border hover:border-border-strong"
-                  } ${isLib ? "bg-[#eff6ff]" : "bg-surface-2"}`}
+                  }`}
                 >
-                  {shot.kind === "real" ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={shot.url} alt="" className="size-full object-cover" />
-                  ) : (
-                    <Image
-                      src={shot.url}
-                      alt=""
-                      fill
-                      sizes="120px"
-                      className="object-contain p-2"
-                    />
-                  )}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={shot.url} alt="" className="size-full object-cover" />
                 </button>
               </li>
             );
