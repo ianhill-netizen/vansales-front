@@ -13,8 +13,6 @@ export interface DealerConfig {
     town: string;
     county: string;
     postcode: string;
-    lat: number;
-    lng: number;
   };
   phone: string;
   /* WhatsApp number in international format, digits only, no + (e.g. 447XXXXXXXXX).
@@ -46,8 +44,6 @@ export const DEALERS: Record<string, DealerConfig> = {
       town: "Pencoed, Bridgend",
       county: "Mid Glamorgan",
       postcode: "CF35 5LJ",
-      lat: 51.5184,
-      lng: -3.5076,
     },
     phone: "(01446) 361042",
     whatsapp: SWISSVANS_WHATSAPP,
@@ -91,8 +87,6 @@ export const DEALERS: Record<string, DealerConfig> = {
       town: "Coventry",
       county: "West Midlands",
       postcode: "CV3 4FJ",
-      lat: 52.4068,
-      lng: -1.5197,
     },
     phone: "(024) 7600 0000",
     whatsapp: null,
