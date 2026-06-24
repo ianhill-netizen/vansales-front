@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
+import { SORTED_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
 import { IconSearch, IconChevron } from "./icons";
 
-const ALL_MAKE_NAMES = ALL_MAKES.map((m) => m.name);
+const ALL_MAKE_NAMES = SORTED_MAKES.map((m) => m.name);
 
 const LABEL_CLS =
   "pointer-events-none absolute left-4 top-3 text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400";
@@ -21,7 +21,11 @@ export function SearchHero({ total }: { total: number }) {
   const [where, setWhere] = useState("");
 
   const makeData = make ? getMakeBySlug(slugify(make)) : null;
-  const models = makeData ? makeData.models.map((m) => m.name) : [];
+  const models = makeData
+    ? [...makeData.models]
+        .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }))
+        .map((m) => m.name)
+    : [];
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
