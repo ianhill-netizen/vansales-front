@@ -72,8 +72,6 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
       town: (dbDealer!.location ?? "").split(",")[0].trim(),
       county: "",
       postcode: "",
-      lat: dbDealer!.lat ?? 51.5,
-      lng: dbDealer!.lng ?? -3.5,
     },
     phone: dbDealer!.phone ?? "",
     whatsapp: null,
@@ -105,18 +103,25 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
     listings = await fetchNativeDbListings(dbDealer.id);
   }
 
-  // Resolve map coordinates.
-  // Priority: explicit lat/lng from the dealer record → geocoded from town.
-  // Config dealers always have real coordinates; DB dealers may have null
-  // lat/lng (Dealski hasn't populated them yet), so we geocode as fallback.
-  let mapLat: number = effectiveDealer.location.lat;
-  let mapLng: number = effectiveDealer.location.lng;
-  if (dbDealer && (dbDealer.lat == null || dbDealer.lng == null)) {
-    const townQuery = effectiveDealer.location.town || effectiveDealer.name;
-    const geocoded = await geocodeTown(townQuery);
-    if (geocoded) {
-      mapLat = geocoded.lat;
-      mapLng = geocoded.lng;
+  // Resolve map coordinates from the feed (config dealers) or DB record (DB dealers).
+  // No static fallback — if null, the map component shows address text only.
+  let mapLat: number | null = null;
+  let mapLng: number | null = null;
+  if (dealer) {
+    const coordSource = listings.find((l) => l.location.lat != null && l.location.lng != null);
+    mapLat = coordSource?.location.lat ?? null;
+    mapLng = coordSource?.location.lng ?? null;
+  } else if (dbDealer) {
+    if (dbDealer.lat != null && dbDealer.lng != null) {
+      mapLat = dbDealer.lat;
+      mapLng = dbDealer.lng;
+    } else {
+      const townQuery = effectiveDealer.location.town || effectiveDealer.name;
+      const geocoded = await geocodeTown(townQuery);
+      if (geocoded) {
+        mapLat = geocoded.lat;
+        mapLng = geocoded.lng;
+      }
     }
   }
   const mapAddress = [effectiveDealer.location.line1, effectiveDealer.location.town, effectiveDealer.location.postcode]
@@ -143,11 +148,15 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
       postalCode: effectiveDealer.location.postcode,
       addressCountry: "GB",
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: effectiveDealer.location.lat,
-      longitude: effectiveDealer.location.lng,
-    },
+    ...(mapLat != null && mapLng != null
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: mapLat,
+            longitude: mapLng,
+          },
+        }
+      : {}),
     openingHoursSpecification: (
       Object.entries(effectiveDealer.hours) as [string, { open: string; close: string } | null][]
     )
