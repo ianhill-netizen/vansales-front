@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useTransition } from "react";
-import { POPULAR_MAKES, ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
+import { SORTED_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
 import { WHEELBASE_SHORT } from "@/lib/listings/format";
 import { slugify } from "@/lib/listings/slug";
 import { priceFromMonthly, FINANCE_ASSUMPTIONS } from "@/lib/finance";
@@ -255,7 +255,6 @@ export function VansFilter({
   const [draft, setDraft] = useState<FilterDraft>(() => parseSearchParams(searchParams));
   const [modalOpen, setModalOpen] = useState(false);
   const [scrollTarget, setScrollTarget] = useState<string | null>(null);
-  const [showAllMakes, setShowAllMakes] = useState(false);
 
   const modalBodyRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -464,27 +463,15 @@ export function VansFilter({
               <div ref={(el) => { sectionRefs.current["make"] = el; }}>
                 <Section title="Make & model">
                   <div className="flex flex-wrap gap-2">
-                    {(showAllMakes ? ALL_MAKES : POPULAR_MAKES).map((m) => (
+                    {SORTED_MAKES.map((m) => (
                       <Chip
                         key={m.slug}
                         active={draft.make === m.slug}
-                        onClick={() => {
-                          set(draft.make === m.slug ? { make: "", model: "" } : { make: m.slug, model: "" });
-                          setShowAllMakes(false);
-                        }}
+                        onClick={() => set(draft.make === m.slug ? { make: "", model: "" } : { make: m.slug, model: "" })}
                       >
                         {m.name}
                       </Chip>
                     ))}
-                    {!showAllMakes && (
-                      <button
-                        type="button"
-                        onClick={() => setShowAllMakes(true)}
-                        className="rounded-[var(--radius-pill)] border border-dashed border-border px-3 py-1.5 text-[var(--text-sm)] font-semibold text-ink-500 transition-colors hover:border-brand-300 hover:text-brand-600"
-                      >
-                        More makes ↓
-                      </button>
-                    )}
                   </div>
 
                   {selectedMake && selectedMake.models.length > 0 && (
@@ -493,15 +480,17 @@ export function VansFilter({
                         {selectedMake.name} models
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedMake.models.map((m) => (
-                          <Chip
-                            key={m.slug}
-                            active={draft.model === m.slug}
-                            onClick={() => set({ model: draft.model === m.slug ? "" : m.slug })}
-                          >
-                            {m.name}
-                          </Chip>
-                        ))}
+                        {[...selectedMake.models]
+                          .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }))
+                          .map((m) => (
+                            <Chip
+                              key={m.slug}
+                              active={draft.model === m.slug}
+                              onClick={() => set({ model: draft.model === m.slug ? "" : m.slug })}
+                            >
+                              {m.name}
+                            </Chip>
+                          ))}
                       </div>
                     </div>
                   )}

@@ -328,6 +328,11 @@ export const POPULAR_MAKES: VanMake[] = VAN_MAKES.filter((m) => m.popular);
 /** All makes (popular first, then A→Z). */
 export const ALL_MAKES: VanMake[] = VAN_MAKES;
 
+/** All makes sorted A→Z, locale-aware (Citroën sorts as C). */
+export const SORTED_MAKES: VanMake[] = [...VAN_MAKES].sort((a, b) =>
+  a.name.localeCompare(b.name, "en", { sensitivity: "base" }),
+);
+
 // Build lookup maps once at module load.
 const _byMakeSlug = new Map<string, VanMake>(VAN_MAKES.map((m) => [m.slug, m]));
 
