@@ -34,6 +34,8 @@ interface MarketplaceDealer {
   city: string | null;
   county: string | null;
   postcode: string | null;
+  latitude: number | null;
+  longitude: number | null;
   contact_name: string | null;
   email: string | null;
   phone: string | null;
@@ -272,8 +274,8 @@ function mapVehicle(d: MarketplaceVehicle): Listing {
       town,
       region,
       postcode_area,
-      lat: null,
-      lng: null,
+      lat: d.dealer?.latitude ?? null,
+      lng: d.dealer?.longitude ?? null,
     },
     description: `${alt}. Contact ${sellerName} for full details and availability.`,
     features: [],

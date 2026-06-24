@@ -18,10 +18,12 @@ export function ListingCard({
   listing,
   priority,
   cardIndex = 0,
+  distanceMiles,
 }: {
   listing: Listing;
   priority?: boolean;
   cardIndex?: number;
+  distanceMiles?: number;
 }) {
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
@@ -135,6 +137,12 @@ export function ListingCard({
           )}
           <span aria-hidden>·</span>
           <span>{displayTown}</span>
+          {distanceMiles != null && (
+            <>
+              <span aria-hidden>·</span>
+              <span>{Math.round(distanceMiles)} mi away</span>
+            </>
+          )}
         </p>
 
         {/* Title */}

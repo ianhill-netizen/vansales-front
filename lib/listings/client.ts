@@ -6,6 +6,7 @@ import type {
   ListingFacets,
   FacetCount,
 } from "./types";
+import { haversineDistanceMiles } from "../distance";
 import { getMockListings } from "./sources/mock";
 import { getAcmeDemoListings } from "./sources/acme-demo";
 import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
@@ -146,7 +147,32 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
     );
   }
 
-  switch (f.sort) {
+  // Distance filter: when buyer coords + radius are set, exclude listings
+  // without coords and filter by haversine distance. Nationwide (no radius)
+  // shows all listings regardless of whether they have coordinates.
+  if (f.buyerLat != null && f.buyerLng != null && f.radius != null) {
+    out = out.filter((l) => {
+      if (l.location.lat == null || l.location.lng == null) return false;
+      return haversineDistanceMiles(f.buyerLat!, f.buyerLng!, l.location.lat, l.location.lng) <= f.radius!;
+    });
+  }
+
+  const effectiveSort = f.sort ?? (f.buyerLat != null ? "nearest" : "newest");
+
+  switch (effectiveSort) {
+    case "nearest":
+      if (f.buyerLat != null && f.buyerLng != null) {
+        out = [...out].sort((a, b) => {
+          const da = a.location.lat != null && a.location.lng != null
+            ? haversineDistanceMiles(f.buyerLat!, f.buyerLng!, a.location.lat, a.location.lng)
+            : Infinity;
+          const db = b.location.lat != null && b.location.lng != null
+            ? haversineDistanceMiles(f.buyerLat!, f.buyerLng!, b.location.lat, b.location.lng)
+            : Infinity;
+          return da - db;
+        });
+      }
+      break;
     case "price_asc":
       out = [...out].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
       break;

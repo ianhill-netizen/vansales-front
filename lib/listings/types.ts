@@ -114,7 +114,11 @@ export interface ListingFilters {
   maxMileage?: number;
   q?: string;
   ulez?: boolean;
-  sort?: "newest" | "price_asc" | "price_desc" | "mileage_asc";
+  sort?: "newest" | "price_asc" | "price_desc" | "mileage_asc" | "nearest";
+  postcode?: string;
+  radius?: number; // miles; undefined = Nationwide
+  buyerLat?: number;
+  buyerLng?: number;
   limit?: number; // hard cap (e.g. featured strips); independent of pagination
   page?: number; // 1-based
   pageSize?: number; // when set, results are paginated to this many per page

@@ -30,6 +30,8 @@ type FilterDraft = {
   minYear: string;
   maxYear: string;
   maxMileage: string;
+  postcode: string;
+  radius: string; // miles as string; "" = Nationwide
   sort: string;
 };
 
@@ -41,6 +43,7 @@ const EMPTY: FilterDraft = {
   minPrice: "", maxPrice: "", monthlyMax: "",
   deposit: DEFAULT_DEPOSIT,
   minYear: "", maxYear: "", maxMileage: "",
+  postcode: "", radius: "",
   sort: "newest",
 };
 
@@ -67,6 +70,8 @@ function parseSearchParams(sp: Search): FilterDraft {
     minYear:    one(sp.minYear),
     maxYear:    one(sp.maxYear),
     maxMileage: one(sp.maxMileage),
+    postcode:   one(sp.postcode) || "",
+    radius:     one(sp.radius) || "",
     sort:       one(sp.sort) || "newest",
   };
 }
@@ -91,7 +96,12 @@ function draftToUrl(d: FilterDraft): string {
   if (d.minYear)    p.set("minYear",    d.minYear);
   if (d.maxYear)    p.set("maxYear",    d.maxYear);
   if (d.maxMileage) p.set("maxMileage", d.maxMileage);
-  if (d.sort && d.sort !== "newest") p.set("sort", d.sort);
+  const pc = d.postcode.trim().toUpperCase();
+  if (pc) {
+    p.set("postcode", pc);
+    if (d.radius) p.set("radius", d.radius);
+  }
+  if (d.sort && d.sort !== "newest" && d.sort !== "nearest") p.set("sort", d.sort);
   const qs = p.toString();
   return `/vans${qs ? `?${qs}` : ""}`;
 }
@@ -140,7 +150,16 @@ function getChips(d: FilterDraft): Chip[] {
   if (d.gearbox)   out.push({ key: "gearbox",   label: ucFirst(d.gearbox),   clear: { gearbox: "" } });
   if (d.colour)    out.push({ key: "colour",    label: ucFirst(d.colour),    clear: { colour: "" } });
 
-  if (d.sort && d.sort !== "newest") {
+  if (d.postcode.trim()) {
+    const radLabel = d.radius ? `${d.radius} mi` : "Nationwide";
+    out.push({
+      key: "distance",
+      label: `${radLabel} · ${d.postcode.trim().toUpperCase()}`,
+      clear: { postcode: "", radius: "" },
+    });
+  }
+
+  if (d.sort && d.sort !== "newest" && d.sort !== "nearest") {
     const SORT_LABELS: Record<string, string> = { price_asc: "Price ↑", price_desc: "Price ↓", mileage_asc: "Mileage ↑" };
     out.push({ key: "sort", label: SORT_LABELS[d.sort] ?? d.sort, clear: { sort: "newest" } });
   }
@@ -180,11 +199,20 @@ const MILEAGE_OPTIONS = [
 
 const COLOURS = ["White", "Black", "Silver", "Grey", "Blue", "Red", "Orange", "Green", "Yellow", "Brown"];
 
+const RADIUS_OPTIONS = [
+  { label: "10 miles",   value: "10" },
+  { label: "25 miles",   value: "25" },
+  { label: "50 miles",   value: "50" },
+  { label: "100 miles",  value: "100" },
+  { label: "Nationwide", value: "" },
+];
+
 const SORT_OPTIONS = [
   { label: "Newest first",        value: "newest" },
   { label: "Price: low → high",   value: "price_asc" },
   { label: "Price: high → low",   value: "price_desc" },
   { label: "Mileage: low → high", value: "mileage_asc" },
+  { label: "Nearest first",       value: "nearest" },
 ];
 
 const PRICE_PRESETS = [
@@ -237,7 +265,11 @@ export function VansFilter({
   const monthlyNum = Number(draft.monthlyMax) || 0;
   const depositNum = Number(draft.deposit) || Number(DEFAULT_DEPOSIT);
   const impliedPrice = monthlyNum > 0 ? priceFromMonthly(monthlyNum, depositNum) : 0;
-  const catchAllCount = [draft.fuel, draft.gearbox, draft.colour, draft.sort !== "newest" ? "x" : ""].filter(Boolean).length;
+  const catchAllCount = [
+    draft.fuel, draft.gearbox, draft.colour,
+    draft.postcode.trim() ? "x" : "",
+    draft.sort !== "newest" && draft.sort !== "nearest" ? "x" : "",
+  ].filter(Boolean).length;
 
   function set(updates: Partial<FilterDraft>) {
     setDraft((prev) => ({ ...prev, ...updates }));
@@ -324,6 +356,17 @@ export function VansFilter({
             <button type="button" className={pillCls(!!draft.maxMileage)} onClick={() => openAt("mileage")}>
               {draft.maxMileage ? `< ${Number(draft.maxMileage).toLocaleString("en-GB")} mi` : "Mileage"}
               <Chevron active={!!draft.maxMileage} />
+            </button>
+
+            <button
+              type="button"
+              className={pillCls(!!(draft.postcode.trim()))}
+              onClick={() => openAt("distance")}
+            >
+              {draft.postcode.trim()
+                ? (draft.radius ? `${draft.radius} mi · ${draft.postcode.trim().toUpperCase()}` : `Nationwide · ${draft.postcode.trim().toUpperCase()}`)
+                : "Distance"}
+              <Chevron active={!!(draft.postcode.trim())} />
             </button>
 
             {facets.wheelbases.length > 0 && (
@@ -615,6 +658,45 @@ export function VansFilter({
 
               <Hr />
 
+              {/* Distance */}
+              <div ref={(el) => { sectionRefs.current["distance"] = el; }}>
+                <Section title="Distance from you">
+                  <label>
+                    <span className="mb-1.5 block text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                      Your postcode
+                    </span>
+                    <input
+                      type="text"
+                      value={draft.postcode}
+                      onChange={(e) => set({ postcode: e.target.value.toUpperCase() })}
+                      placeholder="e.g. CF10 1AA"
+                      maxLength={8}
+                      className="w-full rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[var(--text-sm)] font-semibold uppercase text-ink-900 placeholder:font-normal placeholder:lowercase placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
+                    />
+                  </label>
+                  {draft.postcode.trim().length >= 3 && (
+                    <div className="mt-3">
+                      <p className="mb-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                        Radius
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {RADIUS_OPTIONS.map((r) => (
+                          <SmallChip
+                            key={r.label}
+                            active={draft.radius === r.value}
+                            onClick={() => set({ radius: r.value })}
+                          >
+                            {r.label}
+                          </SmallChip>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </Section>
+              </div>
+
+              <Hr />
+
               {/* Body type */}
               {facets.bodyStyles.length > 0 && (
                 <>
@@ -760,20 +842,22 @@ export function VansFilter({
               {/* Sort */}
               <Section title="Sort by">
                 <div className="grid grid-cols-2 gap-2">
-                  {SORT_OPTIONS.map((s) => (
-                    <button
-                      key={s.value}
-                      type="button"
-                      onClick={() => set({ sort: s.value })}
-                      className={`rounded-[var(--radius-md)] border px-3 py-2.5 text-[var(--text-sm)] font-semibold transition-colors ${
-                        draft.sort === s.value
-                          ? "border-brand-500 bg-brand-600 text-white"
-                          : "border-border bg-white text-ink-700 hover:border-brand-300"
-                      }`}
-                    >
-                      {s.label}
-                    </button>
-                  ))}
+                  {SORT_OPTIONS
+                    .filter((s) => s.value !== "nearest" || draft.postcode.trim().length >= 3)
+                    .map((s) => (
+                      <button
+                        key={s.value}
+                        type="button"
+                        onClick={() => set({ sort: s.value })}
+                        className={`rounded-[var(--radius-md)] border px-3 py-2.5 text-[var(--text-sm)] font-semibold transition-colors ${
+                          draft.sort === s.value
+                            ? "border-brand-500 bg-brand-600 text-white"
+                            : "border-border bg-white text-ink-700 hover:border-brand-300"
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
                 </div>
               </Section>
 
