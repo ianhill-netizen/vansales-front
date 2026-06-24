@@ -9,7 +9,31 @@ import { IconArrow } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
 import type { Condition, ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { priceFromMonthly } from "@/lib/finance";
+import { haversineDistanceMiles } from "@/lib/distance";
 import { SITE, absUrl } from "@/lib/site";
+
+const DEALSKI_API = (
+  process.env.DEALSKI_API_URL ?? "https://swissvans.dealski.co.uk"
+).replace(/\/$/, "");
+const MARKETPLACE_KEY = process.env.DEALSKI_MARKETPLACE_KEY ?? "";
+
+async function geocodePostcodeServer(postcode: string): Promise<{ lat: number; lng: number } | null> {
+  if (!MARKETPLACE_KEY || !postcode.trim()) return null;
+  try {
+    const res = await fetch(`${DEALSKI_API}/api/marketplace/geocode`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${MARKETPLACE_KEY}` },
+      body: JSON.stringify({ postcode: postcode.trim() }),
+      next: { revalidate: 86400 },
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { latitude?: number; longitude?: number };
+    if (data.latitude != null && data.longitude != null) {
+      return { lat: data.latitude, lng: data.longitude };
+    }
+  } catch { /* ignore */ }
+  return null;
+}
 
 export const revalidate = 3600;
 const PAGE_SIZE = 24;
@@ -21,10 +45,15 @@ const num = (v: string | string[] | undefined) => {
   return Number.isFinite(n) && n > 0 ? n : undefined;
 };
 
-function parseFilters(sp: Search): ListingFilters {
+function parseFilters(sp: Search, buyerLat?: number, buyerLng?: number): ListingFilters {
   const monthlyMax = num(sp.monthlyMax);
   const deposit = num(sp.deposit) ?? 3000;
   const derivedMaxPrice = monthlyMax ? priceFromMonthly(monthlyMax, deposit) : undefined;
+  const rawRadius = num(sp.radius);
+  const hasPostcode = !!(one(sp.postcode) || "").trim();
+  // Default sort to nearest when postcode is set and no explicit sort chosen
+  const rawSort = (one(sp.sort) as ListingFilters["sort"]) || undefined;
+  const effectiveSort = rawSort ?? (hasPostcode && buyerLat != null ? "nearest" : "newest");
   return {
     make:      one(sp.make)      || undefined,
     model:     one(sp.model)     || undefined,
@@ -40,7 +69,11 @@ function parseFilters(sp: Search): ListingFilters {
     maxYear:   num(sp.maxYear),
     maxMileage: num(sp.maxMileage),
     q: one(sp.q) || undefined,
-    sort: (one(sp.sort) as ListingFilters["sort"]) || "newest",
+    postcode: one(sp.postcode) || undefined,
+    radius: rawRadius,
+    buyerLat,
+    buyerLng,
+    sort: effectiveSort,
     page: num(sp.page) ?? 1,
     pageSize: PAGE_SIZE,
   };
@@ -75,7 +108,9 @@ export default async function VansPage({
   searchParams: Promise<Search>;
 }) {
   const sp = await searchParams;
-  const filters = parseFilters(sp);
+  const rawPostcode = (one(sp.postcode) || "").trim();
+  const buyerCoords = rawPostcode ? await geocodePostcodeServer(rawPostcode) : null;
+  const filters = parseFilters(sp, buyerCoords?.lat, buyerCoords?.lng);
   const [result, facets] = await Promise.all([
     getListings(filters),
     getFacets(),
@@ -145,9 +180,21 @@ export default async function VansPage({
         ) : (
           <ListMapToggle listings={listings}>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {listings.map((l, i) => (
-                <ListingCard key={l.id} listing={l} priority={i < 6} cardIndex={(page - 1) * PAGE_SIZE + i} />
-              ))}
+              {listings.map((l, i) => {
+                const distanceMiles =
+                  buyerCoords && l.location.lat != null && l.location.lng != null
+                    ? haversineDistanceMiles(buyerCoords.lat, buyerCoords.lng, l.location.lat, l.location.lng)
+                    : undefined;
+                return (
+                  <ListingCard
+                    key={l.id}
+                    listing={l}
+                    priority={i < 6}
+                    cardIndex={(page - 1) * PAGE_SIZE + i}
+                    distanceMiles={distanceMiles}
+                  />
+                );
+              })}
             </div>
             <Pagination
               page={page}

@@ -1,12 +1,9 @@
 "use client";
 
-/* Thin "use client" shell so the dynamic(ssr:false) import can live in a
-   Client Component — Next.js App Router forbids ssr:false in Server Components. */
-
 import dynamic from "next/dynamic";
 
-const DealerMapInner = dynamic(
-  () => import("./dealer-map").then((m) => m.DealerMap),
+const GoogleDealerMapWrapperInner = dynamic(
+  () => import("./google-dealer-map").then((m) => m.GoogleDealerMapWrapper),
   {
     ssr: false,
     loading: () => (
@@ -16,12 +13,12 @@ const DealerMapInner = dynamic(
 );
 
 interface Props {
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
   name: string;
   address: string;
 }
 
 export function DealerMapClient(props: Props) {
-  return <DealerMapInner {...props} />;
+  return <GoogleDealerMapWrapperInner {...props} />;
 }
