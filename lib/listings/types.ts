@@ -100,6 +100,7 @@ export interface Listing {
 export interface ListingFilters {
   make?: string;
   model?: string;
+  models?: string[]; // multi-model OR filter; overrides model when set
   condition?: Condition;
   bodyStyle?: string;
   wheelbase?: Wheelbase;

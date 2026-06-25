@@ -5,11 +5,13 @@ import { ListingCard } from "@/components/listing-card";
 import { VansFilter } from "@/components/search/vans-filter";
 import { Pagination } from "@/components/pagination";
 import { ListMapToggle } from "@/components/list-map-toggle";
+import { DealerMapButton } from "@/components/dealer-map-button";
 import { IconArrow } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
 import type { Condition, ListingFilters, Wheelbase } from "@/lib/listings/types";
-import { priceFromMonthly } from "@/lib/finance";
+import { priceFromMonthly, estimateMonthly } from "@/lib/finance";
 import { haversineDistanceMiles } from "@/lib/distance";
+import { SORTED_MAKES } from "@/lib/taxonomy/van-makes";
 import { SITE, absUrl } from "@/lib/site";
 
 const DEALSKI_API = (
@@ -45,18 +47,31 @@ const num = (v: string | string[] | undefined) => {
   return Number.isFinite(n) && n > 0 ? n : undefined;
 };
 
+function parseModels(sp: Search): string[] | undefined {
+  // ?models=transporter,caddy (preferred) or legacy ?model=transporter
+  const raw = one(sp.models);
+  if (raw) {
+    const parts = raw.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length > 0) return parts;
+  }
+  const legacy = one(sp.model);
+  return legacy ? [legacy] : undefined;
+}
+
 function parseFilters(sp: Search, buyerLat?: number, buyerLng?: number): ListingFilters {
   const monthlyMax = num(sp.monthlyMax);
   const deposit = num(sp.deposit) ?? 3000;
   const derivedMaxPrice = monthlyMax ? priceFromMonthly(monthlyMax, deposit) : undefined;
   const rawRadius = num(sp.radius);
   const hasPostcode = !!(one(sp.postcode) || "").trim();
-  // Default sort to nearest when postcode is set and no explicit sort chosen
   const rawSort = (one(sp.sort) as ListingFilters["sort"]) || undefined;
   const effectiveSort = rawSort ?? (hasPostcode && buyerLat != null ? "nearest" : "newest");
+  const models = parseModels(sp);
   return {
     make:      one(sp.make)      || undefined,
-    model:     one(sp.model)     || undefined,
+    // single-model compat: pass model when exactly one selected
+    model:     models?.length === 1 ? models[0] : undefined,
+    models:    models && models.length > 1 ? models : undefined,
     condition: (one(sp.condition) as Condition) || undefined,
     bodyStyle: one(sp.bodyStyle) || undefined,
     fuel:      one(sp.fuel)      || undefined,
@@ -108,9 +123,12 @@ export default async function VansPage({
   searchParams: Promise<Search>;
 }) {
   const sp = await searchParams;
+  const hasMake = !!(one(sp.make) || "").trim();
   const rawPostcode = (one(sp.postcode) || "").trim();
   const buyerCoords = rawPostcode ? await geocodePostcodeServer(rawPostcode) : null;
   const filters = parseFilters(sp, buyerCoords?.lat, buyerCoords?.lng);
+  const depositNum = num(sp.deposit) ?? 3000;
+
   const [result, facets] = await Promise.all([
     getListings(filters),
     getFacets(),
@@ -135,8 +153,8 @@ export default async function VansPage({
             Vans for sale
           </h1>
           <p className="mt-2 text-[var(--text-md)] text-ink-500">
-            <span className="font-display font-bold text-brand-600">{total.toLocaleString()}</span>{" "}
-            {total === 1 ? "van" : "vans"} available
+            <span className="font-display font-bold text-brand-600">{facets.total.toLocaleString()}</span>{" "}
+            {facets.total === 1 ? "van" : "vans"} available
           </p>
         </Container>
       </section>
@@ -144,64 +162,105 @@ export default async function VansPage({
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <Container className="py-8">
         {/* Filter pill row + modal */}
-        <VansFilter total={total} facets={facets} searchParams={sp} />
+        <VansFilter total={hasMake ? total : facets.total} facets={facets} searchParams={sp} />
 
-        {/* Results count bar */}
-        {total > 0 && (
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[var(--text-sm)] text-ink-500">
-              Showing{" "}
-              <span className="font-mono font-semibold text-ink-800">{firstOnPage}–{lastOnPage}</span>{" "}
-              of{" "}
-              <span className="font-mono font-semibold text-ink-800">{total.toLocaleString()}</span>
-              {page > 1 && (
-                <span className="text-ink-400"> · page {page} of {totalPages}</span>
-              )}
-            </p>
-          </div>
-        )}
-
-        {listings.length === 0 ? (
-          <div className="rounded-[var(--radius-2xl)] border border-dashed border-border bg-white px-8 py-16 text-center shadow-[var(--shadow-xs)]">
-            <p className="font-mono text-4xl text-ink-200">🔍</p>
-            <h2 className="mt-4 font-display text-[var(--text-xl)] font-bold text-ink-900">
-              No vans match those filters
-            </h2>
-            <p className="mx-auto mt-2 max-w-sm text-[var(--text-sm)] text-ink-500">
-              Try widening your price or year range, or removing a filter.
-            </p>
-            <Link
-              href="/vans"
-              className="mt-5 inline-flex items-center gap-1.5 rounded-[var(--radius-md)] border border-border bg-white px-4 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] hover:border-brand-300 hover:text-brand-700"
-            >
-              Clear all filters <IconArrow width={14} height={14} />
-            </Link>
-          </div>
-        ) : (
-          <ListMapToggle listings={listings}>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {listings.map((l, i) => {
-                const distanceMiles =
-                  buyerCoords && l.location.lat != null && l.location.lng != null
-                    ? haversineDistanceMiles(buyerCoords.lat, buyerCoords.lng, l.location.lat, l.location.lng)
-                    : undefined;
+        {/* ── Make gate: show make chooser when no make selected ─────────── */}
+        {!hasMake ? (
+          <div className="mt-4">
+            <div className="mb-6 text-center">
+              <p className="text-[var(--text-lg)] font-semibold text-ink-700">
+                Choose a make to start browsing
+              </p>
+              <p className="mt-1 text-[var(--text-sm)] text-ink-400">
+                Select a manufacturer to see available stock
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {SORTED_MAKES.map((m) => {
+                const params = new URLSearchParams({ make: m.slug });
+                for (const [k, v] of Object.entries(sp)) {
+                  if (k === "make" || k === "models" || k === "model" || k === "page") continue;
+                  const val = one(v);
+                  if (val) params.set(k, val);
+                }
                 return (
-                  <ListingCard
-                    key={l.id}
-                    listing={l}
-                    priority={i < 6}
-                    cardIndex={(page - 1) * PAGE_SIZE + i}
-                    distanceMiles={distanceMiles}
-                  />
+                  <Link
+                    key={m.slug}
+                    href={`/vans?${params.toString()}`}
+                    className="flex items-center justify-center rounded-[var(--radius-xl)] border border-border bg-white px-4 py-5 text-center font-semibold text-ink-700 shadow-[var(--shadow-xs)] transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700 hover:shadow-[var(--shadow-sm)]"
+                  >
+                    {m.name}
+                  </Link>
                 );
               })}
             </div>
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              hrefFor={(p) => hrefFor(sp, p)}
-            />
-          </ListMapToggle>
+          </div>
+        ) : (
+          <>
+            {/* Results count bar */}
+            {total > 0 && (
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <p className="text-[var(--text-sm)] text-ink-500">
+                  Showing{" "}
+                  <span className="font-mono font-semibold text-ink-800">{firstOnPage}–{lastOnPage}</span>{" "}
+                  of{" "}
+                  <span className="font-mono font-semibold text-ink-800">{total.toLocaleString()}</span>
+                  {page > 1 && (
+                    <span className="text-ink-400"> · page {page} of {totalPages}</span>
+                  )}
+                </p>
+                <DealerMapButton listings={listings} />
+              </div>
+            )}
+
+            {listings.length === 0 ? (
+              <div className="rounded-[var(--radius-2xl)] border border-dashed border-border bg-white px-8 py-16 text-center shadow-[var(--shadow-xs)]">
+                <p className="font-mono text-4xl text-ink-200">🔍</p>
+                <h2 className="mt-4 font-display text-[var(--text-xl)] font-bold text-ink-900">
+                  No vans match those filters
+                </h2>
+                <p className="mx-auto mt-2 max-w-sm text-[var(--text-sm)] text-ink-500">
+                  Try widening your price or year range, or removing a filter.
+                </p>
+                <Link
+                  href={`/vans?make=${one(sp.make)}`}
+                  className="mt-5 inline-flex items-center gap-1.5 rounded-[var(--radius-md)] border border-border bg-white px-4 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] hover:border-brand-300 hover:text-brand-700"
+                >
+                  Clear filters <IconArrow width={14} height={14} />
+                </Link>
+              </div>
+            ) : (
+              <ListMapToggle listings={listings}>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                  {listings.map((l, i) => {
+                    const distanceMiles =
+                      buyerCoords && l.location.lat != null && l.location.lng != null
+                        ? haversineDistanceMiles(buyerCoords.lat, buyerCoords.lng, l.location.lat, l.location.lng)
+                        : undefined;
+                    const monthlyPayment =
+                      l.price != null
+                        ? Math.round(estimateMonthly(l.price, depositNum))
+                        : undefined;
+                    return (
+                      <ListingCard
+                        key={l.id}
+                        listing={l}
+                        priority={i < 6}
+                        cardIndex={(page - 1) * PAGE_SIZE + i}
+                        distanceMiles={distanceMiles}
+                        monthlyPayment={monthlyPayment}
+                      />
+                    );
+                  })}
+                </div>
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  hrefFor={(p) => hrefFor(sp, p)}
+                />
+              </ListMapToggle>
+            )}
+          </>
         )}
       </Container>
     </>

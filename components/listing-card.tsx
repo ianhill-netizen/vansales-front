@@ -19,11 +19,13 @@ export function ListingCard({
   priority,
   cardIndex = 0,
   distanceMiles,
+  monthlyPayment,
 }: {
   listing: Listing;
   priority?: boolean;
   cardIndex?: number;
   distanceMiles?: number;
+  monthlyPayment?: number;
 }) {
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
@@ -158,7 +160,14 @@ export function ListingCard({
 
         {/* Price row */}
         <div className="mt-3 flex items-end justify-between gap-2">
-          <Price listing={listing} size="md" />
+          <div>
+            <Price listing={listing} size="md" />
+            {monthlyPayment != null && (
+              <p className="mt-0.5 text-[var(--text-xs)] text-ink-400">
+                ≈ £{monthlyPayment.toLocaleString("en-GB")}/mo HP
+              </p>
+            )}
+          </div>
           {listing.year > 0 && (
             <PlateBadge text={listing.plate || String(listing.year)} size="sm" />
           )}
