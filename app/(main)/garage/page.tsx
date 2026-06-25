@@ -15,7 +15,7 @@ import {
   IconChevronLeft as IconBack,
   IconShield,
 } from "@/components/icons";
-import { fetchGarage } from "@/lib/garage/api";
+import { fetchGarage, initiateGarageTopUp } from "@/lib/garage/api";
 import type {
   GarageData,
   GarageVehicle,
@@ -362,7 +362,23 @@ function VehiclesView({
 // ── 2. WALLET VIEW ────────────────────────────────────────────────────────────
 
 function TopUpModal({ onClose }: { onClose: () => void }) {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected]       = useState<string | null>(null);
+  const [redirecting, setRedirecting] = useState(false);
+  const [error, setError]             = useState<string | null>(null);
+
+  async function handleContinue() {
+    if (!selected) return;
+    setRedirecting(true);
+    setError(null);
+    try {
+      const returnUrl = typeof window !== "undefined" ? window.location.href : "";
+      const { checkout_url } = await initiateGarageTopUp(selected, returnUrl);
+      window.location.href = checkout_url;
+    } catch {
+      setError("Failed to start checkout — please try again.");
+      setRedirecting(false);
+    }
+  }
 
   return (
     <div
@@ -400,15 +416,16 @@ function TopUpModal({ onClose }: { onClose: () => void }) {
           ))}
         </div>
 
+        {error && (
+          <p className="mt-3 text-center text-[var(--text-xs)] text-red-500">{error}</p>
+        )}
         <button
-          disabled={!selected}
+          disabled={!selected || redirecting}
+          onClick={handleContinue}
           className="mt-5 w-full rounded-[var(--radius-md)] bg-accent-500 py-3 text-[var(--text-base)] font-semibold text-white transition-colors hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {selected ? "Continue to payment" : "Select a pack"}
+          {redirecting ? "Redirecting…" : selected ? "Continue to payment" : "Select a pack"}
         </button>
-        <p className="mt-2 text-center text-[var(--text-xs)] text-ink-400">
-          Payments coming soon — packs shown for preview
-        </p>
       </div>
     </div>
   );
