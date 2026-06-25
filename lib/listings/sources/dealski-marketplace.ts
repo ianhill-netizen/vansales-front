@@ -110,7 +110,10 @@ async function fetchPageOnce(url: string): Promise<MarketplacePage> {
         Authorization: `Bearer ${MARKETPLACE_KEY}`,
       },
       signal: ctrl.signal,
-      next: { revalidate: REVALIDATE },
+      // No per-fetch cache: unstable_cache handles the 6h window.
+      // Adding tags here ensures revalidateTag("dealski-marketplace")
+      // flushes this layer too after any future per-fetch caching is added.
+      next: { revalidate: 0, tags: ["dealski-marketplace"] },
     });
     if (!res.ok) throw new Error(`Marketplace ${res.status} for ${url}`);
     return (await res.json()) as MarketplacePage;
@@ -347,6 +350,6 @@ export const fetchMarketplaceCatalogue = unstable_cache(
 
     return { listings, feedTotal };
   },
-  ["dealski-marketplace-v2"],
+  ["dealski-marketplace-v4"],
   { revalidate: REVALIDATE, tags: ["dealski-marketplace"] },
 );
