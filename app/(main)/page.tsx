@@ -8,9 +8,32 @@ import { JsonLd } from "@/components/json-ld";
 import {
   IconArrow, IconCheck, IconShield, IconBolt, IconFilter, IconSearch,
 } from "@/components/icons";
-import { getListings, getFacets } from "@/lib/listings/client";
+import { getListings, getFacets, getModelIndex } from "@/lib/listings/client";
 import { slugify } from "@/lib/listings/slug";
+import { VAN_MAKES, getMakeByName, type VanMake } from "@/lib/taxonomy/van-makes";
 import { SITE, absUrl, siteUrl } from "@/lib/site";
+
+// Strip combining diacritics for accent-insensitive comparison.
+function norm(s: string): string {
+  return s.normalize("NFD").replace(/\p{Mn}/gu, "").toLowerCase();
+}
+
+// Resolve a verbose feed model string (e.g. "Transit Custom 320 L2 Diesel FWD")
+// to the canonical display name from the make's taxonomy model list.
+// Tries longest model-slug prefix first; falls back to the raw string.
+function toCanonicalModel(model: string, makeEntry: VanMake): string {
+  const slug = model
+    .normalize("NFD")
+    .replace(/\p{Mn}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  const sorted = [...makeEntry.models].sort((a, b) => b.slug.length - a.slug.length);
+  for (const m of sorted) {
+    if (slug === m.slug || slug.startsWith(`${m.slug}-`)) return m.name;
+  }
+  return model;
+}
 
 export const metadata: Metadata = {
   title: "Vans for Sale UK | Used & New Vans | Vansales",
@@ -65,15 +88,38 @@ const TRUST_POINTS = [
 ] as const;
 
 export default async function HomePage() {
-  const [{ listings, total, servedBy }, facets] = await Promise.all([
+  const [{ listings, total, servedBy }, facets, modelIndex] = await Promise.all([
     getListings({ sort: "newest", limit: 6 }),
     getFacets(),
+    getModelIndex(),
   ]);
 
+  // Build feed-derived make-slug → sorted canonical model names.
+  // Accent-insensitive make matching; resolves verbose model strings to
+  // canonical taxonomy names (e.g. "Transit Custom 320 L2 Diesel" → "Transit Custom").
+  const feedMakeModels: Record<string, string[]> = {};
+  for (const { make, model } of modelIndex) {
+    if (!model || model === "—") continue;
+    const makeEntry = VAN_MAKES.find((m) => norm(m.name) === norm(make));
+    if (!makeEntry) continue;
+    const canonical = toCanonicalModel(model, makeEntry);
+    if (!feedMakeModels[makeEntry.slug]) feedMakeModels[makeEntry.slug] = [];
+    if (!feedMakeModels[makeEntry.slug].includes(canonical)) {
+      feedMakeModels[makeEntry.slug].push(canonical);
+    }
+  }
+  for (const k of Object.keys(feedMakeModels)) {
+    feedMakeModels[k].sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
+  }
+
   // Only show makes with meaningful stock — hides single-vehicle outliers.
-  // All makes remain discoverable via /directory.
+  // Also guard against junk make values ("Van", empty strings) that can
+  // appear if the feed carries records with non-make strings in the make field.
   const MIN_MAKE_COUNT = 5;
-  const topMakes = facets.makes.filter((m) => m.count >= MIN_MAKE_COUNT).slice(0, 12);
+  const JUNK_MAKES = new Set(["van", ""]);
+  const topMakes = facets.makes
+    .filter((m) => m.count >= MIN_MAKE_COUNT && m.value && !JUNK_MAKES.has(m.value.toLowerCase()))
+    .slice(0, 12);
   const base = siteUrl();
 
   const orgSchema = {
@@ -159,7 +205,7 @@ export default async function HomePage() {
         {/* Floating search card — hovers over the fold break */}
         <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-1/2 px-[var(--gutter)]">
           <div className="mx-auto max-w-[var(--container-max)]">
-            <SearchHero total={total} />
+            <SearchHero total={total} makeModels={feedMakeModels} />
           </div>
         </div>
       </section>

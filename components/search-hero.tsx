@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SORTED_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
+import { SORTED_MAKES, getMakeByName } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
 import { IconSearch, IconChevron } from "./icons";
 
@@ -14,17 +14,27 @@ const LABEL_CLS =
 const FIELD_CLS =
   "h-full w-full appearance-none bg-transparent pl-4 pr-9 pt-5 text-[var(--text-base)] font-semibold text-ink-900 placeholder:font-normal placeholder:text-ink-400 outline-none cursor-pointer";
 
-export function SearchHero({ total }: { total: number }) {
+export function SearchHero({
+  total,
+  makeModels,
+}: {
+  total: number;
+  makeModels: Record<string, string[]>;
+}) {
   const router = useRouter();
   const [make, setMake]   = useState("");
   const [model, setModel] = useState("");
   const [where, setWhere] = useState("");
 
-  const makeData = make ? getMakeBySlug(slugify(make)) : null;
-  const models = makeData
-    ? [...makeData.models]
-        .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }))
-        .map((m) => m.name)
+  // Prefer live feed-derived models passed from server. Fall back to
+  // taxonomy models for any make not yet represented in the feed.
+  const makeEntry = make ? getMakeByName(make) : null;
+  const models = makeEntry
+    ? (makeModels[makeEntry.slug]?.length
+        ? makeModels[makeEntry.slug]
+        : [...makeEntry.models]
+            .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }))
+            .map((m) => m.name))
     : [];
 
   function submit(e: React.FormEvent) {
