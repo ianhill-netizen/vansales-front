@@ -302,6 +302,10 @@ export function VansFilter({
     draft.sort !== "newest" && draft.sort !== "nearest" ? "x" : "",
   ].filter(Boolean).length;
 
+  // Detect whether the draft differs from the currently-applied URL filters.
+  // Uses the canonical URL serialisation so the comparison is exact.
+  const draftDiffersFromApplied = draftToUrl(draft) !== draftToUrl(parseSearchParams(searchParams));
+
   function set(updates: Partial<FilterDraft>) {
     setDraft((prev) => ({ ...prev, ...updates }));
   }
@@ -999,7 +1003,7 @@ export function VansFilter({
                 style={{ background: "linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%)" }}
               >
                 <IconSearch width={16} height={16} />
-                {isPending ? "Updating…" : `Search ${total.toLocaleString()} vans`}
+                {isPending ? "Updating…" : draftDiffersFromApplied ? "Apply filters" : `Search ${total.toLocaleString()} vans`}
               </button>
             </div>
           </div>
