@@ -117,7 +117,15 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
 
   if (f.condition) out = out.filter((l) => l.condition === f.condition);
   if (f.make) out = out.filter((l) => slugify(l.make) === slugify(f.make!));
-  if (f.model) {
+  if (f.models && f.models.length > 0) {
+    // Multi-model OR filter: listing matches if its model matches any selected slug.
+    const wants = f.models.map(slugify);
+    out = out.filter((l) =>
+      wants.some(
+        (w) => slugify(l.model) === w || resolveModelSlug(l.make, l.model)?.modelSlug === w,
+      ),
+    );
+  } else if (f.model) {
     const want = slugify(f.model);
     // The live feed reports verbose model strings (e.g. "Transit Custom 320 L2
     // Diesel FWD"); resolve to the base model so the route collects all variants.
@@ -158,6 +166,21 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
   }
 
   const effectiveSort = f.sort ?? (f.buyerLat != null ? "nearest" : "newest");
+
+  // When multiple models are selected, pre-group results by model-array order
+  // so the chip drag order maps to result order within each model group.
+  if (f.models && f.models.length > 1) {
+    const wants = f.models.map(slugify);
+    out = [...out].sort((a, b) => {
+      const ia = wants.findIndex(
+        (w) => slugify(a.model) === w || resolveModelSlug(a.make, a.model)?.modelSlug === w,
+      );
+      const ib = wants.findIndex(
+        (w) => slugify(b.model) === w || resolveModelSlug(b.make, b.model)?.modelSlug === w,
+      );
+      return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+    });
+  }
 
   switch (effectiveSort) {
     case "nearest":

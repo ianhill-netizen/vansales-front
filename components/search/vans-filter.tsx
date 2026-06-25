@@ -17,7 +17,7 @@ import type { ListingFacets } from "@/lib/listings/types";
 
 type FilterDraft = {
   make: string;
-  model: string;
+  models: string[]; // multi-model OR selection (replaces single model)
   bodyStyle: string;
   fuel: string;
   gearbox: string;
@@ -36,9 +36,11 @@ type FilterDraft = {
 };
 
 const DEFAULT_DEPOSIT = "3000";
+const MONTHLY_MAX_CEILING = 1500; // slider max — above this means no filter
+const DEPOSIT_MAX = 10000;
 
 const EMPTY: FilterDraft = {
-  make: "", model: "", bodyStyle: "", fuel: "",
+  make: "", models: [], bodyStyle: "", fuel: "",
   gearbox: "", wheelbase: "", colour: "",
   minPrice: "", maxPrice: "", monthlyMax: "",
   deposit: DEFAULT_DEPOSIT,
@@ -55,9 +57,16 @@ function one(v: string | string[] | undefined): string {
 
 function parseSearchParams(sp: Search): FilterDraft {
   const monthlyMax = one(sp.monthlyMax);
+  // ?models=slug1,slug2 (preferred) or legacy ?model=slug
+  const rawModels = one(sp.models);
+  const models = rawModels
+    ? rawModels.split(",").map((s) => s.trim()).filter(Boolean)
+    : one(sp.model)
+    ? [one(sp.model)]
+    : [];
   return {
     make:       one(sp.make),
-    model:      one(sp.model),
+    models,
     bodyStyle:  one(sp.bodyStyle),
     fuel:       one(sp.fuel),
     gearbox:    one(sp.gearbox),
@@ -78,13 +87,13 @@ function parseSearchParams(sp: Search): FilterDraft {
 
 function draftToUrl(d: FilterDraft): string {
   const p = new URLSearchParams();
-  if (d.make)       p.set("make",       d.make);
-  if (d.model)      p.set("model",      d.model);
-  if (d.bodyStyle)  p.set("bodyStyle",  d.bodyStyle);
-  if (d.fuel)       p.set("fuel",       d.fuel);
-  if (d.gearbox)    p.set("gearbox",    d.gearbox);
-  if (d.wheelbase)  p.set("wheelbase",  d.wheelbase);
-  if (d.colour)     p.set("colour",     d.colour);
+  if (d.make)             p.set("make",      d.make);
+  if (d.models.length > 0) p.set("models",  d.models.join(","));
+  if (d.bodyStyle)        p.set("bodyStyle", d.bodyStyle);
+  if (d.fuel)             p.set("fuel",      d.fuel);
+  if (d.gearbox)          p.set("gearbox",   d.gearbox);
+  if (d.wheelbase)        p.set("wheelbase", d.wheelbase);
+  if (d.colour)           p.set("colour",    d.colour);
   if (d.monthlyMax) {
     p.set("monthlyMax", d.monthlyMax);
     const dep = d.deposit || DEFAULT_DEPOSIT;
@@ -121,10 +130,8 @@ function getChips(d: FilterDraft): Chip[] {
   if (d.make) {
     const md = getMakeBySlug(d.make);
     const makeName = md?.name ?? ucFirst(d.make);
-    const modelName = d.model ? md?.models.find((m) => m.slug === d.model)?.name : null;
-    out.push({ key: "make", label: modelName ? `${makeName} · ${modelName}` : makeName, clear: { make: "", model: "" } });
-  } else if (d.model) {
-    out.push({ key: "model", label: ucFirst(d.model), clear: { model: "" } });
+    out.push({ key: "make", label: makeName, clear: { make: "", models: [] } });
+    // Individual model chips rendered separately (draggable)
   }
 
   if (d.monthlyMax) {
@@ -180,6 +187,18 @@ function yearLabel(d: FilterDraft): string {
   if (!d.minYear && !d.maxYear) return "Year";
   if (d.minYear && d.maxYear) return `${d.minYear}–${d.maxYear}`;
   return d.minYear ? `${d.minYear}+` : `up to ${d.maxYear}`;
+}
+
+function makeModelPillLabel(d: FilterDraft): string {
+  if (!d.make) return "Make & model";
+  const md = getMakeBySlug(d.make);
+  const makeName = md?.name ?? ucFirst(d.make);
+  if (d.models.length === 0) return makeName;
+  if (d.models.length === 1) {
+    const modelName = md?.models.find((m) => m.slug === d.models[0])?.name;
+    return modelName ? `${makeName} · ${modelName}` : makeName;
+  }
+  return `${makeName} · ${d.models.length} models`;
 }
 
 /* ── Static data ─────────────────────────────────────────────────────────── */
@@ -255,6 +274,19 @@ export function VansFilter({
   const [draft, setDraft] = useState<FilterDraft>(() => parseSearchParams(searchParams));
   const [modalOpen, setModalOpen] = useState(false);
   const [scrollTarget, setScrollTarget] = useState<string | null>(null);
+  const [modelSearch, setModelSearch] = useState("");
+
+  // Drag-to-reorder state for model chips
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+
+  // Finance sliders — local numeric state drives the range input; draft holds string for URL
+  const [sliderMonthly, setSliderMonthly] = useState<number>(() =>
+    Number(parseSearchParams(searchParams).monthlyMax) || MONTHLY_MAX_CEILING
+  );
+  const [sliderDeposit, setSliderDeposit] = useState<number>(() =>
+    Number(parseSearchParams(searchParams).deposit) || 3000
+  );
 
   const modalBodyRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -274,10 +306,13 @@ export function VansFilter({
     setDraft((prev) => ({ ...prev, ...updates }));
   }
 
-  /** Open the modal, optionally scrolling to a named section. */
   function openAt(section: string | null) {
     setModalOpen(true);
     setScrollTarget(section);
+    setModelSearch("");
+    // Sync sliders to current draft when modal opens
+    setSliderMonthly(Number(draft.monthlyMax) || MONTHLY_MAX_CEILING);
+    setSliderDeposit(Number(draft.deposit) || 3000);
   }
 
   function applyAndClose() {
@@ -288,6 +323,8 @@ export function VansFilter({
 
   function clearAll() {
     setDraft({ ...EMPTY });
+    setSliderMonthly(MONTHLY_MAX_CEILING);
+    setSliderDeposit(3000);
     startTransition(() => router.push("/vans", { scroll: false }));
     setModalOpen(false);
   }
@@ -298,7 +335,49 @@ export function VansFilter({
     startTransition(() => router.push(draftToUrl(next), { scroll: false }));
   }
 
-  // Scroll modal body to the target section after modal mounts
+  function removeModel(slug: string) {
+    const next = { ...draft, models: draft.models.filter((m) => m !== slug) };
+    setDraft(next);
+    startTransition(() => router.push(draftToUrl(next), { scroll: false }));
+  }
+
+  function toggleModel(slug: string) {
+    const next = draft.models.includes(slug)
+      ? draft.models.filter((m) => m !== slug)
+      : [...draft.models, slug];
+    set({ models: next });
+  }
+
+  function handleMonthlySlider(val: number) {
+    setSliderMonthly(val);
+    if (val >= MONTHLY_MAX_CEILING) {
+      set({ monthlyMax: "", minPrice: "", maxPrice: "" });
+    } else {
+      set({ monthlyMax: String(val), minPrice: "", maxPrice: "" });
+    }
+  }
+
+  function handleDepositSlider(val: number) {
+    setSliderDeposit(val);
+    set({ deposit: String(val) });
+  }
+
+  // Model chip drag-to-reorder (HTML5 drag API — works on iOS 15+ and all desktop browsers)
+  function handleDragStart(idx: number) { setDragIdx(idx); }
+  function handleDragEnter(idx: number) {
+    if (dragIdx !== null && dragIdx !== idx) setDragOverIdx(idx);
+  }
+  function handleDragEnd() {
+    if (dragIdx !== null && dragOverIdx !== null && dragIdx !== dragOverIdx) {
+      const next = [...draft.models];
+      const [moved] = next.splice(dragIdx, 1);
+      next.splice(dragOverIdx, 0, moved);
+      set({ models: next });
+    }
+    setDragIdx(null);
+    setDragOverIdx(null);
+  }
+
   useEffect(() => {
     if (!modalOpen || !scrollTarget) return;
     const t = setTimeout(() => {
@@ -311,11 +390,13 @@ export function VansFilter({
     return () => clearTimeout(t);
   }, [modalOpen, scrollTarget]);
 
-  // Body scroll lock while modal is open
   useEffect(() => {
     document.body.style.overflow = modalOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [modalOpen]);
+
+  const hasModelChips = draft.make && draft.models.length > 0;
+  const totalChips = chips.length + (draft.make ? draft.models.length : 0);
 
   return (
     <>
@@ -327,13 +408,7 @@ export function VansFilter({
           <div className="flex flex-wrap gap-2">
 
             <button type="button" className={pillCls(!!draft.make)} onClick={() => openAt("make")}>
-              {draft.make
-                ? (selectedMake
-                    ? (draft.model
-                        ? `${selectedMake.name} · ${selectedMake.models.find(m => m.slug === draft.model)?.name ?? ""}`
-                        : selectedMake.name)
-                    : ucFirst(draft.make))
-                : "Make & model"}
+              {makeModelPillLabel(draft)}
               <Chevron active={!!draft.make} />
             </button>
 
@@ -385,7 +460,7 @@ export function VansFilter({
             )}
           </div>
 
-          {/* Filter & sort button — opens modal at top */}
+          {/* Filter & sort button */}
           <button
             type="button"
             onClick={() => openAt(null)}
@@ -405,8 +480,8 @@ export function VansFilter({
           </button>
         </div>
 
-        {/* Active chips */}
-        {chips.length > 0 && (
+        {/* Active chips — make chip + draggable model chips + other chips */}
+        {(chips.length > 0 || hasModelChips) && (
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             {chips.map((chip) => (
               <button
@@ -419,7 +494,50 @@ export function VansFilter({
                 <span className="text-brand-400" aria-hidden>×</span>
               </button>
             ))}
-            {chips.length > 1 && (
+
+            {/* Draggable model chips */}
+            {draft.make && draft.models.map((slug, idx) => {
+              const md = getMakeBySlug(draft.make);
+              const name = md?.models.find((m) => m.slug === slug)?.name ?? unslug(slug);
+              const isDragging = dragIdx === idx;
+              const isOver = dragOverIdx === idx;
+              return (
+                <div
+                  key={slug}
+                  draggable
+                  onDragStart={() => handleDragStart(idx)}
+                  onDragEnter={() => handleDragEnter(idx)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDragEnd={handleDragEnd}
+                  className={`flex cursor-grab items-center gap-1 rounded-[var(--radius-pill)] border px-2.5 py-1 text-[var(--text-xs)] font-semibold text-brand-700 select-none transition-all active:cursor-grabbing ${
+                    isDragging
+                      ? "border-brand-400 bg-brand-100 opacity-50"
+                      : isOver
+                      ? "border-brand-500 bg-brand-100 ring-1 ring-brand-400"
+                      : "border-brand-200 bg-brand-50 hover:bg-brand-100"
+                  }`}
+                  role="listitem"
+                  aria-label={`${name}, drag to reorder`}
+                >
+                  <svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor" className="shrink-0 text-brand-400" aria-hidden>
+                    <circle cx="2" cy="2" r="1.5"/><circle cx="6" cy="2" r="1.5"/>
+                    <circle cx="2" cy="6" r="1.5"/><circle cx="6" cy="6" r="1.5"/>
+                    <circle cx="2" cy="10" r="1.5"/><circle cx="6" cy="10" r="1.5"/>
+                  </svg>
+                  {name}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); removeModel(slug); }}
+                    className="text-brand-400 hover:text-brand-700"
+                    aria-label={`Remove ${name}`}
+                  >
+                    <span aria-hidden>×</span>
+                  </button>
+                </div>
+              );
+            })}
+
+            {totalChips > 1 && (
               <button
                 type="button"
                 onClick={clearAll}
@@ -467,7 +585,7 @@ export function VansFilter({
                       <Chip
                         key={m.slug}
                         active={draft.make === m.slug}
-                        onClick={() => set(draft.make === m.slug ? { make: "", model: "" } : { make: m.slug, model: "" })}
+                        onClick={() => set(draft.make === m.slug ? { make: "", models: [] } : { make: m.slug, models: [] })}
                       >
                         {m.name}
                       </Chip>
@@ -476,22 +594,41 @@ export function VansFilter({
 
                   {selectedMake && selectedMake.models.length > 0 && (
                     <div className="mt-4">
-                      <p className="mb-2.5 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                      <p className="mb-2 flex items-center gap-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
                         {selectedMake.name} models
+                        {draft.models.length > 0 && (
+                          <span className="rounded-full bg-brand-600 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                            {draft.models.length}
+                          </span>
+                        )}
                       </p>
+                      {/* Type-ahead search within models */}
+                      <input
+                        type="text"
+                        value={modelSearch}
+                        onChange={(e) => setModelSearch(e.target.value)}
+                        placeholder="Filter models…"
+                        className="mb-3 w-full rounded-[var(--radius-md)] border border-border px-3 py-2 text-[var(--text-sm)] text-ink-900 placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
+                      />
                       <div className="flex flex-wrap gap-2">
                         {[...selectedMake.models]
                           .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }))
+                          .filter((m) => !modelSearch || m.name.toLowerCase().includes(modelSearch.toLowerCase()))
                           .map((m) => (
                             <Chip
                               key={m.slug}
-                              active={draft.model === m.slug}
-                              onClick={() => set({ model: draft.model === m.slug ? "" : m.slug })}
+                              active={draft.models.includes(m.slug)}
+                              onClick={() => toggleModel(m.slug)}
                             >
                               {m.name}
                             </Chip>
                           ))}
                       </div>
+                      {draft.models.length > 1 && (
+                        <p className="mt-2 text-[var(--text-2xs)] text-ink-400">
+                          Showing vans matching <strong>any</strong> selected model · drag chips above to set display order
+                        </p>
+                      )}
                     </div>
                   )}
                 </Section>
@@ -531,71 +668,63 @@ export function VansFilter({
 
               <Hr />
 
-              {/* Monthly payment */}
+              {/* Monthly payment — range sliders */}
               <div ref={(el) => { sectionRefs.current["payment"] = el; }}>
                 <Section title="Monthly payment">
-                  <div className="flex items-start gap-3">
-                    <label className="flex-1">
-                      <span className="mb-1.5 block text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                  {/* Max monthly slider */}
+                  <div className="mb-5">
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <span className="text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
                         Max per month
                       </span>
-                      <div className="relative">
-                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-sm)] text-ink-400">£</span>
-                        <input
-                          type="number"
-                          value={draft.monthlyMax}
-                          onChange={(e) => set({ monthlyMax: e.target.value, minPrice: "", maxPrice: "" })}
-                          placeholder="Max / month"
-                          min="0"
-                          step="50"
-                          className="w-full rounded-[var(--radius-md)] border border-border py-2.5 pl-7 pr-10 text-[var(--text-sm)] font-semibold text-ink-900 placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
-                        />
-                        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-xs)] text-ink-400">/mo</span>
-                      </div>
-                    </label>
-                    <label className="w-28 shrink-0">
-                      <span className="mb-1.5 block text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                      <span className="font-semibold text-[var(--text-sm)] text-ink-900">
+                        {sliderMonthly >= MONTHLY_MAX_CEILING ? "Any" : `£${sliderMonthly}/mo`}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={100}
+                      max={MONTHLY_MAX_CEILING}
+                      step={25}
+                      value={sliderMonthly}
+                      onChange={(e) => handleMonthlySlider(Number(e.target.value))}
+                      className="w-full accent-brand-600"
+                    />
+                    <div className="mt-1 flex justify-between text-[var(--text-2xs)] text-ink-400">
+                      <span>£100/mo</span><span>Any</span>
+                    </div>
+                  </div>
+
+                  {/* Deposit slider */}
+                  <div>
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <span className="text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
                         Deposit
                       </span>
-                      <div className="relative">
-                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-sm)] text-ink-400">£</span>
-                        <input
-                          type="number"
-                          value={draft.deposit === DEFAULT_DEPOSIT && !draft.monthlyMax ? "" : draft.deposit}
-                          onChange={(e) => set({ deposit: e.target.value || DEFAULT_DEPOSIT })}
-                          placeholder="3,000"
-                          min="0"
-                          step="500"
-                          className="w-full rounded-[var(--radius-md)] border border-border py-2.5 pl-7 pr-2 text-[var(--text-sm)] font-semibold text-ink-900 placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
-                        />
-                      </div>
-                    </label>
+                      <span className="font-semibold text-[var(--text-sm)] text-ink-900">
+                        £{sliderDeposit.toLocaleString("en-GB")}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={DEPOSIT_MAX}
+                      step={250}
+                      value={sliderDeposit}
+                      onChange={(e) => handleDepositSlider(Number(e.target.value))}
+                      className="w-full accent-brand-600"
+                    />
+                    <div className="mt-1 flex justify-between text-[var(--text-2xs)] text-ink-400">
+                      <span>£0</span><span>£10,000</span>
+                    </div>
                   </div>
 
                   {impliedPrice > 0 && (
-                    <p className="mt-2 text-[var(--text-xs)] text-ink-500">
+                    <p className="mt-3 text-[var(--text-xs)] text-ink-500">
                       ≈ vans priced up to{" "}
                       <span className="font-semibold text-ink-700">{fmt(impliedPrice)}</span>
                     </p>
                   )}
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {["200", "300", "400", "500"].map((v) => (
-                      <SmallChip
-                        key={v}
-                        active={draft.monthlyMax === v}
-                        onClick={() =>
-                          set(
-                            draft.monthlyMax === v
-                              ? { monthlyMax: "", maxPrice: "" }
-                              : { monthlyMax: v, minPrice: "", maxPrice: "" },
-                          )
-                        }
-                      >
-                        ≤ £{v}/mo
-                      </SmallChip>
-                    ))}
-                  </div>
 
                   <p className="mt-3 text-[var(--text-2xs)] text-ink-400">
                     HP estimate · {FINANCE_ASSUMPTIONS.termMonths} months · {FINANCE_ASSUMPTIONS.apr}% APR. Indicative only.
@@ -885,18 +1014,12 @@ export function VansFilter({
 function Chevron({ active }: { active: boolean }) {
   return (
     <svg
-      width="10"
-      height="6"
-      viewBox="0 0 10 6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`ml-0.5 shrink-0 ${active ? "opacity-60" : "text-ink-400"}`}
+      width="12" height="12" viewBox="0 0 12 12"
+      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      className={`transition-transform ${active ? "rotate-180" : ""}`}
       aria-hidden
     >
-      <path d="M1 1l4 4 4-4" />
+      <path d="M2 4l4 4 4-4" />
     </svg>
   );
 }
@@ -911,7 +1034,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function Hr() {
-  return <div className="mx-5 h-px bg-border" />;
+  return <hr className="mx-5 border-border" />;
 }
 
 function Chip({
@@ -924,15 +1047,17 @@ function Chip({
   children: React.ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-[var(--radius-pill)] border px-3 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
-        active
-          ? "border-brand-500 bg-brand-600 text-white"
-          : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
-      }`}
-    >
+    <button type="button" onClick={onClick} className={chipCls(active)}>
+      {active && (
+        <svg
+          className="mr-1 inline-block"
+          width="10" height="10" viewBox="0 0 10 10"
+          fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+          aria-hidden
+        >
+          <path d="M2 5.5l2 2 4-4" />
+        </svg>
+      )}
       {children}
     </button>
   );
@@ -951,10 +1076,10 @@ function SmallChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-[var(--radius-pill)] border px-3 py-1 text-[var(--text-xs)] font-semibold transition-colors ${
+      className={`rounded-[var(--radius-pill)] border px-3 py-1.5 text-[var(--text-xs)] font-semibold transition-colors ${
         active
           ? "border-brand-500 bg-brand-600 text-white"
-          : "border-border bg-surface-1 text-ink-600 hover:border-brand-300 hover:text-brand-700"
+          : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
       }`}
     >
       {children}
