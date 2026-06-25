@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
+import { APIProvider, Map as GMap, AdvancedMarker } from "@vis.gl/react-google-maps";
 import type { Listing } from "@/lib/listings/types";
 import Link from "next/link";
 import { listingPath } from "@/lib/listings/slug";
@@ -56,7 +56,7 @@ export function ResultsDealerMap({ listings, apiKey }: ResultsDealerMapProps) {
   return (
     <APIProvider apiKey={apiKey}>
       <div className="relative h-full">
-        <Map
+        <GMap
           defaultCenter={center}
           defaultZoom={dealers.length === 1 ? 13 : 8}
           gestureHandling="cooperative"
@@ -82,7 +82,7 @@ export function ResultsDealerMap({ listings, apiKey }: ResultsDealerMapProps) {
               </div>
             </AdvancedMarker>
           ))}
-        </Map>
+        </GMap>
 
         {/* Dealer info panel */}
         {selected && (
