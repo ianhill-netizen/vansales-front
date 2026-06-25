@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
+import { supplierCode } from "@/lib/listings/supplier-code";
 import { Button } from "./ui";
 import { IconCheck, IconShield, IconArrow } from "./icons";
 
@@ -34,9 +35,12 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
     return () => clearTimeout(t);
   }, [autoOpen]);
   const sold = listing.status === "sold";
+  const isPrivate = listing.seller_type === "private";
 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
-  const displayName = dealerConfig?.name ?? listing.seller.name;
+  const displayName = isPrivate
+    ? "Private seller"
+    : (dealerConfig?.name ?? supplierCode(listing.seller.name));
   const displayLocation = dealerConfig
     ? `${dealerConfig.location.town}, ${dealerConfig.location.county}`
     : `${listing.location.town}, ${listing.location.region}`;
@@ -126,21 +130,23 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
         <p className="mt-0.5 text-[var(--text-sm)] text-ink-400">No reviews yet.</p>
       </div>
 
-      {/* Phone CTA — always visible */}
-      <a
-        href={PHONE_TEL}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3 text-[var(--text-base)] font-bold text-success-600 transition-colors hover:bg-success-500 hover:text-white"
-      >
-        <PhoneIcon />
-        <span>{PHONE_DISPLAY}</span>
-        <span className="text-[var(--text-sm)] font-normal opacity-75">· Request callback</span>
-      </a>
+      {/* Phone CTA — dealer only; never shown for private listings */}
+      {!isPrivate && (
+        <a
+          href={PHONE_TEL}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3 text-[var(--text-base)] font-bold text-success-600 transition-colors hover:bg-success-500 hover:text-white"
+        >
+          <PhoneIcon />
+          <span>{PHONE_DISPLAY}</span>
+          <span className="text-[var(--text-sm)] font-normal opacity-75">· Request callback</span>
+        </a>
+      )}
 
       {/* Divider */}
       <div className="relative my-4 flex items-center gap-3">
         <div className="flex-1 border-t border-border" />
         <span className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">
-          or enquire online
+          {isPrivate ? "message the seller" : "or enquire online"}
         </span>
         <div className="flex-1 border-t border-border" />
       </div>
@@ -150,10 +156,17 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
         <div className="flex items-start gap-3 rounded-[var(--radius-md)] bg-success-tint p-4">
           <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
           <div>
-            <p className="font-semibold text-success-600">Enquiry sent!</p>
+            <p className="font-semibold text-success-600">
+              {isPrivate ? "Message sent!" : "Enquiry sent!"}
+            </p>
             <p className="mt-1 text-[var(--text-sm)] text-ink-600">
-              {displayName} has your details and will be in touch shortly. For a faster
-              reply, call <a href={PHONE_TEL} className="font-bold text-ink-800 underline">{PHONE_DISPLAY}</a>.
+              {isPrivate
+                ? "Your message has been sent. The seller will be in touch shortly."
+                : <>
+                    {displayName} has your details and will be in touch shortly. For a faster
+                    reply, call <a href={PHONE_TEL} className="font-bold text-ink-800 underline">{PHONE_DISPLAY}</a>.
+                  </>
+              }
             </p>
           </div>
         </div>
@@ -166,7 +179,9 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
           className="w-full"
           disabled={sold}
         >
-          {sold ? "Now sold" : (
+          {sold ? "Now sold" : isPrivate ? (
+            <><span>Message seller</span><IconArrow width={16} height={16} /></>
+          ) : (
             <><span>Enquire about this van</span><IconArrow width={16} height={16} /></>
           )}
         </Button>
@@ -238,11 +253,14 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
             className="w-full"
             disabled={state === "submitting"}
           >
-            {state === "submitting" ? "Sending…" : "Send enquiry"}
+            {state === "submitting" ? "Sending…" : isPrivate ? "Send message" : "Send enquiry"}
           </Button>
 
           <p className="text-center text-[var(--text-xs)] text-ink-400">
-            Your details go only to {listing.seller.name}. No spam, ever.
+            {isPrivate
+              ? "Your details go only to the seller. No spam, ever."
+              : `Your details go only to ${displayName}. No spam, ever.`
+            }
           </p>
         </form>
       )}

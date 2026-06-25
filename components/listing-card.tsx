@@ -3,6 +3,7 @@ import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
+import { supplierCode } from "@/lib/listings/supplier-code";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconArrow } from "./icons";
 
@@ -29,6 +30,7 @@ export function ListingCard({
 }) {
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
+  const isPrivate = listing.seller_type === "private";
   const featured = isFeaturedSeller(listing.seller.name);
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
@@ -122,7 +124,9 @@ export function ListingCard({
 
         {/* Seller + location meta */}
         <p className="mb-2 flex flex-wrap items-center gap-x-1.5 text-[var(--text-xs)] text-ink-400">
-          {dealerConfig ? (
+          {isPrivate ? (
+            <span className="font-semibold text-ink-500">Private seller</span>
+          ) : dealerConfig ? (
             <span className="relative z-10 inline-flex">
               <Link
                 href={`/dealer/${dealerConfig.slug}`}
@@ -132,9 +136,9 @@ export function ListingCard({
               </Link>
             </span>
           ) : (
-            <span className="font-semibold text-ink-500">{listing.seller.name}</span>
+            <span className="font-semibold text-ink-500">{supplierCode(listing.seller.name)}</span>
           )}
-          {listing.stock_ref && (
+          {!isPrivate && listing.stock_ref && (
             <span className="font-mono text-ink-400">{listing.stock_ref}</span>
           )}
           <span aria-hidden>·</span>
