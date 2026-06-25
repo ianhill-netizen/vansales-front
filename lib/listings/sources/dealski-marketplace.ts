@@ -347,6 +347,6 @@ export const fetchMarketplaceCatalogue = unstable_cache(
 
     return { listings, feedTotal };
   },
-  ["dealski-marketplace-v2"],
+  ["dealski-marketplace-v3"],
   { revalidate: REVALIDATE, tags: ["dealski-marketplace"] },
 );
