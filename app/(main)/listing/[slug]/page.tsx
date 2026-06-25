@@ -125,7 +125,10 @@ export default async function ListingPage({
         listing.condition === "new"
           ? "https://schema.org/NewCondition"
           : "https://schema.org/UsedCondition",
-      seller: { "@type": listing.seller_type === "dealer" ? "AutoDealer" : "Person", name: listing.seller.name },
+      seller: {
+        "@type": listing.seller_type === "dealer" ? "AutoDealer" : "Person",
+        name: listing.seller_type === "private" ? "Private seller" : listing.seller.name,
+      },
     },
   };
 
