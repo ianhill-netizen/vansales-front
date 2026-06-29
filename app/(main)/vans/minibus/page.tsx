@@ -103,7 +103,7 @@ export default async function MinibusCategoryPage() {
                   ["Iveco Daily Minibus", "iveco-daily-minibus"],
                   ["VW Transporter Kombi", "vw-transporter-kombi-lease"],
                   ["Ford Transit Minibus", "ford-transit-custom-lease"],
-                  ["Peugeot Traveller", "peugeot-expert-crew-cab"],
+                  ["Peugeot Expert", "peugeot-expert-lease"],
                   ["Renault Trafic Combi", "renault-trafic-lease"],
                 ].map(([label, slug]) => (
                   <li key={slug}>

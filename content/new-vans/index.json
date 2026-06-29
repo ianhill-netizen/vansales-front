@@ -520,6 +520,16 @@
     "wordCount": 889
   },
   {
+    "slug": "new-renault-master",
+    "title": "New Renault Master",
+    "make": "Renault",
+    "model": "Master",
+    "heroImage": "/images/new-vans/img8995-Background-Removed.webp",
+    "description": "[![Renault Master…",
+    "stockHref": "/vans?make=Renault&model=Master",
+    "wordCount": 253
+  },
+  {
     "slug": "renault-kangoo-lease",
     "title": "Renault Kangoo",
     "make": "Renault",
@@ -630,23 +640,13 @@
     "wordCount": 356
   },
   {
-    "slug": "new-renault-master",
-    "title": "New Renault Master",
-    "make": "Van",
-    "model": "New Renault Master",
-    "heroImage": "/images/new-vans/img8995-Background-Removed.webp",
-    "description": "[![Renault Master…",
-    "stockHref": "/vans?model=New+Renault+Master",
-    "wordCount": 253
-  },
-  {
     "slug": "new-vauxhall-movano",
     "title": "New Vauxhall Movano - Van Sales",
-    "make": "Van",
-    "model": "New Vauxhall Movano",
+    "make": "Vauxhall",
+    "model": "Movano",
     "heroImage": "/images/new-vans/882219bx_1440x860px.png.ximg_.m_12_h-Background-Removed.smart_.webp",
     "description": "[![Vauxhall Vivaro…",
-    "stockHref": "/vans?model=New+Vauxhall+Movano",
+    "stockHref": "/vans?make=Vauxhall&model=Movano",
     "wordCount": 253
   },
   {

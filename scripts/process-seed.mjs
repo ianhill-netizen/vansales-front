@@ -74,6 +74,8 @@ function escapeRe(s) {
 
 function slugToMakeModel(slug) {
   // slug is like "ford-transit-custom-lease" or "citroen-berlingo-crew-cab"
+  // Strip marketing prefixes ("new-renault-master" → "renault-master")
+  slug = slug.replace(/^new-/, "");
   const MAKES = {
     citroen: "Citroën",
     ford: "Ford",
