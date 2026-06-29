@@ -230,6 +230,7 @@ export function Header() {
             onToggle={() => toggle("guides")}
             onClose={close}
           />
+          <Link href="/new-vans"           className={NAV_LINK_CLS} onClick={close}>New van models</Link>
           <Link href="/van-contract-hire" className={NAV_LINK_CLS} onClick={close}>Van leasing</Link>
           <Link href="/van-finance"       className={NAV_LINK_CLS} onClick={close}>Finance</Link>
           <Link href="/vans/electric"     className={`${NAV_LINK_CLS} text-success-600 hover:text-success-700`} onClick={close}>
