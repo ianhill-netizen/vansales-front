@@ -69,10 +69,10 @@ Vehicles that are powered by LPG cannot be driven through the Euro Tunnel even i
 
 ![Euro Tunnel rules for vans](/images/blog/Euro-Tunnel-rules-for-vans.jpg)
 
-Euro Tunnel allocates space in single deck carriage for vehicles that measure higher than.85m. Vans traveling through the tunnel are divided into the following categories.
+Euro Tunnel allocates space in single deck carriage for vehicles that measure higher than 1.85m. Vans traveling through the tunnel are divided into the following categories.
 
--   Low van (under.85m) – These vans are used for private, tourist, or leisure travel only. The maximum weight allowed for these vans is.5 tons.
--   High van (over.85m) – These vans are to be used for tourist, private, or leisure travel only. The maximum weight allowed for these vans is also.5 tons.
+-   Low van (under 1.85m) – These vans are used for private, tourist, or leisure travel only. The maximum weight allowed for these vans is 3.5 tons.
+-   High van (over 1.85m) – These vans are to be used for tourist, private, or leisure travel only. The maximum weight allowed for these vans is also 3.5 tons.
 -   Campervan – Any vehicle that includes living accommodations such as beds, tables, seats, cooking, and storage facilities is categorized as a camper van.
 
 ## Conclusion

@@ -37,17 +37,29 @@ For the interior panelling and construction of furniture, use non-structural har
 
 ### Electrical Components
 
-The electrical setup is critical for a functional camper van, especially for off-grid adventures. Begin with a robust electrical kit, including a Watt inverter/charger with a solar MPPT controller for converting and managing power. Ensure the van has bothVDC andVAC supplies to accommodate different appliances and tools. Use a Sterling BB1250 battery-to-battery charger for efficient charging of the domestic battery from the vehicle’s alternator. For battery storage, opt for high-capacity units like the Ah Banner Energy Bull batteries, ensuring ample power supply. Lastly, proper cabling and a reliable crimping tool are essential for safe and effective electrical installations.
+The electrical setup is critical for a functional camper van, especially for off-grid adventures. Begin with a robust electrical kit, including a 2000 Watt inverter/charger with a solar MPPT controller for converting and managing power. Ensure the van has both 12VDC and 230VAC supplies to accommodate different appliances and tools. Use a Sterling BB1250 battery-to-battery charger for efficient charging of the domestic battery from the vehicle’s alternator. For battery storage, opt for high-capacity units like the 135 Ah Banner Energy Bull batteries, ensuring ample power supply. Lastly, proper cabling and a reliable crimping tool are essential for safe and effective electrical installations.
 
 These materials and tools are fundamental for transforming a VW Crafter into a comfortable, efficient, and personalised camper.
 
 ## Step-by-Step Conversion Process
 
-### Insulation and Flooring.  **Remove Old Lining and Clean:** Start by removing any old plywood lining, cleaning the surface, and inspecting for any damage. This ensures a clean slate for the installation of new materials..  **Install Insulation:** Use high-quality insulation materials like Thermoliner between the supports on the floor. This type of insulation is crucial for temperature control and reducing noise..  **Lay Down Plywood Flooring:** Fit the plywood floor, ensuring it runs parallel with the wheel axis for optimal stability and aesthetics. Secure it using a strong adhesive like Sikaflex to prevent movement.
+### Insulation and Flooring
 
-### Installing Electrical Systems.  **Setting Up the Battery and Inverter:** Install a amp hour lithium battery and connect it to a watt inverter. This setup will power both theV andV systems in the van..  **Wiring:** Route cables from the solar panels through to the solar charge controller, ensuring they are neatly tucked and secured. Use trunking for data cables to maintain an organised and safe electrical system..  **Safety Checks:** After installation, power up the system to test all connections and functionality. Ensure all devices are correctly installed and that there are no exposed wires or potential hazards.
+1.  **Remove Old Lining and Clean:** Start by removing any old plywood lining, cleaning the surface, and inspecting for any damage. This ensures a clean slate for the installation of new materials.
+2.  **Install Insulation:** Use high-quality insulation materials like Thermoliner between the supports on the floor. This type of insulation is crucial for temperature control and reducing noise.
+3.  **Lay Down Plywood Flooring:** Fit the plywood floor, ensuring it runs parallel with the wheel axis for optimal stability and aesthetics. Secure it using a strong adhesive like Sikaflex to prevent movement.
 
-### Building Furniture and Fixtures.  **Cutting and Installing Panels:** Use templates to cut out panels for windows and walls. Ensure that the panels fit perfectly to avoid gaps and uneven surfaces..  **Mounting Furniture:** Securely mount necessary furniture pieces like bed frames and cabinets. Use durable materials and ensure they are well-supported to withstand travel..  **Finishing Touches:** Apply final finishes such as painting or carpeting. Use stretchy carpet material for areas around windows to ensure a snug fit and a polished look.
+### Installing Electrical Systems
+
+1.  **Setting Up the Battery and Inverter:** Install a 320 amp hour lithium battery and connect it to a 1600 watt inverter. This setup will power both the 12V and 230V systems in the van.
+2.  **Wiring:** Route cables from the solar panels through to the solar charge controller, ensuring they are neatly tucked and secured. Use trunking for data cables to maintain an organised and safe electrical system.
+3.  **Safety Checks:** After installation, power up the system to test all connections and functionality. Ensure all devices are correctly installed and that there are no exposed wires or potential hazards.
+
+### Building Furniture and Fixtures
+
+1.  **Cutting and Installing Panels:** Use templates to cut out panels for windows and walls. Ensure that the panels fit perfectly to avoid gaps and uneven surfaces.
+2.  **Mounting Furniture:** Securely mount necessary furniture pieces like bed frames and cabinets. Use durable materials and ensure they are well-supported to withstand travel.
+3.  **Finishing Touches:** Apply final finishes such as painting or carpeting. Use stretchy carpet material for areas around windows to ensure a snug fit and a polished look.
 
 By following these steps, one can efficiently transform a VW Crafter into a fully functional and comfortable camper, equipped to handle both short trips and extended living.
 
@@ -77,7 +89,7 @@ The journey through a VW Crafter conversion, detailed in this article, mirrors t
 The price of converting a van into a camper can vary widely based on the van model, the scale of the conversion, and the choice of materials. Generally, a basic conversion might cost between £5,000 and £15,000, covering essentials like insulation, flooring, panelling, rudimentary furniture, and a basic kitchen setup.
 
 **Are there advantages to converting a van into a campervan?**  
-Indeed, converting a van into a campervan can be quite beneficial. Not only could you see a reduction in insurance costs by up to%, but you might also benefit from cheaper MOTs and the ability to travel at higher speed limits on dual carriageways – up tomph, compared tomph for standard vans.
+Indeed, converting a van into a campervan can be quite beneficial. Not only could you see a reduction in insurance costs by up to 50%, but you might also benefit from cheaper MOTs and the ability to travel at higher speed limits on dual carriageways – up to 70mph, compared to 60mph for standard vans.
 
 **Do I need to inform the DVLA when I convert a van into a camper?**  
 While it’s not mandatory to register your van conversion as a motor caravan if you’re planning to live in it, there are several advantages to doing so. Registering with the DVLA can provide additional benefits worth considering.

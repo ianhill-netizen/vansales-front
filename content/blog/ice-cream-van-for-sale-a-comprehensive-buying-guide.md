@@ -19,7 +19,7 @@ When contemplating the purchase of an ice cream van, it is crucial for buyers to
 
 ### Analysing Market Trends
 
-The ice cream van market is witnessing significant growth, projected to reach impressive figures by, driven by a notable compound annual growth rate. This growth is fueled by technological advancements, increasing consumer demand, and supportive regulatory frameworks. Strategic partnerships and the expansion into new geographical markets also play crucial roles in this expansion. For those entering the market, understanding these trends can provide a competitive edge and help tailor offerings to meet current consumer expectations.
+The ice cream van market is witnessing significant growth, projected to reach impressive figures by 2031, driven by a notable compound annual growth rate. This growth is fueled by technological advancements, increasing consumer demand, and supportive regulatory frameworks. Strategic partnerships and the expansion into new geographical markets also play crucial roles in this expansion. For those entering the market, understanding these trends can provide a competitive edge and help tailor offerings to meet current consumer expectations.
 
 ### Key Features to Look For
 
@@ -63,11 +63,11 @@ Converted food trucks represent a modern adaptation of the traditional ice cream
 
 ### Freezers and Storage
 
-Selecting the right freezer and storage solutions is crucial for maintaining the quality of ice cream and related products. Glacier Vehicles specialises in providing freezer vans that can maintain temperatures from°C to -25°C, meeting international quality standards. These vehicles are equipped with premium insulation materials, allowing for deep-freeze conditions without compromising payload capacities. The design often includes modifications such as replacing sliding side doors with slab doors to enhance thermal efficiency, ensuring that the ice cream remains at the perfect serving temperature.
+Selecting the right freezer and storage solutions is crucial for maintaining the quality of ice cream and related products. Glacier Vehicles specialises in providing freezer vans that can maintain temperatures from 12°C to -25°C, meeting international quality standards. These vehicles are equipped with premium insulation materials, allowing for deep-freeze conditions without compromising payload capacities. The design often includes modifications such as replacing sliding side doors with slab doors to enhance thermal efficiency, ensuring that the ice cream remains at the perfect serving temperature.
 
 ### Ice Cream Machines
 
-For those looking to serve soft serve ice cream, the Carpigiani Furgoni from Whitby Morrison represents the pinnacle of Italian engineering. This machine is capable of producing up to cones per hour and is a popular choice for ice cream vans due to its efficiency and reliability. Whitby Morrison also offers a range of spare parts and components, ensuring that any mechanical issues can be swiftly addressed to keep the van operational and serving customers without significant downtime.
+For those looking to serve soft serve ice cream, the Carpigiani Furgoni from Whitby Morrison represents the pinnacle of Italian engineering. This machine is capable of producing up to 600 cones per hour and is a popular choice for ice cream vans due to its efficiency and reliability. Whitby Morrison also offers a range of spare parts and components, ensuring that any mechanical issues can be swiftly addressed to keep the van operational and serving customers without significant downtime.
 
 ### Serving Utensils and Accessories
 
@@ -85,7 +85,7 @@ To legally operate an ice cream van, obtaining the correct licenses and permits 
 
 ### Food Hygiene Standards
 
-Compliance with food safety and hygiene legislation is non-negotiable. Under laws such as the Food Safety Act and the Food Hygiene Regulations applicable in various UK regions, every ice cream van must adhere to strict standards to ensure the products sold are safe for consumption. This includes implementing a Hazard Analysis and Critical Control Point (HACCP) system to identify and manage food safety risks. Training in food safety is mandatory, with different levels required depending on the role of the staff member. Additionally, it is crucial to be aware of and comply with the Food Information Regulations, which include mandates like Natasha’s Law requiring allergen information to be clearly provided to customers.
+Compliance with food safety and hygiene legislation is non-negotiable. Under laws such as the Food Safety Act 1990 and the Food Hygiene Regulations applicable in various UK regions, every ice cream van must adhere to strict standards to ensure the products sold are safe for consumption. This includes implementing a Hazard Analysis and Critical Control Point (HACCP) system to identify and manage food safety risks. Training in food safety is mandatory, with different levels required depending on the role of the staff member. Additionally, it is crucial to be aware of and comply with the Food Information Regulations 2014, which include mandates like Natasha’s Law requiring allergen information to be clearly provided to customers.
 
 ### Insurance Policies
 
@@ -129,4 +129,4 @@ To operate an ice cream van, you must obtain a street trading licence from your 
 The price of a new ice cream van, equipped with inbuilt freezers, usually starts at around £60,000. Used ice cream vans can be found online with prices typically averaging £40,000, though they can sometimes be as low as £20,000.
 
 **4\. Is the ice cream selling business profitable?**  
-Yes, selling ice cream can be profitable. According to Ice Cream University, the average profit margin for an ice cream shop is around%. To reach the break-even point, you would need to sell at least £4 worth of products for every £1 spent.
+Yes, selling ice cream can be profitable. According to Ice Cream University, the average profit margin for an ice cream shop is around 25%. To reach the break-even point, you would need to sell at least £4 worth of products for every £1 spent.

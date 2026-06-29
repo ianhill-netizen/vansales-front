@@ -23,13 +23,13 @@ At SVansales.com, we’re relentless when it comes to creating van finance optio
 
 ### **Van Contract Hire** 
 
-Our Contract Hire finance option for self-employed is packaged for those who don’t want to deal with the stress of vehicle ownership. With this option, you get a van lease hire for between and months and pay a fixed monthly rental fee. The mileage restriction is also friendly, allowing you to use the van with flexibility.  After the contract ends, you don’t own the van, but rather return it to the lesser. See all van lease deals
+Our Contract Hire finance option for self-employed is packaged for those who don’t want to deal with the stress of vehicle ownership. With this option, you get a van lease hire for between 24 and 48 months and pay a fixed monthly rental fee. The mileage restriction is also friendly, allowing you to use the van with flexibility.  After the contract ends, you don’t own the van, but rather return it to the lesser. See all van lease deals
 
 This option comes with numerous benefits, including:
 
 -   Budget-friendly – The monthly payments are lower compared to financing for salaried people.
 -   Maintenance package – Get an optional maintenance package to cater to the vehicle servicing.
--   Flexibility – Drive the latest van models after to years. When the contract ends, get a new one or extend your agreement.
+-   Flexibility – Drive the latest van models after 2 to 3 years. When the contract ends, get a new one or extend your agreement.
 
 #### **Is Contract Hire Right For Self-Employed?**
 
@@ -57,7 +57,7 @@ The perks of opting for a van on finance for self-employed through the Van Lease
 
 -   Lower Monthly Payments – Your lease payments are usually lower because there’s a final lump sum payment at the end of the contract.
 -   Access to the latest vehicles – Drive any latest van model you qualify for without a tedious process.
--   Tax advantage – stand a chance to gain tax benefits that include% deductive VAT on your monthly payments.
+-   Tax advantage – stand a chance to gain tax benefits that include 100% deductive VAT on your monthly payments.
 
 #### **Is Van Lease Right for Self-Employed?**
 
@@ -95,10 +95,10 @@ After doing an initial application review, we go further to examine the individu
 
 ### **Our Client Eligibility Review Criteria Van Finance for Self-Employed**
 
-To lease or buy van on finance with Vansales.com Van Finance for Self-Employed Entrepreneurs , you need to have been self-employed for not less than a year. We’ll need a-month statement of your bank account to prove your income status. During this time, we’ll do our best to continue processing your application, even if there are some challenges. Concerning that, it’s worth noting the following:
+To lease or buy van on finance with Vansales.com Van Finance for Self-Employed Entrepreneurs , you need to have been self-employed for not less than a year. We’ll need a 3-month statement of your bank account to prove your income status. During this time, we’ll do our best to continue processing your application, even if there are some challenges. Concerning that, it’s worth noting the following:
 
--   The financing period is limited to up to months.
--   Mileage limits for petrol and diesel vans are,000 and,000 respectively.
+-   The financing period is limited to up to 60 months.
+-   Mileage limits for petrol and diesel vans are 120,000 and 160,000 respectively.
 -   VAT financing is subject to various conditions agreed upon during contract signing.
 
 At Swiss Vehicle Contracts, we do our best to eliminate as many barriers to van finance. Even if your credit rating isn’t the best, we do reviews on an individual basis to ensure you qualify for a van on finance for self-employed.

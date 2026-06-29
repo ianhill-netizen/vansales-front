@@ -25,13 +25,17 @@ The Rhino Modular Rack, renowned for its combination of strength, usability, and
 
 ### Roof Racks and Bars Installation
 
-Installation of the Rhino Modular Rack is designed to be straightforward:.  The rack sections are bolted together to form a single piece..  Custom-designed feet and a fitting kit specific to the VW Crafter ensure a perfect fit without the need for drilling..  The system uses the original mounting points on the van’s roof, making installation manageable for two people.
+Installation of the Rhino Modular Rack is designed to be straightforward:
+
+1.  The rack sections are bolted together to form a single piece.
+2.  Custom-designed feet and a fitting kit specific to the VW Crafter ensure a perfect fit without the need for drilling.
+3.  The system uses the original mounting points on the van’s roof, making installation manageable for two people.
 
 ### Roof Racks and Bars Benefits
 
 Owners of the L3 High Roof Volkswagen Crafter will find the Rhino roof racks indispensable for enhancing their vehicle’s functionality. Benefits include:
 
--   Improved load stability and security during transit, thanks to-inch side rails.
+-   Improved load stability and security during transit, thanks to 6-inch side rails.
 -   Easy access to the roof with the help of a full-width rear roller, facilitating the loading of materials such as ladders and panels.
 -   Each order comes with free UK mainland delivery, ensuring not only cost savings but also convenience.
 
@@ -65,12 +69,16 @@ Volkswagen Crafter II owners can significantly enhance their vehicle’s lightin
 -   **8 PREMIUM LEDs** per bulb, ensuring top quality and performance.
 -   Pure white light colour for a modern, effective look.
 -   **No ODB error** messages post-installation.
--° adjustable beam for optimal light direction.
+-   360° adjustable beam for optimal light direction.
 -   Sturdy construction with aviation aluminium material.
 
 ### LED Lighting Upgrades Installation
 
-The installation process for the LED lighting upgrades is designed to be user-friendly and straightforward:.  The LED Conversion Kit is **100% plug and play**, requiring no modifications to your headlights..  Installation involves a simple replacement of the original bulbs with the new LED bulbs..  A removable fastener ring allows for easy adjustment and a perfect fit, ensuring a° beam alignment tailored specifically for the Volkswagen Crafter II.
+The installation process for the LED lighting upgrades is designed to be user-friendly and straightforward:
+
+1.  The LED Conversion Kit is **100% plug and play**, requiring no modifications to your headlights.
+2.  Installation involves a simple replacement of the original bulbs with the new LED bulbs.
+3.  A removable fastener ring allows for easy adjustment and a perfect fit, ensuring a 360° beam alignment tailored specifically for the Volkswagen Crafter II.
 
 ### LED Lighting Upgrades Benefits
 
@@ -89,11 +97,11 @@ These upgrades provide a combination of style, efficiency, and enhanced visibili
 
 ### Alloy Wheels Designs
 
-Volkswagen Crafter owners have a variety of alloy wheel designs to choose from, enhancing the aesthetic appeal of their vehicles. Popular designs include the classic-spoke, multi-spoke, and innovative turbine styles. These designs not only offer visual enhancement but also ensure even weight distribution across the wheel. Colour options range from silver and black to more unique shades like anthracite, chrome, and bronze, allowing for further personalisation.
+Volkswagen Crafter owners have a variety of alloy wheel designs to choose from, enhancing the aesthetic appeal of their vehicles. Popular designs include the classic 5-spoke, multi-spoke, and innovative turbine styles. These designs not only offer visual enhancement but also ensure even weight distribution across the wheel. Colour options range from silver and black to more unique shades like anthracite, chrome, and bronze, allowing for further personalisation.
 
 ### Alloy Wheels Fitment
 
-Selecting the right alloy wheels involves considering several key fitment parameters to ensure optimal performance and compatibility with the VW Crafter. Important factors include the rim size, which typically ranges from to inches, and the bolt circle, often×130 mm. The offset (ET) of the wheel is crucial as it affects how the wheels sit in relation to the car’s bodywork. Proper fitment enhances the vehicle’s stability and ensures the wheels operate within safety margins.
+Selecting the right alloy wheels involves considering several key fitment parameters to ensure optimal performance and compatibility with the VW Crafter. Important factors include the rim size, which typically ranges from 16 to 20 inches, and the bolt circle, often 6×130 mm. The offset (ET) of the wheel is crucial as it affects how the wheels sit in relation to the car’s bodywork. Proper fitment enhances the vehicle’s stability and ensures the wheels operate within safety margins.
 
 ### Alloy Wheels Advantages
 
@@ -105,11 +113,11 @@ Alloy wheels offer significant advantages over traditional steel wheels. They ar
 
 ### Front Grille Enhancements Styles
 
-Volkswagen Crafter owners can opt for a distinctive upgrade with the ABS Honeycomb inserts, specifically designed for models from onwards. These inserts are made from durable ABS plastic and finished in matte black, offering a robust and stylish addition to the vehicle’s front. Not only do they enhance the visual appeal, but they are also re-paintable, allowing for further personalisation.
+Volkswagen Crafter owners can opt for a distinctive upgrade with the ABS Honeycomb inserts, specifically designed for models from 2017 onwards. These inserts are made from durable ABS plastic and finished in matte black, offering a robust and stylish addition to the vehicle’s front. Not only do they enhance the visual appeal, but they are also re-paintable, allowing for further personalisation.
 
 ### Front Grille Enhancements Installation
 
-The installation process for the honeycomb grille inserts is straightforward and requires no modifications to the vehicle. These inserts fit perfectly into the existing gaps of the grille body and are secured with screws provided. The entire assembly process is quick, taking no more than minutes, making it an accessible upgrade for most owners.
+The installation process for the honeycomb grille inserts is straightforward and requires no modifications to the vehicle. These inserts fit perfectly into the existing gaps of the grille body and are secured with screws provided. The entire assembly process is quick, taking no more than 5 minutes, making it an accessible upgrade for most owners.
 
 ### Front Grille Enhancements Impact
 
@@ -124,7 +132,7 @@ Emphasising the importance of selecting the right accessories, this guide serves
 ## FAQs
 
 **1\. How long can you expect a VW Crafter to last?**  
-A Volkswagen Crafter typically has a lifespan of up to,000 miles before it may reach the upper limit of its expected life.
+A Volkswagen Crafter typically has a lifespan of up to 168,000 miles before it may reach the upper limit of its expected life.
 
 **2\. Is the Volkswagen Crafter a reliable vehicle?**  
 The Crafter embodies many traditional Volkswagen qualities reminiscent of models from around a decade ago. This translates to a van that’s robust, thoughtfully designed, and equipped with practical features that are quite useful. The infotainment system, for instance, is similar to that found in the Mk7.
@@ -133,4 +141,4 @@ The Crafter embodies many traditional Volkswagen qualities reminiscent of models
 The main competitors of the VW Crafter are the TGE and the Sprinter. Other alternatives include the Ford Transit, Citroen Relay, Peugeot Boxer, Fiat Ducato, Renault Master, and Vauxhall Movano.
 
 **4\. What is the carrying capacity of a VW Crafter?**  
-The maximum payload that a Volkswagen Crafter Panel Van can handle varies depending on the specific model and its configuration. Generally, it can transport between,000 KG and,500 KG of cargo.
+The maximum payload that a Volkswagen Crafter Panel Van can handle varies depending on the specific model and its configuration. Generally, it can transport between 1,000 KG and 2,500 KG of cargo.

@@ -33,13 +33,20 @@ Rather, it simply means that the tax is paid by someone else, like a previous ow
 
 Considering the above, you’ll understand that only used or second-hand vans are the ones that you can buy without worrying about VAT.
 
-Here’s how it all works..  First of all, when the car retailer buys a car from the manufacturer, the former pays the VAT tax on it. However, since the car retailer is a VAT-registered business, it gets to charge the same tax to the customers when the car is sold again..  If the customer buying the car is not a VAT-registered entity, or is just an individual, it means that they have to pay the VAT on the initial purchase, but they can’t charge it again when reselling the car.
+Here’s how it all works.
+
+1.  First of all, when the car retailer buys a car from the manufacturer, the former pays the VAT tax on it. However, since the car retailer is a VAT-registered business, it gets to charge the same tax to the customers when the car is sold again.
+2.  If the customer buying the car is not a VAT-registered entity, or is just an individual, it means that they have to pay the VAT on the initial purchase, but they can’t charge it again when reselling the car.
 
 What you want to look for is a second-hand car that is either being sold by another person or by a business that doesn’t claim VAT.
 
 ## **How Can I Buy Vans for Sale No VAT?**
 
-Buying a van with no VAT isn’t very difficult. Here is what you can do:.  One way to find vans with no VAT is to look for them online. You can do a Google search with your location enabled to find dealerships and shops that sell used vans and don’t charge the value-added tax..  You can also try visiting your local dealership and asking them specifically for vans that don’t have the VAT levied on them. It is possible for a dealership to sell new and used cars..  You can also try visiting online platforms where other people sell their used cars. There are many such platforms that you can find on the internet. The good thing about these platforms is that the cars are sold by people, not businesses. That is why there is no VAT involved.
+Buying a van with no VAT isn’t very difficult. Here is what you can do:
+
+1.  One way to find vans with no VAT is to look for them online. You can do a Google search with your location enabled to find dealerships and shops that sell used vans and don’t charge the value-added tax.
+2.  You can also try visiting your local dealership and asking them specifically for vans that don’t have the VAT levied on them. It is possible for a dealership to sell new and used cars.
+3.  You can also try visiting online platforms where other people sell their used cars. There are many such platforms that you can find on the internet. The good thing about these platforms is that the cars are sold by people, not businesses. That is why there is no VAT involved.
 
 ## **What should I look for when buying a van with no VAT?**
 
@@ -47,7 +54,13 @@ When you’re buying a van, there are a number of different things that you have
 
 But, when you’re buying a used van with no value-added tax, you have to be even more careful since it has been through the hands of a previous owner.
 
-Here is a breakdown of some things that you should look out for during this process..  Documentation: The first thing that you should make sure of is that the van you’re looking to buy has all the required documentation. When you’re buying used vehicles, there is a bit more hassle involved with the documentation as compared to when you’re buying new ones. You should make sure that the registration papers as well as the records of sale, etc., are all present..  Condition and maintenance: Of course, the next important thing to check in the van is the condition it is in. You should look for any broken components or scratched parts, etc., in the interior and exterior. You should also take the van for a test drive to see if all the driving components are fine..  Modifications, upgrades, and roadworthiness: Another thing that you have to keep an eye on when buying a used vehicle is the modifications or upgrades that it may have gone through. If an unauthorized or illegal modification is made to the car, it may have nullified the warranty (if applicable) or even made the vehicle unfit to be driven on the streets. You should enquire about any such modifications to the van that you’re going to purchase..  Storage and seating requirements: Vans are brought for different types of needs and purposes. Some vans are for transportation while others are for carrying cargo and goods. You should check the storage and seating options of the van depending on what your usual purpose and job are going to be..  Safety features: This is something that you should check in all types of vehicles, and the same goes for vans for sale no VAT. You should look for safety features such as ABS, parking sensors, airbags, and so on.
+Here is a breakdown of some things that you should look out for during this process.
+
+1.  Documentation: The first thing that you should make sure of is that the van you’re looking to buy has all the required documentation. When you’re buying used vehicles, there is a bit more hassle involved with the documentation as compared to when you’re buying new ones. You should make sure that the registration papers as well as the records of sale, etc., are all present.
+2.  Condition and maintenance: Of course, the next important thing to check in the van is the condition it is in. You should look for any broken components or scratched parts, etc., in the interior and exterior. You should also take the van for a test drive to see if all the driving components are fine.
+3.  Modifications, upgrades, and roadworthiness: Another thing that you have to keep an eye on when buying a used vehicle is the modifications or upgrades that it may have gone through. If an unauthorized or illegal modification is made to the car, it may have nullified the warranty (if applicable) or even made the vehicle unfit to be driven on the streets. You should enquire about any such modifications to the van that you’re going to purchase.
+4.  Storage and seating requirements: Vans are brought for different types of needs and purposes. Some vans are for transportation while others are for carrying cargo and goods. You should check the storage and seating options of the van depending on what your usual purpose and job are going to be.
+5.  Safety features: This is something that you should check in all types of vehicles, and the same goes for vans for sale no VAT. You should look for safety features such as ABS, parking sensors, airbags, and so on.
 
 ## **What are the benefits of buying a van with no VAT?**
 
