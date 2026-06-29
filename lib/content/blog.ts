@@ -11,7 +11,9 @@ export interface BlogPost {
 }
 
 export interface BlogPostDetail extends BlogPost {
-  body: string; // raw markdown
+  body: string;
+  heroImage?: string;
+  heroAlt?: string;
 }
 
 let _index: BlogPost[] | null = null;
@@ -44,6 +46,8 @@ export function getBlogPost(slug: string): BlogPostDetail | null {
       date: meta.date || "",
       description: meta.excerpt || "",
       body: match[2].trim(),
+      heroImage: meta.heroImage || undefined,
+      heroAlt: meta.heroAlt || undefined,
     };
   } catch {
     return null;
