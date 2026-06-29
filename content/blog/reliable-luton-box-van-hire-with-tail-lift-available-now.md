@@ -37,15 +37,15 @@ Luton box vans with tail lifts are designed to meet the demands of both commerci
 
 ### Load Capacity
 
-The payload capacity of Luton vans is a critical feature, especially when transporting heavy and bulky items. These vans typically support a payload of up tokg, which includes the weight of passengers and cargo combined. This makes them ideal for house moves or transporting large pieces of furniture. The specific model, such as the Ford Luton Box van, offers an internal dimension of.65m x.00m x.00m and an external dimension of.50m x.10m x.15m, providing ample space for loading and securing goods. Additionally, the average load volume capacity of these vans is approximately.79 m3, allowing for a significant amount of cargo to be transported in one go.
+The payload capacity of Luton vans is a critical feature, especially when transporting heavy and bulky items. These vans typically support a payload of up to 1000kg, which includes the weight of passengers and cargo combined. This makes them ideal for house moves or transporting large pieces of furniture. The specific model, such as the Ford Luton Box van, offers an internal dimension of 3.65m x 2.00m x 2.00m and an external dimension of 6.50m x 2.10m x 3.15m, providing ample space for loading and securing goods. Additionally, the average load volume capacity of these vans is approximately 18.79 m3, allowing for a significant amount of cargo to be transported in one go.
 
 ### Tail Lift Specifications
 
-The tail lift feature of Luton vans enhances their functionality significantly. With a maximum lifting capacity ofkg, the tail lift can easily handle heavy items such as furniture and large appliances, reducing the physical strain on individuals and the need for additional manpower. The dimensions of the tail lift are typically around.96m in width and.8m in depth, providing a sturdy and reliable platform for loading and unloading goods. This feature is particularly beneficial in reducing the time and effort required for loading heavy items, making the Luton van a practical choice for efficient moves.
+The tail lift feature of Luton vans enhances their functionality significantly. With a maximum lifting capacity of 500kg, the tail lift can easily handle heavy items such as furniture and large appliances, reducing the physical strain on individuals and the need for additional manpower. The dimensions of the tail lift are typically around 1.96m in width and 0.8m in depth, providing a sturdy and reliable platform for loading and unloading goods. This feature is particularly beneficial in reducing the time and effort required for loading heavy items, making the Luton van a practical choice for efficient moves.
 
 ### Driving Licence Requirements
 
-One of the advantages of hiring a Luton van is the accessibility in terms of driving licence requirements. Individuals can drive a Luton van with a maximum weight of,500kg using a standard Category B licence, which is the typical licence for a car. This makes it convenient for most drivers who do not possess a commercial driving licence. For those who passed their driving test beforest January, they are automatically qualified to drive a.5 Ton Box Tail Lift without the need for additional training, although it is advisable to undertake some form of refresher course if they have not driven such a vehicle before.
+One of the advantages of hiring a Luton van is the accessibility in terms of driving licence requirements. Individuals can drive a Luton van with a maximum weight of 3,500kg using a standard Category B licence, which is the typical licence for a car. This makes it convenient for most drivers who do not possess a commercial driving licence. For those who passed their driving test before 1st January 1997, they are automatically qualified to drive a 7.5 Ton Box Tail Lift without the need for additional training, although it is advisable to undertake some form of refresher course if they have not driven such a vehicle before.
 
 These features collectively make the Luton box van with tail lift an excellent option for those seeking a reliable and efficient vehicle for moving or transporting goods. Whether for business or personal use, these vans provide the necessary tools to ensure a smooth and less strenuous moving experience.
 
@@ -73,7 +73,7 @@ The testimonials also reflect the practical benefits of the vans, with one user 
 
 ### Ratings and Feedback
 
-The overall customer satisfaction rating stands impressively at% from reviews, with a breakdown showing% excellent,% good, and only% bad ratings. This high level of satisfaction is further evidenced by recurring customers who appreciate the consistent quality of service and vehicle reliability.
+The overall customer satisfaction rating stands impressively at 99% from 186 reviews, with a breakdown showing 92% excellent, 7% good, and only 1% bad ratings. This high level of satisfaction is further evidenced by recurring customers who appreciate the consistent quality of service and vehicle reliability.
 
 Specific feedback points to the Luton vans being “fit for purpose” and providing “excellent service value for money.” Customers appreciate the clean and well-maintained condition of the vehicles, as well as the professional and friendly service from staff. One customer noted, “This is the fourth time I’ve used them and will again in the future,” which speaks volumes about the trust and reliability the company offers.
 
@@ -92,7 +92,7 @@ Yes, a notable characteristic of Luton vans is their extended front, which provi
 [Wikopedia Link](https://en.wikipedia.org/wiki/Box_truck)
 
 **What does it cost to rent a Luton box van for a day?**  
-The starting rate for hiring a Luton box van is £45.70 per day. This price includes all road taxes, servicing and maintenance costs, a full manufacturer’s warranty, and-hour breakdown cover.
+The starting rate for hiring a Luton box van is £45.70 per day. This price includes all road taxes, servicing and maintenance costs, a full manufacturer’s warranty, and 24-hour breakdown cover.
 
 **Which Luton van is recommended for purchase?**  
 The Ford Transit is highly recommended due to its reliability and cost-effectiveness, making it a popular choice. High-end models such as those from Mercedes, VW, and Transit are also well-regarded for their reliability and tend to retain their value well in the second-hand market.

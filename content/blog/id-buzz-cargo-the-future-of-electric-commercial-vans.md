@@ -13,21 +13,21 @@ This article delves into the critical aspects that set the ID Buzz Cargo apart i
 
 ### Design Inspiration
 
-The Volkswagen ID Buzz Cargo draws heavily from its iconic predecessor, the T1, first launched in thes and renowned for its association with the hippie movement. The ID Buzz Cargo reimagines this classic design for the electric age, featuring a V-shaped face and an oversized VW logo, often highlighted with optional two-tone paintwork. This modern interpretation maintains the distinctive short overhangs of the T1, which not only preserves its unique aesthetic but also enhances vehicle safety and technology integration.
+The Volkswagen ID Buzz Cargo draws heavily from its iconic predecessor, the T1, first launched in the 1950s and renowned for its association with the hippie movement. The ID Buzz Cargo reimagines this classic design for the electric age, featuring a V-shaped face and an oversized VW logo, often highlighted with optional two-tone paintwork. This modern interpretation maintains the distinctive short overhangs of the T1, which not only preserves its unique aesthetic but also enhances vehicle safety and technology integration.
 
 ### Key Features
 
 #### Performance and Capability
 
-The ID Buzz Cargo is powered by a rear-mountedkW (204 PS) electric motor, providing a robustNm of torque available instantly. This setup allows the van to accelerate from tomph in just.2 seconds, with a top speed ofmph. The vehicle’s agility is further supported by a low centre of gravity, courtesy of thekWh battery pack positioned in the vehicle floor, and a tight turning circle of.09 metres, ideal for navigating urban environments.
+The ID Buzz Cargo is powered by a rear-mounted 150kW (204 PS) electric motor, providing a robust 310Nm of torque available instantly. This setup allows the van to accelerate from 0 to 62mph in just 10.2 seconds, with a top speed of 90mph. The vehicle’s agility is further supported by a low centre of gravity, courtesy of the 77kWh battery pack positioned in the vehicle floor, and a tight turning circle of 11.09 metres, ideal for navigating urban environments.
 
 #### Cargo and Functionality
 
-Designed with practicality in mind, the ID Buzz Cargo offers a spacious cargo area of.9 cubic metres, capable of accommodating two European standard-sized pallets. The interior is designed for versatility, featuring dual sliding side doors and an option between a liftgate or dual wing doors at the rear. Depending on the configuration, the cab can seat up to three people, making it a suitable choice for a range of commercial needs.
+Designed with practicality in mind, the ID Buzz Cargo offers a spacious cargo area of 3.9 cubic metres, capable of accommodating two European standard-sized pallets. The interior is designed for versatility, featuring dual sliding side doors and an option between a liftgate or dual wing doors at the rear. Depending on the configuration, the cab can seat up to three people, making it a suitable choice for a range of commercial needs.
 
 #### Charging and Range
 
-The ID Buzz Cargo is equipped with a lithium-ion high-voltage battery with a net energy content ofkWh, enabling a range of up to miles on a single charge. It supports fast charging up tokW, allowing the battery to be charged from% to% in approximately minutes. This feature, combined with smart charging solutions like Plug & Charge, simplifies the recharging process, making it both time-efficient and user-friendly.
+The ID Buzz Cargo is equipped with a lithium-ion high-voltage battery with a net energy content of 77kWh, enabling a range of up to 256 miles on a single charge. It supports fast charging up to 170kW, allowing the battery to be charged from 5% to 80% in approximately 30 minutes. This feature, combined with smart charging solutions like Plug & Charge, simplifies the recharging process, making it both time-efficient and user-friendly.
 
 #### Safety and Technology
 
@@ -39,23 +39,23 @@ In summary, the ID Buzz Cargo by Volkswagen merges historical design elements wi
 
 ### Range and Charging Capabilities
 
-The ID Buzz Cargo showcases impressive charging and range capabilities essential for commercial use. Equipped with a lithium-ion high-voltage battery, the van offers a net energy content of kWh, enabling it to cover up to kilometres on a single charge. For regular charging, the ID Buzz Cargo can utilise an kW AC source, typically found at wall boxes like the ID. Charger. However, it excels in fast charging with a maximum capacity of kW DC, allowing the battery to be charged from% to% in just about minutes. This rapid recharge capability ensures minimal downtime, enhancing the van’s practicality for daily operations.
+The ID Buzz Cargo showcases impressive charging and range capabilities essential for commercial use. Equipped with a lithium-ion high-voltage battery, the van offers a net energy content of 77 kWh, enabling it to cover up to 425 kilometres on a single charge. For regular charging, the ID Buzz Cargo can utilise an 11 kW AC source, typically found at wall boxes like the ID. Charger. However, it excels in fast charging with a maximum capacity of 170 kW DC, allowing the battery to be charged from 5% to 80% in just about 30 minutes. This rapid recharge capability ensures minimal downtime, enhancing the van’s practicality for daily operations.
 
 ### Electric Motor Specifications
 
-Powering the ID Buzz Cargo is a dynamic electric motor, positioned on the rear axle, which drives the vehicle. This motor produces a maximum output of kW (204 PS) and delivers a robust Nm of torque instantly. Such specifications enable the van to reach a top speed of km/h and accelerate from to km/h in.2 seconds. Additionally, the van’s design allows for towing capacities up to,000 kg with optional towing equipment, making it a versatile choice for various commercial activities. The integration of the motor at the rear not only saves space but also contributes to the vehicle’s agility, particularly beneficial in urban settings where manoeuvrability is key.
+Powering the ID Buzz Cargo is a dynamic electric motor, positioned on the rear axle, which drives the vehicle. This motor produces a maximum output of 150 kW (204 PS) and delivers a robust 310 Nm of torque instantly. Such specifications enable the van to reach a top speed of 145 km/h and accelerate from 0 to 100 km/h in 10.2 seconds. Additionally, the van’s design allows for towing capacities up to 1,000 kg with optional towing equipment, making it a versatile choice for various commercial activities. The integration of the motor at the rear not only saves space but also contributes to the vehicle’s agility, particularly beneficial in urban settings where manoeuvrability is key.
 
 ## Cargo Space and Practicality
 
 ### Redesigned Cargo Area
 
-The ID Buzz Cargo, while maintaining compact external dimensions, offers a large cargo space that is fully electric, positioning it as a revolutionary vehicle in commercial mobility. This van provides a cargo volume of.9 cubic metres and a payload capacity ofkg. Although these figures are impressive in the automotive sector, they are modest when compared to traditional commercial vehicles. For example, the Vauxhall Vivaro Electric boasts a payload ofkg, significantly surpassing the ID Buzz Cargo.
+The ID Buzz Cargo, while maintaining compact external dimensions, offers a large cargo space that is fully electric, positioning it as a revolutionary vehicle in commercial mobility. This van provides a cargo volume of 3.9 cubic metres and a payload capacity of 592kg. Although these figures are impressive in the automotive sector, they are modest when compared to traditional commercial vehicles. For example, the Vauxhall Vivaro Electric boasts a payload of 1226kg, significantly surpassing the ID Buzz Cargo.
 
 ### Interior and Loading Capabilities
 
 Volkswagen has designed the ID Buzz Cargo with only one body size and shape, with no immediate plans for a longer version, which limits flexibility in terms of loading space. However, the cargo area is equipped with basic amenities like a wooden lining and floor, which are included from the start, thus saving additional outfitting costs. The van accommodates two Euro pallets, and features such as a small loading hatch are available with the three-seat cabin configuration.
 
-Despite its size being comparable to larger models like the Citroen Dispatch outside, its internal dimensions are more akin to the smaller Citroen Berlingo. This size comparison puts its utility into perspective, especially when considering its payload capacity ofkg, which is less than that offered by smaller vans like the Renault Kangoo E-Tech.
+Despite its size being comparable to larger models like the Citroen Dispatch outside, its internal dimensions are more akin to the smaller Citroen Berlingo. This size comparison puts its utility into perspective, especially when considering its payload capacity of 607kg, which is less than that offered by smaller vans like the Renault Kangoo E-Tech.
 
 The cargo area is designed for practicality, featuring a flat layout with strategically placed lashing eyes. Additional options include a grippy floor with lashing C rails and a bulkhead that can be fitted with or without a window, enhancing the security of the cargo space depending on user requirements.
 
@@ -93,10 +93,10 @@ The implications of such innovations extend beyond the automotive industry, sign
 Yes, the ID. Buzz Cargo is a commercial vehicle, inspired by the original campervan. It is designed to simplify your workday and comes with strong sustainability features, making it a robust choice for everyday business challenges.
 
 **What is the expected price range of the ID. Buzz?**  
-The anticipated starting price for the Volkswagen ID. Buzz is around $50,000, potentially rising to $58,000 depending on the model and additional features. Volkswagen plans to offer several variants including Pro S, Pro S Plus, and a special Launch Edition, although specific prices for these have not yet been disclosed.
+The anticipated starting price for the 2025 Volkswagen ID. Buzz is around $50,000, potentially rising to $58,000 depending on the model and additional features. Volkswagen plans to offer several variants including Pro S, Pro S Plus, and a special Launch Edition, although specific prices for these have not yet been disclosed.
 
 **What is the driving range of the ID Buzz Cargo on a single charge?**  
-The ID. Buzz Cargo is equipped with a kWh battery, enabling it to travel up to miles before needing a recharge.
+The ID. Buzz Cargo is equipped with a 77 kWh battery, enabling it to travel up to 256 miles before needing a recharge.
 
 **How much does it cost to charge the VW ID Buzz Cargo in the UK?**  
 Charging the Volkswagen ID. Buzz Cargo at home typically costs about £22.96 using average UK electricity rates. However, this cost can be reduced to as low as £6.15 by switching to an electric vehicle (EV)-friendly tariff. Additionally, using a smart charger with an EV-friendly tariff could save you up to £682.91 annually.

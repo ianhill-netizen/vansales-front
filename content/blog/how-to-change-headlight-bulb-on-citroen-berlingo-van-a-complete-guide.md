@@ -17,7 +17,13 @@ To successfully replace the headlight bulb on a Citroen Berlingo van, one must f
 
 ### List of Required Tools
 
-The main tools required for changing the headlight bulb include:.  **H4 Bulb**: This is the most commonly used bulb for headlights in many vehicles, including the Citroen Berlingo. It operates at volts and is essential for both low and high beam functionalities..  **Inspection Mirror**: An inspection mirror is highly beneficial for viewing hard-to-see areas within the headlight assembly. This tool helps in locating and adjusting the spring-loaded clip that secures the bulb..  **Torch or Headlamp**: A torch or headlamp provides necessary illumination, especially if one needs to perform the bulb change during low light conditions or within a dimly lit garage..  **Rubber Gloves**: To prevent oils from the skin from contaminating the surface of the new bulb, which can affect longevity and performance, it is advisable to use rubber gloves..  **Spring Clip Tool**: A specialised tool or a standard flathead screwdriver can be used to adjust or remove the spring clip that holds the bulb in place.
+The main tools required for changing the headlight bulb include:
+
+1.  **H4 Bulb**: This is the most commonly used bulb for headlights in many vehicles, including the Citroen Berlingo. It operates at 12 volts and is essential for both low and high beam functionalities.
+2.  **Inspection Mirror**: An inspection mirror is highly beneficial for viewing hard-to-see areas within the headlight assembly. This tool helps in locating and adjusting the spring-loaded clip that secures the bulb.
+3.  **Torch or Headlamp**: A torch or headlamp provides necessary illumination, especially if one needs to perform the bulb change during low light conditions or within a dimly lit garage.
+4.  **Rubber Gloves**: To prevent oils from the skin from contaminating the surface of the new bulb, which can affect longevity and performance, it is advisable to use rubber gloves.
+5.  **Spring Clip Tool**: A specialised tool or a standard flathead screwdriver can be used to adjust or remove the spring clip that holds the bulb in place.
 
 ### Where to Buy the Materials
 
@@ -49,7 +55,13 @@ By following these steps, one can successfully access the headlight assembly of 
 
 Identifying the type of bulb in a Citroen Berlingo Van is crucial before proceeding with the replacement. The vehicle typically uses an H4 bulb for both low and high beam functions. This bulb is easily identifiable by its two filaments and three-pronged plug at the base, which connects to the vehicle’s electrical system.
 
-### Steps to carefully remove the bulb.  **Access the Bulb**: Open the bonnet and locate the back of the headlight assembly. Remove the large round rubber cap by sliding it off. This exposes the back of the bulb and its connector..  **Disconnect the Electrical Connector**: Before touching the bulb, one should disconnect the electrical connector. This is usually done by pulling it off the bulb’s base. Ensure that one does not tug too hard to avoid damaging the wiring..  **Release the Spring Clip**: The bulb is held in place by a spring-loaded clip. To release this clip, one needs to push it sideways towards the centreline of the bonnet. This might require some effort and careful manoeuvring..  **Remove the Bulb**: Once the clip is released, carefully remove the bulb from its socket. It’s important to avoid touching the glass of the bulb with bare skin as oils from the skin can shorten the lifespan of the bulb..  **Check the Assembly**: Before installing a new bulb, it’s advisable to inspect the headlight assembly for any damage or dirt that could affect the new bulb’s functionality.
+### Steps to carefully remove the bulb
+
+1.  **Access the Bulb**: Open the bonnet and locate the back of the headlight assembly. Remove the large round rubber cap by sliding it off. This exposes the back of the bulb and its connector.
+2.  **Disconnect the Electrical Connector**: Before touching the bulb, one should disconnect the electrical connector. This is usually done by pulling it off the bulb’s base. Ensure that one does not tug too hard to avoid damaging the wiring.
+3.  **Release the Spring Clip**: The bulb is held in place by a spring-loaded clip. To release this clip, one needs to push it sideways towards the centreline of the bonnet. This might require some effort and careful manoeuvring.
+4.  **Remove the Bulb**: Once the clip is released, carefully remove the bulb from its socket. It’s important to avoid touching the glass of the bulb with bare skin as oils from the skin can shorten the lifespan of the bulb.
+5.  **Check the Assembly**: Before installing a new bulb, it’s advisable to inspect the headlight assembly for any damage or dirt that could affect the new bulb’s functionality.
 
 By following these steps, one can successfully remove the old bulb from the headlight assembly of their Citroen Berlingo Van, preparing the way for the installation of a new bulb. Care should be taken to handle the components gently to avoid any damage.
 

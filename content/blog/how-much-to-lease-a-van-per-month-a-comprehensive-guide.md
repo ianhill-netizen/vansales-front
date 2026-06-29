@@ -15,7 +15,7 @@ This comprehensive guide is designed to demystify the monthly leasing costs asso
 
 ### What is Van Leasing?
 
-Van leasing, fundamentally similar to car leasing, operates as a long-term rental agreement, providing exclusive use of a van or pick-up truck for a specified period. This arrangement involves an initial rental payment followed by monthly payments over the contract term, typically spanning,, or years. At the end of the agreement, the van is returned to the finance provider, freeing the lessee from ownership concerns such as depreciation or resale, which are managed by the finance provider. See all vans for sale
+Van leasing, fundamentally similar to car leasing, operates as a long-term rental agreement, providing exclusive use of a van or pick-up truck for a specified period. This arrangement involves an initial rental payment followed by monthly payments over the contract term, typically spanning 2, 3, or 4 years. At the end of the agreement, the van is returned to the finance provider, freeing the lessee from ownership concerns such as depreciation or resale, which are managed by the finance provider. See all vans for sale
 
 Leasing a van offers several advantages, especially for businesses that prefer not to allocate a large amount of capital upfront. The fixed monthly costs facilitate budget management, knowing precisely what will be paid throughout the term of the lease. Most leased vans are new, thus excluding MOT costs for the first three years, and often include road tax and manufacturer’s warranty, enhancing cost predictability and reducing unexpected financial outlays. See all Van finance lease deals
 
@@ -23,7 +23,12 @@ However, van leasing also has its drawbacks. Committing to a lease agreement mea
 
 ### Types of Van Leases
 
-Van leasing can be categorised into several types, each suited to different needs and preferences:.  **Personal Contract Hire (PCH) and Business Contract Hire (BCH):** These are traditional forms of leasing where the lessee pays for the use of the van over the contract period with no option to purchase the vehicle at the end. It’s a popular choice for both businesses and private individuals who prefer lower monthly payments and minimal responsibility for the van post-lease..  **Personal Contract Purchase (PCP) and Business Contract Purchase (BCP):** These agreements offer the option to purchase the van at the end of the lease period. They typically require an initial deposit followed by monthly payments. At the contract’s conclusion, the lessee can either return the vehicle, continue leasing it, or buy it outright by paying a final ‘balloon’ payment..  **Finance Lease:** A flexible option that bridges the gap between Contract Hire and Hire Purchase. It offers low initial payments and flexible end-term options, which may include extending the lease or purchasing the vehicle..  **Hire Purchase:** Best suited for those who intend to own the van at the end of the agreement. This option involves higher monthly payments than leasing, as the lessee is paying towards ownership of the vehicle.
+Van leasing can be categorised into several types, each suited to different needs and preferences:
+
+1.  **Personal Contract Hire (PCH) and Business Contract Hire (BCH):** These are traditional forms of leasing where the lessee pays for the use of the van over the contract period with no option to purchase the vehicle at the end. It’s a popular choice for both businesses and private individuals who prefer lower monthly payments and minimal responsibility for the van post-lease.
+2.  **Personal Contract Purchase (PCP) and Business Contract Purchase (BCP):** These agreements offer the option to purchase the van at the end of the lease period. They typically require an initial deposit followed by monthly payments. At the contract’s conclusion, the lessee can either return the vehicle, continue leasing it, or buy it outright by paying a final ‘balloon’ payment.
+3.  **Finance Lease:** A flexible option that bridges the gap between Contract Hire and Hire Purchase. It offers low initial payments and flexible end-term options, which may include extending the lease or purchasing the vehicle.
+4.  **Hire Purchase:** Best suited for those who intend to own the van at the end of the agreement. This option involves higher monthly payments than leasing, as the lessee is paying towards ownership of the vehicle.
 
 Each type of van lease comes with specific terms and conditions regarding mileage limits, vehicle condition, and end-of-term options, which should be carefully reviewed to ensure they meet the lessee’s requirements.
 
@@ -106,5 +111,5 @@ Leasing a van can be beneficial for businesses as it aids in better budget manag
 **3\. What are the potential drawbacks of leasing a van?**  
 One of the main drawbacks of leasing a van is the need to estimate your annual mileage accurately. Exceeding the agreed mileage limit can incur additional costs. Similarly, any significant damage to the van during the lease term may result in extra charges.
 
-**4\. Is it possible to lease a van for just months?**  
-Yes, you can lease a van for a-month period. This short-term lease option combines the flexibility of avoiding a long-term commitment with the cost-effectiveness of traditional leasing, rather than paying higher weekly rental rates. This type of lease is increasingly popular among various business sectors.
+**4\. Is it possible to lease a van for just 12 months?**  
+Yes, you can lease a van for a 12-month period. This short-term lease option combines the flexibility of avoiding a long-term commitment with the cost-effectiveness of traditional leasing, rather than paying higher weekly rental rates. This type of lease is increasingly popular among various business sectors.

@@ -73,7 +73,7 @@ In consideration of the latter type of jobs, window cleaning vans are also usual
 
 When we say “integrated ladders” here, we mean ladders that are attached to the roof of the van and can be opened and closed when needed.
 
-On the other hand, ladder brackets refer to simple holding spaces that are made on the outside of the van to easily hold ladders. Telescopic ladders are very commonly used by companies that provide cleaning services. These types of ladders can be shrunk down to% of their size and carried around with ease. That is what the brackets are for.
+On the other hand, ladder brackets refer to simple holding spaces that are made on the outside of the van to easily hold ladders. Telescopic ladders are very commonly used by companies that provide cleaning services. These types of ladders can be shrunk down to 10% of their size and carried around with ease. That is what the brackets are for.
 
 ### **6.  Large back storage area**
 

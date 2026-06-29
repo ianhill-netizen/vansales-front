@@ -9,7 +9,7 @@ When you’re gearing out a welfare van’s kitchen, you need to make do with a 
 
 In this blog post, let’s take a look at some of the best appliances for functional van kitchen that you can choose to make the most out of your off-road cooking experiences.
 
-##.  Portable Stove/Hob
+## 1.  Portable Stove/Hob
 
 A campervan stove top is one of the most important things that you need to include in your welfare van kitchen. Not specifically a stove top, per se, as much as an appliance that you can reliably use for cooking or heating purposes. This can also be a hob or a large oven + stove combo, etc.
 
@@ -58,7 +58,7 @@ The main benefit of using a bigger stove as compared to a smaller hob is that yo
 
 The downside, on the other hand, is that it takes up space and it can be a bit of a pain to move around.
 
-##.  Portable refrigerator
+## 2.  Portable refrigerator
 
 We did talk quite a bit about stoves and hobs above, but it is justified considering how important they are.
 
@@ -84,7 +84,7 @@ If you want to make sure that you go right with your choice when buying a fridge
 
 You have to create and follow criteria like these if you want to get your hands on the best appliances for functional van kitchen.
 
-##.  Coffee Maker
+## 3.  Coffee Maker
 
 Compared to the somewhat wide usage/purpose that stoves and fridges serve, it can sound a bit specific when we talk about coffee makers now.
 
@@ -94,7 +94,7 @@ A coffee maker saves you from that hassle.
 
 When it comes to choosing one for your kitchen, you can actually follow the same pointers that we mentioned for fridges above. Make sure that the coffee maker you pick has the capacity you need, is decent sized for your kitchen, and has a suitable power consumption, etc.
 
-##.  Storage
+## 4.  Storage
 
 When we mention “storage” as one of the best appliances for functional van kitchen, we mean storage units and spaces that you can install in and around the kitchen area.
 

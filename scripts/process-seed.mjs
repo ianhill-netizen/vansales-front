@@ -62,7 +62,7 @@ function cleanBody(body, heroImagePath) {
   // Replace absolute vansales.com links with relative or plain text
   b = b.replace(/\[([^\]]+)\]\(https?:\/\/(?:www\.)?vansales\.com\/[^)]*\)/g, "$1");
   // Remove citation numbers [1], [2], etc.
-  b = b.replace(/\s+\d+/g, "");
+  b = b.replace(/\[\d+\]/g, "");
   // Remove empty lines > 2 consecutive
   b = b.replace(/\n{3,}/g, "\n\n");
   return b.trim();
@@ -320,7 +320,7 @@ for (const file of allFiles) {
   // Replace absolute vansales.com links
   cleanedBody = cleanedBody.replace(/\[([^\]]+)\]\(https?:\/\/(?:www\.)?vansales\.com\/[^)]*\)/g, "$1");
   // Remove citation numbers
-  cleanedBody = cleanedBody.replace(/\s+\d+/g, "");
+  cleanedBody = cleanedBody.replace(/\[\d+\]/g, "");
   cleanedBody = cleanedBody.replace(/\n{3,}/g, "\n\n").trim();
 
   // Extract inline images referenced
