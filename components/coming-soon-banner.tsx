@@ -90,7 +90,7 @@ export function ComingSoonBanner() {
       <div className="sticky top-0 z-50 flex h-10 items-center justify-between gap-3 bg-ink-900 px-4 sm:px-6">
         <p className="min-w-0 truncate text-[var(--text-sm)] text-white/85">
           <span className="font-semibold text-white">Opening August 2026</span>
-          <span className="mx-1.5 text-white/40">—</span>
+          <span className="mx-1.5 text-white/70">—</span>
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -103,7 +103,7 @@ export function ComingSoonBanner() {
           type="button"
           aria-label="Dismiss banner"
           onClick={() => setDismissed(true)}
-          className="shrink-0 rounded p-1 text-white/40 transition hover:text-white/90"
+          className="shrink-0 rounded p-1 text-white/70 transition hover:text-white/90"
         >
           <XIcon />
         </button>

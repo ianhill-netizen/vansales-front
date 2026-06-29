@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui";
@@ -20,6 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) return {};
+  const heroUrl = post.heroImage
+    ? (post.heroImage.startsWith("http") ? post.heroImage : absUrl(post.heroImage))
+    : undefined;
   return {
     title: post.title.slice(0, 60),
     description: post.description.slice(0, 155),
@@ -30,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: absUrl(`/blog/${slug}`),
       type: "article",
       publishedTime: post.date,
+      ...(heroUrl && { images: [{ url: heroUrl, width: 1200, height: 600, alt: post.heroAlt ?? post.title }] }),
     },
   };
 }
@@ -113,31 +118,41 @@ export default async function BlogPostPage({ params }: Props) {
 
       <div className="border-b border-border bg-surface-1">
         <Container className="py-10">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
-            <Link href="/" className="hover:text-ink-900">Home</Link>
-            <span>/</span>
-            <Link href="/blog" className="hover:text-ink-900">Blog</Link>
-            <span>/</span>
-            <span className="max-w-[200px] truncate font-medium text-ink-700">{post.title}</span>
+          <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+            <Link href="/" className="hover:text-ink-700 transition-colors">Home</Link>
+            <span className="text-ink-300">/</span>
+            <Link href="/blog" className="hover:text-ink-700 transition-colors">Blog</Link>
+            <span className="text-ink-300">/</span>
+            <span className="max-w-[200px] truncate font-semibold text-ink-600">{post.title}</span>
           </nav>
-          <div className="max-w-3xl">
+          <div className="max-w-[var(--content-max)]">
             {post.date && (
-              <time dateTime={post.date} className="text-[var(--text-sm)] text-ink-400">
-                {formatDate(post.date)}
-              </time>
+              <div className="flex items-center gap-2 text-[var(--text-sm)] text-ink-500">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent-500" />
+                <time dateTime={post.date} className="font-medium">{formatDate(post.date)}</time>
+              </div>
             )}
-            <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+            <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight tracking-[var(--tracking-display)] text-ink-900">
               {post.title}
             </h1>
-            {post.description && (
-              <p className="mt-3 text-[var(--text-md)] text-ink-600">{post.description}</p>
+            {post.heroImage && (
+              <div className="relative mt-7 aspect-[2/1] overflow-hidden rounded-[var(--radius-lg)]">
+                <Image
+                  src={post.heroImage}
+                  alt={post.heroAlt ?? post.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 48rem) 100vw, 48rem"
+                  priority
+                />
+              </div>
             )}
           </div>
         </Container>
       </div>
 
       <Container className="py-10">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-[var(--content-max)]">
           <article dangerouslySetInnerHTML={{ __html: mdToHtml(post.body) }} />
 
           {/* Related cross-links */}
