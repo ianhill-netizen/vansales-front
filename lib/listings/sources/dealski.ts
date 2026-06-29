@@ -6,12 +6,12 @@ import { titleCase } from "../format";
 /* =============================================================================
    DEALSKI SOURCE  — live stock feed behind swissvans.dealski.co.uk
    Verified endpoints (public, unauthenticated):
-     LIST   GET {BASE}/api/public/stock?page=&per_page=
+     LIST   GET {BASE}/api/public/stock/vehicles?page=&per_page=
      DETAIL GET {BASE}/api/public/stock/vehicles/{id}  → wrapped in { data: {...} }
    ALL feed→canonical mapping lives in this one file.
 
-   List price field: `our_price` (GBP pounds). Detail price field: `price`.
-   List is sparse (15 fields). Detail has full spec + photos[].preview_url.
+   Both list and detail return price as `price` (GBP pounds, computed selling price).
+   List is sparse (spec fields absent). Detail has full spec + photos[].preview_url.
    Photo preview_url values are 24-hour S3 presigned URLs — the feed cache
    (REVALIDATE) is kept at 6 h so they are re-signed well within their TTL.
    ========================================================================== */
@@ -42,10 +42,10 @@ interface DealskiList {
   meta: { current_page: number; last_page: number; per_page: number; total: number };
 }
 
-/* Shape returned by GET /api/public/stock (list endpoint — sparse).
-   Only 15 fields. Spec data (gearbox, wheelbase, year, mileage, etc.) is
-   absent — those come from the per-vehicle detail endpoint.
-   Price field is `our_price`; `primary_photo` is the raw S3 key or null. */
+/* Shape returned by GET /api/public/stock/vehicles (list endpoint — sparse).
+   Spec data (gearbox, wheelbase, year, mileage, etc.) is absent — those come
+   from the per-vehicle detail endpoint. Price field is `price` (same as detail).
+   `primary_photo` is the raw S3 key or null. */
 interface DealskiSummary {
   id: number;
   make: string | null;
@@ -59,7 +59,7 @@ interface DealskiSummary {
   photo_count: number;
   created_at: string;
   updated_at: string;
-  our_price: number | null; // GBP pounds; named `price` on the detail endpoint
+  price: number | null; // GBP pounds; computed selling price (same field name as detail)
   rrp: number | null;
   customer_ref: string | null;
 }
@@ -366,7 +366,7 @@ function mapSummary(s: DealskiSummary): Listing {
     condition: conditionFrom(s.availability_status),
     year: 0,   // not present in list endpoint; resolved on detail page
     plate: "",
-    price: s.our_price ?? null,
+    price: s.price ?? null,
     price_type: "inc_vat",
     vat_qualifying: true,
     mileage: null,   // not present in list endpoint
@@ -410,11 +410,11 @@ function mapSummary(s: DealskiSummary): Listing {
 
 /** Page through the ENTIRE upstream catalogue (all ~1,121 vehicles). */
 async function fetchAllSummaries(): Promise<{ summaries: DealskiSummary[]; feedTotal: number }> {
-  const first = await getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=1`);
+  const first = await getJson<DealskiList>(`${BASE}/api/public/stock/vehicles?per_page=${PER_PAGE}&page=1`);
   const lastPage = Math.min(first.meta.last_page || 1, HARD_PAGE_CAP);
   const restPages = Array.from({ length: Math.max(0, lastPage - 1) }, (_, i) => i + 2);
   const rest = await mapWithConcurrency(restPages, PAGE_CONCURRENCY, (page) =>
-    getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=${page}`).then(
+    getJson<DealskiList>(`${BASE}/api/public/stock/vehicles?per_page=${PER_PAGE}&page=${page}`).then(
       (r) => r.data,
       () => [] as DealskiSummary[],
     ),
@@ -444,7 +444,7 @@ export const fetchDealskiCatalogue = unstable_cache(
     return { listings, feedTotal };
   },
   // Bump this key whenever the feed→canonical mapping changes (busts the cache).
-  ["dealski-catalogue-v5"],
+  ["dealski-catalogue-v6"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
