@@ -444,7 +444,7 @@ export const fetchDealskiCatalogue = unstable_cache(
     return { listings, feedTotal };
   },
   // Bump this key whenever the feed→canonical mapping changes (busts the cache).
-  ["dealski-catalogue-v5"],
+  ["dealski-catalogue-v6"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
