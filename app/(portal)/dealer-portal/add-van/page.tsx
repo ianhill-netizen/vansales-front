@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRole } from "@/lib/roles/context";
+import { VAN_MAKES } from "@/lib/taxonomy/van-makes";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 type Step = "entry" | "lookup-result" | "manual-pick" | "details" | "success";
@@ -54,10 +55,8 @@ const STUB_RESULTS: StubVehicle[] = [
   { make: "Maxus", model: "eDeliver 9", derivative: "LWB High Roof 88.55kWh", year: 2024, fuel: "Electric", colour: "Pearl White" },
 ];
 
-const MAKES = [
-  "Ford", "Volkswagen", "Mercedes-Benz", "Vauxhall", "Renault",
-  "Peugeot", "Citroën", "Fiat", "Nissan", "Toyota", "Iveco", "Maxus",
-];
+// Single source: derived from lib/taxonomy/van-makes so homepage and this form stay in sync.
+const MAKES = VAN_MAKES.map((m) => m.name);
 
 const MODELS_BY_MAKE: Record<string, string[]> = {
   Ford: ["Transit", "Transit Custom", "Transit Connect", "Transit Courier", "Ranger"],
@@ -72,6 +71,9 @@ const MODELS_BY_MAKE: Record<string, string[]> = {
   Toyota: ["Proace", "Proace City", "Proace Electric", "Hilux"],
   Iveco: ["Daily"],
   Maxus: ["Deliver 9", "eDeliver 9", "Deliver 3", "MIFA 9"],
+  "Land Rover": ["Defender Commercial", "Defender Pickup", "Discovery Commercial"],
+  MAN: ["TGE"],
+  Ineos: ["Grenadier", "Quartermaster"],
 };
 
 const FUEL_TYPES = ["Diesel", "Petrol", "Electric", "Hybrid", "PHEV", "LPG"];
