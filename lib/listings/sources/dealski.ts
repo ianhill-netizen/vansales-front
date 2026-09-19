@@ -469,7 +469,13 @@ export const fetchDealskiCatalogue = unstable_cache(
   // Bump this key whenever the feed→canonical mapping changes (busts the cache).
   // v7: is_used-based condition (was availability_status guess) + image_url/
   // image_source (was primary_photo) + ?source=vansales on every request.
-  ["dealski-catalogue-v7"],
+  // v8: no mapping change -- Vercel's Data Cache backing unstable_cache
+  // persists across deployments (not busted by a redeploy alone), so the
+  // v7 entry kept serving a fetch taken before dealski-app's proxy fix
+  // (PR #777) and before restoring stock_vehicles id=1150 landed. Bumping
+  // the key is this repo's own established way to force a fresh fetch
+  // (see PR #70, "chore: bust dealski catalogue cache").
+  ["dealski-catalogue-v8"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
