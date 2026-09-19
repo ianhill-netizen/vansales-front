@@ -88,6 +88,12 @@ export interface Listing {
   enquiry_url: string | null;
   /** Dealer's own stock reference (e.g. "SV-2606-1147"). Null when the source doesn't provide one. */
   stock_ref: string | null;
+  /** Provenance of `images[0]` — "photo" (the vehicle's own upload) vs a
+   *  library/placeholder fallback the source substituted. Optional: only
+   *  the dealski source currently reports it (dealski-backend PR #3173);
+   *  every other source's own images are always real photos, so leaving
+   *  this unset is equivalent to "photo" for the UI's badge check. */
+  image_source?: "photo" | "library" | "placeholder";
 
   published_at: string; // ISO
   updated_at: string; // ISO
