@@ -34,13 +34,31 @@ const REVALIDATE = 21600; // 6 h — must be < 24 h (S3 presigned photo TTL)
 const TIMEOUT_MS = 12000;
 const HARD_PAGE_CAP = 60; // safety backstop (~3000 vehicles) vs a runaway feed
 
+/** Single version marker for every /api/public/stock* request this file
+ *  makes. Bump this ONE constant (not the unstable_cache key below AND a
+ *  separate mechanism) whenever a backend-side change needs picking up
+ *  regardless of cache TTLs — it's baked into every request URL via
+ *  dealskiUrl() (busts the native per-URL fetch cache the plain
+ *  fetchDealskiBySourceId() detail lookup relies on, which has no
+ *  unstable_cache wrapper of its own) AND into fetchDealskiCatalogue's
+ *  unstable_cache key below (busts that separate Data Cache layer). One
+ *  bump, both mechanisms. History: v7 (is_used/image_url/image_source +
+ *  ?source=vansales), v8 (dealski-app proxy fix + vehicle 1150 restore),
+ *  v9 (image_placeholders.generic default) — all previously required a
+ *  matching PR here just to bump a cache key with no code-shape change,
+ *  because the detail fetch had no version key to bump at all until now.
+ */
+const CATALOGUE_VERSION = "v9";
+
 /** Every /api/public/stock* request goes through here — the single place
- *  `source=vansales` is attached (see file header for why it must always
- *  be present). */
+ *  `source=vansales` and the cache-busting version marker are attached
+ *  (see file header / CATALOGUE_VERSION for why both must always be
+ *  present). */
 function dealskiUrl(path: string, params: Record<string, string | number> = {}): string {
   const qs = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) qs.set(k, String(v));
   qs.set("source", "vansales");
+  qs.set("_cv", CATALOGUE_VERSION);
   return `${BASE}${path}?${qs.toString()}`;
 }
 
@@ -466,18 +484,13 @@ export const fetchDealskiCatalogue = unstable_cache(
     }
     return { listings, feedTotal };
   },
-  // Bump this key whenever the feed→canonical mapping changes (busts the cache).
-  // v7: is_used-based condition (was availability_status guess) + image_url/
-  // image_source (was primary_photo) + ?source=vansales on every request.
-  // v8: no mapping change -- Vercel's Data Cache backing unstable_cache
-  // persists across deployments (not busted by a redeploy alone), so the
-  // v7 entry kept serving a fetch taken before dealski-app's proxy fix
-  // (PR #777) and before restoring stock_vehicles id=1150 landed. Bumping
-  // the key is this repo's own established way to force a fresh fetch
-  // (see PR #70, "chore: bust dealski catalogue cache").
-  // v9: same reason again -- dealski-backend PR #3182 set a real
-  // image_placeholders.generic default; same persistent-cache gap.
-  ["dealski-catalogue-v9"],
+  // Keyed off the single CATALOGUE_VERSION marker above (see its comment) --
+  // bump that one constant, not this array, whenever a backend-side change
+  // needs picking up regardless of cache TTLs. History: v7 (is_used/
+  // image_url/image_source + ?source=vansales), v8 (dealski-app proxy fix +
+  // vehicle 1150 restore), v9 (image_placeholders.generic default + this
+  // constant unification -- previously a separate hardcoded literal here).
+  [`dealski-catalogue-${CATALOGUE_VERSION}`],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
