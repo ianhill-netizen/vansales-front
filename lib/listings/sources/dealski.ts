@@ -6,13 +6,22 @@ import { titleCase } from "../format";
 /* =============================================================================
    DEALSKI SOURCE  — live stock feed behind swissvans.dealski.co.uk
    Verified endpoints (public, unauthenticated):
-     LIST   GET {BASE}/api/public/stock?page=&per_page=
-     DETAIL GET {BASE}/api/public/stock/vehicles/{id}  → wrapped in { data: {...} }
+     LIST   GET {BASE}/api/public/stock?page=&per_page=&source=vansales
+     DETAIL GET {BASE}/api/public/stock/vehicles/{id}?source=vansales  → wrapped in { data: {...} }
    ALL feed→canonical mapping lives in this one file.
 
+   `source=vansales` (dealski-backend PR #3173) gates the backend's
+   Used-Stock-Creator-only filter — dealski-app has its own separate
+   public stock pages hitting the exact same physical endpoint without
+   this param, so it must be present on every call or that filter never
+   applies and Google-Sheet/email-sourced stock leaks back onto
+   vansales.com. Attached in exactly one place (dealskiUrl() below), not
+   per call site.
+
    List price field: `our_price` (GBP pounds). Detail price field: `price`.
-   List is sparse (15 fields). Detail has full spec + photos[].preview_url.
-   Photo preview_url values are 24-hour S3 presigned URLs — the feed cache
+   List is sparse (15 fields, now 17 with is_used/image_url/image_source).
+   Detail has full spec + photos[].preview_url. Photo URLs (image_url,
+   preview_url) are 24-hour S3 presigned URLs — the feed cache
    (REVALIDATE) is kept at 6 h so they are re-signed well within their TTL.
    ========================================================================== */
 
@@ -24,6 +33,16 @@ const PAGE_CONCURRENCY = 6; // polite parallelism while paging the whole feed
 const REVALIDATE = 21600; // 6 h — must be < 24 h (S3 presigned photo TTL)
 const TIMEOUT_MS = 12000;
 const HARD_PAGE_CAP = 60; // safety backstop (~3000 vehicles) vs a runaway feed
+
+/** Every /api/public/stock* request goes through here — the single place
+ *  `source=vansales` is attached (see file header for why it must always
+ *  be present). */
+function dealskiUrl(path: string, params: Record<string, string | number> = {}): string {
+  const qs = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) qs.set(k, String(v));
+  qs.set("source", "vansales");
+  return `${BASE}${path}?${qs.toString()}`;
+}
 
 /* The single dealer behind tenant 1 (Swiss Vans, Swansea). The feed has no
    per-vehicle location, so all of this dealer's stock shares their forecourt. */
@@ -43,9 +62,13 @@ interface DealskiList {
 }
 
 /* Shape returned by GET /api/public/stock (list endpoint — sparse).
-   Only 15 fields. Spec data (gearbox, wheelbase, year, mileage, etc.) is
-   absent — those come from the per-vehicle detail endpoint.
-   Price field is `our_price`; `primary_photo` is the raw S3 key or null. */
+   Spec data (gearbox, wheelbase, year, mileage, etc.) is absent — those
+   come from the per-vehicle detail endpoint.
+   Price field is `our_price`. `is_used`/`image_url`/`image_source` added
+   by dealski-backend PR #3173 — is_used is the authoritative new/used
+   signal (replaces the old availability_status-based guess); image_url
+   is the single image to show (own photo -> image_library match ->
+   placeholder, in that order — image_source names which tier resolved). */
 interface DealskiSummary {
   id: number;
   make: string | null;
@@ -55,7 +78,9 @@ interface DealskiSummary {
   colour: string | null;
   fuel: string | null;
   availability_status: string | null;
-  primary_photo: string | null;
+  is_used: boolean;
+  image_url: string | null;
+  image_source: "photo" | "library" | "placeholder" | null;
   photo_count: number;
   created_at: string;
   updated_at: string;
@@ -93,10 +118,12 @@ interface DealskiDetail {
   factory_extras: string | null;
   swiss_extras: string | null;
   availability_status: string | null;
+  is_used: boolean;
   rrp: number | null;
   price: number | null; // GBP pounds (named `our_price` on the list endpoint)
   customer_ref: string | null;
-  primary_photo: string | null;
+  image_url: string | null;
+  image_source: "photo" | "library" | "placeholder" | null;
   photo_count: number;
   created_at: string;
   updated_at: string;
@@ -265,20 +292,14 @@ function yearFrom(firstRegDate: string | null, ...fields: Array<string | null | 
 
 function imagesFrom(d: DealskiDetail | DealskiSummary, alt: string): ListingImage[] {
   const out: ListingImage[] = [];
-  if (d.primary_photo) out.push({ url: d.primary_photo, alt });
+  if (d.image_url) out.push({ url: d.image_url, alt });
   if ("photos" in d && Array.isArray(d.photos)) {
     for (const p of d.photos) {
       const url = p?.preview_url;
-      if (url && url !== d.primary_photo) out.push({ url, alt });
+      if (url && url !== d.image_url) out.push({ url, alt });
     }
   }
   return out;
-}
-
-/* Neither the list nor detail endpoint carries an explicit condition field.
-   Default to "new"; will flip to "used" if Dealski adds the field in future. */
-function conditionFrom(availability_status: string | null): "new" | "used" {
-  return (availability_status ?? "").toLowerCase() === "used" ? "used" : "new";
 }
 
 function mapDetail(d: DealskiDetail): Listing {
@@ -302,7 +323,7 @@ function mapDetail(d: DealskiDetail): Listing {
     make,
     model,
     derivative,
-    condition: conditionFrom(d.availability_status),
+    condition: d.is_used ? "used" : "new",
     year,
     plate: "",
     price: d.price ?? null,
@@ -338,6 +359,7 @@ function mapDetail(d: DealskiDetail): Listing {
     enquiry_route: { to: "dealski_tenant", ref: d.customer_ref ?? source_id },
     enquiry_url: null,
     stock_ref: d.customer_ref ?? null,
+    image_source: d.image_source ?? "photo",
     published_at: d.created_at,
     updated_at: d.updated_at,
   };
@@ -363,7 +385,7 @@ function mapSummary(s: DealskiSummary): Listing {
     make,
     model,
     derivative,
-    condition: conditionFrom(s.availability_status),
+    condition: s.is_used ? "used" : "new",
     year: 0,   // not present in list endpoint; resolved on detail page
     plate: "",
     price: s.our_price ?? null,
@@ -394,11 +416,12 @@ function mapSummary(s: DealskiSummary): Listing {
     },
     description: `${alt}. Contact ${DEALER.seller} for full details and availability.`,
     features: [],
-    images: s.primary_photo ? [{ url: s.primary_photo, alt }] : [],
+    images: s.image_url ? [{ url: s.image_url, alt }] : [],
     seller: { name: DEALER.seller, type: "dealer", logo: null, rating: 4.8 },
     enquiry_route: { to: "dealski_tenant", ref: s.customer_ref ?? source_id },
     enquiry_url: null,
     stock_ref: s.customer_ref ?? null,
+    image_source: s.image_source ?? "photo",
     published_at: s.created_at,
     updated_at: s.updated_at,
   };
@@ -410,11 +433,11 @@ function mapSummary(s: DealskiSummary): Listing {
 
 /** Page through the ENTIRE upstream catalogue (all ~1,121 vehicles). */
 async function fetchAllSummaries(): Promise<{ summaries: DealskiSummary[]; feedTotal: number }> {
-  const first = await getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=1`);
+  const first = await getJson<DealskiList>(dealskiUrl("/api/public/stock", { per_page: PER_PAGE, page: 1 }));
   const lastPage = Math.min(first.meta.last_page || 1, HARD_PAGE_CAP);
   const restPages = Array.from({ length: Math.max(0, lastPage - 1) }, (_, i) => i + 2);
   const rest = await mapWithConcurrency(restPages, PAGE_CONCURRENCY, (page) =>
-    getJson<DealskiList>(`${BASE}/api/public/stock?per_page=${PER_PAGE}&page=${page}`).then(
+    getJson<DealskiList>(dealskiUrl("/api/public/stock", { per_page: PER_PAGE, page })).then(
       (r) => r.data,
       () => [] as DealskiSummary[],
     ),
@@ -444,14 +467,16 @@ export const fetchDealskiCatalogue = unstable_cache(
     return { listings, feedTotal };
   },
   // Bump this key whenever the feed→canonical mapping changes (busts the cache).
-  ["dealski-catalogue-v6"],
+  // v7: is_used-based condition (was availability_status guess) + image_url/
+  // image_source (was primary_photo) + ?source=vansales on every request.
+  ["dealski-catalogue-v7"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
 export async function fetchDealskiBySourceId(sourceId: string): Promise<Listing | null> {
   try {
     // Detail endpoint wraps the vehicle in { data: {...} }
-    const wrapper = await getJson<{ data: DealskiDetail }>(`${BASE}/api/public/stock/vehicles/${sourceId}`);
+    const wrapper = await getJson<{ data: DealskiDetail }>(dealskiUrl(`/api/public/stock/vehicles/${sourceId}`));
     const d = wrapper?.data;
     if (!d || !d.id) return null;
     return mapDetail(d);

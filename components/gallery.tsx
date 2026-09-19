@@ -30,6 +30,9 @@ export function Gallery({ listing }: { listing: Listing }) {
   }
 
   const current = shots[Math.min(active, shots.length - 1)];
+  // Only dealski-sourced listings carry image_source (dealski-backend PR
+  // #3173); undefined is equivalent to "photo" — no badge for those.
+  const isFallbackImage = !!listing.image_source && listing.image_source !== "photo";
 
   return (
     <div className="flex flex-col gap-3">
@@ -37,6 +40,11 @@ export function Gallery({ listing }: { listing: Listing }) {
       <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={current.url} alt={current.alt} className="size-full object-cover" />
+        {isFallbackImage && (
+          <span className="absolute bottom-3 left-3 rounded-[var(--radius-pill)] bg-ink-900/70 px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
+            Stock image
+          </span>
+        )}
         {shots.length > 1 && (
           <span className="absolute bottom-3 right-3 rounded-[var(--radius-pill)] bg-ink-900/80 px-2.5 py-1 font-mono text-[var(--text-xs)] text-white">
             {active + 1} / {shots.length}

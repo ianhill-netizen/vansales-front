@@ -34,6 +34,10 @@ export function ListingCard({
   const featured = isFeaturedSeller(listing.seller.name);
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
+  // Only dealski-sourced listings carry image_source (dealski-backend PR
+  // #3173); it's undefined for every other source, which is equivalent to
+  // "photo" here — no badge on a listing whose own image is a real photo.
+  const isFallbackImage = hasRealPhoto && !!listing.image_source && listing.image_source !== "photo";
   const fuelLower = listing.fuel.toLowerCase();
   const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
 
@@ -83,6 +87,13 @@ export function ListingCard({
           style={{ background: "linear-gradient(to top, rgba(8,14,28,0.45) 0%, transparent 100%)" }}
           aria-hidden
         />
+
+        {/* Bottom-left: flags a library/placeholder fallback image, not the vehicle's own photo */}
+        {isFallbackImage && (
+          <span className="absolute bottom-2.5 left-3 rounded-[var(--radius-pill)] bg-ink-900/70 px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
+            Stock image
+          </span>
+        )}
 
         {/* Top-left badges */}
         <div className="absolute left-3 top-3 flex flex-wrap items-center gap-1.5">
