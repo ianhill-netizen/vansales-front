@@ -475,7 +475,9 @@ export const fetchDealskiCatalogue = unstable_cache(
   // (PR #777) and before restoring stock_vehicles id=1150 landed. Bumping
   // the key is this repo's own established way to force a fresh fetch
   // (see PR #70, "chore: bust dealski catalogue cache").
-  ["dealski-catalogue-v8"],
+  // v9: same reason again -- dealski-backend PR #3182 set a real
+  // image_placeholders.generic default; same persistent-cache gap.
+  ["dealski-catalogue-v9"],
   { revalidate: REVALIDATE, tags: ["dealski"] },
 );
 
