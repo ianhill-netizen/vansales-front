@@ -250,6 +250,11 @@ export const VAN_MAKES: VanMake[] = [
     "Staria",
   ]),
 
+  make("Ineos", false, [
+    "Grenadier",
+    "Quartermaster",
+  ]),
+
   make("Isuzu", false, [
     // UK commercial presence = D-Max pickup
     "D-Max",
