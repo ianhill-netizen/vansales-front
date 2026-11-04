@@ -257,13 +257,45 @@ export function VansFilter({
   total,
   facets,
   searchParams,
+  quickFilters,
 }: {
   total: number;
   facets: ListingFacets;
   searchParams: Search;
+  /** Quick-filter chips (server-rendered links), shown under the sticky search bar. */
+  quickFilters?: React.ReactNode;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  // "Near me" location (lat / lng / loc / radius) and the price view (pay, dep, term, apr, view, ulez) live outside the filter draft: carry them across every apply.
+  const geoLat = one(searchParams.lat);
+  const geoLoc = one(searchParams.loc);
+  const hasGeo = !!(geoLat && one(searchParams.lng));
+  const geoRadius = one(searchParams.radius);
+  function keep(url: string, d: FilterDraft, opts: { geo?: boolean } = { geo: true }): string {
+    const [path, qs = ""] = url.split("?");
+    const p = new URLSearchParams(qs);
+    for (const k of ["pay", "dep", "term", "apr", "view", ...(opts.geo ? ["lat", "lng", "loc"] : [])]) {
+      const v = one(searchParams[k]);
+      if (v && !p.has(k)) p.set(k, v);
+    }
+    if (opts.geo && !d.postcode.trim() && geoRadius && !p.has("radius")) p.set("radius", geoRadius);
+    if (one(searchParams.ulez) && opts.geo !== false && !p.has("ulez")) p.set("ulez", one(searchParams.ulez));
+    const out = p.toString();
+    return `${path}${out ? `?${out}` : ""}`;
+  }
+  function setGeoRadius(r: string) {
+    const p = new URLSearchParams(Object.entries(searchParams).flatMap(([k, v]) => (one(v) ? [[k, one(v)]] : [])));
+    p.delete("page");
+    if (r) p.set("radius", r); else p.delete("radius");
+    startTransition(() => router.push(`/vans?${p.toString()}`, { scroll: false }));
+  }
+  function clearGeo() {
+    const p = new URLSearchParams(Object.entries(searchParams).flatMap(([k, v]) => (one(v) ? [[k, one(v)]] : [])));
+    for (const k of ["lat", "lng", "loc", "radius", "page"]) p.delete(k);
+    startTransition(() => router.push(`/vans${p.toString() ? `?${p}` : ""}`, { scroll: false }));
+  }
   const [draft, setDraft] = useState<FilterDraft>(() => parseSearchParams(searchParams));
   const [modalOpen, setModalOpen] = useState(false);
   const [scrollTarget, setScrollTarget] = useState<string | null>(null);
@@ -306,7 +338,7 @@ export function VansFilter({
   }
 
   function applyAndClose() {
-    startTransition(() => router.push(draftToUrl(draft), { scroll: false }));
+    startTransition(() => router.push(keep(draftToUrl(draft), draft), { scroll: false }));
     setModalOpen(false);
     setScrollTarget(null);
   }
@@ -315,21 +347,21 @@ export function VansFilter({
     setDraft({ ...EMPTY });
     setSliderMonthly(MONTHLY_MAX_CEILING);
     setSliderDeposit(3000);
-    startTransition(() => router.push("/vans", { scroll: false }));
+    startTransition(() => router.push(keep("/vans", EMPTY, { geo: false }), { scroll: false }));
     setModalOpen(false);
   }
 
   function clearChip(chip: Chip) {
     const next = { ...draft, ...chip.clear };
     setDraft(next);
-    startTransition(() => router.push(draftToUrl(next), { scroll: false }));
+    startTransition(() => router.push(keep(draftToUrl(next), next), { scroll: false }));
   }
 
   /** Chip search edits apply straight away (like removing a chip) so the results follow the bar. */
   function setVehicles(vehicles: VehicleChip[]) {
     const next = { ...draft, vehicles };
     setDraft(next);
-    startTransition(() => router.push(draftToUrl(next), { scroll: false }));
+    startTransition(() => router.push(keep(draftToUrl(next), next), { scroll: false }));
   }
 
   function handleMonthlySlider(val: number) {
@@ -370,11 +402,14 @@ export function VansFilter({
       {/* ── Pill row ──────────────────────────────────────────────────────── */}
       <div className="mb-5">
         {/* Chip search: type a make or model, pick it, it becomes a chip. Several allowed. */}
-        <ChipSearch className="mb-3" value={draft.vehicles} onChange={setVehicles} />
-        <div className="flex items-center justify-between gap-2">
+        <div className="sticky top-[66px] z-30 -mx-[var(--gutter)] mb-3 space-y-2.5 border-b border-border/70 bg-white/95 px-[var(--gutter)] py-2.5 backdrop-blur-md">
+          <ChipSearch value={draft.vehicles} onChange={setVehicles} />
+          {quickFilters}
+        </div>
+        <div className="flex items-center gap-2">
 
-          {/* Main filter pills */}
-          <div className="flex flex-wrap gap-2">
+          {/* Filter & sort first on mobile; the pills scroll sideways in one row instead of wrapping into a tall stack */}
+          <div className="order-2 -mr-[var(--gutter)] flex min-w-0 flex-1 gap-2 overflow-x-auto pr-[var(--gutter)] [scrollbar-width:none] md:order-none md:mr-0 md:flex-wrap md:overflow-visible md:pr-0 [&::-webkit-scrollbar]:hidden [&>button]:shrink-0 [&>button]:whitespace-nowrap">
 
             <button type="button" className={pillCls(draft.vehicles.length > 0)} onClick={() => openAt("make")}>
               {makeModelPillLabel(draft)}
@@ -433,7 +468,7 @@ export function VansFilter({
           <button
             type="button"
             onClick={() => openAt(null)}
-            className={`flex items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-[var(--text-sm)] font-semibold shadow-[var(--shadow-xs)] transition-colors shrink-0 ${
+            className={`order-1 flex items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-[var(--text-sm)] font-semibold shadow-[var(--shadow-xs)] transition-colors shrink-0 md:order-none ${
               catchAllCount > 0
                 ? "border-brand-300 bg-brand-50 text-brand-700 hover:bg-brand-100"
                 : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
@@ -450,8 +485,24 @@ export function VansFilter({
         </div>
 
         {/* Active filter chips (vehicles live in the chip search bar above) */}
-        {chips.length > 0 && (
+        {(chips.length > 0 || hasGeo) && (
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            {hasGeo && (
+              <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 py-0.5 pl-2.5 pr-1 text-[var(--text-xs)] font-semibold text-brand-700">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
+                {geoLoc || "Near me"} ·
+                <select
+                  value={geoRadius}
+                  onChange={(e) => setGeoRadius(e.target.value)}
+                  aria-label="Search radius"
+                  className="cursor-pointer bg-transparent py-0.5 text-[var(--text-xs)] font-semibold text-brand-700 outline-none"
+                >
+                  {["10", "20", "30", "50", "100"].map((r) => <option key={r} value={r}>{r} mi</option>)}
+                  <option value="">Nationwide</option>
+                </select>
+                <button type="button" onClick={clearGeo} aria-label="Clear location" className="grid size-5 place-items-center rounded-full text-brand-400 hover:bg-brand-100 hover:text-brand-700">×</button>
+              </span>
+            )}
             {chips.map((chip) => (
               <button
                 key={chip.key}

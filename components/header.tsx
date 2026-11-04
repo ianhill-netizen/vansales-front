@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Container } from "./ui";
 import { Logo } from "./brand";
 import { MobileNav } from "./mobile-nav";
-import { AccountButton } from "./account-button";
 import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
 import { SELL_URL } from "@/lib/site";
 
@@ -41,11 +40,18 @@ const DROP_ITEM_CLS =
   "block px-4 py-2.5 text-[var(--text-sm)] font-medium text-ink-700 hover:bg-surface-1 hover:text-brand-700 transition-colors duration-[var(--dur-fast)] rounded-[var(--radius-sm)]";
 
 const GUIDES_ITEMS = [
-  { href: "/van-reviews", label: "Van reviews" },
   { href: "/blog",        label: "Guides & news" },
+  { href: "/van-reviews", label: "Van reviews" },
+  { href: "/new-vans",    label: "New van models" },
 ];
 
-type OpenId = "used" | "guides" | null;
+const FINANCE_ITEMS = [
+  { href: "/van-finance",       label: "Van finance" },
+  { href: "/van-contract-hire", label: "Van leasing" },
+  { href: "/van-insurance",     label: "Insurance" },
+];
+
+type OpenId = "used" | "finance" | "guides" | null;
 
 function NavDropdown({
   label,
@@ -107,7 +113,7 @@ function VansForSaleDropdown({
         onClick={onToggle}
         className={`${NAV_LINK_CLS} gap-1.5 ${open ? "text-ink-900" : ""}`}
       >
-        Vans for sale
+        Buy a van
         <Chevron open={open} />
         {open && <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-accent-500" />}
       </button>
@@ -180,51 +186,40 @@ export function Header() {
   const close = () => setOpenMenu(null);
 
   return (
-    <header ref={headerRef} className="sticky z-40 bg-white/97 backdrop-blur-md" style={{ top: "var(--coming-soon-h, 0px)" }}>
+    <header ref={headerRef} className="sticky top-0 z-40 border-b border-border bg-white/97 backdrop-blur-md">
       {/* Top accent line — brand identity stripe */}
       <div className="h-0.5" style={{ background: "linear-gradient(to right, #1b5aa8, #f47c1e)" }} />
 
-      {/* ── Row 1: Logo + utility actions ──────────────────────────────── */}
-      <div className="border-b border-border">
-        <Container className="flex h-16 items-center justify-between gap-4">
-          <Logo tone="dark" />
+      <Container className="flex h-16 items-center gap-2">
+        <Logo tone="dark" />
 
-          <nav className="flex items-center gap-1">
-            {/* "Saved" is hidden until the saved-vans feature is built (there is no /saved route). */}
-            <AccountButton />
-            <MobileNav />
-          </nav>
-        </Container>
-      </div>
-
-      {/* ── Row 2: Primary nav ──────────────────────────────────────────── */}
-      <div className="hidden border-b border-border bg-white md:block">
-        <Container className="flex h-10 items-stretch">
-          <VansForSaleDropdown
-            open={openMenu === "used"}
-            onToggle={() => toggle("used")}
-            onClose={close}
-          />
+        {/* Primary nav (desktop) */}
+        <nav className="ml-4 hidden h-full items-stretch md:flex" aria-label="Main">
+          <VansForSaleDropdown open={openMenu === "used"} onToggle={() => toggle("used")} onClose={close} />
+          <Link href="/vans?view=map" className={NAV_LINK_CLS} onClick={close}>Map</Link>
           <Link href="/dealers" className={NAV_LINK_CLS} onClick={close}>Dealers</Link>
-          <a href={SELL_URL} className={NAV_LINK_CLS} onClick={close}>Sell your van</a>
-          <Link href="/advertise" className={NAV_LINK_CLS} onClick={close}>Advertise</Link>
-          <NavDropdown
-            id="guides"
-            label="Van reviews"
-            items={GUIDES_ITEMS}
-            open={openMenu === "guides"}
-            onToggle={() => toggle("guides")}
-            onClose={close}
-          />
-          <Link href="/new-vans"           className={NAV_LINK_CLS} onClick={close}>New van models</Link>
-          <Link href="/van-contract-hire" className={NAV_LINK_CLS} onClick={close}>Van leasing</Link>
-          <Link href="/van-finance"       className={NAV_LINK_CLS} onClick={close}>Finance</Link>
-          <Link href="/vans/electric"     className={`${NAV_LINK_CLS} text-success-600 hover:text-success-700`} onClick={close}>
-            Electric vans
+          <NavDropdown id="finance" label="Finance" items={FINANCE_ITEMS} open={openMenu === "finance"} onToggle={() => toggle("finance")} onClose={close} />
+          <NavDropdown id="guides" label="Blog" items={GUIDES_ITEMS} open={openMenu === "guides"} onToggle={() => toggle("guides")} onClose={close} />
+        </nav>
+
+        {/* Right: dealer login + sell */}
+        <div className="ml-auto flex items-center gap-2">
+          <Link
+            href="/dealer-portal/login"
+            className="hidden rounded-[var(--radius-md)] border border-border-strong px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-900 md:inline-flex"
+          >
+            Dealer login
           </Link>
-          <Link href="/van-insurance"     className={NAV_LINK_CLS} onClick={close}>Insurance</Link>
-        </Container>
-      </div>
+          <a
+            href={SELL_URL}
+            className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
+            style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
+          >
+            Sell your van
+          </a>
+          <MobileNav />
+        </div>
+      </Container>
     </header>
   );
 }

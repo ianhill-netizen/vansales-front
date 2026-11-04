@@ -169,7 +169,7 @@ export function ListingCard({
           {distanceMiles != null && (
             <>
               <span aria-hidden>·</span>
-              <span>{Math.round(distanceMiles)} mi away</span>
+              <span className="font-semibold text-brand-700">{Math.round(distanceMiles)} mi</span>
             </>
           )}
         </p>

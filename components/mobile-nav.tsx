@@ -27,7 +27,7 @@ const MAKE_LINKS = POPULAR_MAKES.map((m) => ({
 /* Mirror of header.tsx nav — mobile sections. */
 const SECTIONS = [
   {
-    heading: "Vans for sale",
+    heading: "Buy a van",
     links: BODY_TYPE_LINKS,
   },
   {
@@ -37,6 +37,7 @@ const SECTIONS = [
   {
     heading: "Dealers & selling",
     links: [
+      { href: "/vans?view=map", label: "Search by map" },
       { href: "/dealers",    label: "Find a dealer" },
       { href: SELL_URL,      label: "Sell your van" },
       { href: "/advertise",  label: "Advertise with us" },
@@ -58,7 +59,7 @@ const SECTIONS = [
     heading: "Account",
     links: [
       { href: "/sign-in", label: "Customer login" },
-      { href: "/dealer-portal", label: "Dealer portal" },
+      { href: "/dealer-portal/login", label: "Dealer login" },
     ],
   },
 ];
