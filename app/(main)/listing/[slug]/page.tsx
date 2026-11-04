@@ -60,6 +60,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
+const formatMotDate = (d: string) => new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
 export default async function ListingPage({
   params,
 }: {
@@ -175,6 +177,30 @@ export default async function ListingPage({
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />
             </div>
+
+            {/* MOT facts from the DVLA / DVSA records (private adverts) */}
+            {(listing.mot_expiry || listing.last_mot_mileage != null) && (
+              <section className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3" aria-label="MOT">
+                <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                  {listing.mot_expiry && (
+                    <div>
+                      <dt className="text-[var(--text-sm)] text-ink-500">MOT expiry</dt>
+                      <dd className="font-medium text-ink-900">{formatMotDate(listing.mot_expiry)}</dd>
+                    </div>
+                  )}
+                  {listing.last_mot_mileage != null && (
+                    <div>
+                      <dt className="text-[var(--text-sm)] text-ink-500">Last MOT mileage</dt>
+                      <dd className="font-medium text-ink-900">
+                        {listing.last_mot_mileage.toLocaleString("en-GB")} miles
+                        {listing.last_mot_date ? <span className="font-normal text-ink-500"> · {formatMotDate(listing.last_mot_date)}</span> : null}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+                <p className="mt-2 text-[var(--text-xs,12px)] text-ink-500">From DVLA and DVSA records.</p>
+              </section>
+            )}
 
             {/* Description */}
             <section className="mt-8">
