@@ -26,16 +26,25 @@ const PHONE_TEL = "tel:+441656507619";
 
 export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; autoOpen?: boolean }) {
   const [state, setState] = useState<FormState>(autoOpen ? "open" : "idle");
+  // "?enquire=1" opens the form and scrolls to it. Read here, in the browser, so the page itself can be cached (reading it on the server forces a render per request).
+  const [fromUrl, setFromUrl] = useState(false);
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("enquire") === "1") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFromUrl(true);
+      setState((s) => (s === "idle" ? "open" : s));
+    }
+  }, []);
   const [errorMsg, setErrorMsg] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!autoOpen) return;
+    if (!autoOpen && !fromUrl) return;
     const t = setTimeout(() => {
       panelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 120);
     return () => clearTimeout(t);
-  }, [autoOpen]);
+  }, [autoOpen, fromUrl]);
   const sold = listing.status === "sold";
   const isPrivate = listing.seller_type === "private";
   // A private seller's advert (vansales-backend) has its own form: it posts straight to the vansales API, which emails the seller. It must never use the dealer form below,

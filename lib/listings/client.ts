@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import type {
   Listing,
   ListingFilters,
@@ -27,6 +29,48 @@ import { WHEELBASE_LABEL, titleCase } from "./format";
    The live source falls back to mock when the upstream is unreachable.
    ========================================================================== */
 
+/* ---------------------------------------------------------------------------
+   SLOW-UPSTREAM GUARDS
+   The native-listings database and the private-sellers feed are "nice to have":
+   the site must render without them. Before this, loadAll() awaited the database
+   serially, uncached, with no timeout, and swallowed the error silently: when the
+   database was unreachable EVERY render waited ~15 s per call (a model page calls
+   loadAll twice: ~31 s; a 404 did a database lookup first: ~19 s) and static
+   generation blew Vercel's 60 s per-page limit, failing the production build.
+   Now: bounded (EXTRAS_BUDGET_MS), run in parallel with the main feed, cached for
+   60 s (outages included, so a dead database costs one short wait a minute, not
+   one per request), memoised per request, and the failure is logged.
+   -------------------------------------------------------------------------*/
+const EXTRAS_BUDGET_MS = 2500;
+
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} took longer than ${ms}ms`)), ms);
+  });
+  return Promise.race([p, timeout]).finally(() => clearTimeout(timer));
+}
+
+/** Native (portal-added) listings + private sellers' adverts. Never throws; an upstream that fails or is slow contributes nothing for the next 60 s. */
+const loadExtras = unstable_cache(
+  async (): Promise<Listing[]> => {
+    const t0 = Date.now();
+    const [native, priv] = await Promise.all([
+      withTimeout(fetchNativeDbListings(), EXTRAS_BUDGET_MS, "native listings (database)").catch((e: Error) => {
+        console.warn(`[listings] native listings skipped after ${Date.now() - t0}ms: ${e.message}`);
+        return [] as Listing[];
+      }),
+      withTimeout(fetchPrivateSellerListings(), EXTRAS_BUDGET_MS * 2, "private sellers feed").catch((e: Error) => {
+        console.warn(`[listings] private sellers' adverts skipped after ${Date.now() - t0}ms: ${e.message}`);
+        return [] as Listing[];
+      }),
+    ]);
+    return [...native, ...priv];
+  },
+  ["listing-extras-v1"],
+  { revalidate: 60, tags: ["listing-extras"] },
+);
+
 function configuredSource(): ListingSource | "mock" | "marketplace" {
   const v = (process.env.LISTINGS_SOURCE || "mock").toLowerCase();
   if (v === "marketplace") return "marketplace";
@@ -36,7 +80,7 @@ function configuredSource(): ListingSource | "mock" | "marketplace" {
 
 /** Load the ENTIRE catalogue from the active source (cached), with fallback.
  *  Native DB listings are always merged on top of the configured source. */
-async function loadAll(): Promise<{
+async function loadAllUncached(): Promise<{
   listings: Listing[];
   servedBy: ListingSource | "mock";
   live: boolean;
@@ -44,20 +88,8 @@ async function loadAll(): Promise<{
 }> {
   const source = configuredSource();
 
-  // Always pull native listings from our DB (portal-added stock).
-  // Failure is non-fatal — the rest of the catalogue still serves.
-  let nativeDb: Listing[] = [];
-  try {
-    nativeDb = await fetchNativeDbListings();
-  } catch {
-    /* non-fatal */
-  }
-  // Private sellers' adverts (vansales-backend) ride along with the native listings in every branch below.
-  try {
-    nativeDb = [...nativeDb, ...(await fetchPrivateSellerListings())];
-  } catch {
-    /* non-fatal: the site serves without them */
-  }
+  // Native listings + private sellers' adverts start NOW, in parallel with the main feed below, and are awaited only when merging.
+  const extrasP = loadExtras().catch(() => [] as Listing[]);
 
   // Always include demo dealer listings so the multi-dealer layout
   // is visible alongside the live feed.
@@ -69,8 +101,8 @@ async function loadAll(): Promise<{
       const { listings, feedTotal } = await fetchMarketplaceCatalogue();
       if (listings.length > 0) {
         console.info(`[listings] served by marketplace feed (${listings.length} vehicles)`);
-        const merged = [...listings, ...nativeDb, ...demo];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
+        const merged = [...listings, ...(await extrasP), ...demo];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + (await extrasP).length + demo.length };
       }
       console.warn("[listings] marketplace returned 0 vehicles — falling back to legacy feed");
     } catch (err) {
@@ -81,15 +113,15 @@ async function loadAll(): Promise<{
       const { listings, feedTotal } = await fetchDealskiCatalogue();
       if (listings.length > 0) {
         console.info(`[listings] served by legacy dealski feed (${listings.length} vehicles)`);
-        const merged = [...listings, ...nativeDb, ...demo];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
+        const merged = [...listings, ...(await extrasP), ...demo];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + (await extrasP).length + demo.length };
       }
     } catch {
       /* fall through to mock */
     }
     console.warn("[listings] both dealski feeds failed — serving mock data");
     const mock = getMockListings();
-    const merged = [...mock, ...nativeDb, ...demo];
+    const merged = [...mock, ...(await extrasP), ...demo];
     return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
@@ -97,20 +129,20 @@ async function loadAll(): Promise<{
     try {
       const { listings, feedTotal } = await fetchDealskiCatalogue();
       if (listings.length > 0) {
-        const merged = [...listings, ...nativeDb, ...demo];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + nativeDb.length + demo.length };
+        const merged = [...listings, ...(await extrasP), ...demo];
+        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + (await extrasP).length + demo.length };
       }
     } catch {
       /* fall through */
     }
     const mock = getMockListings();
-    const merged = [...mock, ...nativeDb, ...demo];
+    const merged = [...mock, ...(await extrasP), ...demo];
     return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
   }
 
   // 'native' and 'mock' modes.
   const mock = getMockListings();
-  const merged = [...mock, ...nativeDb, ...demo];
+  const merged = [...mock, ...(await extrasP), ...demo];
   return {
     listings: merged,
     servedBy: source === "native" ? "native" : "mock",
@@ -118,6 +150,10 @@ async function loadAll(): Promise<{
     feedTotal: merged.length,
   };
 }
+
+
+/** One catalogue load per request: getListings() and getFacets() on the same page share it. */
+const loadAll = cache(loadAllUncached);
 
 function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
   let out = listings.filter((l) => l.status !== "removed");
@@ -293,7 +329,12 @@ export async function getFacets(base: ListingFilters = {}): Promise<ListingFacet
   };
 }
 
-export async function getListingBySlug(slug: string): Promise<{ listing: Listing | null; servedBy: ListingSource | "mock" }> {
+/** Native (database) listing ids are cuids. A slug ending in anything else (a Dealski number, a typo) can never be one, so it must not cost a database round trip. */
+const NATIVE_ID = /^c[a-z0-9]{20,30}$/;
+
+export const getListingBySlug = cache(getListingBySlugUncached);
+
+async function getListingBySlugUncached(slug: string): Promise<{ listing: Listing | null; servedBy: ListingSource | "mock" }> {
   // A private seller's advert: resolved by its own prefix first, so its trailing number can never be mistaken for another source's id.
   if (slug.startsWith(PRIVATE_SLUG_PREFIX)) {
     return { listing: await fetchPrivateSellerListingBySlug(slug).catch(() => null), servedBy: "vansales" };
@@ -302,7 +343,12 @@ export async function getListingBySlug(slug: string): Promise<{ listing: Listing
   const sourceId = sourceIdFromSlug(slug);
 
   // Always try native DB first (portal-added listings are always resolvable).
-  const nativeListing = await fetchNativeDbListingById(sourceId).catch(() => null);
+  const nativeListing = NATIVE_ID.test(sourceId)
+    ? await withTimeout(fetchNativeDbListingById(sourceId), EXTRAS_BUDGET_MS, "native listing lookup").catch((e: Error) => {
+        console.warn(`[listings] native lookup for ${sourceId} skipped: ${e.message}`);
+        return null;
+      })
+    : null;
   if (nativeListing) return { listing: nativeListing, servedBy: "native" };
 
   if (source === "marketplace") {
