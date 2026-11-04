@@ -222,7 +222,7 @@ export function VehiclePicker({
             else if (makesSelected.length) toggleMake(makesSelected[makesSelected.length - 1]);
           }
         }}
-        placeholder={anySelected ? "Add more…" : "Tap a make below, or type to find one"}
+        placeholder={anySelected ? "Add more…" : "Pick a make, or just type"}
         aria-label="Search makes, models, body types and fuels"
         aria-controls={sheetId}
         autoComplete="off"
