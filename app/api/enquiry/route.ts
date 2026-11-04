@@ -108,10 +108,10 @@ export async function POST(req: Request) {
     .filter(Boolean)
     .join("\n");
 
-  // A private seller's advert (vansales-backend) has no contact route yet. Refuse it here: everything below forwards to a dealer's inbox, and a private seller's
-  // enquiry must never end up in Swiss Vans' leads. (The panel does not offer the form for these; this is the server-side backstop.)
+  // A private seller's advert (vansales-backend) is messaged through its own form, which posts to the vansales API. Refuse it here: everything below forwards to a dealer's
+  // inbox, and a private seller's enquiry must never end up in Swiss Vans' leads. (The panel does not use this route for these; this is the server-side backstop.)
   if (vehicleRef.startsWith("vansales-private:") || slug.startsWith("private-")) {
-    return NextResponse.json({ ok: false, error: "Messaging private sellers is not available yet." }, { status: 409 });
+    return NextResponse.json({ ok: false, error: "Private sellers are messaged through their own form on the advert." }, { status: 409 });
   }
 
   // Native DB listings: save locally and bypass Dealski entirely.

@@ -10,10 +10,12 @@ import { titleCase } from "../format";
    upstream) and the seller's name/email are never exposed: they appear as
    "Private seller". The photos are the CLEANED variant when the seller bought
    one (the API already prefers it). Unlike the dealer feeds this one has no
-   location, no contact route and no VAT: see enquiry-panel.tsx / api/enquiry.
+   location and no VAT. Buyers message the seller through
+   components/private-enquiry-form.tsx (browser -> the API's /enquire); the dealer
+   enquiry route (/api/enquiry) refuses these adverts.
    ========================================================================== */
 
-const BASE = (process.env.VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
+const BASE = (process.env.VANSALES_API_URL || process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
 const REVALIDATE = 60; // seconds: a new advert appears within a minute
 const MAX_PAGES = 20; // 24 a page: a safety cap, not an expectation
 
@@ -68,7 +70,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     features: [],
     images,
     seller: { name: "Private seller", type: "private", logo: null, rating: null },
-    // No contact route exists for private sellers yet: the enquiry panel and /api/enquiry refuse this ref instead of forwarding it to a dealer's inbox.
+    // Enquiries for these adverts go to the vansales API (private-enquiry-form.tsx), never to a dealer's inbox: /api/enquiry refuses this ref.
     enquiry_route: { to: "vansales_private", ref: `${PRIVATE_ENQUIRY_REF_PREFIX}${c.id}` },
     enquiry_url: null,
     stock_ref: null,

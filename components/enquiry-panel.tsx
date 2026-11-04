@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
 import { Button } from "./ui";
 import { IconCheck, IconShield, IconArrow } from "./icons";
+import { Field, inputCls } from "./enquiry-fields";
+import { PrivateEnquiryForm } from "./private-enquiry-form";
 
 type FormState = "idle" | "open" | "submitting" | "success" | "error";
 
@@ -36,8 +38,9 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
   }, [autoOpen]);
   const sold = listing.status === "sold";
   const isPrivate = listing.seller_type === "private";
-  // Private sellers' adverts (vansales-backend) have no contact route yet: show why, instead of a form whose enquiry would go nowhere (or, worse, to a dealer's inbox).
-  const noContactRoute = listing.source === "vansales";
+  // A private seller's advert (vansales-backend) has its own form: it posts straight to the vansales API, which emails the seller. It must never use the dealer form below,
+  // whose enquiries go to a dealer's Dealski inbox (/api/enquiry refuses these adverts as a backstop).
+  const privateViaVansales = listing.source === "vansales";
 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const displayName = isPrivate
@@ -144,11 +147,8 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
         </a>
       )}
 
-      {noContactRoute ? (
-        <div role="status" className="mt-4 rounded-[var(--radius-md)] bg-surface-1 px-4 py-3">
-          <p className="text-[var(--text-sm)] font-semibold text-ink-700">Messaging private sellers is coming soon</p>
-          <p className="mt-0.5 text-[var(--text-sm)] text-ink-500">We are building a safe way to contact private sellers without sharing anyone&apos;s details. Check back shortly.</p>
-        </div>
+      {privateViaVansales ? (
+        <PrivateEnquiryForm listing={listing} />
       ) : (
         <>
       {/* Divider */}
@@ -279,20 +279,6 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
   );
 }
 
-const inputCls =
-  "h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-base)] text-ink-800 outline-none transition-colors focus-visible:border-accent-500 focus-visible:ring-2 focus-visible:ring-accent-500/20";
-
-function Field({ label, required, children }: { label: string; required?: boolean; children: ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">
-        {label}
-        {required && <span className="ml-0.5 text-sold-600" aria-hidden>*</span>}
-      </span>
-      {children}
-    </label>
-  );
-}
 
 function PhoneIcon() {
   return (
