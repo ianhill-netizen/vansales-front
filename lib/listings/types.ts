@@ -99,6 +99,11 @@ export interface Listing {
   video_url?: string | null;
   video_vertical_url?: string | null;
 
+  /** MOT facts from the free DVLA / DVSA lookups (private sellers' adverts). Dates are YYYY-MM-DD. Null/absent = unknown. */
+  mot_expiry?: string | null;
+  last_mot_mileage?: number | null;
+  last_mot_date?: string | null;
+
   published_at: string; // ISO
   updated_at: string; // ISO
 }
