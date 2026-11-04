@@ -13,7 +13,13 @@ export interface DealerConfig {
     town: string;
     county: string;
     postcode: string;
+    /** A line of directions shown under the address, e.g. "Opposite the entrance to Asda Bridgend". */
+    directions?: string;
   };
+  /** Exact map-pin position for the address (WGS-84). Preferred over anything derived from the stock feed. */
+  coords?: { lat: number; lng: number };
+  /** Social profiles. An empty string is an unfilled slot (nothing is shown until a link is set). */
+  socials?: { facebook: string; instagram: string; linkedin: string; youtube: string };
   phone: string;
   /* WhatsApp number in international format, digits only, no + (e.g. 447XXXXXXXXX).
      Null = button renders disabled. */
@@ -32,7 +38,7 @@ export interface DealerConfig {
   googleReviewCount: number | null;
 }
 
-const SWISSVANS_WHATSAPP: string = "447446842888";
+const SWISSVANS_WHATSAPP: string = "447460094272"; // 07460 094272
 
 export const DEALERS: Record<string, DealerConfig> = {
   "swiss-vans": {
@@ -40,12 +46,16 @@ export const DEALERS: Record<string, DealerConfig> = {
     slug: "swiss-vans",
     dealskiTenant: "swissvans",
     location: {
-      line1: "Bocam Park, 31 Old Field Road",
-      town: "Pencoed, Bridgend",
+      line1: "Gees Yard, Coychurch Road",
+      town: "Bridgend",
       county: "Mid Glamorgan",
-      postcode: "CF35 5LJ",
+      postcode: "CF31 3AP",
+      directions: "Opposite the entrance to Asda Bridgend",
     },
-    phone: "(01446) 361042",
+    // CF31 3AP (postcodes.io): the dealer pin on the map
+    coords: { lat: 51.501575, lng: -3.572743 },
+    socials: { facebook: "", instagram: "", linkedin: "", youtube: "" },
+    phone: "01656 674620",
     whatsapp: SWISSVANS_WHATSAPP,
     websites: [
       { label: "swissvans.com", url: "https://www.swissvans.com" },
@@ -62,7 +72,7 @@ export const DEALERS: Record<string, DealerConfig> = {
       sun: null,
     },
     about:
-      "Swiss Vans is a privately owned dealership based in Bridgend with over 20 years of experience in van leasing, sales and custom conversions. Strong manufacturer relationships, high-spec stock, bespoke builds and honest no-pressure advice — whether you need a standard panel van or a fully customised conversion, the team at Bocam Park can help.",
+      "Swiss Vans is a privately owned dealership based in Bridgend with over 20 years of experience in van leasing, sales and custom conversions. Strong manufacturer relationships, high-spec stock, bespoke builds and honest no-pressure advice — whether you need a standard panel van or a fully customised conversion, the team at Gees Yard, Bridgend can help.",
     services: [
       "New & used van sales",
       "Commercial van sales",

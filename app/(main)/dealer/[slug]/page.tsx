@@ -116,9 +116,14 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   let mapLat: number | null = null;
   let mapLng: number | null = null;
   if (dealer) {
+    // The configured address pin wins (the stock feed's coordinates can be a different site); then the feed; then a postcode geocode.
+    if (dealer.coords) {
+      mapLat = dealer.coords.lat;
+      mapLng = dealer.coords.lng;
+    }
     const coordSource = listings.find((l) => l.location.lat != null && l.location.lng != null);
-    mapLat = coordSource?.location.lat ?? null;
-    mapLng = coordSource?.location.lng ?? null;
+    mapLat ??= coordSource?.location.lat ?? null;
+    mapLng ??= coordSource?.location.lng ?? null;
     if (mapLat == null || mapLng == null) {
       const g = await safeDb("dealer geocode", () => geocodeTown(`${effectiveDealer.location.postcode || effectiveDealer.location.town}`), null, 4000);
       if (g) { mapLat = g.lat; mapLng = g.lng; }
@@ -291,6 +296,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               <div className="mt-3 flex items-start gap-1.5 text-[var(--text-sm)] text-ink-500">
                 <IconPin width={14} height={14} className="mt-0.5 shrink-0 text-ink-400" />
                 <span>
+                  {effectiveDealer.location.directions && <span className="block font-medium text-ink-700">{effectiveDealer.location.directions}</span>}
                   {mapAddress}
                   {" · "}
                   <a
@@ -371,6 +377,20 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                           {site.label}
                           <IconExternalLink width={12} height={12} className="ml-auto shrink-0 text-ink-400" />
                         </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Social profiles: only the ones that are set */}
+              {Object.values(effectiveDealer.socials ?? {}).some(Boolean) && (
+                <div className="mt-4 border-t border-border pt-4">
+                  <p className="mb-2 text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">Follow us</p>
+                  <ul className="flex flex-wrap gap-2">
+                    {(Object.entries(effectiveDealer.socials ?? {}) as [string, string][]).filter(([, url]) => url).map(([network, url]) => (
+                      <li key={network}>
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="rounded-[var(--radius-pill)] border border-border px-3 py-1 text-[var(--text-sm)] font-semibold capitalize text-brand-700 hover:border-brand-300">{network}</a>
                       </li>
                     ))}
                   </ul>

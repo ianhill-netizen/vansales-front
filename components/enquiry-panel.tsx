@@ -147,11 +147,11 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
       {/* Phone CTA — dealer only; never shown for private listings */}
       {!isPrivate && (
         <a
-          href={PHONE_TEL}
+          href={dealerConfig ? `tel:${dealerConfig.phone.replace(/[^\d+]/g, "")}` : PHONE_TEL}
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3 text-[var(--text-base)] font-bold text-success-600 transition-colors hover:bg-success-500 hover:text-white"
         >
           <PhoneIcon />
-          <span>{PHONE_DISPLAY}</span>
+          <span>{dealerConfig?.phone ?? PHONE_DISPLAY}</span>
           <span className="text-[var(--text-sm)] font-normal opacity-75">· Request callback</span>
         </a>
       )}

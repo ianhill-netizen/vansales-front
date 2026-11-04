@@ -291,6 +291,7 @@ export default async function ListingPage({
                   model: listing.model,
                   plate: listing.plate,
                   slug: listing.slug,
+                  vrm: listing.vrm,
                 }}
                 dealer={dealerConfig}
               />
