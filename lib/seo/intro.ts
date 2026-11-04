@@ -17,9 +17,17 @@ export function priceRange(s: Stat): string | null {
   return s.maxPrice != null && s.maxPrice !== s.minPrice ? `${gbp(s.minPrice)} to ${gbp(s.maxPrice)}` : gbp(s.minPrice);
 }
 
-export function yearRange(s: Stat): string | null {
+/** "priced at £9,000" for one price, "priced from £9,000 to £12,000" for a range. */
+function pricedPhrase(s: Stat): string | null {
+  const pr = priceRange(s);
+  if (!pr) return null;
+  return pr.includes(" to ") ? `priced from ${pr}` : `priced at ${pr}`;
+}
+
+/** "in 2022" for one year, "between 2018 and 2022" for a range; null when no year is known. Use after the word "registered". */
+export function registeredPhrase(s: Stat): string | null {
   if (s.minYear == null) return null;
-  return s.maxYear != null && s.maxYear !== s.minYear ? `${s.minYear} to ${s.maxYear}` : String(s.minYear);
+  return s.maxYear != null && s.maxYear !== s.minYear ? `between ${s.minYear} and ${s.maxYear}` : `in ${s.minYear}`;
 }
 
 const vans = (n: number) => `${n.toLocaleString("en-GB")} ${n === 1 ? "van" : "vans"}`;
@@ -34,9 +42,9 @@ export function modelIntro(m: ModelStat): string[] {
       `There are no ${full} vans listed on Vansales right now. Stock from dealers and private sellers changes every day, so check back soon, or look at similar vans below.`,
     );
   } else {
-    const pr = priceRange(m), yr = yearRange(m);
+    const pp = pricedPhrase(m), yr = registeredPhrase(m);
     out.push(
-      `${vans(m.count)} ${m.count === 1 ? "is" : "are"} currently for sale as a ${full}${pr ? `, priced from ${pr}` : ""}${yr ? ` and registered between ${yr}` : ""}. Listings come from UK dealers and private sellers and are updated as stock changes.`,
+      `${vans(m.count)} ${m.count === 1 ? "is" : "are"} currently for sale as a ${full}${pp ? `, ${pp}` : ""}${yr ? ` and registered ${yr}` : ""}. Listings come from UK dealers and private sellers and are updated as stock changes.`,
     );
   }
 
@@ -62,11 +70,11 @@ export function modelIntro(m: ModelStat): string[] {
 export function makeIntro(makeName: string, s: Stat, models: ModelStat[]): string {
   const stocked = models.filter((m) => m.count > 0);
   if (s.count === 0) return `There are no ${makeName} vans listed right now. Browse the ${makeName} models below, or look at other makes.`;
-  const pr = priceRange(s), yr = yearRange(s);
+  const pp = pricedPhrase(s), yr = registeredPhrase(s);
   return (
     `${vans(s.count)} for sale from ${makeName}, across ${stocked.length} ${stocked.length === 1 ? "model" : "models"}` +
     (stocked.length ? ` including ${list(stocked.map((m) => m.name), 4)}` : "") +
-    `${pr ? `, priced from ${pr}` : ""}${yr ? ` and registered ${yr}` : ""}.` +
+    `${pp ? `, ${pp}` : ""}${yr ? ` and registered ${yr}` : ""}.` +
     (s.fuels.length ? ` Fuel types in stock: ${list(s.fuels)}.` : "") +
     ` Pick a model to see only that van, or scroll for every ${makeName} listing.`
   );
@@ -74,10 +82,10 @@ export function makeIntro(makeName: string, s: Stat, models: ModelStat[]): strin
 
 export function categoryIntro(label: string, s: Stat, popular: string[]): string | null {
   if (s.count === 0) return null;
-  const pr = priceRange(s), yr = yearRange(s);
+  const pp = pricedPhrase(s), yr = registeredPhrase(s);
   return (
     `${vans(s.count)} ${s.count === 1 ? "is" : "are"} listed in this category right now` +
-    `${pr ? `, from ${pr}` : ""}${yr ? `, registered ${yr}` : ""}.` +
+    `${pp ? `, ${pp}` : ""}${yr ? `, registered ${yr}` : ""}.` +
     (popular.length ? ` The most common models are ${list(popular, 4)}.` : "") +
     ` Filter by make, price and mileage to narrow the ${label.toLowerCase()}.`
   );
