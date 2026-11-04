@@ -1,38 +1,26 @@
 import type { MetadataRoute } from "next";
-import { getListings, getModelIndex } from "@/lib/listings/client";
+import { getListings } from "@/lib/listings/client";
 import { getNewVanSlugs } from "@/lib/content/new-vans";
 import { getBlogSlugs } from "@/lib/content/blog";
 import { getDealerDirectory } from "@/lib/dealers/directory";
 import { listingPath } from "@/lib/listings/slug";
-import { resolveModelSlug } from "@/lib/models/image";
-import { slugify } from "@/lib/listings/slug";
-import { POPULAR_MAKES, getMakeByName } from "@/lib/taxonomy/van-makes";
+import { CATEGORIES } from "@/lib/seo/categories";
+import { categoryListings, loadCatalogue, makeStat, modelStat, statOf } from "@/lib/seo/catalogue";
 import { siteUrl } from "@/lib/site";
-
-const BODY_TYPE_PAGES = [
-  "/vans/panel-van",
-  "/vans/luton",
-  "/vans/tipper",
-  "/vans/dropside",
-  "/vans/crew-van",
-  "/vans/pickup",
-  "/vans/minibus",
-  "/vans/chassis-cab",
-  "/vans/electric",
-  "/vans/ulez",
-];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
-  const [{ listings }, models, dealers] = await Promise.all([
+  const [{ listings }, idx, dealers] = await Promise.all([
     getListings({}),
-    getModelIndex(),
+    loadCatalogue(),
     getDealerDirectory().catch(() => []),
   ]);
+  // lastmod = the newest listing update behind the page (never an invented date); a page with no data of its own falls back to the newest update site-wide.
+  const siteLast = idx.site.lastModified ?? undefined;
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${base}/`, changeFrequency: "daily", priority: 1 },
-    { url: `${base}/vans`, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/`, lastModified: siteLast, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/vans`, lastModified: siteLast, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/dealers`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/new-vans`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.6 },
@@ -45,34 +33,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/directory`, changeFrequency: "weekly", priority: 0.6 },
   ];
 
-  const bodyTypeRoutes: MetadataRoute.Sitemap = BODY_TYPE_PAGES.map((path) => ({
-    url: `${base}${path}`,
+  // Category pages (body types, electric, ULEZ): always indexable.
+  const bodyTypeRoutes: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({
+    url: `${base}/vans/${c.slug}`,
+    lastModified: statOf(categoryListings(idx, c)).lastModified ?? siteLast,
     changeFrequency: "daily",
     priority: 0.8,
   }));
 
-  // Make pages: every make with stock, plus the popular makes. (A make page for a make with no stock 404s, so it never goes in.)
-  const stockedMakes = new Set<string>();
-  for (const m of models) stockedMakes.add(getMakeByName(m.make)?.slug ?? slugify(m.make));
-  const makeSlugs = new Set<string>([...stockedMakes]);
-  for (const m of POPULAR_MAKES) if (stockedMakes.has(m.slug)) makeSlugs.add(m.slug);
-  const makeRoutes: MetadataRoute.Sitemap = [...makeSlugs].map((slug) => ({
-    url: `${base}/vans/${slug}`,
-    changeFrequency: "daily",
-    priority: 0.75,
-  }));
+  // Make pages: every make with stock (a make with none is noindex, so it stays out).
+  const makeRoutes: MetadataRoute.Sitemap = [...idx.byMake.keys()]
+    .filter((slug) => makeStat(idx, slug).count > 0)
+    .map((slug) => ({
+      url: `${base}/vans/${slug}`,
+      lastModified: makeStat(idx, slug).lastModified ?? siteLast,
+      changeFrequency: "daily" as const,
+      priority: 0.75,
+    }));
 
-  // Model pages: the feed reports verbose strings ("Transit Custom 320 L2 Diesel FWD"). One URL per BASE model, never one per variant string.
-  const modelPaths = new Set<string>();
-  for (const m of models) {
-    const r = resolveModelSlug(m.make, m.model);
-    if (r) modelPaths.add(`/vans/${r.makeSlug}/${r.modelSlug}`);
-  }
-  const modelRoutes: MetadataRoute.Sitemap = [...modelPaths].map((path) => ({
-    url: `${base}${path}`,
-    changeFrequency: "daily",
-    priority: 0.8,
-  }));
+  // Model pages: one URL per BASE model with stock, never one per variant string ("Transit Custom 320 L2 Diesel FWD").
+  const modelRoutes: MetadataRoute.Sitemap = [...idx.byModel.keys()].map((key) => {
+    const [m, mod] = key.split("/");
+    return {
+      url: `${base}/vans/${m}/${mod}`,
+      lastModified: modelStat(idx, m, mod).lastModified ?? siteLast,
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    };
+  });
 
   const dealerRoutes: MetadataRoute.Sitemap = dealers.map((d) => ({
     url: `${base}/dealer/${d.slug}`,

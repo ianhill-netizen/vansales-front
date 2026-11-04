@@ -8,11 +8,16 @@ import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
 import { SpecCard } from "@/components/spec-card";
 import { getListings, getFacets } from "@/lib/listings/client";
+import { InternalLinks } from "@/components/seo/internal-links";
+import { loadCatalogue, modelStat } from "@/lib/seo/catalogue";
+import { modelIntro, priceRange } from "@/lib/seo/intro";
+import { categoryLinks, competitorLinks, makeLinks, modelLinksOfMake } from "@/lib/seo/links";
 import type { ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { listingTitle, listingMeta } from "@/lib/listings/format";
 import { listingPath } from "@/lib/listings/slug";
 import { MODEL_CONTENT, getModelContent } from "@/lib/models/content.generated";
 import { SITE, absUrl } from "@/lib/site";
+import { getMakeBySlug, getModelBySlug } from "@/lib/taxonomy/van-makes";
 
 export const revalidate = 3600; // ISR — rebuild every 1 h
 
@@ -43,10 +48,6 @@ function titleizeSlug(slug: string): string {
     .split("-")
     .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
     .join(" ");
-}
-
-function truncate(s: string, n: number): string {
-  return s.length <= n ? s : `${s.slice(0, n - 1).replace(/\s+\S*$/, "")}…`;
 }
 
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
@@ -96,8 +97,9 @@ async function resolve(params: Promise<Params>, searchParams: Promise<Search>) {
   const filters = parseFilters(make, model, sp);
   const result = await getListings(filters);
   const content = getModelContent(make, model);
-  const makeName = content?.make ?? result.listings[0]?.make ?? titleizeSlug(make);
-  const modelName = content?.model ?? result.listings[0]?.model ?? titleizeSlug(model);
+  // Taxonomy names first (clean "Transit Custom"), then generated content, then the feed's verbose string.
+  const makeName = getMakeBySlug(make)?.name ?? content?.make ?? result.listings[0]?.make ?? titleizeSlug(make);
+  const modelName = getModelBySlug(make, model)?.name ?? content?.model ?? titleizeSlug(model);
   return { makeSlug: make, modelSlug: model, makeName, modelName, sp, result, content };
 }
 
@@ -108,23 +110,23 @@ export async function generateMetadata({
   params: Promise<Params>;
   searchParams: Promise<Search>;
 }): Promise<Metadata> {
-  const { makeSlug, modelSlug, makeName, modelName, result, content } = await resolve(params, searchParams);
+  const { makeSlug, modelSlug, makeName, modelName, result } = await resolve(params, searchParams);
+  const stat = modelStat(await loadCatalogue(), makeSlug, modelSlug);
   const onPage = result.page > 1 ? ` — Page ${result.page}` : "";
-  const title = `${makeName} ${modelName} for sale${onPage}`;
-  const description = content?.intro?.length
-    ? truncate(`${makeName} ${modelName} vans for sale on ${SITE.name}. ${content.intro[0]}`, 160)
-    : `Browse ${result.total} ${makeName} ${modelName} vans for sale across the UK on ${SITE.name}. Filter by price, year, wheelbase, body style and fuel.`;
+  const title = `${makeName} ${modelName} Vans for Sale UK${onPage} | ${SITE.name}`;
+  const pr = priceRange(stat);
+  const description = stat.count > 0
+    ? `Browse ${stat.count.toLocaleString("en-GB")} ${makeName} ${modelName} van${stat.count === 1 ? "" : "s"} for sale in the UK${pr ? `, priced ${pr}` : ""}. Compare mileage, year, wheelbase and fuel type from dealers and private sellers on ${SITE.name}.`
+    : `Find ${makeName} ${modelName} vans for sale in the UK on ${SITE.name}. No ${modelName} is listed right now, so compare similar vans from dealers and private sellers.`;
   return {
-    title,
+    title: { absolute: title },
     description,
     // Canonical excludes filter params (facet dupes) but keeps the page number.
     alternates: { canonical: cleanPageUrl(makeSlug, modelSlug, result.page) },
-    openGraph: {
-      title: `${title} · ${SITE.name}`,
-      description,
-      url: cleanPageUrl(makeSlug, modelSlug, result.page),
-      type: "website",
-    },
+    openGraph: { title, description, url: cleanPageUrl(makeSlug, modelSlug, result.page), type: "website" },
+    twitter: { card: "summary_large_image", title, description },
+    // No stock = a thin page: out of the index, links still followed.
+    ...(stat.count === 0 ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
@@ -138,6 +140,9 @@ export default async function ModelPage({
   const { makeSlug, modelSlug, makeName, modelName, sp, result, content } = await resolve(params, searchParams);
   const { listings, total, page, totalPages } = result;
   const facets = await getFacets({ make: makeSlug, model: modelSlug });
+  const idx = await loadCatalogue();
+  const stat = modelStat(idx, makeSlug, modelSlug);
+  const intro = modelIntro(stat);
 
   const firstOnPage = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const lastOnPage = (page - 1) * PAGE_SIZE + listings.length;
@@ -155,9 +160,19 @@ export default async function ModelPage({
     })),
   };
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
+      { "@type": "ListItem", position: 2, name: `${makeName} vans`, item: absUrl(`/vans/${makeSlug}`) },
+      { "@type": "ListItem", position: 3, name: `${makeName} ${modelName}`, item: absUrl(`/vans/${makeSlug}/${modelSlug}`) },
+    ],
+  };
+
   return (
     <>
-      <JsonLd data={itemList} />
+      <JsonLd data={[itemList, breadcrumbLd]} />
       {/* rel prev/next for the paginated series (React 19 hoists to <head>) */}
       {page > 1 && <link rel="prev" href={absUrl(cleanPageUrl(makeSlug, modelSlug, page - 1))} />}
       {page < totalPages && <link rel="next" href={absUrl(cleanPageUrl(makeSlug, modelSlug, page + 1))} />}
@@ -168,7 +183,7 @@ export default async function ModelPage({
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span aria-hidden>/</span>
-            <Link href="/#browse" className="hover:text-ink-900">Vans</Link>
+            <Link href={`/vans/${makeSlug}`} className="hover:text-ink-900">{makeName} vans</Link>
             <span aria-hidden>/</span>
             <span className="font-medium text-ink-700">{makeName} {modelName}</span>
           </nav>
@@ -177,12 +192,13 @@ export default async function ModelPage({
             <div>
               <Eyebrow>{makeName}</Eyebrow>
               <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
-                {makeName} {modelName} for sale
+                {makeName} {modelName} vans for sale
               </h1>
-              {content?.intro?.[0] && (
-                <p className="mt-3 max-w-xl text-[var(--text-md)] leading-relaxed text-ink-600">
-                  {truncate(content.intro[0], 180)}
-                </p>
+              {/* Unique intro written from this model's real stock (page 1 only, so paginated pages stay lean) */}
+              {page === 1 && (
+                <div className="mt-3 max-w-2xl space-y-3 text-[var(--text-md)] leading-relaxed text-ink-600">
+                  {intro.map((p, i) => <p key={i}>{p}</p>)}
+                </div>
               )}
               <p className="mt-4 text-[var(--text-sm)] font-semibold text-ink-600">
                 <span className="font-mono text-brand-700">{total}</span>{" "}
@@ -290,6 +306,16 @@ export default async function ModelPage({
           </div>
         </div>
       </Container>
+
+      {/* ── Internal link network ───────────────────────────────────────── */}
+      <section className="border-t border-border bg-surface-1 py-10">
+        <Container className="space-y-9">
+          <InternalLinks title={`Other ${makeName} vans`} links={[{ href: `/vans/${makeSlug}`, label: `All ${makeName} vans for sale` }, ...modelLinksOfMake(makeSlug, modelSlug)]} columns={3} />
+          <InternalLinks title="Similar vans for sale" links={competitorLinks(makeSlug, modelSlug)} columns={3} />
+          <InternalLinks title="Browse by body type" links={categoryLinks()} columns={3} />
+          <InternalLinks title="Browse by make" links={makeLinks()} columns={4} />
+        </Container>
+      </section>
     </>
   );
 }

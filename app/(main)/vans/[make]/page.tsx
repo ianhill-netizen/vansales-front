@@ -11,8 +11,11 @@ import { matchBlogPosts } from "@/lib/content/cross-links";
 import { RelatedLinks } from "@/components/related-links";
 import { SITE, absUrl } from "@/lib/site";
 import { slugify } from "@/lib/listings/slug";
-import { ALL_MAKES, getMakeBySlug, getModelBySlug } from "@/lib/taxonomy/van-makes";
-import { resolveModelSlug } from "@/lib/models/image";
+import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
+import { InternalLinks } from "@/components/seo/internal-links";
+import { loadCatalogue, makeStat, modelsOfMake, topModels } from "@/lib/seo/catalogue";
+import { makeIntro, priceRange } from "@/lib/seo/intro";
+import { categoryLinks, makeLinks, popularModelLinks } from "@/lib/seo/links";
 
 export const revalidate = 3600;
 
@@ -38,24 +41,23 @@ export async function generateMetadata({
   const { make } = await params;
   if (CATEGORY_SLUGS.has(make)) return {};
   const makeName = slugToMake(make);
-  // Unique per make: real stock count and the models actually in stock.
-  const { listings, total } = await getListings({ make: makeName, pageSize: 24 });
-  const names: string[] = [];
-  for (const l of listings) {
-    const r = resolveModelSlug(l.make, l.model);
-    const n = (r && getModelBySlug(r.makeSlug, r.modelSlug)?.name) || null;
-    if (n && !names.includes(n)) names.push(n);
-  }
-  const title = `${makeName} Vans for Sale`;
-  const description = total > 0
-    ? `Browse ${total.toLocaleString("en-GB")} ${makeName} vans for sale across the UK${names.length ? `, including ${names.slice(0, 3).join(", ")}` : ""}. New and used ${makeName} vans from dealers and private sellers on ${SITE.name}.`
+  // Unique per make: real stock count, price range and the models actually in stock.
+  const idx = await loadCatalogue();
+  const stat = makeStat(idx, make);
+  const stocked = modelsOfMake(idx, make).filter((m) => m.count > 0);
+  const title = `${makeName} Vans for Sale UK | ${SITE.name}`;
+  const pr = priceRange(stat);
+  const description = stat.count > 0
+    ? `Browse ${stat.count.toLocaleString("en-GB")} ${makeName} van${stat.count === 1 ? "" : "s"} for sale across the UK${pr ? `, priced ${pr}` : ""}${stocked.length ? `, including ${stocked.slice(0, 3).map((m) => m.name).join(", ")}` : ""}. New and used ${makeName} vans from dealers and private sellers on ${SITE.name}.`
     : `Browse ${makeName} vans for sale across the UK. New and used ${makeName} panel vans, crew vans and more on ${SITE.name}.`;
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: absUrl(`/vans/${make}`) },
-    openGraph: { title: `${title} · ${SITE.name}`, description, url: absUrl(`/vans/${make}`), type: "website" },
-    twitter: { card: "summary_large_image", title: `${title} · ${SITE.name}`, description },
+    openGraph: { title, description, url: absUrl(`/vans/${make}`), type: "website" },
+    twitter: { card: "summary_large_image", title, description },
+    // A make nobody has stock for would be a thin page: keep it out of the index (it stays crawlable so its links still pass on).
+    ...(stat.count === 0 ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
@@ -71,9 +73,13 @@ export default async function MakePage({
 
   const makeName = slugToMake(make);
   const result = await getListings({ make: makeName, pageSize: 24 });
+  const idx = await loadCatalogue();
+  const stat = makeStat(idx, make);
+  const modelStats = modelsOfMake(idx, make);
+  const popular = topModels(idx, 12);
 
-  // If no results and likely not a real make, 404
-  if (result.total === 0 && result.servedBy !== "mock") notFound();
+  // Only an unknown make with no stock is a 404. A real make with no stock right now still renders (noindex, see generateMetadata): the link network points at every make.
+  if (!getMakeBySlug(make) && result.total === 0) notFound();
 
   // Blog posts mentioning this make
   const relatedBlog = matchBlogPosts(getBlogIndex(), [make, makeName.toLowerCase()], undefined, 3);
@@ -85,8 +91,7 @@ export default async function MakePage({
 
   const breadcrumbs = [
     { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
-    { "@type": "ListItem", position: 2, name: "Vans", item: absUrl("/vans") },
-    { "@type": "ListItem", position: 3, name: `${makeName} vans`, item: absUrl(`/vans/${make}`) },
+    { "@type": "ListItem", position: 2, name: `${makeName} vans`, item: absUrl(`/vans/${make}`) },
   ];
 
   return (
@@ -98,16 +103,19 @@ export default async function MakePage({
         url: absUrl(`/vans/${make}`),
         description: `${makeName} vans for sale in the UK.`,
         breadcrumb: { "@type": "BreadcrumbList", itemListElement: breadcrumbs },
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: result.total,
+          itemListElement: result.listings.slice(0, 24).map((l, i) => ({ "@type": "ListItem", position: i + 1, url: absUrl(`/listing/${l.slug}`), name: `${l.make} ${l.model}` })),
+        },
       }} />
 
       <section className="border-b border-border bg-surface-1">
         <Container className="py-10">
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
-            <span>/</span>
-            <Link href="/vans" className="hover:text-ink-900">Vans</Link>
-            <span>/</span>
-            <span className="font-medium text-ink-700">{makeName}</span>
+            <span aria-hidden>/</span>
+            <span className="font-medium text-ink-700">{makeName} vans</span>
           </nav>
           <Eyebrow>Make</Eyebrow>
           <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
@@ -117,6 +125,7 @@ export default async function MakePage({
             <span className="font-mono font-bold text-brand-600">{result.total.toLocaleString()}</span>{" "}
             {result.total === 1 ? "van" : "vans"} available
           </p>
+          <p className="mt-3 max-w-3xl text-[var(--text-md)] leading-relaxed text-ink-600">{makeIntro(makeName, stat, modelStats)}</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link href={`/vans?condition=new&q=${encodeURIComponent(makeName)}`} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               New {makeName}
@@ -131,6 +140,28 @@ export default async function MakePage({
       <Container className="py-8">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
+            {modelStats.length > 0 && (
+              <section aria-labelledby="models-heading" className="mb-10">
+                <h2 id="models-heading" className="font-display text-[var(--text-xl)] font-bold text-ink-900">{makeName} models</h2>
+                <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {modelStats.map((m) => (
+                    <li key={m.modelSlug}>
+                      <Link
+                        href={`/vans/${make}/${m.modelSlug}`}
+                        className={`block rounded-[var(--radius-lg)] border p-4 transition-colors hover:border-brand-300 ${m.count > 0 ? "border-border bg-white" : "border-border/70 bg-surface-1"}`}
+                      >
+                        <span className="block font-display text-[var(--text-base)] font-bold text-ink-900">{makeName} {m.name}</span>
+                        <span className={`mt-1 block text-[var(--text-sm)] ${m.count > 0 ? "font-semibold text-brand-700" : "text-ink-400"}`}>
+                          {m.count > 0 ? `${m.count} ${m.count === 1 ? "van" : "vans"} for sale` : "None in stock now"}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {result.listings.length > 0 && <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">All {makeName} vans for sale</h2>}
             {result.listings.length === 0 ? (
               <div className="rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-card p-10 text-center">
                 <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">No {makeName} vans in stock right now</h2>
@@ -149,7 +180,7 @@ export default async function MakePage({
 
             {result.total > 24 && (
               <div className="mt-8 text-center">
-                <Link href={`/vans?q=${encodeURIComponent(makeName)}`} className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">
+                <Link href={`/vans?v=${make}`} className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">
                   View all {result.total} {makeName} vans →
                 </Link>
               </div>
@@ -181,6 +212,15 @@ export default async function MakePage({
           )}
         </div>
       </Container>
+
+      {/* ── Internal link network ───────────────────────────────────────── */}
+      <section className="border-t border-border bg-surface-1 py-10">
+        <Container className="space-y-9">
+          <InternalLinks title="Popular models" links={popularModelLinks(popular)} columns={3} />
+          <InternalLinks title="Browse by body type" links={categoryLinks()} columns={3} />
+          <InternalLinks title="All makes" links={makeLinks(make)} columns={4} />
+        </Container>
+      </section>
     </>
   );
 }
