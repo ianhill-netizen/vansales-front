@@ -5,7 +5,7 @@
    source adapter should know which source it came from.
    ========================================================================== */
 
-export type ListingSource = "dealski" | "native";
+export type ListingSource = "dealski" | "native" | "vansales";
 export type SellerType = "dealer" | "private";
 export type ListingStatus = "active" | "reserved" | "sold" | "removed";
 export type Condition = "used" | "new";
@@ -94,6 +94,10 @@ export interface Listing {
    *  every other source's own images are always real photos, so leaving
    *  this unset is equivalent to "photo" for the UI's badge check. */
   image_source?: "photo" | "library" | "placeholder";
+
+  /** A finished video of the van (private sellers' adverts: made from their own photos). 16:9 and a 9:16 cut for stories. Null/absent = none. */
+  video_url?: string | null;
+  video_vertical_url?: string | null;
 
   published_at: string; // ISO
   updated_at: string; // ISO

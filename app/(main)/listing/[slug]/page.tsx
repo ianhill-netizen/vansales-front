@@ -158,6 +158,18 @@ export default async function ListingPage({
           <div className="min-w-0">
             <Gallery listing={listing} />
 
+            {/* A seller-made video of the van (their own photos, no AI): 16:9 here, the 9:16 cut for stories is offered as a download */}
+            {listing.video_url && (
+              <section className="mt-6" aria-label="Video of this van">
+                <video src={listing.video_url} controls playsInline preload="metadata" className="w-full rounded-[var(--radius-lg)] bg-black" />
+                {listing.video_vertical_url && (
+                  <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+                    <a href={listing.video_vertical_url} download className="underline hover:text-ink-800">Download the vertical version</a> for stories and reels.
+                  </p>
+                )}
+              </section>
+            )}
+
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />
             </div>
