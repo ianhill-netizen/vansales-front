@@ -132,12 +132,14 @@ export function VehiclePicker({
   // What the text box filters.
   const q = norm(text);
   const match = (name: string) => !q || norm(name).includes(q);
-  const makePills = data.makes.filter((m) => match(m.name));
+  // A pill with nothing behind it is never shown (unless it is already selected, so it can still be turned off).
+  const shown = (p: PickerPill, on: boolean) => p.count > 0 || on;
+  const makePills = data.makes.filter((m) => shown(m, isMake(m.slug)) && match(m.name));
   const modelGroups = makesSelected
-    .map((slug) => ({ make: data.makes.find((m) => m.slug === slug) ?? { slug, name: chipLabel({ make: slug }), count: 0 }, models: (data.models[slug] ?? []).filter((m) => match(m.name)) }))
+    .map((slug) => ({ make: data.makes.find((m) => m.slug === slug) ?? { slug, name: chipLabel({ make: slug }), count: 0 }, models: (data.models[slug] ?? []).filter((m) => shown(m, isModel(slug, m.slug)) && match(m.name)) }))
     .filter((g) => g.models.length > 0);
-  const bodyPills = data.bodyTypes.filter((b) => match(b.name));
-  const fuelPills = data.fuels.filter((f) => match(f.name));
+  const bodyPills = data.bodyTypes.filter((b) => shown(b, value.body.includes(b.slug)) && match(b.name));
+  const fuelPills = data.fuels.filter((f) => shown(f, value.fuel.includes(f.slug)) && match(f.name));
 
   function submitFirstMatch() {
     if (makePills[0]) { if (!isMake(makePills[0].slug)) toggleMake(makePills[0].slug); }
@@ -186,7 +188,7 @@ export function VehiclePicker({
         </Section>
       )}
       {makePills.length === 0 && modelGroups.length === 0 && bodyPills.length === 0 && fuelPills.length === 0 && (
-        <p className="py-4 text-[var(--text-sm)] text-ink-500">Nothing matches “{text}”.</p>
+        <p className="py-4 text-[var(--text-sm)] text-ink-500">{text ? `Nothing matches “${text}”.` : "No vans are listed yet."}</p>
       )}
     </div>
   );

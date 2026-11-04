@@ -34,6 +34,8 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
   const [geo, setGeo] = useState<Geo | null>(null);
   const [radius, setRadius] = useState("30");
   const [pay, setPay] = useState<PayMode>("cash");
+  const [under10k, setUnder10k] = useState(false);
+  const [ulez, setUlez] = useState(false);
   const [locating, setLocating] = useState(false);
   const [geoError, setGeoError] = useState("");
 
@@ -66,6 +68,8 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
     if (sel.body.length > 0) p.set("bodyStyle", sel.body.join(","));
     if (sel.fuel.length > 0) p.set("fuel", sel.fuel.join(","));
     if (pay !== "cash") p.set("pay", pay);
+    if (under10k) p.set("maxPrice", "10000");
+    if (ulez) p.set("ulez", "1");
     if (geo) {
       p.set("lat", geo.lat.toFixed(4));
       p.set("lng", geo.lng.toFixed(4));
@@ -84,7 +88,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
 
   return (
     <form onSubmit={submit} className="rounded-[var(--radius-2xl)] border border-border bg-white p-3 shadow-[var(--shadow-lg)] sm:p-4">
-      <VehiclePicker data={picker} value={sel} onChange={setSel} variant="inline" onSubmit={() => submit()} />
+      <VehiclePicker data={picker} value={sel} onChange={setSel} variant="popover" onSubmit={() => submit()} />
 
       <div className="mt-3 flex flex-wrap items-center gap-2.5">
         {/* Location */}
@@ -131,13 +135,26 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
           ))}
         </div>
 
+        {/* Two quick toggles (the body-type pills live in the picker) */}
+        {([["Under £10k", under10k, setUnder10k], ["ULEZ", ulez, setUlez]] as const).map(([label, on, set]) => (
+          <button
+            key={label}
+            type="button"
+            aria-pressed={on}
+            onClick={() => set(!on)}
+            className={`inline-flex h-9 items-center rounded-full border px-3.5 text-[var(--text-sm)] font-semibold transition-colors ${on ? "border-brand-600 bg-brand-600 text-white" : "border-border bg-surface-1 text-ink-700 hover:border-brand-300 hover:text-brand-700"}`}
+          >
+            {label}
+          </button>
+        ))}
+
         <button
           type="submit"
           className="ml-auto inline-flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-xl)] px-7 text-[var(--text-base)] font-bold text-white shadow-[var(--shadow-md)] transition-all active:scale-[0.98] sm:w-auto"
           style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
         >
           <IconSearch width={17} height={17} />
-          {(() => { const n = sel.vehicles.length || sel.body.length || sel.fuel.length ? countMatches(picker, sel) : total; return n > 0 ? `Search ${n.toLocaleString("en-GB")} ${n === 1 ? "van" : "vans"}` : "Search vans"; })()}
+          {(() => { const n = sel.vehicles.length || sel.body.length || sel.fuel.length ? countMatches(picker, sel) : total; return n >= 20 ? `Search ${n.toLocaleString("en-GB")} vans` : "Search vans"; })()}
         </button>
       </div>
       {geoError && <p role="alert" className="mt-2 text-[var(--text-xs)] text-red-600">{geoError}</p>}
