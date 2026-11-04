@@ -7,6 +7,7 @@ import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
+import { getPickerData } from "@/lib/listings/picker";
 import { getMakeByName } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
 import { SITE, absUrl, siteUrl } from "@/lib/site";
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  const picker = await getPickerData();
   const [{ listings, total }, facets, all] = await Promise.all([
     getListings({ sort: "newest", limit: 6 }),
     getFacets(),
@@ -81,7 +83,7 @@ export default async function HomePage() {
           <p className="mt-2 text-[var(--text-md)] text-ink-500">Private sellers and dealers across the UK</p>
 
           <div className="mt-5">
-            <HomeSearch total={total} />
+            <HomeSearch total={total} picker={picker} />
           </div>
 
           <QuickFilters className="mt-4" />

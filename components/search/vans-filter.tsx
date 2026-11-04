@@ -8,6 +8,8 @@ import { slugify } from "@/lib/listings/slug";
 import { priceFromMonthly, FINANCE_ASSUMPTIONS } from "@/lib/finance";
 import { IconFilter, IconSearch } from "@/components/icons";
 import { ChipSearch } from "@/components/chip-search";
+import { VehiclePicker, type PickerSelection } from "@/components/picker/vehicle-picker";
+import type { PickerData } from "@/lib/listings/picker";
 import { chipLabel, legacyToVehicles, parseVehicles, stringifyVehicles, type VehicleChip } from "@/lib/vehicle-chips";
 import type { ListingFacets } from "@/lib/listings/types";
 
@@ -256,11 +258,14 @@ function chipCls(active: boolean): string {
 export function VansFilter({
   total,
   facets,
+  picker,
   searchParams,
   quickFilters,
 }: {
   total: number;
   facets: ListingFacets;
+  /** Make / model / body type / fuel pills with stock counts for the tap-to-select picker. */
+  picker: PickerData;
   searchParams: Search;
   /** Quick-filter chips (server-rendered links), shown under the sticky search bar. */
   quickFilters?: React.ReactNode;
@@ -358,8 +363,8 @@ export function VansFilter({
   }
 
   /** Chip search edits apply straight away (like removing a chip) so the results follow the bar. */
-  function setVehicles(vehicles: VehicleChip[]) {
-    const next = { ...draft, vehicles };
+  function applyPicker(sel: PickerSelection) {
+    const next = { ...draft, vehicles: sel.vehicles, bodyStyle: sel.body.join(","), fuel: sel.fuel.join(",") };
     setDraft(next);
     startTransition(() => router.push(keep(draftToUrl(next), next), { scroll: false }));
   }
@@ -403,7 +408,7 @@ export function VansFilter({
       <div className="mb-5">
         {/* Chip search: type a make or model, pick it, it becomes a chip. Several allowed. */}
         <div className="sticky top-[66px] z-30 -mx-[var(--gutter)] mb-3 space-y-2.5 border-b border-border/70 bg-white/95 px-[var(--gutter)] py-2.5 backdrop-blur-md">
-          <ChipSearch value={draft.vehicles} onChange={setVehicles} />
+          <VehiclePicker data={picker} variant="popover" value={{ vehicles: draft.vehicles, body: csvList(draft.bodyStyle), fuel: csvList(draft.fuel) }} onChange={applyPicker} />
           {quickFilters}
         </div>
         <div className="flex items-center gap-2">

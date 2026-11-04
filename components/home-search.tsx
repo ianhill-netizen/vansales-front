@@ -2,9 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { stringifyVehicles, type VehicleChip } from "@/lib/vehicle-chips";
+import { stringifyVehicles } from "@/lib/vehicle-chips";
 import type { PayMode } from "@/lib/finance";
-import { ChipSearch } from "./chip-search";
+import type { PickerData } from "@/lib/listings/picker";
+import { VehiclePicker, EMPTY_SELECTION, countMatches, type PickerSelection } from "./picker/vehicle-picker";
 import { IconSearch } from "./icons";
 
 /* =============================================================================
@@ -26,9 +27,9 @@ async function reverseGeocode(lat: number, lng: number): Promise<Geo> {
   return { lat, lng, town: town || "Near me", postcode: r?.postcode ?? "" };
 }
 
-export function HomeSearch({ total }: { total: number }) {
+export function HomeSearch({ total, picker }: { total: number; picker: PickerData }) {
   const router = useRouter();
-  const [chips, setChips] = useState<VehicleChip[]>([]);
+  const [sel, setSel] = useState<PickerSelection>(EMPTY_SELECTION);
   const [where, setWhere] = useState("");
   const [geo, setGeo] = useState<Geo | null>(null);
   const [radius, setRadius] = useState("30");
@@ -61,7 +62,9 @@ export function HomeSearch({ total }: { total: number }) {
   function submit(e?: React.FormEvent) {
     e?.preventDefault();
     const p = new URLSearchParams();
-    if (chips.length > 0) p.set("v", stringifyVehicles(chips));
+    if (sel.vehicles.length > 0) p.set("v", stringifyVehicles(sel.vehicles));
+    if (sel.body.length > 0) p.set("bodyStyle", sel.body.join(","));
+    if (sel.fuel.length > 0) p.set("fuel", sel.fuel.join(","));
     if (pay !== "cash") p.set("pay", pay);
     if (geo) {
       p.set("lat", geo.lat.toFixed(4));
@@ -81,7 +84,7 @@ export function HomeSearch({ total }: { total: number }) {
 
   return (
     <form onSubmit={submit} className="rounded-[var(--radius-2xl)] border border-border bg-white p-3 shadow-[var(--shadow-lg)] sm:p-4">
-      <ChipSearch value={chips} onChange={setChips} onEnterEmpty={() => submit()} placeholder="Make or model, e.g. Transit" />
+      <VehiclePicker data={picker} value={sel} onChange={setSel} variant="inline" onSubmit={() => submit()} />
 
       <div className="mt-3 flex flex-wrap items-center gap-2.5">
         {/* Location */}
@@ -134,7 +137,7 @@ export function HomeSearch({ total }: { total: number }) {
           style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
         >
           <IconSearch width={17} height={17} />
-          {total > 0 ? `Search ${total.toLocaleString("en-GB")} ${total === 1 ? "van" : "vans"}` : "Search vans"}
+          {(() => { const n = sel.vehicles.length || sel.body.length || sel.fuel.length ? countMatches(picker, sel) : total; return n > 0 ? `Search ${n.toLocaleString("en-GB")} ${n === 1 ? "van" : "vans"}` : "Search vans"; })()}
         </button>
       </div>
       {geoError && <p role="alert" className="mt-2 text-[var(--text-xs)] text-red-600">{geoError}</p>}

@@ -9,6 +9,7 @@ import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
 import { IconArrow } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
+import { getPickerData } from "@/lib/listings/picker";
 import type { Condition, Listing, ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { priceFromMonthly, parsePay } from "@/lib/finance";
 import { legacyToVehicles, parseVehicles } from "@/lib/vehicle-chips";
@@ -193,7 +194,7 @@ export default async function VansPage({
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <Container className="py-8">
         {/* Filter pill row + modal */}
-        <VansFilter total={total} facets={facets} searchParams={sp} quickFilters={<QuickFilters sp={sp} />} />
+        <VansFilter total={total} facets={facets} picker={await getPickerData()} searchParams={sp} quickFilters={<QuickFilters sp={sp} />} />
 
         {/* Results bar: count · Cash/Finance/Both · Grid/Map */}
         <div className="mb-5 space-y-3">
