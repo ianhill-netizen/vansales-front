@@ -43,8 +43,11 @@ Whatever `LISTINGS_SOURCE` is, active adverts from private sellers are merged in
 (`sources/vansales.ts`: `GET {VANSALES_API_URL}/api/public/listings?seller_type=private`, detail by slug). They appear in the
 normal lists and facets with the **Private seller** badge, show the seller's cleaned photos and, when the seller made one, a
 **video player** on the detail page. Their front-end slug is `private-<backend slug>` so it can never collide with another
-source's numeric id. Private sellers have no contact route yet: the enquiry panel says so and `/api/enquiry` refuses their
-adverts (409) instead of forwarding them to a dealer's inbox. `VANSALES_API_URL` defaults to `https://api.vansales.com`.
+source's numeric id. Buyers message a private seller with the form in `components/private-enquiry-form.tsx`, which posts
+**straight from the browser** to `{NEXT_PUBLIC_VANSALES_API_URL}/api/public/listings/{id}/enquire` (so the API rate-limits the
+buyer's own IP; the API emails the seller with Reply-To = the buyer and tells the buyer nothing about the seller). `/api/enquiry`
+refuses their adverts (409) so a private seller's enquiry can never be forwarded to a dealer's inbox. `VANSALES_API_URL`
+(server) and `NEXT_PUBLIC_VANSALES_API_URL` (browser) both default to `https://api.vansales.com`.
 
 ### Live feed notes
 
