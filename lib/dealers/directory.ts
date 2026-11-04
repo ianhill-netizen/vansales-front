@@ -3,6 +3,7 @@ import { getListings } from "@/lib/listings/client";
 import { prisma } from "@/lib/prisma";
 import { geocodeTown } from "@/lib/geocoding";
 import { safeDb } from "@/lib/db-safe";
+import { fetchApiDealers } from "@/lib/dealers/api";
 
 export interface DirectoryDealer {
   slug: string;
@@ -13,6 +14,7 @@ export interface DirectoryDealer {
   makes: string[]; // distinct makes in stock, most numerous first
   featured: boolean;
   rating: number | null;
+  logoUrl?: string | null;
   lat: number | null;
   lng: number | null;
 }
@@ -21,13 +23,14 @@ export interface DirectoryDealer {
  *  Stock counts / makes come from the same catalogue the rest of the site uses, matched on seller name. */
 export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
   const showDemo = process.env.SHOW_DEMO_LISTINGS === "true";
-  const [{ listings }, dbDealers] = await Promise.all([
+  const [{ listings }, dbDealers, apiDealers] = await Promise.all([
     getListings({}),
     safeDb(
       "directory dealers",
       () => prisma.dealer.findMany({ select: { slug: true, name: true, location: true, googleRating: true, lat: true, lng: true } }),
       [] as { slug: string; name: string; location: string | null; googleRating: number | null; lat: number | null; lng: number | null }[],
     ),
+    fetchApiDealers(), // bounded and fail-safe: [] when the API is down
   ]);
 
   const stats = (names: string[]) => {
@@ -55,6 +58,20 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
     const s = stats([d.name]);
     const [town = "", county = ""] = (d.location ?? "").split(",").map((x) => x.trim());
     out.push({ slug: d.slug, name: d.name, town, county, vanCount: s.count, makes: s.makes, featured: false, rating: d.googleRating, lat: d.lat ?? s.lat, lng: d.lng ?? s.lng });
+  }
+  // Dealers from the vansales API (dealer portal): de-duplicated by slug against the config and database dealers above. Their stock is the dealer-portal adverts in the catalogue.
+  for (const d of apiDealers) {
+    if (out.some((o) => o.slug === d.slug)) continue;
+    const mine = listings.filter((l) => l.dealer_contact?.slug === d.slug);
+    const byMake = new Map<string, number>();
+    for (const l of mine) byMake.set(l.make, (byMake.get(l.make) ?? 0) + 1);
+    const at = mine.find((l) => l.location.lat != null && l.location.lng != null);
+    out.push({
+      slug: d.slug, name: d.name, town: d.town ?? "", county: d.county ?? "",
+      vanCount: Math.max(d.stock_count ?? 0, mine.length),
+      makes: [...byMake.entries()].sort((a, b) => b[1] - a[1]).map(([m]) => m),
+      featured: false, rating: null, logoUrl: d.logo_url, lat: at?.location.lat ?? null, lng: at?.location.lng ?? null,
+    });
   }
   // Dealers whose stock carries no coordinates are placed by their postcode / town (30-day cached, bounded).
   await Promise.all(

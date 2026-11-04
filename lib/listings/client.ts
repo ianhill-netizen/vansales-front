@@ -14,7 +14,7 @@ import { getAcmeDemoListings } from "./sources/acme-demo";
 import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
 import { fetchMarketplaceCatalogue } from "./sources/dealski-marketplace";
 import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
-import { fetchPrivateSellerListings, fetchPrivateSellerListingBySlug, PRIVATE_SLUG_PREFIX } from "./sources/vansales";
+import { fetchPrivateSellerListings, fetchPrivateSellerListingBySlug, fetchDealerPortalListings, fetchDealerPortalListingBySlug, PRIVATE_SLUG_PREFIX, DEALER_SLUG_PREFIX } from "./sources/vansales";
 import { sourceIdFromSlug, slugify } from "./slug";
 import { resolveModelSlug } from "@/lib/models/image";
 import { WHEELBASE_LABEL, titleCase } from "./format";
@@ -51,11 +51,11 @@ function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   return Promise.race([p, timeout]).finally(() => clearTimeout(timer));
 }
 
-/** Native (portal-added) listings + private sellers' adverts. Never throws; an upstream that fails or is slow contributes nothing for the next 60 s. */
+/** Native (portal-added) listings + private sellers' adverts + vansales dealer-portal adverts. Never throws; an upstream that fails or is slow contributes nothing for the next 60 s. */
 const loadExtras = unstable_cache(
   async (): Promise<Listing[]> => {
     const t0 = Date.now();
-    const [native, priv] = await Promise.all([
+    const [native, priv, dealerAdverts] = await Promise.all([
       withTimeout(fetchNativeDbListings(), EXTRAS_BUDGET_MS, "native listings (database)").catch((e: Error) => {
         console.warn(`[listings] native listings skipped after ${Date.now() - t0}ms: ${e.message}`);
         return [] as Listing[];
@@ -64,10 +64,14 @@ const loadExtras = unstable_cache(
         console.warn(`[listings] private sellers' adverts skipped after ${Date.now() - t0}ms: ${e.message}`);
         return [] as Listing[];
       }),
+      withTimeout(fetchDealerPortalListings(), EXTRAS_BUDGET_MS * 2, "dealer portal adverts").catch((e: Error) => {
+        console.warn(`[listings] dealer portal adverts skipped after ${Date.now() - t0}ms: ${e.message}`);
+        return [] as Listing[];
+      }),
     ]);
-    return [...native, ...priv];
+    return [...native, ...priv, ...dealerAdverts];
   },
-  ["listing-extras-v1"],
+  ["listing-extras-v2"],
   { revalidate: 60, tags: ["listing-extras"] },
 );
 
@@ -361,6 +365,10 @@ async function getListingBySlugUncached(slug: string): Promise<{ listing: Listin
   // A private seller's advert: resolved by its own prefix first, so its trailing number can never be mistaken for another source's id.
   if (slug.startsWith(PRIVATE_SLUG_PREFIX)) {
     return { listing: await fetchPrivateSellerListingBySlug(slug).catch(() => null), servedBy: "vansales" };
+  }
+  // A dealer-portal advert (vansales API): same idea, its own prefix.
+  if (slug.startsWith(DEALER_SLUG_PREFIX)) {
+    return { listing: await fetchDealerPortalListingBySlug(slug).catch(() => null), servedBy: "vansales" };
   }
   const source = configuredSource();
   const sourceId = sourceIdFromSlug(slug);

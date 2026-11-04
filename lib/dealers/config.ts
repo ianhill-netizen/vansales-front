@@ -19,7 +19,9 @@ export interface DealerConfig {
   /** Exact map-pin position for the address (WGS-84). Preferred over anything derived from the stock feed. */
   coords?: { lat: number; lng: number };
   /** Social profiles. An empty string is an unfilled slot (nothing is shown until a link is set). */
-  socials?: { facebook: string; instagram: string; linkedin: string; youtube: string };
+  socials?: { facebook?: string; instagram?: string; linkedin?: string; youtube?: string; twitter?: string };
+  /** The dealer's Google reviews page (a link only; no rating is invented). */
+  googleReviewsUrl?: string;
   phone: string;
   /* WhatsApp number in international format, digits only, no + (e.g. 447XXXXXXXXX).
      Null = button renders disabled. */
