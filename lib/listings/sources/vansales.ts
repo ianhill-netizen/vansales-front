@@ -17,7 +17,7 @@ import { titleCase } from "../format";
    dealer block has has_call_booking === true. The same filter also returns the
    legacy Dealski-synced stock (has_call_booking false), which the Dealski feeds
    already serve, so those rows are dropped here to avoid duplicates. Dealer adverts
-   get the "portal-" slug prefix (NOT "dealer-": components/enquiry-modal.tsx posts slug "dealer-<tenant>" to /api/enquiry), seller_type "dealer", the dealer's exact pin and a
+   get the "dealer-" slug prefix (agreed convention with the backend; note components/enquiry-modal.tsx posts slug "dealer-<tenant>" to /api/enquiry, so that route tells them apart by the trailing advert id), seller_type "dealer", the dealer's exact pin and a
    `dealer_contact` block; their enquiries and call requests go to the vansales API
    (components/listing-actions.tsx), never to /api/enquiry. Buyers message the seller through
    components/private-enquiry-form.tsx (browser -> the API's /enquire); the dealer
@@ -31,7 +31,7 @@ const MAX_PAGES = 20; // 24 a page: a safety cap, not an expectation
 /** Front-end slugs for these start with this, so they can never be mistaken for another source's trailing numeric id. */
 export const PRIVATE_SLUG_PREFIX = "private-";
 export const PRIVATE_ENQUIRY_REF_PREFIX = "vansales-private:";
-export const DEALER_SLUG_PREFIX = "portal-";
+export const DEALER_SLUG_PREFIX = "dealer-";
 export const DEALER_ENQUIRY_REF_PREFIX = "vansales-dealer:";
 
 interface ApiCard {
@@ -191,7 +191,7 @@ export async function fetchDealerPortalListings(): Promise<Listing[]> {
   return out;
 }
 
-/** One dealer-portal advert by its front-end slug ("portal-<backend slug>"). Null if it is not (or no longer) active, or is legacy Dealski stock. */
+/** One dealer-portal advert by its front-end slug ("dealer-<backend slug>"). Null if it is not (or no longer) active, or is legacy Dealski stock. */
 export async function fetchDealerPortalListingBySlug(slug: string): Promise<Listing | null> {
   if (!slug.startsWith(DEALER_SLUG_PREFIX)) return null;
   const backendSlug = slug.slice(DEALER_SLUG_PREFIX.length);

@@ -116,7 +116,7 @@ export async function POST(req: Request) {
 
   // A vansales dealer-portal advert is the same: its enquiry goes to the vansales API (POST /api/public/listings/{id}/enquire) so it lands in that dealer's own portal inbox,
   // never in a Dealski tenant's leads.
-  if (vehicleRef.startsWith("vansales-dealer:") || slug.startsWith("portal-")) {
+  if (vehicleRef.startsWith("vansales-dealer:") || /^dealer-.+-\d+$/.test(slug)) {   // advert slugs end in the numeric id; the dealer modal's "dealer-<tenant>" does not
     return NextResponse.json({ ok: false, error: "This dealer is messaged through the enquiry form on the advert." }, { status: 409 });
   }
 
