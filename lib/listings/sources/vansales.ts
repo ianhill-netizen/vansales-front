@@ -1,3 +1,4 @@
+import type { VanDetails } from "@/lib/listings/vanDetails";
 import type { Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
 
@@ -29,7 +30,10 @@ interface ApiCard {
 }
 interface ApiDetail extends ApiCard {
   description: string | null; video_url: string | null; video_vertical_url: string | null;
-  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean; hpi_checked_at?: string | null; listing_images: Array<{ url: string; original_url: string; is_cleaned: boolean; sort_order: number }>;
+  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean;
+  seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; body_type_key?: string | null;
+  wheelbase?: VanDetails["wheelbase"]; roof_height?: VanDetails["roof_height"]; rear_doors?: VanDetails["rear_doors"]; side_loading_door?: VanDetails["side_loading_door"];
+  seats?: number | null; payload_kg?: number | null; gross_weight_kg?: number | null; service_history?: VanDetails["service_history"]; engine_cc?: number | null; euro_class?: string | null; hpi_checked_at?: string | null; listing_images: Array<{ url: string; original_url: string; is_cleaned: boolean; sort_order: number }>;
 }
 
 const or = (v: string | null | undefined, fallback: string) => (v && v.trim() !== "" ? titleCase(v.trim()) : fallback);
@@ -55,17 +59,18 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     year,
     plate: year ? String(year).slice(-2) : "",
     price: c.price > 0 ? c.price : null,
-    price_type: "inc_vat",
-    vat_qualifying: false,
+    // The seller's VAT status drives the qualifier beside the price: "+ VAT" for VAT qualifying / ex-VAT, "No VAT" for no VAT. Not given = the old "inc. VAT" default.
+    price_type: detail?.vat_status === "no_vat" ? "no_vat" : "inc_vat",
+    vat_qualifying: detail?.vat_status === "vat_qualifying" || detail?.vat_status === "ex_vat",
     mileage: c.mileage,
     fuel: or(c.fuel_type, "—"),
     transmission: or(c.transmission, "—"),
     drivetrain: "—",
     colour: or(c.colour, "—"),
-    engine_cc: null,
+    engine_cc: detail?.engine_cc ?? null,
     euro_status: null,
     ulez: false,
-    van_spec: { body_style: or(c.body_type, "Van"), wheelbase: null, roof_height: null, payload_kg: null, load_length_mm: null, doors: null },
+    van_spec: { body_style: or(c.body_type, "Van"), wheelbase: detail?.wheelbase ?? null, roof_height: null, payload_kg: detail?.payload_kg ?? null, load_length_mm: null, doors: null },
     location: { town: "UK", region: "", postcode_area: "", lat: null, lng: null },
     description: detail?.description ?? "",
     features: [],
@@ -75,7 +80,14 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     enquiry_route: { to: "vansales_private", ref: `${PRIVATE_ENQUIRY_REF_PREFIX}${c.id}` },
     enquiry_url: null,
     stock_ref: null,
+    // the API already puts the seller's own video in video_url when there is one; seller_video_url is kept explicit so the page can prefer it
     video_url: detail?.video_url ?? null,
+    seller_video_url: detail?.seller_video_url ?? null,
+    vat_status: detail?.vat_status ?? null,
+    details: detail ? {
+      body_type: detail.body_type_key ? c.body_type : null, wheelbase: detail.wheelbase ?? null, roof_height: detail.roof_height ?? null, rear_doors: detail.rear_doors ?? null, side_loading_door: detail.side_loading_door ?? null,
+      seats: detail.seats ?? null, payload_kg: detail.payload_kg ?? null, gross_weight_kg: detail.gross_weight_kg ?? null, service_history: detail.service_history ?? null, engine_cc: detail.engine_cc ?? null, euro_class: detail.euro_class ?? null,
+    } : undefined,
     video_vertical_url: detail?.video_vertical_url ?? null,
     mot_expiry: detail?.mot_expiry ?? null,
     last_mot_mileage: detail?.last_mot_mileage ?? null,

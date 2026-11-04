@@ -99,6 +99,13 @@ export interface Listing {
   video_url?: string | null;
   video_vertical_url?: string | null;
 
+  /** The seller's own walk-around video (private adverts). When present it is the video to show, ahead of the generated one. */
+  seller_video_url?: string | null;
+  /** The seller's VAT status (private adverts); null/absent = not given. */
+  vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null;
+  /** Optional van details from a private seller (body type, wheelbase, roof, doors, seats, weights, service history, engine, Euro class). */
+  details?: import("./vanDetails").VanDetails;
+
   /** MOT facts from the free DVLA / DVSA lookups (private sellers' adverts). Dates are YYYY-MM-DD. Null/absent = unknown. */
   mot_expiry?: string | null;
   last_mot_mileage?: number | null;
