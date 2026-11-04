@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
 import type { FinanceTerms, PayMode } from "@/lib/finance";
 import { ListingCard } from "./listing-card";
+import { vatLabel, formatMileage, titleCase } from "@/lib/listings/format";
 
 /* =============================================================================
    MAP SPLIT — Booking.com-style results: scrollable cards on the left, an
@@ -23,6 +24,26 @@ const pinLabel = (g: Group) => {
   if (p == null) return "POA";
   return p >= 1000 ? `£${(p / 1000).toFixed(p % 1000 === 0 ? 0 : 1)}k` : `£${p}`;
 };
+
+const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+
+/** One compact popup card (clicking anywhere on it opens the advert). Styled by .vs-pop in globals.css. */
+function popupCard(l: Listing): string {
+  const img = l.images[0]?.url?.startsWith("http") ? l.images[0].url : null;
+  const sub = [l.year > 0 ? String(l.year) : null, l.mileage != null ? formatMileage(l.mileage) : null, l.fuel && l.fuel !== "—" ? titleCase(l.fuel) : null].filter(Boolean).join(" · ");
+  const price = l.price != null ? `£${l.price.toLocaleString("en-GB")}` : "POA";
+  const town = l.location.town && l.location.town !== "UK" ? l.location.town : "";
+  return `<a class="vs-pop" href="/listing/${encodeURI(l.slug)}">
+    <div class="vs-pop-img">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : ""}</div>
+    <div class="vs-pop-body">
+      <p class="vs-pop-title">${esc(`${l.make} ${l.model}`)}</p>
+      ${sub ? `<p class="vs-pop-sub">${esc(sub)}</p>` : ""}
+      <p class="vs-pop-price">${price}${l.price != null ? ` <span>${esc(vatLabel(l.price_type, l.vat_qualifying))}</span>` : ""}</p>
+      <p class="vs-pop-meta"><span class="vs-pop-badge${l.seller_type === "private" ? "" : " dealer"}">${l.seller_type === "private" ? "Private seller" : "Dealer"}</span>${town ? `<span>${esc(town)}</span>` : ""}</p>
+    </div></a>`;
+}
+
+const popupHtml = (g: Group) => `<div class="vs-pop-wrap">${g.items.slice(0, 20).map(popupCard).join("")}${g.items.length > 20 ? `<p class="vs-pop-more">+ ${g.items.length - 20} more in the list</p>` : ""}</div>`;
 
 const pinHtml = (label: string, active: boolean) =>
   `<div style="transform:translate(-50%,-100%);white-space:nowrap;display:inline-block;padding:4px 9px;border-radius:999px;font:700 12px/1.2 var(--font-geist,system-ui);background:${active ? "#f47c1e" : "#0d2d5a"};color:#fff;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer">${label}</div>`;
@@ -94,7 +115,9 @@ export function MapSplit({
           riseOnHover: true,
         })
           .addTo(map)
-          .on("click", () => setSelectedKey((k) => (k === g.key ? null : g.key)));
+          .bindPopup(popupHtml(g), { className: "vs-popup", minWidth: 240, maxWidth: 240, autoPanPadding: [24, 24], offset: [0, -34] })
+          .on("click", () => setSelectedKey(g.key))
+          .on("popupclose", () => setSelectedKey((k) => (k === g.key ? null : k)));
         markersRef.current.set(g.key, marker);
       }
 
