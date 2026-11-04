@@ -24,7 +24,12 @@ import { modelPath } from "@/lib/listings/slug";
 import { SITE, absUrl } from "@/lib/site";
 
 type Params = { slug: string };
-type SearchParams = { enquire?: string };
+// ISR: one render per slug per minute, shared by every visitor. (It used to read ?enquire=1 through searchParams, which forces a fresh render on EVERY request; the panel
+// now reads that from the URL in the browser.) Unknown slugs render on demand and are cached the same way.
+export const revalidate = 60;
+export async function generateStaticParams() {
+  return [];
+}
 
 /** Best available per-vehicle photo URL for a listing. */
 function listingImageUrl(listing: Listing): string | null {
@@ -57,13 +62,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function ListingPage({
   params,
-  searchParams,
 }: {
   params: Promise<Params>;
-  searchParams: Promise<SearchParams>;
 }) {
   const { slug } = await params;
-  const { enquire } = await searchParams;
   const { listing } = await getListingBySlug(slug);
   if (!listing) notFound();
 
@@ -208,7 +210,7 @@ export default async function ListingPage({
 
           {/* Right: sticky enquiry */}
           <aside className="lg:sticky lg:top-20 lg:self-start space-y-3">
-            <EnquiryPanel listing={listing} autoOpen={enquire === "1"} />
+            <EnquiryPanel listing={listing} />
             {dealerConfig && (
               <ListingCTAButtons
                 listing={{
