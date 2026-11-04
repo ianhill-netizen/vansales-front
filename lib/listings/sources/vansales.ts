@@ -29,7 +29,7 @@ interface ApiCard {
 }
 interface ApiDetail extends ApiCard {
   description: string | null; video_url: string | null; video_vertical_url: string | null;
-  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; listing_images: Array<{ url: string; original_url: string; is_cleaned: boolean; sort_order: number }>;
+  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean; hpi_checked_at?: string | null; listing_images: Array<{ url: string; original_url: string; is_cleaned: boolean; sort_order: number }>;
 }
 
 const or = (v: string | null | undefined, fallback: string) => (v && v.trim() !== "" ? titleCase(v.trim()) : fallback);
@@ -80,6 +80,8 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     mot_expiry: detail?.mot_expiry ?? null,
     last_mot_mileage: detail?.last_mot_mileage ?? null,
     last_mot_date: detail?.last_mot_date ?? null,
+    hpi_checked: detail?.hpi_checked === true,
+    hpi_checked_at: detail?.hpi_checked_at ?? null,
     published_at: c.created_at,
     updated_at: c.created_at,
   };
