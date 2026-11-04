@@ -114,6 +114,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Private sellers are messaged through their own form on the advert." }, { status: 409 });
   }
 
+  // A vansales dealer-portal advert is the same: its enquiry goes to the vansales API (POST /api/public/listings/{id}/enquire) so it lands in that dealer's own portal inbox,
+  // never in a Dealski tenant's leads.
+  if (vehicleRef.startsWith("vansales-dealer:") || slug.startsWith("portal-")) {
+    return NextResponse.json({ ok: false, error: "This dealer is messaged through the enquiry form on the advert." }, { status: 409 });
+  }
+
   // Native DB listings: save locally and bypass Dealski entirely.
   if (slug) {
     const potentialId = sourceIdFromSlug(slug);

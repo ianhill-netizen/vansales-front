@@ -43,7 +43,8 @@ export function ListingCard({
   const sold = listing.status === "sold";
   const isPrivate = listing.seller_type === "private";
   const featured = isFeaturedSeller(listing.seller.name);
-  const dealerConfig = getDealerConfigBySeller(listing.seller.name);
+  const apiDealer = listing.dealer_contact; // a vansales-API dealer: the name links to its profile page
+  const dealerConfig = apiDealer ? null : getDealerConfigBySeller(listing.seller.name);
   const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
   // Only dealski-sourced listings carry image_source (dealski-backend PR
   // #3173); it's undefined for every other source, which is equivalent to
@@ -155,6 +156,12 @@ export function ListingCard({
         <p className="mb-2 flex flex-wrap items-center gap-x-1.5 text-[var(--text-xs)] text-ink-400">
           {isPrivate ? (
             <span className="font-semibold text-ink-500">Private seller</span>
+          ) : apiDealer ? (
+            <span className="relative z-10 inline-flex">
+              <Link href={`/dealer/${apiDealer.slug}`} className="font-semibold text-ink-500 hover:text-brand-600">
+                {apiDealer.name}
+              </Link>
+            </span>
           ) : dealerConfig ? (
             <span className="relative z-10 inline-flex">
               <Link

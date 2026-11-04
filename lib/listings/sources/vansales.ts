@@ -1,5 +1,5 @@
 import type { VanDetails } from "@/lib/listings/vanDetails";
-import type { HpiCheckPublic, Listing, ListingImage } from "../types";
+import type { DealerContact, HpiCheckPublic, Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
 
 /* =============================================================================
@@ -11,7 +11,15 @@ import { titleCase } from "../format";
    upstream) and the seller's name/email are never exposed: they appear as
    "Private seller". The photos are the CLEANED variant when the seller bought
    one (the API already prefers it). Unlike the dealer feeds this one has no
-   location and no VAT. Buyers message the seller through
+   location and no VAT.
+
+   DEALER-PORTAL ADVERTS come from the same API (?seller_type=dealer): rows whose
+   dealer block has has_call_booking === true. The same filter also returns the
+   legacy Dealski-synced stock (has_call_booking false), which the Dealski feeds
+   already serve, so those rows are dropped here to avoid duplicates. Dealer adverts
+   get the "portal-" slug prefix (NOT "dealer-": components/enquiry-modal.tsx posts slug "dealer-<tenant>" to /api/enquiry), seller_type "dealer", the dealer's exact pin and a
+   `dealer_contact` block; their enquiries and call requests go to the vansales API
+   (components/listing-actions.tsx), never to /api/enquiry. Buyers message the seller through
    components/private-enquiry-form.tsx (browser -> the API's /enquire); the dealer
    enquiry route (/api/enquiry) refuses these adverts.
    ========================================================================== */
@@ -23,6 +31,8 @@ const MAX_PAGES = 20; // 24 a page: a safety cap, not an expectation
 /** Front-end slugs for these start with this, so they can never be mistaken for another source's trailing numeric id. */
 export const PRIVATE_SLUG_PREFIX = "private-";
 export const PRIVATE_ENQUIRY_REF_PREFIX = "vansales-private:";
+export const DEALER_SLUG_PREFIX = "portal-";
+export const DEALER_ENQUIRY_REF_PREFIX = "vansales-dealer:";
 
 interface ApiCard {
   id: number; title: string; slug: string; make: string; model: string; variant: string | null; year: number | null; mileage: number | null; price: number;
@@ -30,6 +40,9 @@ interface ApiCard {
   /** The seller's geocoded postcode, when the API publishes it (town + coordinates only, never the postcode itself). */
   town?: string | null; latitude?: number | null; longitude?: number | null;
   /** List-card enrichment (the detail has the same fields). */
+  seller_type?: "dealer" | "private";
+  /** Present on dealer adverts (and legacy dealer stock); has_call_booking is true only for dealer-portal adverts. */
+  dealer?: { name: string; slug: string; logo_url?: string | null; town?: string | null; whatsapp_number?: string | null; finance_url?: string | null; has_call_booking?: boolean } | null;
   ulez_compliant?: boolean | null; vehicle_condition?: "excellent" | "good" | "fair" | "project" | null; v5_present?: boolean | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; features?: { slug: string; label: string }[]; hpi_checked?: boolean;
 }
 interface ApiDetail extends ApiCard {
@@ -47,7 +60,23 @@ const or = (v: string | null | undefined, fallback: string) => (v && v.trim() !=
 /** A private seller's map pin is rounded to ~1 km: enough for "near X", never their street. */
 const coarse = (v: number | null | undefined) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v * 100) / 100 : null);
 
+/** The dealer-portal advert rows: the dealer block says has_call_booking. (Legacy Dealski-synced stock has it false and is served by the Dealski feeds.) */
+const isDealerAdvert = (c: ApiCard): boolean => c.seller_type === "dealer" && !!c.dealer && c.dealer.slug !== "" && c.dealer.has_call_booking === true;
+
+/** A dealer's pin is their premises, so unlike a private seller's it is NOT coarsened. */
+const exact = (v: number | null | undefined) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+
 function toListing(c: ApiCard | ApiDetail): Listing {
+  const dealerAdvert = isDealerAdvert(c);
+  const dealer = dealerAdvert ? c.dealer! : null;
+  const dealer_contact: DealerContact | undefined = dealer
+    ? {
+        slug: dealer.slug, name: dealer.name, logo_url: dealer.logo_url ?? null, town: dealer.town ?? null,
+        whatsapp_number: dealer.whatsapp_number ? String(dealer.whatsapp_number).replace(/\D/g, "") || null : null,
+        finance_url: dealer.finance_url || null,
+        has_call_booking: true,
+      }
+    : undefined;
   const detail = "listing_images" in c ? (c as ApiDetail) : null;
   const images: ListingImage[] = detail?.listing_images?.length
     ? detail.listing_images.map((i, n) => ({ url: i.url, alt: `${c.make} ${c.model} photo ${n + 1}${i.is_cleaned ? " (studio background)" : ""}` }))
@@ -58,8 +87,8 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     source: "vansales",
     source_id: String(c.id),
     tenant_id: 0,
-    seller_type: "private",
-    slug: `${PRIVATE_SLUG_PREFIX}${c.slug}`,
+    seller_type: dealerAdvert ? "dealer" : "private",
+    slug: `${dealerAdvert ? DEALER_SLUG_PREFIX : PRIVATE_SLUG_PREFIX}${c.slug}`,
     status: "active",
     make: c.make,
     model: c.model,
@@ -80,13 +109,14 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     euro_status: null,
     ulez: c.ulez_compliant === true,
     van_spec: { body_style: or(c.body_type, "Van"), wheelbase: detail?.wheelbase ?? null, roof_height: null, payload_kg: detail?.payload_kg ?? null, load_length_mm: null, doors: null },
-    location: { town: c.town?.trim() || "UK", region: "", postcode_area: "", lat: coarse(c.latitude), lng: coarse(c.longitude) },
+    location: { town: c.town?.trim() || dealer?.town?.trim() || "UK", region: "", postcode_area: "", lat: dealerAdvert ? exact(c.latitude) : coarse(c.latitude), lng: dealerAdvert ? exact(c.longitude) : coarse(c.longitude) },
     description: detail?.description ?? "",
     features: [],
     images,
-    seller: { name: "Private seller", type: "private", logo: null, rating: null },
-    // Enquiries for these adverts go to the vansales API (private-enquiry-form.tsx), never to a dealer's inbox: /api/enquiry refuses this ref.
-    enquiry_route: { to: "vansales_private", ref: `${PRIVATE_ENQUIRY_REF_PREFIX}${c.id}` },
+    seller: dealer ? { name: dealer.name, type: "dealer", logo: dealer.logo_url ?? null, rating: null } : { name: "Private seller", type: "private", logo: null, rating: null },
+    dealer_contact,
+    // Enquiries for these adverts go to the vansales API (private-enquiry-form.tsx), never to a Dealski inbox: /api/enquiry refuses these refs.
+    enquiry_route: dealer ? { to: "vansales_dealer", ref: `${DEALER_ENQUIRY_REF_PREFIX}${c.id}` } : { to: "vansales_private", ref: `${PRIVATE_ENQUIRY_REF_PREFIX}${c.id}` },
     enquiry_url: null,
     stock_ref: null,
     vrm: detail?.vrm ?? null,
@@ -117,8 +147,8 @@ function toListing(c: ApiCard | ApiDetail): Listing {
   };
 }
 
-async function getJson<T>(path: string): Promise<T | null> {
-  const res = await fetch(`${BASE}${path}`, { headers: { Accept: "application/json" }, next: { revalidate: REVALIDATE, tags: ["vansales-private"] }, signal: AbortSignal.timeout(8_000) });
+async function getJson<T>(path: string, tags: string[] = ["vansales-private"]): Promise<T | null> {
+  const res = await fetch(`${BASE}${path}`, { headers: { Accept: "application/json" }, next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8_000) });
   return res.ok ? ((await res.json()) as T) : null;
 }
 
@@ -141,4 +171,31 @@ export async function fetchPrivateSellerListingBySlug(slug: string): Promise<Lis
   if (!/^[a-z0-9-]{1,200}$/.test(backendSlug)) return null;
   const body = await getJson<{ data: ApiDetail & { seller_type?: string } }>(`/api/public/listings/${backendSlug}`);
   return body && body.data.seller_type === "private" ? toListing(body.data) : null;
+}
+
+/** A dealer-portal advert card from a dealer profile or list response, as a Listing; null for anything else (legacy Dealski stock, private adverts). */
+export function dealerAdvertCardToListing(card: unknown): Listing | null {
+  const c = card as ApiCard | null;
+  return c && typeof c === "object" && isDealerAdvert(c) ? toListing(c) : null;
+}
+
+/** Every active dealer-portal advert (legacy Dealski-synced rows in the same feed are skipped: the Dealski feeds already serve them). Failure is the caller's to swallow. */
+export async function fetchDealerPortalListings(): Promise<Listing[]> {
+  const out: Listing[] = [];
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const body = await getJson<{ data: ApiCard[]; last_page: number }>(`/api/public/listings?seller_type=dealer&page=${page}`, ["vansales-dealer"]);
+    if (!body) break;
+    for (const c of body.data) if (isDealerAdvert(c)) out.push(toListing(c));
+    if (page >= body.last_page) break;
+  }
+  return out;
+}
+
+/** One dealer-portal advert by its front-end slug ("portal-<backend slug>"). Null if it is not (or no longer) active, or is legacy Dealski stock. */
+export async function fetchDealerPortalListingBySlug(slug: string): Promise<Listing | null> {
+  if (!slug.startsWith(DEALER_SLUG_PREFIX)) return null;
+  const backendSlug = slug.slice(DEALER_SLUG_PREFIX.length);
+  if (!/^[a-z0-9-]{1,200}$/.test(backendSlug)) return null;
+  const body = await getJson<{ data: ApiDetail }>(`/api/public/listings/${backendSlug}`, ["vansales-dealer"]);
+  return body && isDealerAdvert(body.data) ? toListing(body.data) : null;
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import type { DealerConfig } from "@/lib/dealers/config";
 import { whatsappUrl } from "@/lib/dealers/config";
 import { EnquiryModal } from "./enquiry-modal";
@@ -74,50 +73,5 @@ export function DealerCTAButtons({
         />
       )}
     </>
-  );
-}
-
-/** Per-van CTAs used on the listing detail page. */
-export function ListingCTAButtons({
-  listing,
-  dealer,
-}: {
-  listing: { make: string; model: string; plate: string; slug: string; vrm?: string | null };
-  dealer: Pick<DealerConfig, "phone" | "whatsapp" | "dealskiTenant">;
-}) {
-  const prefill = `Hi, I'm interested in your ${listing.make} ${listing.model}${listing.vrm ? ` ${listing.vrm}` : ""} on vansales.com`;
-  const waUrl = whatsappUrl(dealer.whatsapp, prefill);
-  const financeLink = `https://app.dealski.co.uk/apply/${dealer.dealskiTenant}?ref=${encodeURIComponent(listing.slug)}`;
-
-  return (
-    <div className="flex flex-col gap-2">
-      {waUrl ? (
-        <a
-          href={waUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[#25D366] text-[var(--text-sm)] font-semibold text-white transition-colors hover:bg-[#1ebe5d]"
-        >
-          <IconWhatsApp width={16} height={16} />
-          WhatsApp about this van
-        </a>
-      ) : (
-        <span
-          title="WhatsApp not yet configured for this dealer"
-          className="flex h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[#25D366]/40 text-[var(--text-sm)] font-semibold text-white"
-        >
-          <IconWhatsApp width={16} height={16} />
-          WhatsApp
-        </span>
-      )}
-      <Link
-        href={financeLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-brand-600 text-[var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-700"
-      >
-        Apply for finance
-      </Link>
-    </div>
   );
 }

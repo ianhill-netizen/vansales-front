@@ -9,6 +9,7 @@ import { Button } from "./ui";
 import { IconCheck, IconShield, IconArrow } from "./icons";
 import { Field, inputCls } from "./enquiry-fields";
 import { PrivateEnquiryForm } from "./private-enquiry-form";
+import { OPEN_ENQUIRY_EVENT } from "./listing-actions";
 
 type FormState = "idle" | "open" | "submitting" | "success" | "error";
 
@@ -38,6 +39,17 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
   const [errorMsg, setErrorMsg] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // The Enquire button in the listing's button row (components/listing-actions.tsx): open the form here, bring it into view and put the cursor in it.
+  useEffect(() => {
+    const open = () => {
+      setState((s) => (s === "idle" ? "open" : s));
+      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => panelRef.current?.querySelector<HTMLElement>("input[name=name]")?.focus({ preventScroll: true }), 350);
+    };
+    window.addEventListener(OPEN_ENQUIRY_EVENT, open);
+    return () => window.removeEventListener(OPEN_ENQUIRY_EVENT, open);
+  }, []);
+
   useEffect(() => {
     if (!autoOpen && !fromUrl) return;
     const t = setTimeout(() => {
@@ -51,11 +63,14 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
   // whose enquiries go to a dealer's Dealski inbox (/api/enquiry refuses these adverts as a backstop).
   const privateViaVansales = listing.source === "vansales";
 
-  const dealerConfig = getDealerConfigBySeller(listing.seller.name);
+  const apiDealer = listing.dealer_contact; // a vansales-API dealer (dealer portal); config dealers never have this
+  const dealerConfig = apiDealer ? null : getDealerConfigBySeller(listing.seller.name);
   const displayName = isPrivate
     ? "Private seller"
-    : (dealerConfig?.name ?? supplierCode(listing.seller.name));
-  const displayLocation = dealerConfig
+    : (apiDealer?.name ?? dealerConfig?.name ?? supplierCode(listing.seller.name));
+  const displayLocation = apiDealer
+    ? (apiDealer.town || listing.location.town)
+    : dealerConfig
     ? `${dealerConfig.location.town}, ${dealerConfig.location.county}`
     : [listing.location.town, listing.location.region].filter(Boolean).join(", ");
 
@@ -114,13 +129,18 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
     <div ref={panelRef} id="enquire" className="rounded-[var(--radius-xl)] border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
       {/* Seller */}
       <div className="flex items-center gap-3">
-        <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] bg-ink-900 font-display text-[var(--text-lg)] font-bold text-white">
-          {dealerInitials(displayName)}
-        </span>
+        {apiDealer?.logo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={apiDealer.logo_url} alt="" width={44} height={44} loading="lazy" className="size-11 shrink-0 rounded-[var(--radius-md)] border border-border bg-white object-contain" />
+        ) : (
+          <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] bg-ink-900 font-display text-[var(--text-lg)] font-bold text-white">
+            {dealerInitials(displayName)}
+          </span>
+        )}
         <div className="min-w-0">
           <p className="truncate font-display text-[var(--text-base)] font-bold text-ink-900">
-            {dealerConfig ? (
-              <Link href={`/dealer/${dealerConfig.slug}`} className="hover:text-brand-600">
+            {dealerConfig || apiDealer ? (
+              <Link href={`/dealer/${(apiDealer ?? dealerConfig)!.slug}`} className="hover:text-brand-600">
                 {displayName}
               </Link>
             ) : (
@@ -145,7 +165,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
       </div>
 
       {/* Phone CTA — dealer only; never shown for private listings */}
-      {!isPrivate && (
+      {!isPrivate && !apiDealer && (
         <a
           href={dealerConfig ? `tel:${dealerConfig.phone.replace(/[^\d+]/g, "")}` : PHONE_TEL}
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3 text-[var(--text-base)] font-bold text-success-600 transition-colors hover:bg-success-500 hover:text-white"

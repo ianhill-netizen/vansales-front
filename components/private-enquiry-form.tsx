@@ -16,6 +16,8 @@ type State = "idle" | "submitting" | "success" | "error";
  * buyer nothing about the seller. The `website` input is a honeypot: invisible to people, so a bot that fills it is ignored.
  */
 export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
+  const dealer = listing.dealer_contact; // a dealer-portal advert: same endpoint, the enquiry lands in that dealer's portal inbox
+  const who = dealer ? "the dealer" : "the seller";
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
   const [sentTo, setSentTo] = useState("");
@@ -58,7 +60,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
     <>
       <div className="relative my-4 flex items-center gap-3">
         <div className="flex-1 border-t border-border" />
-        <span className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">message the seller</span>
+        <span className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">{dealer ? "message the dealer" : "message the seller"}</span>
         <div className="flex-1 border-t border-border" />
       </div>
 
@@ -66,7 +68,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
         <div role="status" className="flex items-start gap-3 rounded-[var(--radius-md)] bg-success-tint p-4">
           <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
           <div>
-            <p className="font-semibold text-success-600">Sent — the seller will get back to you.</p>
+            <p className="font-semibold text-success-600">Sent — {dealer ? dealer.name : "the seller"} will get back to you.</p>
             <p className="mt-1 text-[var(--text-sm)] text-ink-600">They will reply to <span className="font-semibold text-ink-800">{sentTo}</span>, so keep an eye on your inbox (and spam).</p>
           </div>
         </div>
@@ -100,7 +102,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
             {state === "submitting" ? "Sending…" : "Send message"}
           </Button>
           <p className="text-center text-[var(--text-xs)] text-ink-400">
-            Your name, email and phone number are sent to the seller so they can reply. Never agree to pay a deposit before you have seen the van.
+            Your name, email and phone number are sent to {who} so they can reply. Never agree to pay a deposit before you have seen the van.
           </p>
         </form>
       )}

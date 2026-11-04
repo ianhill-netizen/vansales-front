@@ -59,6 +59,19 @@ export interface HpiCheckPublic {
   clear: boolean;
 }
 
+/** A vansales-API dealer's contact options on one of their adverts (dealer-portal adverts only). Each optional field is absent unless the dealer set it up. */
+export interface DealerContact {
+  slug: string;
+  name: string;
+  logo_url: string | null;
+  town: string | null;
+  /** International digits, no "+" (e.g. 447700900123): ready for wa.me. */
+  whatsapp_number?: string | null;
+  finance_url?: string | null;
+  /** True when the advert takes call-back requests (POST /api/public/listings/{id}/book-call). */
+  has_call_booking: boolean;
+}
+
 export interface Listing {
   id: string; // canonical id: `${source}:${source_id}`
   source: ListingSource;
@@ -98,6 +111,8 @@ export interface Listing {
   enquiry_route: EnquiryRoute;
   /** Direct backend URL for submitting a lead. Populated for marketplace listings; null for other sources. */
   enquiry_url: string | null;
+  /** Set for adverts posted from the vansales dealer portal (source "vansales", seller_type "dealer"). Config / Dealski dealers never have it. */
+  dealer_contact?: DealerContact;
   /** The registration (private adverts and anything the source publishes). Null/absent = not published. */
   vrm?: string | null;
   /** Dealer's own stock reference (e.g. "SV-2606-1147"). Null when the source doesn't provide one. */

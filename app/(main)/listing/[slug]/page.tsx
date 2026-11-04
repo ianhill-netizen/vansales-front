@@ -10,7 +10,8 @@ import { HpiCard } from "@/components/hpi-card";
 import { JsonLd } from "@/components/json-ld";
 import { CONDITION_LABEL, detailRows, VAT_BADGE, warrantyText } from "@/lib/listings/vanDetails";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } from "@/components/icons";
-import { ListingCTAButtons } from "@/components/dealer-cta-buttons";
+import { ListingActions } from "@/components/listing-actions";
+import { listingActionLinks } from "@/lib/dealers/actions";
 import { getListingBySlug } from "@/lib/listings/client";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
 import type { Listing } from "@/lib/listings/types";
@@ -73,7 +74,9 @@ export default async function ListingPage({
   const { listing } = await getListingBySlug(slug);
   if (!listing) notFound();
 
-  const dealerConfig = getDealerConfigBySeller(listing.seller.name);
+  const dealerConfig = listing.dealer_contact ? null : getDealerConfigBySeller(listing.seller.name);
+  const actionLinks = listingActionLinks(listing, dealerConfig);
+  const hasExtraActions = !!(actionLinks.whatsappHref || actionLinks.financeHref || actionLinks.bookCall);
   const displayTown = dealerConfig?.location.town ?? listing.location.town;
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
@@ -283,19 +286,9 @@ export default async function ListingPage({
 
           {/* Right: sticky enquiry */}
           <aside className="lg:sticky lg:top-20 lg:self-start space-y-3">
+            {/* Button row: Enquire + whatever this dealer offers (WhatsApp, finance, book a call). Private sellers have the form below and nothing else. */}
+            {hasExtraActions && <ListingActions links={actionLinks} sold={listing.status === "sold"} />}
             <EnquiryPanel listing={listing} />
-            {dealerConfig && (
-              <ListingCTAButtons
-                listing={{
-                  make: listing.make,
-                  model: listing.model,
-                  plate: listing.plate,
-                  slug: listing.slug,
-                  vrm: listing.vrm,
-                }}
-                dealer={dealerConfig}
-              />
-            )}
           </aside>
         </div>
       </Container>
