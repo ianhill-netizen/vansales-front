@@ -7,6 +7,7 @@ import { SpecTable } from "@/components/spec-table";
 import { EnquiryPanel } from "@/components/enquiry-panel";
 import { SpecReadout } from "@/components/spec-readout";
 import { JsonLd } from "@/components/json-ld";
+import { detailRows, VAT_BADGE } from "@/lib/listings/vanDetails";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } from "@/components/icons";
 import { ListingCTAButtons } from "@/components/dealer-cta-buttons";
 import { getListingBySlug } from "@/lib/listings/client";
@@ -75,6 +76,7 @@ export default async function ListingPage({
   const displayTown = dealerConfig?.location.town ?? listing.location.town;
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
+  const specRows = detailRows(listing.details);
   const readouts = [
     { icon: <IconGauge />, label: "Mileage", value: formatMileageDisplay(listing.mileage, listing.condition) },
     { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
@@ -162,11 +164,11 @@ export default async function ListingPage({
           <div className="min-w-0">
             <Gallery listing={listing} />
 
-            {/* A seller-made video of the van (their own photos, no AI): 16:9 here, the 9:16 cut for stories is offered as a download */}
-            {listing.video_url && (
-              <section className="mt-6" aria-label="Video of this van">
-                <video src={listing.video_url} controls playsInline preload="metadata" className="w-full rounded-[var(--radius-lg)] bg-black" />
-                {listing.video_vertical_url && (
+            {/* Video: the seller's own walk-around takes priority over the generated Showroom Cut (made from their photos, no AI); the 9:16 cut belongs to the generated one */}
+            {(listing.seller_video_url ?? listing.video_url) && (
+              <section className="mt-6" aria-label={listing.seller_video_url ? "Walk-around video from the seller" : "Video of this van"}>
+                <video src={(listing.seller_video_url ?? listing.video_url) as string} controls playsInline preload="metadata" className="w-full rounded-[var(--radius-lg)] bg-black" />
+                {!listing.seller_video_url && listing.video_vertical_url && (
                   <p className="mt-2 text-[var(--text-sm)] text-ink-500">
                     <a href={listing.video_vertical_url} download className="underline hover:text-ink-800">Download the vertical version</a> for stories and reels.
                   </p>
@@ -177,6 +179,21 @@ export default async function ListingPage({
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />
             </div>
+
+            {/* Specification the seller filled in (private adverts): only the rows they gave */}
+            {specRows.length > 0 && (
+              <section className="mt-6" aria-label="Specification">
+                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Specification</h2>
+                <dl className="mt-3 divide-y divide-border rounded-[var(--radius-lg)] border border-border bg-card">
+                  {specRows.map((r) => (
+                    <div key={r.label} className="flex items-baseline justify-between gap-4 px-4 py-2.5">
+                      <dt className="text-[var(--text-sm)] text-ink-500">{r.label}</dt>
+                      <dd className="text-right font-medium text-ink-900">{r.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            )}
 
             {/* MOT facts from the DVLA / DVSA records (private adverts) */}
             {(listing.mot_expiry || listing.last_mot_mileage != null) && (
@@ -271,6 +288,7 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Price listing={listing} size="lg" />
         <StatusBadge status={listing.status} />
+        {(listing.vat_status === "vat_qualifying" || listing.vat_status === "ex_vat") && <Badge tone="neutral">{VAT_BADGE[listing.vat_status]}</Badge>}
         {listing.hpi_checked && (
           <span title={listing.hpi_checked_at ? `Vehicle history checked on ${formatMotDate(listing.hpi_checked_at)}: clear` : "Vehicle history checked"}>
             <Badge tone="success"><IconShield width={12} height={12} aria-hidden />HPI checked</Badge>
