@@ -6,6 +6,7 @@ import { Gallery } from "@/components/gallery";
 import { SpecTable } from "@/components/spec-table";
 import { EnquiryPanel } from "@/components/enquiry-panel";
 import { SpecReadout } from "@/components/spec-readout";
+import { HpiCard } from "@/components/hpi-card";
 import { JsonLd } from "@/components/json-ld";
 import { CONDITION_LABEL, detailRows, VAT_BADGE, warrantyText } from "@/lib/listings/vanDetails";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } from "@/components/icons";
@@ -245,6 +246,9 @@ export default async function ListingPage({
               </section>
             )}
 
+            {/* Vehicle history check: the full findings when the API publishes them (replaces the plain badge); otherwise the header badge stays. */}
+            {listing.hpi_check && <HpiCard result={listing.hpi_check} />}
+
             {/* Description */}
             <section className="mt-8">
               <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Description</h2>
@@ -315,7 +319,7 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
         <Price listing={listing} size="lg" />
         <StatusBadge status={listing.status} />
         {(listing.vat_status === "vat_qualifying" || listing.vat_status === "ex_vat") && <Badge tone="neutral">{VAT_BADGE[listing.vat_status]}</Badge>}
-        {listing.hpi_checked && (
+        {listing.hpi_checked && !listing.hpi_check && (
           <span title={listing.hpi_checked_at ? `Vehicle history checked on ${formatMotDate(listing.hpi_checked_at)}: clear` : "Vehicle history checked"}>
             <Badge tone="success"><IconShield width={12} height={12} aria-hidden />HPI checked</Badge>
           </span>

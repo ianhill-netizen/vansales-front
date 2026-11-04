@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconArrow, IconCheck, IconCalendar, IconRuler } from "@/components/icons";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Van Contract Hire | Fixed Monthly Payments",
   description: `New vans on fixed monthly contract hire from leading funders. Browse van leasing deals or call ${SITE.phone} to discuss your requirements.`,
-};
+  path: "/van-contract-hire",
+});
 
 const BENEFITS = [
   "Fixed monthly payments — no surprises",

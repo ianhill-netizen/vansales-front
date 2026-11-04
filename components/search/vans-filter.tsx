@@ -2,11 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useTransition } from "react";
-import { SORTED_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
+import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
 import { WHEELBASE_SHORT } from "@/lib/listings/format";
 import { slugify } from "@/lib/listings/slug";
 import { priceFromMonthly, FINANCE_ASSUMPTIONS } from "@/lib/finance";
 import { IconFilter, IconSearch } from "@/components/icons";
+import { ChipSearch } from "@/components/chip-search";
+import { chipLabel, legacyToVehicles, parseVehicles, stringifyVehicles, type VehicleChip } from "@/lib/vehicle-chips";
 import type { ListingFacets } from "@/lib/listings/types";
 
 /* =============================================================================
@@ -16,8 +18,7 @@ import type { ListingFacets } from "@/lib/listings/types";
    ============================================================================= */
 
 type FilterDraft = {
-  make: string;
-  models: string[]; // multi-model OR selection (replaces single model)
+  vehicles: VehicleChip[]; // chip search: makes / make+model, OR'd
   bodyStyle: string;
   fuel: string;
   gearbox: string;
@@ -40,7 +41,7 @@ const MONTHLY_MAX_CEILING = 1500; // slider max — above this means no filter
 const DEPOSIT_MAX = 10000;
 
 const EMPTY: FilterDraft = {
-  make: "", models: [], bodyStyle: "", fuel: "",
+  vehicles: [], bodyStyle: "", fuel: "",
   gearbox: "", wheelbase: "", colour: "",
   minPrice: "", maxPrice: "", monthlyMax: "",
   deposit: DEFAULT_DEPOSIT,
@@ -57,16 +58,16 @@ function one(v: string | string[] | undefined): string {
 
 function parseSearchParams(sp: Search): FilterDraft {
   const monthlyMax = one(sp.monthlyMax);
-  // ?models=slug1,slug2 (preferred) or legacy ?model=slug
+  // ?v=ford:transit-custom,volkswagen (chips). Legacy ?make=ford&models=a,b / ?model=a still read, and become chips.
   const rawModels = one(sp.models);
-  const models = rawModels
+  const legacyModels = rawModels
     ? rawModels.split(",").map((s) => s.trim()).filter(Boolean)
     : one(sp.model)
     ? [one(sp.model)]
     : [];
+  const vehicles = one(sp.v) ? parseVehicles(one(sp.v)) : legacyToVehicles(one(sp.make) || undefined, legacyModels);
   return {
-    make:       one(sp.make),
-    models,
+    vehicles,
     bodyStyle:  one(sp.bodyStyle),
     fuel:       one(sp.fuel),
     gearbox:    one(sp.gearbox),
@@ -87,8 +88,7 @@ function parseSearchParams(sp: Search): FilterDraft {
 
 function draftToUrl(d: FilterDraft): string {
   const p = new URLSearchParams();
-  if (d.make)             p.set("make",      d.make);
-  if (d.models.length > 0) p.set("models",  d.models.join(","));
+  if (d.vehicles.length > 0) p.set("v", stringifyVehicles(d.vehicles));
   if (d.bodyStyle)        p.set("bodyStyle", d.bodyStyle);
   if (d.fuel)             p.set("fuel",      d.fuel);
   if (d.gearbox)          p.set("gearbox",   d.gearbox);
@@ -124,15 +124,14 @@ function fmt(n: number): string { return GBP.format(n); }
 function ucFirst(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
 function unslug(s: string): string { return s.split("-").map(ucFirst).join(" "); }
 
+const csvList = (v: string): string[] => v.split(",").map((x) => x.trim()).filter(Boolean);
+const toggleCsv = (v: string, item: string): string => {
+  const cur = csvList(v);
+  return (cur.includes(item) ? cur.filter((x) => x !== item) : [...cur, item]).join(",");
+};
+
 function getChips(d: FilterDraft): Chip[] {
   const out: Chip[] = [];
-
-  if (d.make) {
-    const md = getMakeBySlug(d.make);
-    const makeName = md?.name ?? ucFirst(d.make);
-    out.push({ key: "make", label: makeName, clear: { make: "", models: [] } });
-    // Individual model chips rendered separately (draggable)
-  }
 
   if (d.monthlyMax) {
     out.push({ key: "monthly", label: `≤ ${fmt(Number(d.monthlyMax))}/mo`, clear: { monthlyMax: "", maxPrice: "", deposit: DEFAULT_DEPOSIT } });
@@ -152,8 +151,8 @@ function getChips(d: FilterDraft): Chip[] {
     const label = WHEELBASE_SHORT[d.wheelbase as keyof typeof WHEELBASE_SHORT] ?? d.wheelbase.toUpperCase();
     out.push({ key: "wheelbase", label, clear: { wheelbase: "" } });
   }
-  if (d.bodyStyle) out.push({ key: "bodyStyle", label: unslug(d.bodyStyle), clear: { bodyStyle: "" } });
-  if (d.fuel)      out.push({ key: "fuel",      label: ucFirst(d.fuel),      clear: { fuel: "" } });
+  for (const bs of csvList(d.bodyStyle)) out.push({ key: `bodyStyle:${bs}`, label: unslug(bs), clear: { bodyStyle: csvList(d.bodyStyle).filter((x) => x !== bs).join(",") } });
+  for (const f of csvList(d.fuel)) out.push({ key: `fuel:${f}`, label: ucFirst(f), clear: { fuel: csvList(d.fuel).filter((x) => x !== f).join(",") } });
   if (d.gearbox)   out.push({ key: "gearbox",   label: ucFirst(d.gearbox),   clear: { gearbox: "" } });
   if (d.colour)    out.push({ key: "colour",    label: ucFirst(d.colour),    clear: { colour: "" } });
 
@@ -190,15 +189,9 @@ function yearLabel(d: FilterDraft): string {
 }
 
 function makeModelPillLabel(d: FilterDraft): string {
-  if (!d.make) return "Make & model";
-  const md = getMakeBySlug(d.make);
-  const makeName = md?.name ?? ucFirst(d.make);
-  if (d.models.length === 0) return makeName;
-  if (d.models.length === 1) {
-    const modelName = md?.models.find((m) => m.slug === d.models[0])?.name;
-    return modelName ? `${makeName} · ${modelName}` : makeName;
-  }
-  return `${makeName} · ${d.models.length} models`;
+  if (d.vehicles.length === 0) return "Make & model";
+  if (d.vehicles.length === 1) return chipLabel(d.vehicles[0]);
+  return `${d.vehicles.length} makes / models`;
 }
 
 /* ── Static data ─────────────────────────────────────────────────────────── */
@@ -274,11 +267,6 @@ export function VansFilter({
   const [draft, setDraft] = useState<FilterDraft>(() => parseSearchParams(searchParams));
   const [modalOpen, setModalOpen] = useState(false);
   const [scrollTarget, setScrollTarget] = useState<string | null>(null);
-  const [modelSearch, setModelSearch] = useState("");
-
-  // Drag-to-reorder state for model chips
-  const [dragIdx, setDragIdx] = useState<number | null>(null);
-  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
 
   // Finance sliders — local numeric state drives the range input; draft holds string for URL
   const [sliderMonthly, setSliderMonthly] = useState<number>(() =>
@@ -291,7 +279,6 @@ export function VansFilter({
   const modalBodyRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const selectedMake = draft.make ? getMakeBySlug(draft.make) : null;
   const chips = getChips(draft);
   const monthlyNum = Number(draft.monthlyMax) || 0;
   const depositNum = Number(draft.deposit) || Number(DEFAULT_DEPOSIT);
@@ -313,7 +300,6 @@ export function VansFilter({
   function openAt(section: string | null) {
     setModalOpen(true);
     setScrollTarget(section);
-    setModelSearch("");
     // Sync sliders to current draft when modal opens
     setSliderMonthly(Number(draft.monthlyMax) || MONTHLY_MAX_CEILING);
     setSliderDeposit(Number(draft.deposit) || 3000);
@@ -339,17 +325,11 @@ export function VansFilter({
     startTransition(() => router.push(draftToUrl(next), { scroll: false }));
   }
 
-  function removeModel(slug: string) {
-    const next = { ...draft, models: draft.models.filter((m) => m !== slug) };
+  /** Chip search edits apply straight away (like removing a chip) so the results follow the bar. */
+  function setVehicles(vehicles: VehicleChip[]) {
+    const next = { ...draft, vehicles };
     setDraft(next);
     startTransition(() => router.push(draftToUrl(next), { scroll: false }));
-  }
-
-  function toggleModel(slug: string) {
-    const next = draft.models.includes(slug)
-      ? draft.models.filter((m) => m !== slug)
-      : [...draft.models, slug];
-    set({ models: next });
   }
 
   function handleMonthlySlider(val: number) {
@@ -364,22 +344,6 @@ export function VansFilter({
   function handleDepositSlider(val: number) {
     setSliderDeposit(val);
     set({ deposit: String(val) });
-  }
-
-  // Model chip drag-to-reorder (HTML5 drag API — works on iOS 15+ and all desktop browsers)
-  function handleDragStart(idx: number) { setDragIdx(idx); }
-  function handleDragEnter(idx: number) {
-    if (dragIdx !== null && dragIdx !== idx) setDragOverIdx(idx);
-  }
-  function handleDragEnd() {
-    if (dragIdx !== null && dragOverIdx !== null && dragIdx !== dragOverIdx) {
-      const next = [...draft.models];
-      const [moved] = next.splice(dragIdx, 1);
-      next.splice(dragOverIdx, 0, moved);
-      set({ models: next });
-    }
-    setDragIdx(null);
-    setDragOverIdx(null);
   }
 
   useEffect(() => {
@@ -399,21 +363,22 @@ export function VansFilter({
     return () => { document.body.style.overflow = ""; };
   }, [modalOpen]);
 
-  const hasModelChips = draft.make && draft.models.length > 0;
-  const totalChips = chips.length + (draft.make ? draft.models.length : 0);
+  const totalChips = chips.length + draft.vehicles.length;
 
   return (
     <>
       {/* ── Pill row ──────────────────────────────────────────────────────── */}
       <div className="mb-5">
+        {/* Chip search: type a make or model, pick it, it becomes a chip. Several allowed. */}
+        <ChipSearch className="mb-3" value={draft.vehicles} onChange={setVehicles} />
         <div className="flex items-center justify-between gap-2">
 
           {/* Main filter pills */}
           <div className="flex flex-wrap gap-2">
 
-            <button type="button" className={pillCls(!!draft.make)} onClick={() => openAt("make")}>
+            <button type="button" className={pillCls(draft.vehicles.length > 0)} onClick={() => openAt("make")}>
               {makeModelPillLabel(draft)}
-              <Chevron active={!!draft.make} />
+              <Chevron active={draft.vehicles.length > 0} />
             </button>
 
             <button type="button" className={pillCls(!!(draft.minPrice || draft.maxPrice) && !draft.monthlyMax)} onClick={() => openAt("price")}>
@@ -458,7 +423,7 @@ export function VansFilter({
 
             {facets.bodyStyles.length > 0 && (
               <button type="button" className={pillCls(!!draft.bodyStyle)} onClick={() => openAt("body")}>
-                {draft.bodyStyle ? unslug(draft.bodyStyle) : "Body type"}
+                {draft.bodyStyle ? (csvList(draft.bodyStyle).length > 1 ? `${csvList(draft.bodyStyle).length} body types` : unslug(draft.bodyStyle)) : "Body type"}
                 <Chevron active={!!draft.bodyStyle} />
               </button>
             )}
@@ -484,8 +449,8 @@ export function VansFilter({
           </button>
         </div>
 
-        {/* Active chips — make chip + draggable model chips + other chips */}
-        {(chips.length > 0 || hasModelChips) && (
+        {/* Active filter chips (vehicles live in the chip search bar above) */}
+        {chips.length > 0 && (
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             {chips.map((chip) => (
               <button
@@ -498,48 +463,6 @@ export function VansFilter({
                 <span className="text-brand-400" aria-hidden>×</span>
               </button>
             ))}
-
-            {/* Draggable model chips */}
-            {draft.make && draft.models.map((slug, idx) => {
-              const md = getMakeBySlug(draft.make);
-              const name = md?.models.find((m) => m.slug === slug)?.name ?? unslug(slug);
-              const isDragging = dragIdx === idx;
-              const isOver = dragOverIdx === idx;
-              return (
-                <div
-                  key={slug}
-                  draggable
-                  onDragStart={() => handleDragStart(idx)}
-                  onDragEnter={() => handleDragEnter(idx)}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDragEnd={handleDragEnd}
-                  className={`flex cursor-grab items-center gap-1 rounded-[var(--radius-pill)] border px-2.5 py-1 text-[var(--text-xs)] font-semibold text-brand-700 select-none transition-all active:cursor-grabbing ${
-                    isDragging
-                      ? "border-brand-400 bg-brand-100 opacity-50"
-                      : isOver
-                      ? "border-brand-500 bg-brand-100 ring-1 ring-brand-400"
-                      : "border-brand-200 bg-brand-50 hover:bg-brand-100"
-                  }`}
-                  role="listitem"
-                  aria-label={`${name}, drag to reorder`}
-                >
-                  <svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor" className="shrink-0 text-brand-400" aria-hidden>
-                    <circle cx="2" cy="2" r="1.5"/><circle cx="6" cy="2" r="1.5"/>
-                    <circle cx="2" cy="6" r="1.5"/><circle cx="6" cy="6" r="1.5"/>
-                    <circle cx="2" cy="10" r="1.5"/><circle cx="6" cy="10" r="1.5"/>
-                  </svg>
-                  {name}
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); removeModel(slug); }}
-                    className="text-brand-400 hover:text-brand-700"
-                    aria-label={`Remove ${name}`}
-                  >
-                    <span aria-hidden>×</span>
-                  </button>
-                </div>
-              );
-            })}
 
             {totalChips > 1 && (
               <button
@@ -584,56 +507,30 @@ export function VansFilter({
               {/* Make & model */}
               <div ref={(el) => { sectionRefs.current["make"] = el; }}>
                 <Section title="Make & model">
+                  <ChipSearch value={draft.vehicles} onChange={(vehicles) => set({ vehicles })} />
+                  <p className="mt-3 mb-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">Popular makes</p>
                   <div className="flex flex-wrap gap-2">
-                    {SORTED_MAKES.map((m) => (
-                      <Chip
-                        key={m.slug}
-                        active={draft.make === m.slug}
-                        onClick={() => set(draft.make === m.slug ? { make: "", models: [] } : { make: m.slug, models: [] })}
-                      >
-                        {m.name}
-                      </Chip>
-                    ))}
+                    {POPULAR_MAKES.map((m) => {
+                      const on = draft.vehicles.some((v) => v.make === m.slug && !v.model);
+                      return (
+                        <Chip
+                          key={m.slug}
+                          active={on}
+                          onClick={() =>
+                            set({
+                              vehicles: on
+                                ? draft.vehicles.filter((v) => !(v.make === m.slug && !v.model))
+                                : [...draft.vehicles, { make: m.slug }],
+                            })
+                          }
+                        >
+                          {m.name}
+                        </Chip>
+                      );
+                    })}
                   </div>
-
-                  {selectedMake && selectedMake.models.length > 0 && (
-                    <div className="mt-4">
-                      <p className="mb-2 flex items-center gap-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
-                        {selectedMake.name} models
-                        {draft.models.length > 0 && (
-                          <span className="rounded-full bg-brand-600 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                            {draft.models.length}
-                          </span>
-                        )}
-                      </p>
-                      {/* Type-ahead search within models */}
-                      <input
-                        type="text"
-                        value={modelSearch}
-                        onChange={(e) => setModelSearch(e.target.value)}
-                        placeholder="Filter models…"
-                        className="mb-3 w-full rounded-[var(--radius-md)] border border-border px-3 py-2 text-[var(--text-sm)] text-ink-900 placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {[...selectedMake.models]
-                          .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }))
-                          .filter((m) => !modelSearch || m.name.toLowerCase().includes(modelSearch.toLowerCase()))
-                          .map((m) => (
-                            <Chip
-                              key={m.slug}
-                              active={draft.models.includes(m.slug)}
-                              onClick={() => toggleModel(m.slug)}
-                            >
-                              {m.name}
-                            </Chip>
-                          ))}
-                      </div>
-                      {draft.models.length > 1 && (
-                        <p className="mt-2 text-[var(--text-2xs)] text-ink-400">
-                          Showing vans matching <strong>any</strong> selected model · drag chips above to set display order
-                        </p>
-                      )}
-                    </div>
+                  {draft.vehicles.length > 1 && (
+                    <p className="mt-2 text-[var(--text-2xs)] text-ink-400">Showing vans matching <strong>any</strong> of the chosen makes / models</p>
                   )}
                 </Section>
               </div>
@@ -831,15 +728,15 @@ export function VansFilter({
                             <button
                               key={bs.value}
                               type="button"
-                              onClick={() => set({ bodyStyle: draft.bodyStyle === slug ? "" : slug })}
+                              onClick={() => set({ bodyStyle: toggleCsv(draft.bodyStyle, slug) })}
                               className={`flex items-center justify-between rounded-[var(--radius-md)] border px-3 py-2 text-[var(--text-sm)] font-semibold transition-colors ${
-                                draft.bodyStyle === slug
+                                csvList(draft.bodyStyle).includes(slug)
                                   ? "border-brand-500 bg-brand-600 text-white"
                                   : "border-border bg-white text-ink-700 hover:border-brand-300"
                               }`}
                             >
                               <span>{bs.value}</span>
-                              <span className={`text-[var(--text-xs)] font-normal ${draft.bodyStyle === slug ? "text-white/70" : "text-ink-400"}`}>
+                              <span className={`text-[var(--text-xs)] font-normal ${csvList(draft.bodyStyle).includes(slug) ? "text-white/70" : "text-ink-400"}`}>
                                 {bs.count}
                               </span>
                             </button>
@@ -863,15 +760,15 @@ export function VansFilter({
                           <button
                             key={f.value}
                             type="button"
-                            onClick={() => set({ fuel: draft.fuel === slug ? "" : slug })}
+                            onClick={() => set({ fuel: toggleCsv(draft.fuel, slug) })}
                             className={`flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
-                              draft.fuel === slug
+                              csvList(draft.fuel).includes(slug)
                                 ? "border-brand-500 bg-brand-600 text-white"
                                 : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
                             }`}
                           >
                             {f.value}
-                            <span className={`text-[var(--text-xs)] font-normal ${draft.fuel === slug ? "text-white/70" : "text-ink-400"}`}>
+                            <span className={`text-[var(--text-xs)] font-normal ${csvList(draft.fuel).includes(slug) ? "text-white/70" : "text-ink-400"}`}>
                               {f.count}
                             </span>
                           </button>

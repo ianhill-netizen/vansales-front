@@ -47,6 +47,18 @@ export interface EnquiryRoute {
   ref: string; // opaque reference passed back to the source on enquiry
 }
 
+/** The public HPI findings (vansales API `hpi_check`). Each flag: true = a problem was found, false = checked and clear, null = NOT checked. */
+export interface HpiCheckPublic {
+  stolen: boolean | null;
+  finance: boolean | null;
+  written_off: boolean | null;
+  mileage_discrepancy: boolean | null;
+  plate_changes: boolean | null;
+  previous_keepers: number | null;
+  checked_at: string | null;
+  clear: boolean;
+}
+
 export interface Listing {
   id: string; // canonical id: `${source}:${source_id}`
   source: ListingSource;
@@ -120,6 +132,9 @@ export interface Listing {
   last_mot_mileage?: number | null;
   last_mot_date?: string | null;
 
+  /** The paid HPI check findings (private adverts' detail). Null/absent = no check. */
+  hpi_check?: HpiCheckPublic | null;
+
   /** True only when a paid HPI check for this registration came back completely clear (private sellers' adverts). The findings themselves are never public. */
   hpi_checked?: boolean;
   hpi_checked_at?: string | null;
@@ -137,9 +152,9 @@ export interface ListingFilters {
   model?: string;
   models?: string[]; // multi-model OR filter; overrides model when set
   condition?: Condition;
-  bodyStyle?: string;
+  bodyStyle?: string; // comma-separated for several (OR)
   wheelbase?: Wheelbase;
-  fuel?: string;
+  fuel?: string; // comma-separated for several (OR)
   minPrice?: number;
   maxPrice?: number;
   minYear?: number;
@@ -155,6 +170,8 @@ export interface ListingFilters {
   radius?: number; // miles; undefined = Nationwide
   buyerLat?: number;
   buyerLng?: number;
+  /** Multi-vehicle OR filter from the chip search: each entry is a make slug, optionally narrowed to one model slug. */
+  vehicles?: { make: string; model?: string }[];
   limit?: number; // hard cap (e.g. featured strips); independent of pagination
   page?: number; // 1-based
   pageSize?: number; // when set, results are paginated to this many per page

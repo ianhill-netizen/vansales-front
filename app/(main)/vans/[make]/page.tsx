@@ -11,7 +11,8 @@ import { matchBlogPosts } from "@/lib/content/cross-links";
 import { RelatedLinks } from "@/components/related-links";
 import { SITE, absUrl } from "@/lib/site";
 import { slugify } from "@/lib/listings/slug";
-import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
+import { ALL_MAKES, getMakeBySlug, getModelBySlug } from "@/lib/taxonomy/van-makes";
+import { resolveModelSlug } from "@/lib/models/image";
 
 export const revalidate = 3600;
 
@@ -37,16 +38,24 @@ export async function generateMetadata({
   const { make } = await params;
   if (CATEGORY_SLUGS.has(make)) return {};
   const makeName = slugToMake(make);
+  // Unique per make: real stock count and the models actually in stock.
+  const { listings, total } = await getListings({ make: makeName, pageSize: 24 });
+  const names: string[] = [];
+  for (const l of listings) {
+    const r = resolveModelSlug(l.make, l.model);
+    const n = (r && getModelBySlug(r.makeSlug, r.modelSlug)?.name) || null;
+    if (n && !names.includes(n)) names.push(n);
+  }
+  const title = `${makeName} Vans for Sale`;
+  const description = total > 0
+    ? `Browse ${total.toLocaleString("en-GB")} ${makeName} vans for sale across the UK${names.length ? `, including ${names.slice(0, 3).join(", ")}` : ""}. New and used ${makeName} vans from dealers and private sellers on ${SITE.name}.`
+    : `Browse ${makeName} vans for sale across the UK. New and used ${makeName} panel vans, crew vans and more on ${SITE.name}.`;
   return {
-    title: `${makeName} Vans for Sale`,
-    description: `Browse ${makeName} vans for sale across the UK. New and used ${makeName} panel vans, crew vans and more.`,
+    title,
+    description,
     alternates: { canonical: absUrl(`/vans/${make}`) },
-    openGraph: {
-      title: `${makeName} Vans for Sale · ${SITE.name}`,
-      description: `Browse ${makeName} vans for sale.`,
-      url: absUrl(`/vans/${make}`),
-      type: "website",
-    },
+    openGraph: { title: `${title} · ${SITE.name}`, description, url: absUrl(`/vans/${make}`), type: "website" },
+    twitter: { card: "summary_large_image", title: `${title} · ${SITE.name}`, description },
   };
 }
 

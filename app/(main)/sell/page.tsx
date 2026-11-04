@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconCheck, IconArrow } from "@/components/icons";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Sell Your Van | Free Private Listings",
   description: `List your van for free on ${SITE.name} and reach thousands of UK buyers. Takes under 5 minutes — full spec, photos, direct enquiries.`,
-};
+  path: "/sell",
+});
 
 const STEPS = [
   { n: "1", title: "Create your listing", body: "Tell us the make, model, spec and mileage. We'll fill in most details automatically from your registration." },

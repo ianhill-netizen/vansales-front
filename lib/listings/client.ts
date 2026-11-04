@@ -71,6 +71,11 @@ const loadExtras = unstable_cache(
   { revalidate: 60, tags: ["listing-extras"] },
 );
 
+/** The ACME Road Runner fixtures are for previewing the multi-dealer layout only. They never reach public responses unless SHOW_DEMO_LISTINGS=true (the data stays in the repo). */
+function demoListings(): Listing[] {
+  return process.env.SHOW_DEMO_LISTINGS === "true" ? getAcmeDemoListings() : [];
+}
+
 function configuredSource(): ListingSource | "mock" | "marketplace" {
   const v = (process.env.LISTINGS_SOURCE || "mock").toLowerCase();
   if (v === "marketplace") return "marketplace";
@@ -91,9 +96,8 @@ async function loadAllUncached(): Promise<{
   // Native listings + private sellers' adverts start NOW, in parallel with the main feed below, and are awaited only when merging.
   const extrasP = loadExtras().catch(() => [] as Listing[]);
 
-  // Always include demo dealer listings so the multi-dealer layout
-  // is visible alongside the live feed.
-  const demo = getAcmeDemoListings();
+  // Demo dealer listings are opt-in (SHOW_DEMO_LISTINGS) and off in production.
+  const demo = demoListings();
 
   if (source === "marketplace") {
     // Primary: authenticated aggregate feed (cursor-paginated, multi-tenant).
@@ -155,6 +159,8 @@ async function loadAllUncached(): Promise<{
 /** One catalogue load per request: getListings() and getFacets() on the same page share it. */
 const loadAll = cache(loadAllUncached);
 
+const csv = (v: string) => v.split(",").map((s) => s.trim()).filter(Boolean);
+
 function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
   let out = listings.filter((l) => l.status !== "removed");
 
@@ -176,10 +182,27 @@ function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
       (l) => slugify(l.model) === want || resolveModelSlug(l.make, l.model)?.modelSlug === want,
     );
   }
-  if (f.bodyStyle) out = out.filter((l) => slugify(l.van_spec.body_style) === slugify(f.bodyStyle!));
+  if (f.vehicles && f.vehicles.length > 0) {
+    // Chip search: a listing matches if it matches ANY chip (make, or make + model).
+    out = out.filter((l) =>
+      f.vehicles!.some((v) => {
+        if (slugify(l.make) !== slugify(v.make)) return false;
+        if (!v.model) return true;
+        const want = slugify(v.model);
+        return slugify(l.model) === want || resolveModelSlug(l.make, l.model)?.modelSlug === want;
+      }),
+    );
+  }
+  if (f.bodyStyle) {
+    const wants = csv(f.bodyStyle).map(slugify);
+    out = out.filter((l) => wants.includes(slugify(l.van_spec.body_style)));
+  }
   if (f.ulez === true) out = out.filter((l) => l.ulez);
   if (f.wheelbase) out = out.filter((l) => l.van_spec.wheelbase === f.wheelbase);
-  if (f.fuel) out = out.filter((l) => slugify(l.fuel) === slugify(f.fuel!));
+  if (f.fuel) {
+    const wants = csv(f.fuel).map(slugify);
+    out = out.filter((l) => wants.includes(slugify(l.fuel)));
+  }
   if (f.gearbox) out = out.filter((l) => l.transmission.toLowerCase() === f.gearbox!.toLowerCase());
   if (f.colour) out = out.filter((l) => l.colour !== "—" && slugify(l.colour) === slugify(f.colour!));
   if (f.maxMileage != null) out = out.filter((l) => l.mileage == null || l.mileage <= f.maxMileage!);
@@ -369,7 +392,7 @@ async function getListingBySlugUncached(slug: string): Promise<{ listing: Listin
     if (live) return { listing: live, servedBy: "dealski" };
   }
 
-  const all = [...getMockListings(), ...getAcmeDemoListings()];
+  const all = [...getMockListings(), ...demoListings()];
   const listing =
     all.find((l) => l.slug === slug) ||
     all.find((l) => l.source_id === sourceId) ||

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { IconArrow, IconCheck, IconStar } from "@/components/icons";
@@ -8,10 +9,11 @@ import { SITE } from "@/lib/site";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Van Reviews | Expert Guides by Model",
   description: `In-depth reviews of the UK's most popular vans. Real-world pros, cons and who each van suits best — from the ${SITE.name} team.`,
-};
+  path: "/van-reviews",
+});
 
 const FEATURED: {
   make: string;

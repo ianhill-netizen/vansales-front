@@ -5,9 +5,9 @@ import Link from "next/link";
 import { Container } from "./ui";
 import { Logo } from "./brand";
 import { MobileNav } from "./mobile-nav";
-import { IconHeart } from "./icons";
 import { AccountButton } from "./account-button";
 import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
+import { SELL_URL } from "@/lib/site";
 
 const VAN_BODY_TYPES = [
   { href: "/vans/panel-van",    label: "Panel vans" },
@@ -20,10 +20,7 @@ const VAN_BODY_TYPES = [
   { href: "/vans/chassis-cab",  label: "Chassis cabs" },
 ];
 
-const SELL_ITEMS = [
-  { href: "/sign-up/private-seller", label: "List privately — free" },
-  { href: "/signup/trade",           label: "List my dealer stock" },
-];
+
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -48,7 +45,7 @@ const GUIDES_ITEMS = [
   { href: "/blog",        label: "Guides & news" },
 ];
 
-type OpenId = "used" | "sell" | "guides" | null;
+type OpenId = "used" | "guides" | null;
 
 function NavDropdown({
   label,
@@ -193,13 +190,7 @@ export function Header() {
           <Logo tone="dark" />
 
           <nav className="flex items-center gap-1">
-            <Link
-              href="/saved"
-              className="hidden items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] font-semibold text-ink-600 transition-colors hover:bg-surface-1 hover:text-ink-900 sm:flex"
-            >
-              <IconHeart width={15} height={15} />
-              Saved
-            </Link>
+            {/* "Saved" is hidden until the saved-vans feature is built (there is no /saved route). */}
             <AccountButton />
             <MobileNav />
           </nav>
@@ -214,14 +205,9 @@ export function Header() {
             onToggle={() => toggle("used")}
             onClose={close}
           />
-          <NavDropdown
-            id="sell"
-            label="Sell your van"
-            items={SELL_ITEMS}
-            open={openMenu === "sell"}
-            onToggle={() => toggle("sell")}
-            onClose={close}
-          />
+          <Link href="/dealers" className={NAV_LINK_CLS} onClick={close}>Dealers</Link>
+          <a href={SELL_URL} className={NAV_LINK_CLS} onClick={close}>Sell your van</a>
+          <Link href="/advertise" className={NAV_LINK_CLS} onClick={close}>Advertise</Link>
           <NavDropdown
             id="guides"
             label="Van reviews"

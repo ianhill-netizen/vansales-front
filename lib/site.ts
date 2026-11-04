@@ -10,6 +10,9 @@ export const SITE = {
   phone: "01656 507619",
 } as const;
 
+/** Where "Sell your van" goes: the seller app (sell.vansales.com). Overridable per environment. */
+export const SELL_URL = process.env.NEXT_PUBLIC_SELL_URL || "https://sell.vansales.com";
+
 /** Absolute base URL for the running deployment (no trailing slash). */
 export function siteUrl(): string {
   const fromEnv =

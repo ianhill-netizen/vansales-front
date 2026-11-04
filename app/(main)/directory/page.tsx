@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { getModelIndex } from "@/lib/listings/client";
@@ -7,10 +8,11 @@ import { SITE } from "@/lib/site";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Van Directory — All Makes & Models",
   description: `A–Z directory of every van make and model in the ${SITE.name} catalogue. Find the right van type and jump straight to the listings.`,
-};
+  path: "/directory",
+});
 
 export default async function DirectoryPage() {
   const index = await getModelIndex();
