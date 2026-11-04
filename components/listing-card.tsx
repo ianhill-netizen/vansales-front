@@ -5,8 +5,8 @@ import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
 import { monthlyForTerms, type FinanceTerms, type PayMode } from "@/lib/finance";
-import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
-import { IconGauge, IconFuel, IconGearbox, IconRuler, IconArrow } from "./icons";
+import { Price, StatusBadge, Badge } from "./ui";
+import { IconGearbox, IconRuler, IconArrow } from "./icons";
 
 const FUEL_PILL: Record<string, string> = {
   electric:         "bg-success-500 text-white",
@@ -58,11 +58,17 @@ export function ListingCard({
   const displayWheelbase = listing.van_spec.wheelbase ? WHEELBASE_SHORT[listing.van_spec.wheelbase] : null;
 
   const specItems = [
-    { icon: <IconFuel    width={12} height={12} />, value: titleCase(listing.fuel) },
     { icon: <IconGearbox width={12} height={12} />, value: displayGearbox },
     ...(displayWheelbase ? [{ icon: <IconRuler width={12} height={12} />, value: displayWheelbase }] : []),
-    { icon: <IconGauge   width={12} height={12} />, value: displayMileage },
   ].filter((s) => s.value && s.value !== "—");
+
+  const subtitle = [
+    listing.year > 0 ? String(listing.year) : null,
+    displayMileage !== "—" ? displayMileage : null,
+    listing.fuel && listing.fuel !== "—" ? titleCase(listing.fuel) : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <article data-listing-id={listing.id} className={`group relative flex flex-col overflow-hidden rounded-[var(--radius-xl)] border bg-white shadow-[var(--shadow-sm)] ${highlighted ? "border-brand-500 ring-2 ring-brand-500/40" : "border-border"} transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1.5 hover:border-transparent hover:shadow-[var(--shadow-card-hover)]`}>
@@ -181,6 +187,9 @@ export function ListingCard({
           </Link>
         </h3>
 
+        {/* Subtitle: full year · mileage · fuel (replaces the old two-digit plate box) */}
+        {subtitle && <p className="mt-1 truncate text-[var(--text-sm)] font-medium text-ink-500">{subtitle}</p>}
+
         {listing.derivative && (
           <p className="mt-0.5 truncate text-[var(--text-xs)] text-ink-400">{listing.derivative}</p>
         )}
@@ -205,20 +214,17 @@ export function ListingCard({
               </>
             )}
           </div>
-          {listing.year > 0 && (
-            <PlateBadge text={listing.plate || String(listing.year)} size="sm" />
-          )}
         </div>
 
-        {/* Spec strip */}
-        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 border-t border-surface-2 pt-3">
+        {/* Spec strip (year, mileage and fuel are in the subtitle above) */}
+        {specItems.length > 0 && <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 border-t border-surface-2 pt-3">
           {specItems.map((s, i) => (
             <div key={i} className="flex items-center gap-1.5 text-[var(--text-xs)] text-ink-500">
               <span className="text-ink-400" aria-hidden>{s.icon}</span>
               {s.value}
             </div>
           ))}
-        </div>
+        </div>}
 
         {/* Enquire CTA — fills to orange on card hover */}
         {!sold && (
