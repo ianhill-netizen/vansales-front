@@ -36,6 +36,8 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
   }, [autoOpen]);
   const sold = listing.status === "sold";
   const isPrivate = listing.seller_type === "private";
+  // Private sellers' adverts (vansales-backend) have no contact route yet: show why, instead of a form whose enquiry would go nowhere (or, worse, to a dealer's inbox).
+  const noContactRoute = listing.source === "vansales";
 
   const dealerConfig = getDealerConfigBySeller(listing.seller.name);
   const displayName = isPrivate
@@ -43,7 +45,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
     : (dealerConfig?.name ?? supplierCode(listing.seller.name));
   const displayLocation = dealerConfig
     ? `${dealerConfig.location.town}, ${dealerConfig.location.county}`
-    : `${listing.location.town}, ${listing.location.region}`;
+    : [listing.location.town, listing.location.region].filter(Boolean).join(", ");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -142,6 +144,13 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
         </a>
       )}
 
+      {noContactRoute ? (
+        <div role="status" className="mt-4 rounded-[var(--radius-md)] bg-surface-1 px-4 py-3">
+          <p className="text-[var(--text-sm)] font-semibold text-ink-700">Messaging private sellers is coming soon</p>
+          <p className="mt-0.5 text-[var(--text-sm)] text-ink-500">We are building a safe way to contact private sellers without sharing anyone&apos;s details. Check back shortly.</p>
+        </div>
+      ) : (
+        <>
       {/* Divider */}
       <div className="relative my-4 flex items-center gap-3">
         <div className="flex-1 border-t border-border" />
@@ -263,6 +272,8 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
             }
           </p>
         </form>
+      )}
+        </>
       )}
     </div>
   );

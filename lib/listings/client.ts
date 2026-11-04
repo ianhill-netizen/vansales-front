@@ -12,6 +12,7 @@ import { getAcmeDemoListings } from "./sources/acme-demo";
 import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
 import { fetchMarketplaceCatalogue } from "./sources/dealski-marketplace";
 import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
+import { fetchPrivateSellerListings, fetchPrivateSellerListingBySlug, PRIVATE_SLUG_PREFIX } from "./sources/vansales";
 import { sourceIdFromSlug, slugify } from "./slug";
 import { resolveModelSlug } from "@/lib/models/image";
 import { WHEELBASE_LABEL, titleCase } from "./format";
@@ -50,6 +51,12 @@ async function loadAll(): Promise<{
     nativeDb = await fetchNativeDbListings();
   } catch {
     /* non-fatal */
+  }
+  // Private sellers' adverts (vansales-backend) ride along with the native listings in every branch below.
+  try {
+    nativeDb = [...nativeDb, ...(await fetchPrivateSellerListings())];
+  } catch {
+    /* non-fatal: the site serves without them */
   }
 
   // Always include demo dealer listings so the multi-dealer layout
@@ -287,6 +294,10 @@ export async function getFacets(base: ListingFilters = {}): Promise<ListingFacet
 }
 
 export async function getListingBySlug(slug: string): Promise<{ listing: Listing | null; servedBy: ListingSource | "mock" }> {
+  // A private seller's advert: resolved by its own prefix first, so its trailing number can never be mistaken for another source's id.
+  if (slug.startsWith(PRIVATE_SLUG_PREFIX)) {
+    return { listing: await fetchPrivateSellerListingBySlug(slug).catch(() => null), servedBy: "vansales" };
+  }
   const source = configuredSource();
   const sourceId = sourceIdFromSlug(slug);
 

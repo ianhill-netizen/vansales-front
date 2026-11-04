@@ -37,6 +37,15 @@ source is chosen by env **`LISTINGS_SOURCE`**:
 
 Every result reports which source served it (`servedBy`, `live`).
 
+### Private sellers' adverts
+
+Whatever `LISTINGS_SOURCE` is, active adverts from private sellers are merged in from the vansales-backend public feed
+(`sources/vansales.ts`: `GET {VANSALES_API_URL}/api/public/listings?seller_type=private`, detail by slug). They appear in the
+normal lists and facets with the **Private seller** badge, show the seller's cleaned photos and, when the seller made one, a
+**video player** on the detail page. Their front-end slug is `private-<backend slug>` so it can never collide with another
+source's numeric id. Private sellers have no contact route yet: the enquiry panel says so and `/api/enquiry` refuses their
+adverts (409) instead of forwarding them to a dealer's inbox. `VANSALES_API_URL` defaults to `https://api.vansales.com`.
+
 ### Live feed notes
 
 The Dealski adapter targets the verified public endpoints behind
