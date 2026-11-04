@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { HomeSearch } from "@/components/home-search";
-import { QuickFilters } from "@/components/quick-filters";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
@@ -28,7 +27,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const picker = await getPickerData();
   const [{ listings, total }, facets, all] = await Promise.all([
-    getListings({ sort: "newest", limit: 6 }),
+    getListings({ sort: "newest", limit: 4 }),
     getFacets(),
     getListings({}),
   ]);
@@ -86,28 +85,26 @@ export default async function HomePage() {
             <HomeSearch total={total} picker={picker} />
           </div>
 
-          <QuickFilters className="mt-4" />
         </Container>
       </section>
 
-      {/* ── SEARCH BY MAP ────────────────────────────────────────────────── */}
+      {/* ── LATEST VANS (real vans only: nothing at all if there are none) ──── */}
+      {listings.length > 0 && (
       <Container className="pt-8">
-        <Link
-          href="/vans?view=map"
-          className="group relative flex items-center justify-between gap-4 overflow-hidden rounded-[var(--radius-2xl)] border border-border bg-ink-900 p-6 text-white shadow-[var(--shadow-md)] transition-transform hover:-translate-y-0.5 sm:p-8"
-        >
-          <div className="pointer-events-none absolute inset-0 opacity-30" aria-hidden style={{ backgroundImage: "radial-gradient(circle at 80% 40%, #f47c1e 0, transparent 38%), radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1px)", backgroundSize: "auto, 26px 26px" }} />
-          <div className="relative">
-            <p className="font-display text-[var(--text-xl)] font-extrabold sm:text-[var(--text-2xl)]">Search by map</p>
-            <p className="mt-1 max-w-md text-[var(--text-sm)] text-white/70">See every van near you with price pins. Drag and zoom the map and the list follows.</p>
-          </div>
-          <span className="relative inline-flex shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-white px-4 py-2.5 text-[var(--text-sm)] font-bold text-ink-900 group-hover:bg-accent-50">
-            Open map <IconArrow width={14} height={14} />
-          </span>
-        </Link>
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Latest vans</h2>
+          <Link href="/vans" className="text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">{all.total >= 20 ? `View all ${all.total.toLocaleString("en-GB")}` : "View all vans"} →</Link>
+        </div>
+        <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {listings.map((l, i) => (
+            <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />
+          ))}
+        </div>
       </Container>
+      )}
 
       {/* ── STATS ────────────────────────────────────────────────────────── */}
+      {all.total >= 10 && (
       <Container className="pt-8">
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-xl)] border border-border bg-border sm:grid-cols-4">
           {stats.map((s) => (
@@ -118,6 +115,8 @@ export default async function HomePage() {
           ))}
         </dl>
       </Container>
+      )}
+
 
       {/* ── POPULAR MAKES ────────────────────────────────────────────────── */}
       {topMakes.length > 0 && (
@@ -144,18 +143,24 @@ export default async function HomePage() {
         </Container>
       )}
 
-      {/* ── LATEST VANS ──────────────────────────────────────────────────── */}
+
+      {/* ── SEARCH BY MAP ────────────────────────────────────────────────── */}
       <Container className="py-10">
-        <div className="flex items-baseline justify-between gap-4">
-          <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Latest vans</h2>
-          <Link href="/vans" className="text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">View all {all.total.toLocaleString("en-GB")} →</Link>
-        </div>
-        <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {listings.map((l, i) => (
-            <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />
-          ))}
-        </div>
+        <Link
+          href="/vans?view=map"
+          className="group relative flex items-center justify-between gap-4 overflow-hidden rounded-[var(--radius-2xl)] border border-border bg-ink-900 p-6 text-white shadow-[var(--shadow-md)] transition-transform hover:-translate-y-0.5 sm:p-8"
+        >
+          <div className="pointer-events-none absolute inset-0 opacity-30" aria-hidden style={{ backgroundImage: "radial-gradient(circle at 80% 40%, #f47c1e 0, transparent 38%), radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1px)", backgroundSize: "auto, 26px 26px" }} />
+          <div className="relative">
+            <p className="font-display text-[var(--text-xl)] font-extrabold sm:text-[var(--text-2xl)]">Search by map</p>
+            <p className="mt-1 max-w-md text-[var(--text-sm)] text-white/70">See every van near you with price pins. Drag and zoom the map and the list follows.</p>
+          </div>
+          <span className="relative inline-flex shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-white px-4 py-2.5 text-[var(--text-sm)] font-bold text-ink-900 group-hover:bg-accent-50">
+            Open map <IconArrow width={14} height={14} />
+          </span>
+        </Link>
       </Container>
+
     </>
   );
 }
