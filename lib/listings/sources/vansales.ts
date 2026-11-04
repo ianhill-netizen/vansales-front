@@ -1,5 +1,5 @@
 import type { VanDetails } from "@/lib/listings/vanDetails";
-import type { HpiResult, Listing, ListingImage } from "../types";
+import type { HpiCheckPublic, Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
 
 /* =============================================================================
@@ -29,10 +29,12 @@ interface ApiCard {
   fuel_type: string | null; transmission: string | null; body_type: string | null; colour: string | null; created_at: string; image: string | null; has_video?: boolean;
   /** The seller's geocoded postcode, when the API publishes it (town + coordinates only, never the postcode itself). */
   town?: string | null; latitude?: number | null; longitude?: number | null;
+  /** List-card enrichment (the detail has the same fields). */
+  ulez_compliant?: boolean | null; vehicle_condition?: "excellent" | "good" | "fair" | "project" | null; v5_present?: boolean | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; features?: { slug: string; label: string }[]; hpi_checked?: boolean;
 }
 interface ApiDetail extends ApiCard {
   description: string | null; video_url: string | null; video_vertical_url: string | null;
-  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean; hpi_result?: HpiResult | null;
+  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean; hpi_check?: HpiCheckPublic | null;
   seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; body_type_key?: string | null;
   wheelbase?: VanDetails["wheelbase"]; roof_height?: VanDetails["roof_height"]; rear_doors?: VanDetails["rear_doors"]; side_loading_door?: VanDetails["side_loading_door"];
   features?: { slug: string; label: string }[]; youtube_embed_url?: string | null; ulez_compliant?: boolean | null; condition?: "excellent" | "good" | "fair" | "project" | null;
@@ -67,8 +69,8 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     plate: year ? String(year).slice(-2) : "",
     price: c.price > 0 ? c.price : null,
     // The seller's VAT status drives the qualifier beside the price: "+ VAT" for VAT qualifying / ex-VAT, "No VAT" for no VAT. Not given = the old "inc. VAT" default.
-    price_type: detail?.vat_status === "no_vat" ? "no_vat" : "inc_vat",
-    vat_qualifying: detail?.vat_status === "vat_qualifying" || detail?.vat_status === "ex_vat",
+    price_type: c.vat_status === "no_vat" ? "no_vat" : "inc_vat",
+    vat_qualifying: c.vat_status === "vat_qualifying" || c.vat_status === "ex_vat",
     mileage: c.mileage,
     fuel: or(c.fuel_type, "—"),
     transmission: or(c.transmission, "—"),
@@ -76,7 +78,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     colour: or(c.colour, "—"),
     engine_cc: detail?.engine_cc ?? null,
     euro_status: null,
-    ulez: detail?.ulez_compliant === true,
+    ulez: c.ulez_compliant === true,
     van_spec: { body_style: or(c.body_type, "Van"), wheelbase: detail?.wheelbase ?? null, roof_height: null, payload_kg: detail?.payload_kg ?? null, load_length_mm: null, doors: null },
     location: { town: c.town?.trim() || "UK", region: "", postcode_area: "", lat: coarse(c.latitude), lng: coarse(c.longitude) },
     description: detail?.description ?? "",
@@ -90,12 +92,12 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     // the API already puts the seller's own video in video_url when there is one; seller_video_url is kept explicit so the page can prefer it
     video_url: detail?.video_url ?? null,
     seller_video_url: detail?.seller_video_url ?? null,
-    vat_status: detail?.vat_status ?? null,
-    extras: detail?.features ?? [],
+    vat_status: c.vat_status ?? null,
+    extras: c.features ?? [],
     youtube_embed_url: detail?.youtube_embed_url ?? null,
-    ulez_compliant: detail?.ulez_compliant ?? (c as ApiCard & { ulez_compliant?: boolean | null }).ulez_compliant ?? null,
-    vehicle_condition: detail?.condition ?? null,
-    v5_present: detail?.v5_present ?? null,
+    ulez_compliant: c.ulez_compliant ?? null,
+    vehicle_condition: c.vehicle_condition ?? detail?.condition ?? null,
+    v5_present: c.v5_present ?? null,
     warranty_type: detail?.warranty_type ?? null,
     warranty_expiry: detail?.warranty_expiry ?? null,
     details: detail ? {
@@ -106,8 +108,8 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     mot_expiry: detail?.mot_expiry ?? null,
     last_mot_mileage: detail?.last_mot_mileage ?? null,
     last_mot_date: detail?.last_mot_date ?? null,
-    hpi_checked: detail?.hpi_checked === true,
-    hpi_result: detail?.hpi_result ?? null,
+    hpi_checked: c.hpi_checked === true,
+    hpi_check: detail?.hpi_check ?? null,
     hpi_checked_at: detail?.hpi_checked_at ?? null,
     published_at: c.created_at,
     updated_at: c.created_at,

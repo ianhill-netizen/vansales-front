@@ -247,7 +247,7 @@ export default async function ListingPage({
             )}
 
             {/* Vehicle history check: the full findings when the API publishes them (replaces the plain badge); otherwise the header badge stays. */}
-            {listing.hpi_result && <HpiCard result={listing.hpi_result} checkedAt={listing.hpi_checked_at} />}
+            {listing.hpi_check && <HpiCard result={listing.hpi_check} />}
 
             {/* Description */}
             <section className="mt-8">
@@ -319,7 +319,7 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
         <Price listing={listing} size="lg" />
         <StatusBadge status={listing.status} />
         {(listing.vat_status === "vat_qualifying" || listing.vat_status === "ex_vat") && <Badge tone="neutral">{VAT_BADGE[listing.vat_status]}</Badge>}
-        {listing.hpi_checked && !listing.hpi_result && (
+        {listing.hpi_checked && !listing.hpi_check && (
           <span title={listing.hpi_checked_at ? `Vehicle history checked on ${formatMotDate(listing.hpi_checked_at)}: clear` : "Vehicle history checked"}>
             <Badge tone="success"><IconShield width={12} height={12} aria-hidden />HPI checked</Badge>
           </span>

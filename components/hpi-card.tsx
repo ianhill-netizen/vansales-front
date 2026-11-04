@@ -1,48 +1,32 @@
-import type { HpiCheck, HpiResult } from "@/lib/listings/types";
+import type { HpiCheckPublic } from "@/lib/listings/types";
 import { IconCheck } from "./icons";
 
-/* Vehicle history check card (private adverts). Only renders when the API publishes
-   the findings (hpi_result). Green tick = clear; red cross + the issue text = flagged.
-   A check the provider could not answer is shown as "Not checked", never as a tick. */
+/* Vehicle history check card (private adverts). Reads the vansales API's hpi_check:
+   each flag is true = problem found, false = checked and clear, null = NOT checked.
+   Green tick = clear; red cross = a problem; a dash = not checked (never shown as a pass). */
 
-type Row = { label: string; state: "clear" | "flag" | "unknown"; text?: string };
+type Row = { label: string; state: "clear" | "flag" | "unknown" };
 
-const CHECKS: { key: keyof HpiResult; clear: string; flagged: string }[] = [
-  { key: "stolen", clear: "Not reported stolen", flagged: "Reported stolen" },
-  { key: "finance_outstanding", clear: "No outstanding finance", flagged: "Outstanding finance" },
-  { key: "written_off", clear: "Not written off", flagged: "Recorded as written off" },
-  { key: "mileage_discrepancy", clear: "No mileage discrepancy", flagged: "Mileage discrepancy" },
-  { key: "plate_changes", clear: "No plate changes", flagged: "Plate changes recorded" },
+const ROWS: { key: keyof Pick<HpiCheckPublic, "stolen" | "finance" | "written_off" | "mileage_discrepancy" | "plate_changes">; clear: string; flagged: string; unchecked: string }[] = [
+  { key: "stolen", clear: "Not reported stolen", flagged: "Reported stolen", unchecked: "Stolen marker: not checked" },
+  { key: "finance", clear: "No outstanding finance", flagged: "Outstanding finance recorded", unchecked: "Finance: not checked" },
+  { key: "written_off", clear: "Not written off", flagged: "Recorded as written off", unchecked: "Write-off: not checked" },
+  { key: "mileage_discrepancy", clear: "No mileage discrepancy", flagged: "Mileage discrepancy recorded", unchecked: "Mileage history: not checked" },
+  { key: "plate_changes", clear: "No plate changes", flagged: "Plate changes recorded", unchecked: "Plate changes: not checked" },
 ];
-
-function rowFor(r: HpiResult, c: (typeof CHECKS)[number]): Row {
-  const check = r[c.key] as HpiCheck | null | undefined;
-  if (!check || typeof check !== "object") return { label: c.clear, state: "unknown" };
-  const flagged = check.flag === true || check.status === "issues";
-  if (flagged) return { label: c.flagged, state: "flag", text: check.detail || undefined };
-  if (check.status === "clear" || check.flag === false) return { label: c.clear, state: "clear" };
-  return { label: c.clear, state: "unknown" };
-}
-
-function keepers(r: HpiResult): number | null {
-  const k = r.previous_keepers;
-  if (typeof k === "number") return k;
-  if (k && typeof k === "object") {
-    const n = (k as { count?: number | null }).count;
-    if (typeof n === "number") return n;
-    const m = String((k as HpiCheck).detail ?? "").match(/\d+/);
-    if (m) return Number(m[0]);
-  }
-  return null;
-}
 
 const fmtDate = (d: string) =>
   new Date(d.length <= 10 ? `${d}T00:00:00Z` : d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
-export function HpiCard({ result, checkedAt }: { result: HpiResult; checkedAt?: string | null }) {
-  const rows = CHECKS.map((c) => rowFor(result, c));
-  const owners = keepers(result);
-  const date = checkedAt || result.checked_at || null;
+export function HpiCard({ result }: { result: HpiCheckPublic }) {
+  const rows: (Row & { text: string })[] = ROWS.map((r) => {
+    const v = result[r.key];
+    return v === true
+      ? { label: r.flagged, text: r.flagged, state: "flag" }
+      : v === false
+        ? { label: r.clear, text: r.clear, state: "clear" }
+        : { label: r.unchecked, text: r.unchecked, state: "unknown" };
+  });
   const anyFlag = rows.some((r) => r.state === "flag");
 
   return (
@@ -61,21 +45,16 @@ export function HpiCard({ result, checkedAt }: { result: HpiResult; checkedAt?: 
             ) : (
               <span className="mt-0.5 grid size-[18px] shrink-0 place-items-center text-ink-400" role="img" aria-label="Not checked">–</span>
             )}
-            <span>
-              <span className={r.state === "flag" ? "font-semibold text-red-700" : r.state === "unknown" ? "text-ink-500" : ""}>
-                {r.state === "unknown" ? `${r.label.replace(/^(Not |No )/, "")}: not checked` : r.label}
-              </span>
-              {r.text && <span className="block text-[var(--text-sm)] text-red-700">{r.text}</span>}
-            </span>
+            <span className={r.state === "flag" ? "font-semibold text-red-700" : r.state === "unknown" ? "text-ink-500" : ""}>{r.text}</span>
           </li>
         ))}
       </ul>
       <dl className="mt-4 grid gap-x-8 gap-y-1 border-t border-black/5 pt-3 text-[var(--text-sm)] sm:grid-cols-2">
-        {owners != null && (
-          <div className="flex justify-between gap-3"><dt className="text-ink-500">Previous keepers</dt><dd className="font-medium text-ink-900">{owners}</dd></div>
+        {result.previous_keepers != null && (
+          <div className="flex justify-between gap-3"><dt className="text-ink-500">Previous keepers</dt><dd className="font-medium text-ink-900">{result.previous_keepers}</dd></div>
         )}
-        {date && (
-          <div className="flex justify-between gap-3"><dt className="text-ink-500">Checked</dt><dd className="font-medium text-ink-900">{fmtDate(date)}</dd></div>
+        {result.checked_at && (
+          <div className="flex justify-between gap-3"><dt className="text-ink-500">Checked</dt><dd className="font-medium text-ink-900">{fmtDate(result.checked_at)}</dd></div>
         )}
       </dl>
     </section>
