@@ -32,7 +32,11 @@ export interface ModelStat extends Stat {
   name: string; // "Transit Custom"
 }
 
-const titleCase = (s: string) => s.replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase());
+/** Abbreviations that stay in capitals ("MWB", "PHEV") instead of being title-cased ("Mwb", "Phev"). */
+const ACRONYMS = new Set(["swb", "mwb", "lwb", "xlwb", "phev", "mhev", "hev", "bev", "ev", "ulez", "lcv", "hgv", "4x4", "4wd", "awd", "rwd", "fwd", "dpf", "adblue"]);
+
+const titleCase = (s: string) =>
+  s.replace(/[A-Za-z0-9]\S*/g, (w) => (ACRONYMS.has(w.toLowerCase()) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1).toLowerCase()));
 
 function rank(values: (string | null | undefined)[]): string[] {
   const m = new Map<string, number>();
