@@ -13,6 +13,7 @@ export interface VanDetails {
   service_history: "full" | "partial" | "none" | null;
   engine_cc: number | null;
   euro_class: string | null;
+  previous_owners: number | null;
 }
 
 export type VatStatus = "vat_qualifying" | "ex_vat" | "no_vat";
@@ -41,8 +42,23 @@ export function detailRows(d: Partial<VanDetails> | undefined): { label: string;
     ["Service history", d.service_history ? SERVICE[d.service_history] : null],
     ["Engine size", d.engine_cc ? `${n(d.engine_cc)} cc` : null],
     ["Euro class", d.euro_class || null],
+    ["Previous owners", d.previous_owners != null ? String(d.previous_owners) : null],
   ];
   return rows.filter((r): r is [string, string] => r[1] !== null).map(([label, value]) => ({ label, value }));
+}
+
+export type Condition = "excellent" | "good" | "fair" | "project";
+export type WarrantyType = "none" | "manufacturer" | "aftermarket";
+export const CONDITION_LABEL: Record<Condition, string> = { excellent: "Excellent condition", good: "Good condition", fair: "Fair condition", project: "Project / needs work" };
+
+/** "Manufacturer warranty until Jun 2027" / "Aftermarket warranty" / "No warranty"; null when the seller did not say. */
+export function warrantyText(type: WarrantyType | null | undefined, expiry: string | null | undefined): string | null {
+  if (!type) return null;
+  if (type === "none") return "No warranty";
+  const kind = type === "manufacturer" ? "Manufacturer warranty" : "Aftermarket warranty";
+  if (!expiry) return kind;
+  const d = new Date(`${expiry}T00:00:00Z`);
+  return Number.isNaN(d.getTime()) ? kind : `${kind} until ${d.toLocaleDateString("en-GB", { month: "short", year: "numeric", timeZone: "UTC" })}`;
 }
 
 export type WithDetails = Pick<Listing, "van_spec"> & { details?: Partial<VanDetails> };

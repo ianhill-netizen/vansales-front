@@ -101,6 +101,15 @@ export interface Listing {
 
   /** The seller's own walk-around video (private adverts). When present it is the video to show, ahead of the generated one. */
   seller_video_url?: string | null;
+  /** Extras the seller ticked, as {slug,label} (kept apart from `features`, the dealer feed's plain strings); the YouTube embed url; ULEZ, condition, V5 and warranty (private adverts). All optional. */
+  extras?: { slug: string; label: string }[];
+  youtube_embed_url?: string | null;
+  ulez_compliant?: boolean | null;
+  /** The seller's own rating of the van (excellent / good / fair / project). Not the new/used `condition`. */
+  vehicle_condition?: import("./vanDetails").Condition | null;
+  v5_present?: boolean | null;
+  warranty_type?: import("./vanDetails").WarrantyType | null;
+  warranty_expiry?: string | null;
   /** The seller's VAT status (private adverts); null/absent = not given. */
   vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null;
   /** Optional van details from a private seller (body type, wheelbase, roof, doors, seats, weights, service history, engine, Euro class). */
