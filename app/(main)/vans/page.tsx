@@ -102,7 +102,7 @@ function parseFilters(sp: Search, buyerLat?: number, buyerLng?: number): Listing
     minYear:   num(sp.minYear),
     maxYear:   num(sp.maxYear),
     maxMileage: num(sp.maxMileage),
-    ulez: one(sp.ulez) === "1" ? true : undefined,
+    ulez: one(sp.ulez) === "1" || one(sp.ulez) === "true" ? true : undefined,
     q: one(sp.q) || (near && !nearIsPostcode ? near : undefined),
     postcode: one(sp.postcode) || (nearIsPostcode ? near : undefined),
     radius: rawRadius,
