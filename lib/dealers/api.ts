@@ -28,6 +28,8 @@ export interface ApiDealer {
   longitude: number | null;
   phone: string | null;
   logo_url: string | null;
+  /** Wide banner photo for the profile header. Optional: absent/null until the dealer uploads one. */
+  cover_url?: string | null;
   about: string | null;
   whatsapp_number: string | null;
   finance_url: string | null;

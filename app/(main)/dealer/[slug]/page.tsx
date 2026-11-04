@@ -1,3 +1,4 @@
+import { DealerLogo } from "@/components/dealer-logo";
 import { EmptyState } from "@/components/empty/empty-state";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -69,9 +70,10 @@ type Hours = Record<"mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun", { ope
 const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 
 /** What the page renders: a config dealer as it is, or a vansales-API / database dealer shaped like one (plus the optional extras). */
-type ProfileDealer = Omit<DealerConfig, "hours"> & {
+type ProfileDealer = Omit<DealerConfig, "hours" | "coverUrl"> & {
   hours: Hours;
   logoUrl?: string | null;
+  coverUrl?: string | null;
   /** A direct finance link (vansales-API dealers); config dealers use their Dealski tenant's. */
   financeHref?: string | null;
   isApi?: boolean;
@@ -102,6 +104,7 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     },
     googleReviewsUrl: d.google_reviews_url ?? undefined,
     logoUrl: d.logo_url,
+    coverUrl: d.cover_url ?? null,
     financeHref: d.finance_url,
     isApi: true,
   };
@@ -283,18 +286,18 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
       <JsonLd data={dealerLd} />
 
       {/* ── 1. HEADER ─────────────────────────────────────────────── */}
-      <div className="border-b border-border bg-ink-900 text-white">
-        <Container className="py-10 md:py-14">
+      <div className="relative isolate overflow-hidden border-b border-border bg-ink-900 text-white">
+        {effectiveDealer.coverUrl && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={effectiveDealer.coverUrl} alt="" className="absolute inset-0 -z-20 size-full object-cover" />
+            <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-ink-900/95 via-ink-900/70 to-ink-900/40" />
+          </>
+        )}
+        <Container className={effectiveDealer.coverUrl ? "py-14 md:py-20" : "py-10 md:py-14"}>
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="flex items-center gap-4 md:gap-5">
-              {effectiveDealer.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={effectiveDealer.logoUrl} alt={`${effectiveDealer.name} logo`} width={80} height={80} className="size-16 shrink-0 rounded-[var(--radius-lg)] bg-white object-contain p-1 md:size-20" />
-              ) : isApi ? (
-                <span aria-hidden className="grid size-16 shrink-0 place-items-center rounded-[var(--radius-lg)] bg-brand-600 font-display text-[var(--text-xl)] font-extrabold text-white md:size-20">
-                  {effectiveDealer.name.trim().split(/\s+/).slice(0, 2).map((w) => (w[0] ?? "").toUpperCase()).join("")}
-                </span>
-              ) : null}
+              <DealerLogo name={effectiveDealer.name} logoUrl={effectiveDealer.logoUrl} size={72} className="md:!size-20" />
             <div className="min-w-0">
               <p className="mb-2 font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
                 Van dealer{effectiveDealer.location.town ? ` · ${effectiveDealer.location.town}` : ""}

@@ -1,13 +1,11 @@
 "use client";
 
+import { DealerLogo } from "@/components/dealer-logo";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/empty/empty-state";
 import { PinMap, type Pin } from "./pin-map";
 import type { DirectoryDealer } from "@/lib/dealers/directory";
-
-const initials = (name: string) =>
-  name.trim().split(/\s+/).slice(0, 2).map((w) => (w[0] ?? "").toUpperCase()).join("");
 
 export function DealerGrid({ dealers }: { dealers: DirectoryDealer[] }) {
   const [q, setQ] = useState("");
@@ -43,14 +41,7 @@ export function DealerGrid({ dealers }: { dealers: DirectoryDealer[] }) {
       className={`group flex flex-col rounded-[var(--radius-xl)] border bg-white p-5 shadow-[var(--shadow-sm)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] ${highlighted ? "border-brand-500 ring-2 ring-brand-500/40" : "border-border"}`}
     >
       <div className="flex items-center gap-3.5">
-        {d.logoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={d.logoUrl} alt="" width={56} height={56} loading="lazy" className="size-14 shrink-0 rounded-[var(--radius-lg)] border border-border bg-white object-contain" />
-        ) : (
-          <span className="grid size-14 shrink-0 place-items-center rounded-[var(--radius-lg)] bg-brand-600 font-display text-[var(--text-lg)] font-extrabold text-white" aria-hidden>
-            {initials(d.name)}
-          </span>
-        )}
+        <DealerLogo name={d.name} logoUrl={d.logoUrl} size={72} decorative />
         <div className="min-w-0">
           <h2 className="truncate font-display text-[var(--text-lg)] font-bold text-ink-900 group-hover:text-brand-700">{d.name}</h2>
           <p className="truncate text-[var(--text-sm)] text-ink-500">{[d.town, d.county].filter(Boolean).join(", ") || "UK"}</p>
