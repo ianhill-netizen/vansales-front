@@ -10,7 +10,8 @@ import { Container } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { DealerCTAButtons } from "@/components/dealer-cta-buttons";
-import { DealerMapClient } from "@/components/dealer-map-wrapper";
+import { DealerStockMap } from "@/components/dealer-stock-map";
+import { safeDb } from "@/lib/db-safe";
 import {
   IconPin,
   IconClock,
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     const description = `${dealer.name} is a van dealer in ${dealer.location.town}, ${dealer.location.county}. Browse their stock on ${SITE.name}.`;
     return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website" } };
   }
-  const dbDealer = await prisma.dealer.findUnique({ where: { slug } });
+  const dbDealer = await safeDb("dealer metadata lookup", () => prisma.dealer.findUnique({ where: { slug } }), null);
   if (!dbDealer) return { title: "Dealer not found" };
   const town = (dbDealer.location ?? "").split(",")[0].trim() || "UK";
   const title = `${dbDealer.name} — Van Dealer${town ? ` in ${town}` : ""}`;
@@ -58,7 +59,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   // If not in static config, fall back to DB dealer record.
   const dbDealer = dealer
     ? null
-    : await prisma.dealer.findUnique({ where: { slug } });
+    : await safeDb("dealer lookup", () => prisma.dealer.findUnique({ where: { slug } }), null);
 
   if (!dealer && !dbDealer) notFound();
 
@@ -93,14 +94,21 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
       effectiveDealer.sellerNames.some((n) => n.toLowerCase() === l.seller.name.toLowerCase()),
     );
     if (dealer.dealskiTenant) {
-      const dealerDbRecord = await prisma.dealer.findUnique({ where: { slug } });
-      const nativeListings = dealerDbRecord ? await fetchNativeDbListings(dealerDbRecord.id) : [];
+      // The database is optional for a configured dealer: if it is down, the dealer page still renders from the feed.
+      const nativeListings = await safeDb(
+        "dealer native listings",
+        async () => {
+          const rec = await prisma.dealer.findUnique({ where: { slug } });
+          return rec ? await fetchNativeDbListings(rec.id) : [];
+        },
+        [] as import("@/lib/listings/types").Listing[],
+      );
       listings = [...nativeListings, ...bySellerName];
     } else {
       listings = bySellerName;
     }
   } else if (dbDealer) {
-    listings = await fetchNativeDbListings(dbDealer.id);
+    listings = await safeDb("dealer native listings", () => fetchNativeDbListings(dbDealer.id), [] as import("@/lib/listings/types").Listing[]);
   }
 
   // Resolve map coordinates from the feed (config dealers) or DB record (DB dealers).
@@ -111,13 +119,17 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
     const coordSource = listings.find((l) => l.location.lat != null && l.location.lng != null);
     mapLat = coordSource?.location.lat ?? null;
     mapLng = coordSource?.location.lng ?? null;
+    if (mapLat == null || mapLng == null) {
+      const g = await safeDb("dealer geocode", () => geocodeTown(`${effectiveDealer.location.postcode || effectiveDealer.location.town}`), null, 4000);
+      if (g) { mapLat = g.lat; mapLng = g.lng; }
+    }
   } else if (dbDealer) {
     if (dbDealer.lat != null && dbDealer.lng != null) {
       mapLat = dbDealer.lat;
       mapLng = dbDealer.lng;
     } else {
       const townQuery = effectiveDealer.location.town || effectiveDealer.name;
-      const geocoded = await geocodeTown(townQuery);
+      const geocoded = await safeDb("dealer geocode", () => geocodeTown(townQuery), null, 4000);
       if (geocoded) {
         mapLat = geocoded.lat;
         mapLng = geocoded.lng;
@@ -262,12 +274,19 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
             <section>
               <SectionHeading>Find us</SectionHeading>
               <div className="mt-4 overflow-hidden rounded-[var(--radius-xl)] border border-border">
-                <DealerMapClient
-                  lat={mapLat}
-                  lng={mapLng}
-                  name={effectiveDealer.name}
-                  address={mapAddress}
-                />
+{mapLat != null && mapLng != null ? (
+                  <DealerStockMap
+                    lat={mapLat}
+                    lng={mapLng}
+                    name={effectiveDealer.name}
+                    address={mapAddress}
+                    stock={listings
+                      .filter((l) => l.status !== "sold" && l.location.lat != null && l.location.lng != null)
+                      .map((l) => ({ id: l.id, slug: l.slug, title: `${l.make} ${l.model}`, price: l.price, lat: l.location.lat!, lng: l.location.lng! }))}
+                  />
+                ) : (
+                  <p className="grid h-40 place-items-center bg-surface-1 px-6 text-center text-[var(--text-sm)] text-ink-500">{mapAddress || "Location coming soon"}</p>
+                )}
               </div>
               <div className="mt-3 flex items-start gap-1.5 text-[var(--text-sm)] text-ink-500">
                 <IconPin width={14} height={14} className="mt-0.5 shrink-0 text-ink-400" />

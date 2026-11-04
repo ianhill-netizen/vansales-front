@@ -13,7 +13,7 @@ export function ChipSearch({
   value,
   onChange,
   onEnterEmpty,
-  placeholder = "Search make or model, e.g. Ford Transit Custom",
+  placeholder = "Make or model, e.g. Transit",
   className = "",
   inputClassName = "",
 }: {

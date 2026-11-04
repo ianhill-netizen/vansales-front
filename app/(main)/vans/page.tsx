@@ -3,10 +3,10 @@ import Link from "next/link";
 import { Container } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { VansFilter } from "@/components/search/vans-filter";
+import { QuickFilters } from "@/components/quick-filters";
 import { Pagination } from "@/components/pagination";
 import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
-import { DealerMapButton } from "@/components/dealer-map-button";
 import { IconArrow } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
 import type { Condition, Listing, ListingFilters, Wheelbase } from "@/lib/listings/types";
@@ -20,8 +20,20 @@ const DEALSKI_API = (
 ).replace(/\/$/, "");
 const MARKETPLACE_KEY = process.env.DEALSKI_MARKETPLACE_KEY ?? "";
 
+async function geocodePostcodeFree(postcode: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode.replace(/\s+/g, ""))}`, { next: { revalidate: 86400 }, signal: AbortSignal.timeout(4000) });
+    if (!res.ok) return null;
+    const d = (await res.json()) as { result?: { latitude?: number; longitude?: number } };
+    return d.result?.latitude != null && d.result?.longitude != null ? { lat: d.result.latitude, lng: d.result.longitude } : null;
+  } catch {
+    return null;
+  }
+}
+
 async function geocodePostcodeServer(postcode: string): Promise<{ lat: number; lng: number } | null> {
-  if (!MARKETPLACE_KEY || !postcode.trim()) return null;
+  if (!postcode.trim()) return null;
+  if (!MARKETPLACE_KEY) return geocodePostcodeFree(postcode);
   try {
     const res = await fetch(`${DEALSKI_API}/api/marketplace/geocode`, {
       method: "POST",
@@ -34,8 +46,8 @@ async function geocodePostcodeServer(postcode: string): Promise<{ lat: number; l
     if (data.latitude != null && data.longitude != null) {
       return { lat: data.latitude, lng: data.longitude };
     }
-  } catch { /* ignore */ }
-  return null;
+  } catch { /* fall through to the free service */ }
+  return geocodePostcodeFree(postcode);
 }
 
 export const revalidate = 3600;
@@ -70,9 +82,8 @@ function parseFilters(sp: Search, buyerLat?: number, buyerLng?: number): Listing
   const deposit = num(sp.deposit) ?? 3000;
   const derivedMaxPrice = monthlyMax ? priceFromMonthly(monthlyMax, deposit) : undefined;
   const rawRadius = num(sp.radius);
-  const hasPostcode = !!(one(sp.postcode) || one(sp.near) || "").trim();
   const rawSort = (one(sp.sort) as ListingFilters["sort"]) || undefined;
-  const effectiveSort = rawSort ?? (hasPostcode && buyerLat != null ? "nearest" : "newest");
+  const effectiveSort = rawSort ?? (buyerLat != null ? "nearest" : "newest");
   // Chip search (?v=ford:transit-custom,volkswagen). Legacy ?make= / ?models= / ?model= links become chips too.
   const vehicles = one(sp.v) ? parseVehicles(one(sp.v)) : legacyToVehicles(one(sp.make) || undefined, parseModels(sp));
   // Hero search sends ?near=: a postcode is geocoded, anything else is matched against the town.
@@ -91,6 +102,7 @@ function parseFilters(sp: Search, buyerLat?: number, buyerLng?: number): Listing
     minYear:   num(sp.minYear),
     maxYear:   num(sp.maxYear),
     maxMileage: num(sp.maxMileage),
+    ulez: one(sp.ulez) === "1" ? true : undefined,
     q: one(sp.q) || (near && !nearIsPostcode ? near : undefined),
     postcode: one(sp.postcode) || (nearIsPostcode ? near : undefined),
     radius: rawRadius,
@@ -133,7 +145,10 @@ export default async function VansPage({
   const sp = await searchParams;
   const nearParam = (one(sp.near) || "").trim();
   const rawPostcode = (one(sp.postcode) || (/\d/.test(nearParam) ? nearParam : "") || "").trim();
-  const buyerCoords = rawPostcode ? await geocodePostcodeServer(rawPostcode) : null;
+  // "Near me" sends coordinates directly (?lat&lng&loc); a typed postcode / ?near= is geocoded.
+  const qLat = Number(one(sp.lat)), qLng = Number(one(sp.lng));
+  const directCoords = one(sp.lat) && one(sp.lng) && qLat > 49 && qLat < 61.5 && qLng > -9 && qLng < 2.5 ? { lat: qLat, lng: qLng } : null;
+  const buyerCoords = directCoords ?? (rawPostcode ? await geocodePostcodeServer(rawPostcode) : null);
   const filters = parseFilters(sp, buyerCoords?.lat, buyerCoords?.lng);
   const { mode: payMode, terms: financeTerms } = parsePay(sp);
   const view: "grid" | "map" = one(sp.view) === "map" ? "map" : "grid";
@@ -178,7 +193,7 @@ export default async function VansPage({
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <Container className="py-8">
         {/* Filter pill row + modal */}
-        <VansFilter total={total} facets={facets} searchParams={sp} />
+        <VansFilter total={total} facets={facets} searchParams={sp} quickFilters={<QuickFilters sp={sp} />} />
 
         {/* Results bar: count · Cash/Finance/Both · Grid/Map */}
         <div className="mb-5 space-y-3">
@@ -195,7 +210,6 @@ export default async function VansPage({
               )}
             </p>
             <div className="flex flex-wrap items-center gap-3">
-              <DealerMapButton listings={listings} />
               <ViewToggle view={view} gridHref={hrefFor(sp, 1, { view: null })} mapHref={hrefFor(sp, 1, { view: "map" })} />
             </div>
           </div>
