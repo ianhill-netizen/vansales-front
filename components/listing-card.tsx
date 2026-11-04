@@ -4,6 +4,7 @@ import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
+import { monthlyForTerms, type FinanceTerms, type PayMode } from "@/lib/finance";
 import { Price, PlateBadge, StatusBadge, Badge } from "./ui";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconArrow } from "./icons";
 
@@ -20,14 +21,24 @@ export function ListingCard({
   priority,
   cardIndex = 0,
   distanceMiles,
-  monthlyPayment,
+  payMode = "cash",
+  financeTerms,
+  highlighted = false,
 }: {
   listing: Listing;
   priority?: boolean;
   cardIndex?: number;
   distanceMiles?: number;
-  monthlyPayment?: number;
+  /** Cash = asking price only; finance = monthly payment first; both = both. Defaults to cash. */
+  payMode?: PayMode;
+  financeTerms?: FinanceTerms;
+  /** Ring the card (map view: the matching pin is selected). */
+  highlighted?: boolean;
 }) {
+  const monthly =
+    payMode !== "cash" && financeTerms && listing.price != null
+      ? Math.round(monthlyForTerms(listing.price, financeTerms))
+      : undefined;
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
   const isPrivate = listing.seller_type === "private";
@@ -54,7 +65,7 @@ export function ListingCard({
   ].filter((s) => s.value && s.value !== "—");
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-sm)] transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1.5 hover:border-transparent hover:shadow-[var(--shadow-card-hover)]">
+    <article data-listing-id={listing.id} className={`group relative flex flex-col overflow-hidden rounded-[var(--radius-xl)] border bg-white shadow-[var(--shadow-sm)] ${highlighted ? "border-brand-500 ring-2 ring-brand-500/40" : "border-border"} transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1.5 hover:border-transparent hover:shadow-[var(--shadow-card-hover)]`}>
 
       {/* ── Media ────────────────────────────────────────────────────────── */}
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
@@ -105,6 +116,7 @@ export function ListingCard({
             <Badge tone="brand">Dealer</Badge>
           )}
           {listing.condition === "new" && <Badge tone="brand">New</Badge>}
+          {listing.hpi_checked && <Badge tone="success">HPI checked</Badge>}
           {listing.status === "reserved" && <StatusBadge status="reserved" />}
           {fuelPill && (
             <span className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${fuelPill}`}>
@@ -176,11 +188,21 @@ export function ListingCard({
         {/* Price row */}
         <div className="mt-3 flex items-end justify-between gap-2">
           <div>
-            <Price listing={listing} size="md" />
-            {monthlyPayment != null && (
-              <p className="mt-0.5 text-[var(--text-xs)] text-ink-400">
-                ≈ £{monthlyPayment.toLocaleString("en-GB")}/mo HP
-              </p>
+            {payMode === "finance" && monthly != null ? (
+              <>
+                <p className="flex items-baseline gap-1.5">
+                  <span className="font-mono text-[var(--text-2xl)] font-bold leading-none text-ink-900">£{monthly.toLocaleString("en-GB")}</span>
+                  <span className="text-[var(--text-xs)] font-medium text-ink-500">/month</span>
+                </p>
+                <p className="mt-1 text-[var(--text-xs)] text-ink-400">Cash price {listing.price != null ? `£${listing.price.toLocaleString("en-GB")}` : "POA"}</p>
+              </>
+            ) : (
+              <>
+                <Price listing={listing} size="md" />
+                {payMode === "both" && monthly != null && (
+                  <p className="mt-1 text-[var(--text-sm)] font-semibold text-brand-700">or £{monthly.toLocaleString("en-GB")}/month</p>
+                )}
+              </>
             )}
           </div>
           {listing.year > 0 && (

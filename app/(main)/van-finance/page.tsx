@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Van Finance | HP, PCP & Finance Lease",
   description: `Spread the cost of your next van with HP, PCP or finance lease. Compare van finance options or call ${SITE.phone} for a tailored quote.`,
-};
+  path: "/van-finance",
+});
 
 const PRODUCTS = [
   {

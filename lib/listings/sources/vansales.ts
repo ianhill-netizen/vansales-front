@@ -1,5 +1,5 @@
 import type { VanDetails } from "@/lib/listings/vanDetails";
-import type { Listing, ListingImage } from "../types";
+import type { HpiResult, Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
 
 /* =============================================================================
@@ -27,10 +27,12 @@ export const PRIVATE_ENQUIRY_REF_PREFIX = "vansales-private:";
 interface ApiCard {
   id: number; title: string; slug: string; make: string; model: string; variant: string | null; year: number | null; mileage: number | null; price: number;
   fuel_type: string | null; transmission: string | null; body_type: string | null; colour: string | null; created_at: string; image: string | null; has_video?: boolean;
+  /** The seller's geocoded postcode, when the API publishes it (town + coordinates only, never the postcode itself). */
+  town?: string | null; latitude?: number | null; longitude?: number | null;
 }
 interface ApiDetail extends ApiCard {
   description: string | null; video_url: string | null; video_vertical_url: string | null;
-  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean;
+  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean; hpi_result?: HpiResult | null;
   seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; body_type_key?: string | null;
   wheelbase?: VanDetails["wheelbase"]; roof_height?: VanDetails["roof_height"]; rear_doors?: VanDetails["rear_doors"]; side_loading_door?: VanDetails["side_loading_door"];
   features?: { slug: string; label: string }[]; youtube_embed_url?: string | null; ulez_compliant?: boolean | null; condition?: "excellent" | "good" | "fair" | "project" | null;
@@ -39,6 +41,9 @@ interface ApiDetail extends ApiCard {
 }
 
 const or = (v: string | null | undefined, fallback: string) => (v && v.trim() !== "" ? titleCase(v.trim()) : fallback);
+
+/** A private seller's map pin is rounded to ~1 km: enough for "near X", never their street. */
+const coarse = (v: number | null | undefined) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v * 100) / 100 : null);
 
 function toListing(c: ApiCard | ApiDetail): Listing {
   const detail = "listing_images" in c ? (c as ApiDetail) : null;
@@ -73,7 +78,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     euro_status: null,
     ulez: detail?.ulez_compliant === true,
     van_spec: { body_style: or(c.body_type, "Van"), wheelbase: detail?.wheelbase ?? null, roof_height: null, payload_kg: detail?.payload_kg ?? null, load_length_mm: null, doors: null },
-    location: { town: "UK", region: "", postcode_area: "", lat: null, lng: null },
+    location: { town: c.town?.trim() || "UK", region: "", postcode_area: "", lat: coarse(c.latitude), lng: coarse(c.longitude) },
     description: detail?.description ?? "",
     features: [],
     images,
@@ -102,6 +107,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     last_mot_mileage: detail?.last_mot_mileage ?? null,
     last_mot_date: detail?.last_mot_date ?? null,
     hpi_checked: detail?.hpi_checked === true,
+    hpi_result: detail?.hpi_result ?? null,
     hpi_checked_at: detail?.hpi_checked_at ?? null,
     published_at: c.created_at,
     updated_at: c.created_at,

@@ -4,7 +4,12 @@ import { siteUrl } from "@/lib/site";
 export default function robots(): MetadataRoute.Robots {
   const base = siteUrl();
   return {
-    rules: { userAgent: "*", allow: "/" },
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      // Account areas, APIs and internal tools have nothing to index.
+      disallow: ["/api/", "/admin", "/dealer-portal", "/image-review", "/maps-test"],
+    },
     sitemap: `${base}/sitemap.xml`,
     host: base,
   };

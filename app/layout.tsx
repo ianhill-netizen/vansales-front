@@ -14,13 +14,11 @@ export const metadata: Metadata = {
   },
   description: SITE.description,
   applicationName: SITE.name,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: SITE.name,
     title: `${SITE.name} — buy & sell vans across the UK`,
     description: SITE.description,
-    url: "/",
   },
   twitter: { card: "summary_large_image", site: SITE.twitter },
   robots: { index: true, follow: true },

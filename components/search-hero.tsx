@@ -2,92 +2,51 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SORTED_MAKES, getMakeByName } from "@/lib/taxonomy/van-makes";
-import { slugify } from "@/lib/listings/slug";
-import { IconSearch, IconChevron } from "./icons";
-
-const ALL_MAKE_NAMES = SORTED_MAKES.map((m) => m.name);
+import { stringifyVehicles, type VehicleChip } from "@/lib/vehicle-chips";
+import { ChipSearch } from "./chip-search";
+import { IconSearch } from "./icons";
 
 const LABEL_CLS =
   "pointer-events-none absolute left-4 top-3 text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400";
 
-const FIELD_CLS =
-  "h-full w-full appearance-none bg-transparent pl-4 pr-9 pt-5 text-[var(--text-base)] font-semibold text-ink-900 placeholder:font-normal placeholder:text-ink-400 outline-none cursor-pointer";
-
 export function SearchHero({
   total,
-  makeModels,
 }: {
   total: number;
-  makeModels: Record<string, string[]>;
+  /** @deprecated no longer used: the chip search suggests from the full make / model taxonomy. */
+  makeModels?: Record<string, string[]>;
 }) {
   const router = useRouter();
-  const [make, setMake]   = useState("");
-  const [model, setModel] = useState("");
+  const [chips, setChips] = useState<VehicleChip[]>([]);
   const [where, setWhere] = useState("");
 
-  // Prefer live feed-derived models passed from server. Fall back to
-  // taxonomy models for any make not yet represented in the feed.
-  const makeEntry = make ? getMakeByName(make) : null;
-  const models = makeEntry
-    ? (makeModels[makeEntry.slug]?.length
-        ? makeModels[makeEntry.slug]
-        : [...makeEntry.models]
-            .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }))
-            .map((m) => m.name))
-    : [];
-
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const makePath = make ? slugify(make) : null;
-    const modelPath = model && makePath ? slugify(model) : null;
-    const near = where.trim() ? `?near=${encodeURIComponent(where.trim())}` : "";
-    if (!makePath) {
-      router.push(`/vans${near}`);
-    } else if (!modelPath) {
-      router.push(`/vans/${makePath}${near}`);
-    } else {
-      router.push(`/vans/${makePath}/${modelPath}${near}`);
-    }
+  function submit(e?: React.FormEvent) {
+    e?.preventDefault();
+    const p = new URLSearchParams();
+    if (chips.length > 0) p.set("v", stringifyVehicles(chips));
+    if (where.trim()) p.set("near", where.trim());
+    const qs = p.toString();
+    router.push(`/vans${qs ? `?${qs}` : ""}`);
   }
 
   return (
     <div className="w-full">
       <form
         onSubmit={submit}
-        className="overflow-hidden rounded-[var(--radius-2xl)] bg-white shadow-[var(--shadow-xl)] ring-1 ring-black/6"
+        className="rounded-[var(--radius-2xl)] bg-white shadow-[var(--shadow-xl)] ring-1 ring-black/6"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto]">
+        <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr_auto]">
 
-          {/* Make */}
-          <div className="relative flex h-[5rem] items-center border-b border-border sm:border-b-0 sm:border-r">
-            <span className={LABEL_CLS}>Make</span>
-            <select
-              value={make}
-              onChange={(e) => { setMake(e.target.value); setModel(""); }}
-              className={FIELD_CLS}
-              aria-label="Make"
-            >
-              <option value="">Any make</option>
-              {ALL_MAKE_NAMES.map((m) => <option key={m} value={m}>{m}</option>)}
-            </select>
-            <IconChevron width={15} height={15} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
-          </div>
-
-          {/* Model */}
-          <div className="relative flex h-[5rem] items-center border-b border-border sm:border-b-0 sm:border-r">
-            <span className={LABEL_CLS}>Model</span>
-            <select
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              disabled={!make}
-              className={`${FIELD_CLS} disabled:cursor-not-allowed disabled:text-ink-400`}
-              aria-label="Model"
-            >
-              <option value="">Any model</option>
-              {models.map((m) => <option key={m} value={m}>{m}</option>)}
-            </select>
-            <IconChevron width={15} height={15} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
+          {/* Make / model chips */}
+          <div className="relative flex min-h-[5rem] items-end border-b border-border px-2 pb-2 pt-7 sm:border-b-0 sm:border-r">
+            <span className={LABEL_CLS}>Make &amp; model</span>
+            <ChipSearch
+              className="w-full"
+              value={chips}
+              onChange={setChips}
+              onEnterEmpty={() => submit()}
+              placeholder="Type a make or model, e.g. Transit Custom"
+            />
           </div>
 
           {/* Location */}

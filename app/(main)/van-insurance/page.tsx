@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconShield, IconCheck, IconArrow } from "@/components/icons";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Van Insurance | Commercial Vehicle Cover",
   description: `Compare commercial van insurance options for sole traders, small fleets and businesses. Call ${SITE.phone} for guidance on the right cover.`,
-};
+  path: "/van-insurance",
+});
 
 const COVER_TYPES = [
   {

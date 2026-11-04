@@ -47,6 +47,20 @@ export interface EnquiryRoute {
   ref: string; // opaque reference passed back to the source on enquiry
 }
 
+export type HpiCheckStatus = "clear" | "issues" | "unknown";
+export interface HpiCheck { status?: HpiCheckStatus | null; flag?: boolean | null; detail?: string | null }
+export interface HpiResult {
+  overall?: "clear" | "issues" | "incomplete" | null;
+  summary?: string | null;
+  checked_at?: string | null;
+  finance_outstanding?: HpiCheck | null;
+  stolen?: HpiCheck | null;
+  written_off?: HpiCheck | null;
+  mileage_discrepancy?: HpiCheck | null;
+  plate_changes?: HpiCheck | null;
+  previous_keepers?: number | { count?: number | null; detail?: string | null } | HpiCheck | null;
+}
+
 export interface Listing {
   id: string; // canonical id: `${source}:${source_id}`
   source: ListingSource;
@@ -120,6 +134,9 @@ export interface Listing {
   last_mot_mileage?: number | null;
   last_mot_date?: string | null;
 
+  /** The paid HPI check findings, when the vansales API publishes them (private adverts). Each check is {status: clear|issues|unknown, flag, detail}. */
+  hpi_result?: HpiResult | null;
+
   /** True only when a paid HPI check for this registration came back completely clear (private sellers' adverts). The findings themselves are never public. */
   hpi_checked?: boolean;
   hpi_checked_at?: string | null;
@@ -137,9 +154,9 @@ export interface ListingFilters {
   model?: string;
   models?: string[]; // multi-model OR filter; overrides model when set
   condition?: Condition;
-  bodyStyle?: string;
+  bodyStyle?: string; // comma-separated for several (OR)
   wheelbase?: Wheelbase;
-  fuel?: string;
+  fuel?: string; // comma-separated for several (OR)
   minPrice?: number;
   maxPrice?: number;
   minYear?: number;
@@ -155,6 +172,8 @@ export interface ListingFilters {
   radius?: number; // miles; undefined = Nationwide
   buyerLat?: number;
   buyerLng?: number;
+  /** Multi-vehicle OR filter from the chip search: each entry is a make slug, optionally narrowed to one model slug. */
+  vehicles?: { make: string; model?: string }[];
   limit?: number; // hard cap (e.g. featured strips); independent of pagination
   page?: number; // 1-based
   pageSize?: number; // when set, results are paginated to this many per page

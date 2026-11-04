@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
+import { SELL_URL } from "@/lib/site";
+import { Logo } from "./brand";
 
 const BODY_TYPE_LINKS = [
   { href: "/vans", label: "All vans for sale" },
@@ -32,10 +35,11 @@ const SECTIONS = [
     links: MAKE_LINKS,
   },
   {
-    heading: "Sell your van",
+    heading: "Dealers & selling",
     links: [
-      { href: "/sign-up/private-seller", label: "List privately — free" },
-      { href: "/signup/trade",           label: "List my dealer stock" },
+      { href: "/dealers",    label: "Find a dealer" },
+      { href: SELL_URL,      label: "Sell your van" },
+      { href: "/advertise",  label: "Advertise with us" },
     ],
   },
   {
@@ -61,6 +65,15 @@ const SECTIONS = [
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  // Full-screen menu: lock the page behind it and close on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => { document.body.style.overflow = prev; document.removeEventListener("keydown", onKey); };
+  }, [open]);
   return (
     <div className="md:hidden">
       <button
@@ -76,12 +89,28 @@ export function MobileNav() {
         </svg>
       </button>
 
-      {open && (
+      {open && createPortal(
+        // Portalled to <body>: the sticky header has backdrop-filter, which would otherwise trap a position:fixed child inside the header box.
         <div
           id="mobile-menu"
-          className="absolute inset-x-0 top-full z-50 max-h-[80vh] overflow-y-auto border-t border-border bg-white px-[var(--gutter)] py-4 shadow-[var(--shadow-md)]"
+          onClick={(e) => { if ((e.target as HTMLElement).closest("a")) setOpen(false); }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className="fixed inset-0 z-[60] overflow-y-auto bg-white px-[var(--gutter)] pb-10"
         >
-          <nav className="space-y-5">
+          <div className="flex h-16 items-center justify-between">
+            <Logo tone="dark" />
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="inline-flex size-10 items-center justify-center rounded-[var(--radius-md)] text-ink-700 hover:bg-surface-2"
+            >
+              <span className="sr-only">Close menu</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </button>
+          </div>
+          <nav className="mt-2 space-y-6 border-t border-border pt-5">
             {SECTIONS.map((section) => (
               <div key={section.heading}>
                 <p className="mb-2 text-[var(--text-xs)] font-bold uppercase tracking-wider text-ink-400">
@@ -102,7 +131,8 @@ export function MobileNav() {
               </div>
             ))}
           </nav>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

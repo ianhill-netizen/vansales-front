@@ -25,6 +25,7 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/vans/vauxhall/vivaro",        label: "Vauxhall Vivaro" },
       { href: "/new-vans",                     label: "New van model guides" },
       { href: "/directory",                   label: "All makes A–Z" },
+      { href: "/dealers",                     label: "Find a dealer" },
     ],
   },
   {
