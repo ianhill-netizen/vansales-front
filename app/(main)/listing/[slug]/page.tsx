@@ -7,7 +7,7 @@ import { SpecTable } from "@/components/spec-table";
 import { EnquiryPanel } from "@/components/enquiry-panel";
 import { SpecReadout } from "@/components/spec-readout";
 import { JsonLd } from "@/components/json-ld";
-import { detailRows, VAT_BADGE } from "@/lib/listings/vanDetails";
+import { CONDITION_LABEL, detailRows, VAT_BADGE, warrantyText } from "@/lib/listings/vanDetails";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } from "@/components/icons";
 import { ListingCTAButtons } from "@/components/dealer-cta-buttons";
 import { getListingBySlug } from "@/lib/listings/client";
@@ -176,6 +176,13 @@ export default async function ListingPage({
               </section>
             )}
 
+            {/* The seller's YouTube video, after their own upload (privacy-friendly embed, lazy loaded) */}
+            {listing.youtube_embed_url && (
+              <section className="mt-6" aria-label="Video on YouTube">
+                <iframe src={listing.youtube_embed_url.replace("www.youtube.com", "www.youtube-nocookie.com")} title={`${title} on YouTube`} loading="lazy" allow="encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" className="aspect-video w-full rounded-[var(--radius-lg)] bg-black" />
+              </section>
+            )}
+
             <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
               <SpecReadout items={readouts} className="px-2" />
             </div>
@@ -192,6 +199,25 @@ export default async function ListingPage({
                     </div>
                   ))}
                 </dl>
+              </section>
+            )}
+
+            {/* Warranty, as the seller described it */}
+            {warrantyText(listing.warranty_type, listing.warranty_expiry) && (
+              <p className="mt-4 rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3 text-[var(--text-md)] text-ink-800">
+                <span className="font-medium">{warrantyText(listing.warranty_type, listing.warranty_expiry)}</span>
+              </p>
+            )}
+
+            {/* Features & extras the seller ticked */}
+            {listing.extras && listing.extras.length > 0 && (
+              <section className="mt-6" aria-label="Features and extras">
+                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Features &amp; extras</h2>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {listing.extras.map((f) => (
+                    <li key={f.slug}><Badge tone="neutral"><IconCheck width={12} height={12} aria-hidden />{f.label}</Badge></li>
+                  ))}
+                </ul>
               </section>
             )}
 
@@ -294,7 +320,11 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
             <Badge tone="success"><IconShield width={12} height={12} aria-hidden />HPI checked</Badge>
           </span>
         )}
-        {listing.ulez && <Badge tone="brand">ULEZ ready</Badge>}
+        {listing.ulez_compliant === true && <Badge tone="brand">ULEZ compliant</Badge>}
+        {listing.ulez_compliant === false && <Badge tone="warning">Not ULEZ compliant</Badge>}
+        {listing.ulez_compliant == null && listing.ulez && <Badge tone="brand">ULEZ ready</Badge>}
+        {listing.vehicle_condition && <Badge tone="neutral">{CONDITION_LABEL[listing.vehicle_condition]}</Badge>}
+        {listing.v5_present === true && <Badge tone="success">V5 present</Badge>}
         {listing.price_type === "no_vat" && <Badge tone="neutral">No VAT</Badge>}
       </div>
     </div>

@@ -33,6 +33,8 @@ interface ApiDetail extends ApiCard {
   mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean;
   seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; body_type_key?: string | null;
   wheelbase?: VanDetails["wheelbase"]; roof_height?: VanDetails["roof_height"]; rear_doors?: VanDetails["rear_doors"]; side_loading_door?: VanDetails["side_loading_door"];
+  features?: { slug: string; label: string }[]; youtube_embed_url?: string | null; ulez_compliant?: boolean | null; condition?: "excellent" | "good" | "fair" | "project" | null;
+  v5_present?: boolean | null; warranty_type?: "none" | "manufacturer" | "aftermarket" | null; warranty_expiry?: string | null; previous_owners?: number | null;
   seats?: number | null; payload_kg?: number | null; gross_weight_kg?: number | null; service_history?: VanDetails["service_history"]; engine_cc?: number | null; euro_class?: string | null; hpi_checked_at?: string | null; listing_images: Array<{ url: string; original_url: string; is_cleaned: boolean; sort_order: number }>;
 }
 
@@ -69,7 +71,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     colour: or(c.colour, "—"),
     engine_cc: detail?.engine_cc ?? null,
     euro_status: null,
-    ulez: false,
+    ulez: detail?.ulez_compliant === true,
     van_spec: { body_style: or(c.body_type, "Van"), wheelbase: detail?.wheelbase ?? null, roof_height: null, payload_kg: detail?.payload_kg ?? null, load_length_mm: null, doors: null },
     location: { town: "UK", region: "", postcode_area: "", lat: null, lng: null },
     description: detail?.description ?? "",
@@ -84,9 +86,16 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     video_url: detail?.video_url ?? null,
     seller_video_url: detail?.seller_video_url ?? null,
     vat_status: detail?.vat_status ?? null,
+    extras: detail?.features ?? [],
+    youtube_embed_url: detail?.youtube_embed_url ?? null,
+    ulez_compliant: detail?.ulez_compliant ?? (c as ApiCard & { ulez_compliant?: boolean | null }).ulez_compliant ?? null,
+    vehicle_condition: detail?.condition ?? null,
+    v5_present: detail?.v5_present ?? null,
+    warranty_type: detail?.warranty_type ?? null,
+    warranty_expiry: detail?.warranty_expiry ?? null,
     details: detail ? {
       body_type: detail.body_type_key ? c.body_type : null, wheelbase: detail.wheelbase ?? null, roof_height: detail.roof_height ?? null, rear_doors: detail.rear_doors ?? null, side_loading_door: detail.side_loading_door ?? null,
-      seats: detail.seats ?? null, payload_kg: detail.payload_kg ?? null, gross_weight_kg: detail.gross_weight_kg ?? null, service_history: detail.service_history ?? null, engine_cc: detail.engine_cc ?? null, euro_class: detail.euro_class ?? null,
+      seats: detail.seats ?? null, payload_kg: detail.payload_kg ?? null, gross_weight_kg: detail.gross_weight_kg ?? null, service_history: detail.service_history ?? null, engine_cc: detail.engine_cc ?? null, euro_class: detail.euro_class ?? null, previous_owners: detail.previous_owners ?? null,
     } : undefined,
     video_vertical_url: detail?.video_vertical_url ?? null,
     mot_expiry: detail?.mot_expiry ?? null,
