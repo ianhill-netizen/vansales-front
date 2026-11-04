@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/empty/empty-state";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -433,6 +434,18 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                     </Link>
                   </div>
                 )}
+              </section>
+            )}
+            {listings.length === 0 && (
+              <section>
+                <SectionHeading>Current stock</SectionHeading>
+                <EmptyState
+                  illustration="no-vans"
+                  title="No vans in stock right now"
+                  body="This dealer has nothing listed at the moment. Browse every van in the meantime."
+                  action={{ label: "Browse all vans", href: "/vans" }}
+                  className="mt-5"
+                />
               </section>
             )}
           </div>

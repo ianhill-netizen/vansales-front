@@ -4,6 +4,8 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { chipLabel, type VehicleChip } from "@/lib/vehicle-chips";
 import type { PickerData, PickerPill } from "@/lib/listings/picker";
+import { MakeLogo } from "@/components/make-logo";
+import { BodyTypeIcon } from "@/components/icons/body-types";
 
 /* =============================================================================
    VEHICLE PICKER — the "tap a block" search (TUI pattern), not a type-ahead list.
@@ -34,14 +36,16 @@ export function countMatches(data: PickerData, sel: PickerSelection): number {
 const norm = (s: string) => s.normalize("NFD").replace(/\p{Mn}/gu, "").toLowerCase().trim();
 
 function pillCls(on: boolean): string {
-  return `inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
+  return `group inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
     on ? "border-brand-600 bg-brand-600 text-white" : "border-border bg-surface-1 text-ink-700 hover:border-brand-300 hover:text-brand-700"
   }`;
 }
 
-function Pill({ pill, on, onClick }: { pill: PickerPill; on: boolean; onClick: () => void }) {
+function Pill({ pill, on, onClick, kind }: { pill: PickerPill; on: boolean; onClick: () => void; kind?: "make" | "body" }) {
   return (
-    <button type="button" aria-pressed={on} onClick={onClick} className={pillCls(on)}>
+    <button type="button" aria-pressed={on} onClick={onClick} className={`${pillCls(on)} ${kind === "make" ? "!pl-1.5 !py-1" : ""}`}>
+      {kind === "make" && <MakeLogo make={pill.slug} name={pill.name} size={24} />}
+      {kind === "body" && <BodyTypeIcon slug={pill.slug} strokeWidth={1.6} className="h-4 w-6 shrink-0" />}
       {pill.name}
       <span className={`text-[var(--text-xs)] font-normal ${on ? "text-white/75" : "text-ink-400"}`}>{pill.count}</span>
     </button>
@@ -159,7 +163,7 @@ export function VehiclePicker({
     <div>
       {makePills.length > 0 && (
         <Section title="Makes">
-          {makePills.map((m) => <Pill key={m.slug} pill={m} on={isMake(m.slug)} onClick={() => toggleMake(m.slug)} />)}
+          {makePills.map((m) => <Pill key={m.slug} kind="make" pill={m} on={isMake(m.slug)} onClick={() => toggleMake(m.slug)} />)}
         </Section>
       )}
       {modelGroups.length > 0 && (
@@ -179,7 +183,7 @@ export function VehiclePicker({
       )}
       {bodyPills.length > 0 && (
         <Section title="Body type">
-          {bodyPills.map((b) => <Pill key={b.slug} pill={b} on={value.body.includes(b.slug)} onClick={() => toggleBody(b.slug)} />)}
+          {bodyPills.map((b) => <Pill key={b.slug} kind="body" pill={b} on={value.body.includes(b.slug)} onClick={() => toggleBody(b.slug)} />)}
         </Section>
       )}
       {fuelPills.length > 0 && (

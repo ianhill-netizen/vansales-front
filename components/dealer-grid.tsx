@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { EmptyState } from "@/components/empty/empty-state";
 import { PinMap, type Pin } from "./pin-map";
 import type { DirectoryDealer } from "@/lib/dealers/directory";
 
@@ -117,9 +118,13 @@ export function DealerGrid({ dealers }: { dealers: DirectoryDealer[] }) {
       </p>
 
       {shown.length === 0 ? (
-        <div className="mt-6 rounded-[var(--radius-2xl)] border border-dashed border-border bg-white px-8 py-14 text-center text-ink-500">
-          No dealers match that search.
-        </div>
+        <EmptyState
+          illustration="pin"
+          title="No dealers match that search"
+          body="Try a different town or make, or clear the search to see every dealer."
+          action={{ label: "Clear search", onClick: () => { setQ(""); setMake(""); } }}
+          className="mt-6"
+        />
       ) : view === "list" ? (
         <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{shown.map((d) => card(d, false))}</div>
       ) : (

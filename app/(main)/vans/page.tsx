@@ -8,6 +8,7 @@ import { Pagination } from "@/components/pagination";
 import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
 import { IconArrow } from "@/components/icons";
+import { EmptyState } from "@/components/empty/empty-state";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
 import type { Condition, Listing, ListingFilters, Wheelbase } from "@/lib/listings/types";
@@ -218,18 +219,13 @@ export default async function VansPage({
         </div>
 
         {listings.length === 0 ? (
-          <div className="rounded-[var(--radius-2xl)] border border-dashed border-border bg-white px-8 py-16 text-center shadow-[var(--shadow-xs)]">
-            <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">No vans match those filters</h2>
-            <p className="mx-auto mt-2 max-w-sm text-[var(--text-sm)] text-ink-500">
-              Try widening your price or year range, or removing a filter.
-            </p>
-            <Link
-              href="/vans"
-              className="mt-5 inline-flex items-center gap-1.5 rounded-[var(--radius-md)] border border-border bg-white px-4 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] hover:border-brand-300 hover:text-brand-700"
-            >
-              Clear filters <IconArrow width={14} height={14} />
-            </Link>
-          </div>
+          <EmptyState
+            illustration="no-vans"
+            title="No vans match those filters"
+            body="Try widening your price or year range, or removing a filter."
+            action={{ label: "Clear filters", href: "/vans" }}
+            className="py-14"
+          />
         ) : view === "map" ? (
           <MapSplit
             listings={mapListings}

@@ -12,6 +12,8 @@ import { RelatedLinks } from "@/components/related-links";
 import { SITE, absUrl } from "@/lib/site";
 import { slugify } from "@/lib/listings/slug";
 import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
+import { EmptyState } from "@/components/empty/empty-state";
+import { MakeLogo } from "@/components/make-logo";
 import { InternalLinks } from "@/components/seo/internal-links";
 import { loadCatalogue, makeStat, modelsOfMake, topModels } from "@/lib/seo/catalogue";
 import { makeIntro, priceRange } from "@/lib/seo/intro";
@@ -118,9 +120,12 @@ export default async function MakePage({
             <span className="font-medium text-ink-700">{makeName} vans</span>
           </nav>
           <Eyebrow>Make</Eyebrow>
-          <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
-            {makeName} vans for sale
-          </h1>
+          <div className="group mt-2 flex items-center gap-3">
+            <MakeLogo make={make} name={makeName} size={56} colour />
+            <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+              {makeName} vans for sale
+            </h1>
+          </div>
           <p className="mt-2 text-[var(--text-md)] text-ink-600">
             <span className="font-mono font-bold text-brand-600">{result.total.toLocaleString()}</span>{" "}
             {result.total === 1 ? "van" : "vans"} available
@@ -163,13 +168,12 @@ export default async function MakePage({
 
             {result.listings.length > 0 && <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">All {makeName} vans for sale</h2>}
             {result.listings.length === 0 ? (
-              <div className="rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-card p-10 text-center">
-                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">No {makeName} vans in stock right now</h2>
-                <p className="mx-auto mt-2 max-w-sm text-[var(--text-sm)] text-ink-500">Check back soon — stock updates regularly.</p>
-                <Link href="/vans" className="mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">
-                  Browse all vans
-                </Link>
-              </div>
+              <EmptyState
+                illustration="no-vans"
+                title={`No ${makeName} vans in stock right now`}
+                body="Stock updates through the day. Have a look at everything else in the meantime."
+                action={{ label: "Browse all vans", href: "/vans" }}
+              />
             ) : (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {result.listings.map((l, i) => (

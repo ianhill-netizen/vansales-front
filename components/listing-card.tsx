@@ -5,6 +5,7 @@ import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
 import { monthlyForTerms, type FinanceTerms, type PayMode } from "@/lib/finance";
+import { BodyTypeIcon } from "@/components/icons/body-types";
 import { Price, StatusBadge, Badge } from "./ui";
 import { IconGearbox, IconRuler, IconArrow } from "./icons";
 
@@ -85,16 +86,10 @@ export function ListingCard({
             loading={priority ? "eager" : "lazy"}
           />
         ) : (
-          <div className="flex size-full flex-col items-center justify-center gap-2.5">
-            <svg viewBox="0 0 64 32" fill="none" className="h-8 w-16 text-ink-200" aria-hidden>
-              <rect x="1" y="11" width="62" height="18" rx="3" stroke="currentColor" strokeWidth="2"/>
-              <rect x="8" y="3" width="28" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
-              <circle cx="14" cy="29" r="3" stroke="currentColor" strokeWidth="2"/>
-              <circle cx="50" cy="29" r="3" stroke="currentColor" strokeWidth="2"/>
-              <line x1="36" y1="11" x2="36" y2="17" stroke="currentColor" strokeWidth="1.5"/>
-            </svg>
-            <p className="font-mono text-[var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-300">
-              Photo coming soon
+          <div className="flex size-full flex-col items-center justify-center gap-2.5 bg-surface-2">
+            <BodyTypeIcon slug={listing.van_spec.body_style} className="h-16 w-24 text-ink-300" />
+            <p className="font-mono text-[var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+              Photos coming soon
             </p>
           </div>
         )}

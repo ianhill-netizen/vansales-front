@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { BodyTypeIcon } from "@/components/icons/body-types";
 import type { Listing } from "@/lib/listings/types";
 
 type Shot = { url: string; alt: string };
@@ -15,15 +16,9 @@ export function Gallery({ listing }: { listing: Listing }) {
   if (shots.length === 0) {
     return (
       <div className="relative flex aspect-[16/10] flex-col items-center justify-center gap-3 overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-2">
-        <svg viewBox="0 0 80 40" fill="none" className="h-10 w-20 text-ink-200" aria-hidden>
-          <rect x="1" y="13" width="78" height="23" rx="4" stroke="currentColor" strokeWidth="2"/>
-          <rect x="9" y="3" width="35" height="17" rx="3" stroke="currentColor" strokeWidth="2"/>
-          <circle cx="17" cy="36" r="4" stroke="currentColor" strokeWidth="2"/>
-          <circle cx="63" cy="36" r="4" stroke="currentColor" strokeWidth="2"/>
-          <line x1="44" y1="13" x2="44" y2="20" stroke="currentColor" strokeWidth="1.5"/>
-        </svg>
-        <p className="font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-300">
-          Photo coming soon
+        <BodyTypeIcon slug={listing.van_spec.body_style} className="h-24 w-36 text-ink-300" />
+        <p className="font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+          Photos coming soon
         </p>
       </div>
     );

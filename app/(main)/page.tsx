@@ -1,3 +1,4 @@
+import { MakeLogo } from "@/components/make-logo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
@@ -151,8 +152,9 @@ export default async function HomePage() {
                   <li key={m.value}>
                     <Link
                       href={`/vans?v=${slug}`}
-                      className="inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-border bg-white px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+                      className="group inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-border bg-white py-1.5 pl-2 pr-4 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
                     >
+                      <MakeLogo make={slug} name={m.value} size={28} />
                       {m.value}
                       <span className="font-mono text-[var(--text-xs)] font-normal text-ink-400">{m.count}</span>
                     </Link>
