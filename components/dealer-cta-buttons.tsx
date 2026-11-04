@@ -82,10 +82,10 @@ export function ListingCTAButtons({
   listing,
   dealer,
 }: {
-  listing: { make: string; model: string; plate: string; slug: string };
+  listing: { make: string; model: string; plate: string; slug: string; vrm?: string | null };
   dealer: Pick<DealerConfig, "phone" | "whatsapp" | "dealskiTenant">;
 }) {
-  const prefill = `Hi, I'm enquiring via Vansales about the ${listing.make} ${listing.model}${listing.plate ? ` (${listing.plate})` : ""}.`;
+  const prefill = `Hi, I'm interested in your ${listing.make} ${listing.model}${listing.vrm ? ` ${listing.vrm}` : ""} on vansales.com`;
   const waUrl = whatsappUrl(dealer.whatsapp, prefill);
   const financeLink = `https://app.dealski.co.uk/apply/${dealer.dealskiTenant}?ref=${encodeURIComponent(listing.slug)}`;
 

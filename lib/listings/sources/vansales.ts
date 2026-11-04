@@ -34,7 +34,7 @@ interface ApiCard {
 }
 interface ApiDetail extends ApiCard {
   description: string | null; video_url: string | null; video_vertical_url: string | null;
-  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; hpi_checked?: boolean; hpi_check?: HpiCheckPublic | null;
+  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; vrm?: string | null; hpi_checked?: boolean; hpi_check?: HpiCheckPublic | null;
   seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; body_type_key?: string | null;
   wheelbase?: VanDetails["wheelbase"]; roof_height?: VanDetails["roof_height"]; rear_doors?: VanDetails["rear_doors"]; side_loading_door?: VanDetails["side_loading_door"];
   features?: { slug: string; label: string }[]; youtube_embed_url?: string | null; ulez_compliant?: boolean | null; condition?: "excellent" | "good" | "fair" | "project" | null;
@@ -89,6 +89,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     enquiry_route: { to: "vansales_private", ref: `${PRIVATE_ENQUIRY_REF_PREFIX}${c.id}` },
     enquiry_url: null,
     stock_ref: null,
+    vrm: detail?.vrm ?? null,
     // the API already puts the seller's own video in video_url when there is one; seller_video_url is kept explicit so the page can prefer it
     video_url: detail?.video_url ?? null,
     seller_video_url: detail?.seller_video_url ?? null,
