@@ -4,7 +4,7 @@ import { Container, Eyebrow } from "@/components/ui";
 import { DealerGrid } from "@/components/dealer-grid";
 import { JsonLd } from "@/components/json-ld";
 import { getDealerDirectory } from "@/lib/dealers/directory";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: absUrl("/dealers") },
-  openGraph: { title: `${TITLE} · ${SITE.name}`, description: DESCRIPTION, url: absUrl("/dealers"), type: "website" },
+  openGraph: { images: DEFAULT_OG_IMAGES, title: `${TITLE} · ${SITE.name}`, description: DESCRIPTION, url: absUrl("/dealers"), type: "website" },
 };
 
 export default async function DealersPage() {

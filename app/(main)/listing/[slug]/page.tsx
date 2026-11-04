@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     listing.mileage,
   )}, ${titleCase(listing.fuel)}, ${titleCase(listing.transmission)}. ${listing.van_spec.body_style} on ${SITE.name}.`;
   const canonical = `/listing/${slug}`;
-  const img = listingImageUrl(listing);
+  const ogImage = absUrl(`/api/og/${slug}`);
   return {
     title,
     description,
@@ -58,8 +58,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       description,
       url: canonical,
       type: "website",
-      images: img ? [{ url: img }] : undefined,
+      // Per-listing share card: the van's photo with price and name overlaid (app/api/og/[slug]); it falls back to a branded card.
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
+    twitter: { card: "summary_large_image", title: `${title} · ${SITE.name}`, description, images: [{ url: ogImage, alt: title }] },
   };
 }
 

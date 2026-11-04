@@ -6,7 +6,6 @@ import { ListingCard } from "@/components/listing-card";
 import { FilterRail } from "@/components/filter-rail";
 import { Pagination } from "@/components/pagination";
 import { JsonLd } from "@/components/json-ld";
-import { IconArrow } from "@/components/icons";
 import { SpecCard } from "@/components/spec-card";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { InternalLinks } from "@/components/seo/internal-links";

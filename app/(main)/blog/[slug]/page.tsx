@@ -9,7 +9,7 @@ import { getBlogPost, getBlogIndex, getBlogSlugs, formatDate } from "@/lib/conte
 import { getNewVanIndex } from "@/lib/content/new-vans";
 import { blogKeywords, matchBlogPosts, matchRelatedVans } from "@/lib/content/cross-links";
 import { mdToHtml } from "@/lib/content/markdown";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: post.description.slice(0, 155),
     alternates: { canonical: absUrl(`/blog/${slug}`) },
     openGraph: {
+    images: DEFAULT_OG_IMAGES,
       title: `${post.title.slice(0, 60)} · ${SITE.name}`,
       description: post.description.slice(0, 155),
       url: absUrl(`/blog/${slug}`),

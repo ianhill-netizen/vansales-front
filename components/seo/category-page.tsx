@@ -9,7 +9,7 @@ import { InternalLinks } from "@/components/seo/internal-links";
 import { getListings } from "@/lib/listings/client";
 import { getBlogIndex } from "@/lib/content/blog";
 import { matchBlogPosts } from "@/lib/content/cross-links";
-import { absUrl } from "@/lib/site";
+import { absUrl, DEFAULT_OG_IMAGES, DEFAULT_TWITTER_IMAGES } from "@/lib/site";
 import { getCategory } from "@/lib/seo/categories";
 import { categoryListings, loadCatalogue, popularModelsFor, statOf } from "@/lib/seo/catalogue";
 import { categoryIntro, priceRange } from "@/lib/seo/intro";
@@ -33,8 +33,8 @@ export async function categoryMetadata(slug: string): Promise<Metadata> {
     title: { absolute: title },
     description,
     alternates: { canonical: url },
-    openGraph: { title, description, url, type: "website" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { images: DEFAULT_OG_IMAGES, title, description, url, type: "website" },
+    twitter: { card: "summary_large_image", title, description, images: DEFAULT_TWITTER_IMAGES },
   };
 }
 

@@ -4,13 +4,14 @@ import Image from "next/image";
 import { Container, Eyebrow } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
 import { getNewVanIndex, groupByMake } from "@/lib/content/new-vans";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "New Vans — Models, Specs & Deals",
   description: "Browse every new van model available in the UK. Specs, engine options, payload capacity, and live stock links. Ford, VW, Mercedes, Citroën, Vauxhall and more.",
   alternates: { canonical: absUrl("/new-vans") },
   openGraph: {
+    images: DEFAULT_OG_IMAGES,
     title: `New Vans — Models, Specs & Deals · ${SITE.name}`,
     description: "Every new van model available in the UK with full specs and live stock.",
     url: absUrl("/new-vans"),

@@ -12,7 +12,7 @@ import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
 import { getMakeByName } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
-import { SITE, absUrl, siteUrl } from "@/lib/site";
+import { SITE, absUrl, siteUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Vans for Sale UK | Used & New Vans | Vansales",
@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     "Used and new vans for sale across the UK, from dealers and private sellers. Panel vans, crew cabs, Lutons, dropsides and pickups. Search by payload, wheelbase and ULEZ, not just price.",
   alternates: { canonical: absUrl("/") },
   openGraph: {
+    images: DEFAULT_OG_IMAGES,
     title: "Vans for Sale UK | Used & New Vans | Vansales",
     description: "Used and new vans for sale across the UK, from dealers and private sellers. Real photos, honest listings.",
     url: absUrl("/"),

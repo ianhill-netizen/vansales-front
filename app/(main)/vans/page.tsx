@@ -7,7 +7,6 @@ import { QuickFilters } from "@/components/quick-filters";
 import { Pagination } from "@/components/pagination";
 import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
-import { IconArrow } from "@/components/icons";
 import { EmptyState } from "@/components/empty/empty-state";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
@@ -15,7 +14,7 @@ import type { Condition, Listing, ListingFilters, Wheelbase } from "@/lib/listin
 import { priceFromMonthly, parsePay } from "@/lib/finance";
 import { legacyToVehicles, parseVehicles } from "@/lib/vehicle-chips";
 import { haversineDistanceMiles } from "@/lib/distance";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 const DEALSKI_API = (
   process.env.DEALSKI_API_URL ?? "https://swissvans.dealski.co.uk"
@@ -135,7 +134,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: absUrl("/vans") },
-    openGraph: { title: `${title} · ${SITE.name}`, description, url: absUrl("/vans"), type: "website" },
+    openGraph: { images: DEFAULT_OG_IMAGES, title: `${title} · ${SITE.name}`, description, url: absUrl("/vans"), type: "website" },
   };
 }
 

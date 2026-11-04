@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE } from "@/lib/site";
+import { SITE, DEFAULT_OG_IMAGES, DEFAULT_TWITTER_IMAGES } from "@/lib/site";
 
 /** Full page metadata in one place: title, description, canonical, Open Graph and Twitter. Keeps pages from inheriting the site-wide defaults by accident. */
 export function pageMeta({ title, description, path }: { title: string; description: string; path: string }): Metadata {
@@ -7,8 +7,8 @@ export function pageMeta({ title, description, path }: { title: string; descript
     title,
     description,
     alternates: { canonical: path },
-    openGraph: { type: "website", siteName: SITE.name, title: `${title} · ${SITE.name}`, description, url: path },
-    twitter: { card: "summary_large_image", title: `${title} · ${SITE.name}`, description },
+    openGraph: { images: DEFAULT_OG_IMAGES, type: "website", siteName: SITE.name, title: `${title} · ${SITE.name}`, description, url: path },
+    twitter: { card: "summary_large_image", title: `${title} · ${SITE.name}`, description, images: DEFAULT_TWITTER_IMAGES },
   };
 }
 
