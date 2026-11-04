@@ -104,6 +104,10 @@ export interface Listing {
   last_mot_mileage?: number | null;
   last_mot_date?: string | null;
 
+  /** True only when a paid HPI check for this registration came back completely clear (private sellers' adverts). The findings themselves are never public. */
+  hpi_checked?: boolean;
+  hpi_checked_at?: string | null;
+
   published_at: string; // ISO
   updated_at: string; // ISO
 }

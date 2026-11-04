@@ -7,7 +7,7 @@ import { SpecTable } from "@/components/spec-table";
 import { EnquiryPanel } from "@/components/enquiry-panel";
 import { SpecReadout } from "@/components/spec-readout";
 import { JsonLd } from "@/components/json-ld";
-import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck } from "@/components/icons";
+import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } from "@/components/icons";
 import { ListingCTAButtons } from "@/components/dealer-cta-buttons";
 import { getListingBySlug } from "@/lib/listings/client";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
@@ -271,6 +271,11 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Price listing={listing} size="lg" />
         <StatusBadge status={listing.status} />
+        {listing.hpi_checked && (
+          <span title={listing.hpi_checked_at ? `Vehicle history checked on ${formatMotDate(listing.hpi_checked_at)}: clear` : "Vehicle history checked"}>
+            <Badge tone="success"><IconShield width={12} height={12} aria-hidden />HPI checked</Badge>
+          </span>
+        )}
         {listing.ulez && <Badge tone="brand">ULEZ ready</Badge>}
         {listing.price_type === "no_vat" && <Badge tone="neutral">No VAT</Badge>}
       </div>
