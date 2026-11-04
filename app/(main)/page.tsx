@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { HomeSearch } from "@/components/home-search";
+import { HeroVan } from "@/components/home/hero-van";
+import { WhyVansales } from "@/components/home/why-vansales";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
@@ -14,11 +16,11 @@ import { SITE, absUrl, siteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Vans for Sale UK | Used & New Vans | Vansales",
   description:
-    "Browse thousands of used and new vans for sale across the UK. Panel vans, crew cabs, Lutons, dropsides and pickups from trusted dealers. Compare by payload, wheelbase and ULEZ status.",
+    "Used and new vans for sale across the UK, from dealers and private sellers. Panel vans, crew cabs, Lutons, dropsides and pickups. Search by payload, wheelbase and ULEZ, not just price.",
   alternates: { canonical: absUrl("/") },
   openGraph: {
     title: "Vans for Sale UK | Used & New Vans | Vansales",
-    description: "Browse thousands of used and new vans for sale across the UK from trusted dealers.",
+    description: "Used and new vans for sale across the UK, from dealers and private sellers. Real photos, honest listings.",
     url: absUrl("/"),
     type: "website",
   },
@@ -74,16 +76,33 @@ export default async function HomePage() {
       <JsonLd data={[orgSchema, websiteSchema]} />
 
       {/* ── HERO: the search is the hero ─────────────────────────────────── */}
-      <section className="border-b border-border bg-gradient-to-b from-brand-50/70 to-white">
-        <Container className="pb-6 pt-8 sm:pt-12">
+      <section className="relative border-b border-border bg-gradient-to-b from-brand-50/70 to-white">
+        <HeroVan />
+        <Container className="relative pb-6 pt-8 sm:pt-12">
           <h1 className="font-display text-[clamp(1.9rem,1.2rem+3vw,3rem)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
-            Search vans for sale
+            Find the right van. No nonsense.
           </h1>
-          <p className="mt-2 text-[var(--text-md)] text-ink-500">Private sellers and dealers across the UK</p>
+          <p className="mt-2 max-w-2xl text-[var(--text-md)] text-ink-600">
+            {all.total > 1000 ? "Thousands of used vans" : "Used vans"} from UK dealers and private sellers. Real photos, honest listings, and an HPI badge on every van that has been checked.
+          </p>
 
           <div className="mt-5">
             <HomeSearch total={total} picker={picker} />
           </div>
+
+          {/* Trust row */}
+          <ul className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-[var(--text-sm)] text-ink-500">
+            {[
+              { label: "HPI-checked vans are marked", d: "M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z M9 12l2 2 4-4" },
+              { label: "Private sellers list free", d: "M12 3v18 M16.5 7.5c-.8-1.2-2.4-2-4.5-2-2.5 0-4 1.2-4 3 0 4 8.5 2 8.5 6.2 0 1.8-1.7 3-4.5 3-2.2 0-3.9-.9-4.7-2.3" },
+              { label: "No hidden fees", d: "M5 12.5l4.5 4.5L19 7.5" },
+            ].map((t) => (
+              <li key={t.label} className="inline-flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-brand-600"><path d={t.d} /></svg>
+                {t.label}
+              </li>
+            ))}
+          </ul>
 
         </Container>
       </section>
@@ -102,6 +121,8 @@ export default async function HomePage() {
         </div>
       </Container>
       )}
+
+      <WhyVansales />
 
       {/* ── STATS ────────────────────────────────────────────────────────── */}
       {all.total >= 10 && (
@@ -153,7 +174,7 @@ export default async function HomePage() {
           <div className="pointer-events-none absolute inset-0 opacity-30" aria-hidden style={{ backgroundImage: "radial-gradient(circle at 80% 40%, #f47c1e 0, transparent 38%), radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1px)", backgroundSize: "auto, 26px 26px" }} />
           <div className="relative">
             <p className="font-display text-[var(--text-xl)] font-extrabold sm:text-[var(--text-2xl)]">Search by map</p>
-            <p className="mt-1 max-w-md text-[var(--text-sm)] text-white/70">See every van near you with price pins. Drag and zoom the map and the list follows.</p>
+            <p className="mt-1 max-w-md text-[var(--text-sm)] text-white/70">Find vans near you on a map. Drag it around and the list follows.</p>
           </div>
           <span className="relative inline-flex shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-white px-4 py-2.5 text-[var(--text-sm)] font-bold text-ink-900 group-hover:bg-accent-50">
             Open map <IconArrow width={14} height={14} />

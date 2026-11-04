@@ -128,7 +128,10 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-ink-800">
         <Container className="flex flex-col gap-2 py-5 text-[var(--text-xs)] text-ink-600 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {SITE.name}. Concept marketplace — listings are demonstration data.</p>
+          <div>
+            <p className="mb-1 text-ink-500">Vansales — the UK&apos;s straight-talking van marketplace. Built in Wales.</p>
+            <p>© {new Date().getFullYear()} {SITE.name}</p>
+          </div>
           <p className="font-mono tracking-[var(--tracking-wide)]">
             {SITE.domain}
           </p>
