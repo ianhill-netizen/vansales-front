@@ -17,11 +17,15 @@ export function SpecReadout({
   items: Readout[];
   className?: string;
 }) {
+  // A tile with nothing to say is not shown, and the grid reflows to what is left.
+  const shown = items.filter((it) => it.value && !["—", "-", "–"].includes(it.value.trim()));
+  if (shown.length === 0) return null;
+  const cols = ({ 1: "sm:grid-cols-1", 2: "sm:grid-cols-2", 3: "sm:grid-cols-3" } as Record<number, string>)[shown.length] ?? "sm:grid-cols-4";
   return (
     <dl
-      className={`grid grid-cols-2 divide-x divide-y divide-border sm:grid-cols-4 sm:divide-y-0 ${className}`}
+      className={`grid ${shown.length === 1 ? "grid-cols-1" : "grid-cols-2"} divide-x divide-y divide-border ${cols} sm:divide-y-0 ${className}`}
     >
-      {items.map((it, i) => (
+      {shown.map((it, i) => (
         <div key={i} className="flex items-center gap-2.5 px-3 py-2.5 first:pl-0">
           <span className="text-ink-400" aria-hidden>
             {it.icon}

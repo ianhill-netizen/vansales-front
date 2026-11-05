@@ -1,4 +1,5 @@
 import type { Listing, PriceType, Wheelbase, RoofHeight } from "./types";
+import { prettyDerivative } from "@/lib/vehicle/derivative";
 
 const GBP = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -80,7 +81,8 @@ export function listingTitle(l: Listing): string {
   const deriv = (l.derivative || "").trim();
   const parts = [l.make, model];
   if (deriv && !model.toLowerCase().includes(deriv.toLowerCase())) parts.push(deriv);
-  return parts.filter(Boolean).join(" ").trim();
+  // The feed often shouts it ("FORD TRANSIT CUSTOM 320LMTD EBLUE A"): read it like a person wrote it ("Ford Transit Custom 320 Limited EcoBlue Auto").
+  return prettyDerivative(parts.filter(Boolean).join(" ")).trim();
 }
 
 /** Compact subtitle used under the price block, e.g. "2024 (73) · 18,420 mi · Diesel". */

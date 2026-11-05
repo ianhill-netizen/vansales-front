@@ -190,9 +190,11 @@ export default async function ListingPage({
               </section>
             )}
 
-            <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
-              <SpecReadout items={readouts} className="px-2" />
-            </div>
+            {readouts.some((r) => r.value && r.value !== "—") && (
+              <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
+                <SpecReadout items={readouts} className="px-2" />
+              </div>
+            )}
 
             {/* Specification the seller filled in (private adverts): only the rows they gave */}
             {specRows.length > 0 && (
