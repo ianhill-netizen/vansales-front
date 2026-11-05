@@ -6,7 +6,7 @@ import { getModelIndex } from "@/lib/listings/client";
 import { slugify } from "@/lib/listings/slug";
 import { SITE } from "@/lib/site";
 
-export const revalidate = 3600;
+export const revalidate = 300; // 5 min: counts come from the vansales API (60 s data cache), so an hour showed stale "0 vans"
 
 export const metadata: Metadata = pageMeta({
   title: "Van Directory — All Makes & Models",

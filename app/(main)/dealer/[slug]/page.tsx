@@ -117,6 +117,9 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   // Not a configured dealer: try the vansales API (dealer portal), then the database. Only an API 404 (and no database row) is a 404; an API outage with nothing else to show
   // throws instead, so the page is not cached as a miss and any previously rendered copy keeps being served.
   const apiResult = dealer ? null : await fetchApiDealerProfile(slug);
+  // A configured dealer (Swiss Vans) also exists in the vansales API: take its logo from there (a failure just means initials).
+  const configApi = dealer ? await fetchApiDealerProfile(slug).catch(() => null) : null;
+  const configLogo = configApi?.kind === "ok" ? configApi.dealer.logo_url : null;
   const apiDealer = apiResult?.kind === "ok" ? apiResult.dealer : null;
   const dbDealer = dealer || apiDealer
     ? null
@@ -129,7 +132,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
 
   // For API / DB-only dealers, build a config-compatible shape.
   const effectiveDealer: ProfileDealer = dealer
-    ? { ...dealer, financeHref: dealer.dealskiTenant ? financeUrl(dealer.dealskiTenant) : null }
+    ? { ...dealer, financeHref: dealer.dealskiTenant ? financeUrl(dealer.dealskiTenant) : null, logoUrl: configLogo }
     : apiDealer
       ? apiToProfile(apiDealer)
       : {

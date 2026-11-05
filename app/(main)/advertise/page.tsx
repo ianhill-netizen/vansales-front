@@ -2,21 +2,24 @@ import type { Metadata } from "next";
 import type React from "react";
 import Link from "next/link";
 import { Container, Eyebrow, Badge, Button } from "@/components/ui";
-import { IconCheck, IconArrow, IconBolt, IconTruck, IconUser } from "@/components/icons";
+import { IconCheck, IconArrow, IconBolt, IconTruck, IconUser, IconMessage, IconFilter, IconSync, IconWhatsApp } from "@/components/icons";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Advertise with Vansales | Dealer & Trade Packages",
-  description: "Reach 100,000+ UK van buyers. Cheaper than AutoTrader, leads straight to WhatsApp, van-specialist audience. 14-day free trial — no contract.",
+  description: "Van-specialist buyers. Enquiries straight to WhatsApp. No long contract.",
   alternates: { canonical: absUrl("/advertise") },
   openGraph: {
     images: DEFAULT_OG_IMAGES,
     title: `Advertise with Vansales · ${SITE.name}`,
-    description: "Reach 100,000+ UK van buyers. Cheaper than AutoTrader, leads straight to WhatsApp.",
+    description: "Van-specialist buyers. Enquiries straight to WhatsApp. No long contract.",
     url: absUrl("/advertise"),
     type: "website",
   },
 };
+
+/** Where every "start" button goes: the dealer sign-up on the dealer host. Plan buttons add ?plan=<slug>. */
+const DEALER_SIGNUP = "https://dealer.vansales.com/signup/dealer";
 
 const PRICING = [
   {
@@ -28,9 +31,8 @@ const PRICING = [
     trial: false,
     bullets: [
       "Single-van listing",
-      "Full spec + up to 20 photos",
+      "Full spec and your own photos",
       "Enquiries by email",
-      "Listed for 60 days",
     ],
     cta: "List one van",
     ctaHref: "/sell",
@@ -50,7 +52,7 @@ const PRICING = [
       "Email support",
     ],
     cta: "Start free trial",
-    ctaHref: "/dealer-portal/login",
+    ctaHref: `${DEALER_SIGNUP}?plan=starter`,
   },
   {
     name: "Pro",
@@ -69,7 +71,7 @@ const PRICING = [
       "Analytics dashboard",
     ],
     cta: "Start free trial",
-    ctaHref: "/dealer-portal/login",
+    ctaHref: `${DEALER_SIGNUP}?plan=pro`,
   },
   {
     name: "Premium",
@@ -87,7 +89,7 @@ const PRICING = [
       "Analytics API",
     ],
     cta: "Start free trial",
-    ctaHref: "/dealer-portal/login",
+    ctaHref: `${DEALER_SIGNUP}?plan=premium`,
   },
 ];
 
@@ -95,16 +97,16 @@ const SELLER_TYPES: { Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; 
   {
     Icon: IconBolt,
     who: "Already on Dealski?",
-    body: "Your stock feeds in automatically — live prices, photos and spec with no manual uploads.",
+    body: "Your used stock syncs in from Dealski: prices, photos and spec with no manual uploads.",
     cta: "Connect my Dealski stock",
-    ctaHref: "/dealer-portal/login",
+    ctaHref: DEALER_SIGNUP,
   },
   {
     Icon: IconTruck,
     who: "Independent dealer",
-    body: "From 20 to 75 vans. Dealer profile page, WhatsApp leads, finance module. No contract.",
+    body: "A dealer profile page, WhatsApp leads and stock import from AutoTrader or CSV. No long contract.",
     cta: "Start free trial",
-    ctaHref: "/dealer-portal/login",
+    ctaHref: DEALER_SIGNUP,
   },
   {
     Icon: IconTruck,
@@ -116,7 +118,7 @@ const SELLER_TYPES: { Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; 
   {
     Icon: IconUser,
     who: "Private seller",
-    body: "Selling one van? List it free in under 5 minutes — no subscription needed.",
+    body: "Selling one van? List it free. No subscription needed.",
     cta: "List one van",
     ctaHref: "/sell",
   },
@@ -129,27 +131,12 @@ const SELLER_TYPES: { Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; 
   },
 ];
 
-const VS_REASONS = [
-  {
-    stat: "100K+",
-    label: "Van-buyer community",
-    body: "Vansales is built around an active UK van-buyer audience — not a generic classified site.",
-  },
-  {
-    stat: "WhatsApp",
-    label: "Leads in your pocket",
-    body: "Enquiries land in WhatsApp and your CRM inbox — not an email void. Faster response, more sales.",
-  },
-  {
-    stat: "Van-first",
-    label: "Specialist filters",
-    body: "Buyers filter by payload, wheelbase, ULEZ status and Euro grade — not just colour. Better-matched leads.",
-  },
-  {
-    stat: "£39/mo",
-    label: "A fraction of AutoTrader",
-    body: "Pro features at prices independent dealers can actually afford. No long-term contract.",
-  },
+/** The four things that really set Vansales apart for a dealer: no figures, nothing we cannot show. */
+const DIFFERENTIATORS: { Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; label: string; body: string }[] = [
+  { Icon: IconWhatsApp, label: "WhatsApp leads", body: "Buyers enquire by WhatsApp or form and it reaches you straight away, not an inbox you check once a week." },
+  { Icon: IconFilter, label: "Specialist van filters", body: "Buyers search by body type, wheelbase, roof height, payload and ULEZ, so the enquiries you get are better matched." },
+  { Icon: IconSync, label: "Import in minutes", body: "Bring your stock in from AutoTrader, a CSV file or your Dealski account instead of typing it in van by van." },
+  { Icon: IconMessage, label: "No contract", body: "Start with a free 14-day trial and stay as long as it works for you. There is no long contract to sign." },
 ];
 
 export default function AdvertisePage() {
@@ -169,15 +156,14 @@ export default function AdvertisePage() {
             <div>
               <Eyebrow light>For dealers &amp; trade</Eyebrow>
               <h1 className="mt-4 font-display text-[clamp(2.2rem,1.4rem+3.5vw,3.4rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-white">
-                Advertise your vans to{" "}
-                <span className="text-brand-400">100,000+ UK van buyers.</span>
+                Advertise your vans on{" "}
+                <span className="text-brand-400">vansales</span>
               </h1>
               <p className="mt-5 max-w-xl text-[length:var(--text-md)] leading-relaxed text-white/70">
-                Cheaper than AutoTrader. Every lead lands in WhatsApp. A van-specialist audience
-                who filter by payload and ULEZ — not just colour.
+                Van-specialist buyers. Enquiries straight to WhatsApp. No long contract.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <Button href="/dealer-portal/login" variant="primary" size="lg">
+                <Button href={DEALER_SIGNUP} variant="primary" size="lg">
                   Start free 14-day trial <IconArrow width={18} height={18} />
                 </Button>
                 <Button href="mailto:dealers@vansales.com" variant="outline-light" size="lg">
@@ -185,20 +171,20 @@ export default function AdvertisePage() {
                 </Button>
               </div>
               <p className="mt-4 text-[length:var(--text-xs)] text-white/40">
-                14-day free trial · No credit card · Cancel anytime
+                14-day free trial · No long contract
               </p>
             </div>
 
-            {/* Quick-stats card */}
-            <div className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-white/10 bg-white/6 p-7 backdrop-blur-sm lg:self-center">
-              {VS_REASONS.map((r) => (
-                <div key={r.stat} className="flex items-start gap-4">
-                  <div className="w-16 shrink-0 font-display text-[length:var(--text-2xl)] font-extrabold leading-none text-brand-400">
-                    {r.stat}
-                  </div>
+            {/* Four real differentiators (no statistics) */}
+            <div className="flex flex-col gap-5 rounded-[var(--radius-xl)] border border-white/10 bg-white/6 p-7 backdrop-blur-sm lg:self-center">
+              {DIFFERENTIATORS.map((r) => (
+                <div key={r.label} className="flex items-start gap-4">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-brand-300">
+                    <r.Icon width={20} height={20} aria-hidden />
+                  </span>
                   <div>
                     <p className="text-[length:var(--text-sm)] font-bold text-white">{r.label}</p>
-                    <p className="mt-0.5 text-[length:var(--text-xs)] leading-relaxed text-white/55">{r.body}</p>
+                    <p className="mt-0.5 text-[length:var(--text-xs)] leading-relaxed text-white/60">{r.body}</p>
                   </div>
                 </div>
               ))}
@@ -346,60 +332,19 @@ export default function AdvertisePage() {
         </Container>
       </section>
 
-      {/* ─── WHY VANSALES vs AUTOTRADER ──────────────────────── */}
-      <section className="bg-surface-1 py-14">
-        <Container>
-          <div className="mb-8 text-center">
-            <Eyebrow>Why Vansales</Eyebrow>
-            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">
-              Not AutoTrader. Better.
-            </h2>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                title: "100K-member van-buyer community",
-                body: "Vansales attracts buyers who already know they want a van — not general car buyers. Higher intent, better conversion.",
-              },
-              {
-                title: "Leads to WhatsApp, not a void",
-                body: "Buyers enquire via WhatsApp or form — you get a live notification. Not buried in an inbox you check once a week.",
-              },
-              {
-                title: "Van-specialist filters",
-                body: "Payload, wheelbase, ULEZ, roof height, Euro status. Buyers self-qualify. You spend less time on tyre-kickers.",
-              },
-              {
-                title: "A fraction of the cost",
-                body: "AutoTrader Pro starts at £800+/mo. Vansales Pro is £89. Same buyers, fraction of the cost, direct relationship.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)]"
-              >
-                <IconCheck width={18} height={18} className="mb-3 text-success-600" />
-                <h3 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">{item.title}</h3>
-                <p className="mt-2 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
       {/* ─── HOW IT WORKS (for Dealski dealers) ──────────────── */}
       <section className="py-14">
         <Container>
           <div className="mb-8 text-center">
             <Eyebrow>Already on Dealski?</Eyebrow>
             <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">
-              Your stock can be live in 5 minutes
+              Already on Dealski? Connect your stock
             </h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-3">
             {[
-              { n: "1", title: "Connect your Dealski account", body: "Tell us your Dealski dealer ID. We enable the Vansales feed — no CSV uploads, no copying and pasting." },
-              { n: "2", title: "Stock syncs automatically", body: "Every vehicle appears on Vansales within minutes. Price changes, sold status and new arrivals update in real time." },
+              { n: "1", title: "Connect your Dealski account", body: "Tell us your Dealski dealer ID. We enable the Vansales feed: no CSV uploads, no copying and pasting." },
+              { n: "2", title: "Stock syncs automatically", body: "Your used vans are read from Dealski every day: new arrivals appear, price changes update and sold vans come off." },
               { n: "3", title: "Receive live enquiries", body: "Lead goes straight to WhatsApp and your Dealski CRM. Nothing to check, nothing to miss." },
             ].map((s) => (
               <div key={s.n} className="rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)]">
@@ -434,10 +379,10 @@ export default function AdvertisePage() {
             Ready to advertise?
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[length:var(--text-md)] leading-relaxed text-white/65">
-            Start free. No credit card. Cancel any time.
+            Start free. No long contract.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/dealer-portal/login" variant="primary" size="lg">
+            <Button href={DEALER_SIGNUP} variant="primary" size="lg">
               Start free trial <IconArrow width={18} height={18} />
             </Button>
             <Button href="mailto:dealers@vansales.com" variant="outline-light" size="lg">

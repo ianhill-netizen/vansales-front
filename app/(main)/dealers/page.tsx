@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getDealerDirectory } from "@/lib/dealers/directory";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
-export const revalidate = 3600;
+export const revalidate = 300; // 5 min: counts come from the vansales API (60 s data cache), so an hour showed stale "0 vans"
 
 const TITLE = "Van dealers";
 const DESCRIPTION = `Find van dealers across the UK on ${SITE.name}. Search by name or location, filter by the makes they stock and browse their vans for sale.`;
