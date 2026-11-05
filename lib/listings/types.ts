@@ -59,7 +59,7 @@ export interface HpiCheckPublic {
   clear: boolean;
 }
 
-/** A vansales-API dealer's contact options on one of their adverts (dealer-portal adverts only). Each optional field is absent unless the dealer set it up. */
+/** A vansales-API dealer's contact options on one of their adverts (dealer portal adverts only). Each optional field is absent unless the dealer set it up. */
 export interface DealerContact {
   slug: string;
   name: string;

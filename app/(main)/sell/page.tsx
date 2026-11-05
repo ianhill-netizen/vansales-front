@@ -1,29 +1,29 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import Link from "next/link";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconCheck, IconArrow } from "@/components/icons";
+import { BodyTypeIcon } from "@/components/icons/body-types";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({
-  title: "Sell Your Van | Free Private Listings",
-  description: `List your van for free on ${SITE.name} and reach thousands of UK buyers. Takes under 5 minutes — full spec, photos, direct enquiries.`,
+  title: "Sell Your Van for Free | Private Listings",
+  description: `List your van for free on ${SITE.name}. Enter your registration and we fill in the details; buyers enquire through the site, so your phone number stays yours.`,
   path: "/sell",
 });
 
-const STEPS = [
-  { n: "1", title: "Create your listing", body: "Tell us the make, model, spec and mileage. We'll fill in most details automatically from your registration." },
-  { n: "2", title: "Add photos", body: "Upload up to 20 photos. Listings with photos get 4× more enquiries. Our tips show you exactly what to shoot." },
-  { n: "3", title: "Receive enquiries", body: "Serious buyers contact you directly. You're always in control — no middlemen, no fees." },
+/** Where "List my van free" goes: the private-seller sign-up on the seller host. */
+const LIST_URL = "https://sell.vansales.com/signup/private";
+
+const BENEFITS = [
+  { title: "Free listing", body: "Listing your van costs nothing." },
+  { title: "Reg lookup fills the details", body: "Enter your registration and we fill in the make, model and year for you." },
+  { title: "Enquiries come to you, not your number", body: "Buyers message you through the site, so your phone number stays private until you choose to share it." },
 ];
 
-const FEATURES = [
-  "Free to list — no charge, ever",
-  "Reach buyers across the whole UK",
-  "Your number stays private until you share it",
-  "Pause or remove your listing anytime",
-  "No hidden upgrade fees or featured slots",
-  "Simple, spam-free enquiry flow",
+const STEPS = [
+  { slug: "panel-van", title: "Add your reg", body: "Type your registration and we fill in the make, model and year. Add the mileage and a price." },
+  { slug: "crew-cab", title: "Add your photos", body: "Upload your own photos, shown as they are." },
+  { slug: "luton", title: "Get enquiries", body: "Buyers message you through the site. You choose who to reply to and when to share your number." },
 ];
 
 export default function SellPage() {
@@ -31,40 +31,28 @@ export default function SellPage() {
     <>
       {/* Hero */}
       <section className="border-b border-border bg-surface-1">
-        <Container className="py-14">
-          <div className="grid items-center gap-10 lg:grid-cols-2">
-            <div>
-              <Eyebrow>Sell your van</Eyebrow>
-              <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
-                Sell your van for free.<br />
-                <span className="text-brand-500">No fees. No hassle.</span>
-              </h1>
-              <p className="mt-4 max-w-lg text-[length:var(--text-md)] leading-relaxed text-ink-600">
-                List your van in under 5 minutes and reach thousands of UK buyers who are actively
-                searching right now. Private listings are completely free.
-              </p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Button href="#list" variant="primary" size="lg">
-                  List your van free <IconArrow width={18} height={18} />
-                </Button>
-                <Button href="/advertise" variant="outline" size="lg">
-                  Trade / dealer? See dealer plans
-                </Button>
-              </div>
-            </div>
-            {/* Feature checklist */}
-            <div className="rounded-[var(--radius-xl)] border border-border bg-white p-8 shadow-[var(--shadow-md)]">
-              <p className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">What you get, free</p>
-              <ul className="mt-4 space-y-3">
-                {FEATURES.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-[length:var(--text-sm)] text-ink-700">
-                    <IconCheck width={16} height={16} className="mt-0.5 shrink-0 text-success-600" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+        <Container className="py-14 md:py-20">
+          <div className="mx-auto max-w-3xl text-center">
+            <Eyebrow>Private sellers</Eyebrow>
+            <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">Sell your van for free</h1>
+            <p className="mx-auto mt-4 max-w-xl text-[length:var(--text-md)] leading-relaxed text-ink-600">
+              Add your registration, a few photos and a price. Buyers enquire through the site.
+            </p>
+            <div className="mt-8 flex justify-center">
+              <Button href={LIST_URL} variant="primary" size="lg" className="h-14 w-full max-w-sm px-10 text-[length:var(--text-lg)]">
+                List my van free <IconArrow width={20} height={20} />
+              </Button>
             </div>
           </div>
+          <ul className="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-3">
+            {BENEFITS.map((b) => (
+              <li key={b.title} className="rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)]">
+                <span className="mb-3 flex size-9 items-center justify-center rounded-full bg-success-tint text-success-600"><IconCheck width={18} height={18} aria-hidden /></span>
+                <h2 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">{b.title}</h2>
+                <p className="mt-1.5 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{b.body}</p>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
@@ -73,78 +61,20 @@ export default function SellPage() {
         <Container>
           <div className="mb-8 text-center">
             <Eyebrow>How it works</Eyebrow>
-            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">3 steps to sold</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">Three steps</h2>
           </div>
-          <div className="grid gap-6 sm:grid-cols-3">
-            {STEPS.map((s) => (
-              <div key={s.n} className="relative rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)]">
-                <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-tint font-mono text-[length:var(--text-base)] font-bold text-brand-600">
-                  {s.n}
+          <ol className="grid gap-6 sm:grid-cols-3">
+            {STEPS.map((s, i) => (
+              <li key={s.title} className="rounded-[var(--radius-xl)] border border-border bg-white p-7 text-center shadow-[var(--shadow-xs)]">
+                <span className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-brand-tint text-brand-700">
+                  <BodyTypeIcon slug={s.slug} className="size-14" />
                 </span>
-                <h3 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">{s.title}</h3>
+                <p className="mt-4 text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">Step {i + 1}</p>
+                <h3 className="mt-1 font-display text-[length:var(--text-lg)] font-bold text-ink-900">{s.title}</h3>
                 <p className="mt-2 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
-              </div>
+              </li>
             ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* Placeholder listing form — full listing form coming soon */}
-      <section id="list" className="scroll-mt-20 bg-surface-1 py-14">
-        <Container>
-          <div className="mx-auto max-w-xl rounded-[var(--radius-2xl)] border border-border bg-white p-8 shadow-[var(--shadow-md)]">
-            <Eyebrow>Get started</Eyebrow>
-            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">List your van</h2>
-            <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
-              Full self-serve listing is coming soon. In the meantime, contact us and we&apos;ll list your van within 1 business hour.
-            </p>
-            <div className="mt-6 space-y-3">
-              {["Your name", "Email address", "Phone number", "Van registration"].map((label, i) => (
-                <label key={label} className="block">
-                  <span className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">{label}</span>
-                  <input
-                    type={i === 1 ? "email" : i === 2 ? "tel" : "text"}
-                    placeholder={i === 3 ? "e.g. AB12 CDE" : ""}
-                    className="h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-base)] text-ink-800 outline-none focus-visible:border-brand-500"
-                  />
-                </label>
-              ))}
-              <Button variant="primary" size="lg" className="mt-2 w-full" disabled>
-                Submit listing request
-              </Button>
-              <p className="text-center text-[length:var(--text-xs)] text-ink-400">
-                Or call <a href="tel:+441656507619" className="font-semibold text-ink-600 underline">01656 507619</a> — we&apos;ll list it for you in minutes.
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* FAQ teaser */}
-      <section className="py-14">
-        <Container>
-          <div className="mx-auto max-w-2xl">
-            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Common questions</h2>
-            <div className="mt-4 divide-y divide-border">
-              {[
-                { q: "Is it really free?", a: "Yes. Private listings are always free on Vansales. No card required, no trial period." },
-                { q: "How long will it take to sell?", a: "Most vans priced fairly sell within 2–3 weeks. Pricing competitively and adding good photos are the biggest factors." },
-                { q: "Can I edit my listing?", a: "Yes — you can update the price, photos and description at any time from your account dashboard." },
-                { q: "I'm a dealer. Is this for me?", a: "Dealers should use our Dealski-powered trade plan. See the Advertise page." },
-              ].map((item) => (
-                <div key={item.q} className="py-4">
-                  <p className="font-semibold text-ink-900">{item.q}</p>
-                  <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">{item.a}</p>
-                </div>
-              ))}
-            </div>
-            <p className="mt-6 text-[length:var(--text-sm)] text-ink-500">
-              More questions?{" "}
-              <Link href="/advertise" className="font-semibold text-brand-600 hover:underline">
-                See our dealer / trade options →
-              </Link>
-            </p>
-          </div>
+          </ol>
         </Container>
       </section>
     </>

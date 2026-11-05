@@ -291,7 +291,7 @@ export function Price({
   const poa = listing.price == null;
   return (
     <div className={`flex items-baseline gap-2 ${className}`}>
-      <span className={`font-mono font-bold leading-none text-ink-900 ${text}`}>
+      <span className={`font-sans font-bold leading-none tabular-nums text-ink-900 ${text}`}>
         {formatPrice(listing.price)}
       </span>
       {!poa && (

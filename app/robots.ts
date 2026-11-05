@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Account areas, APIs and internal tools have nothing to index.
-      disallow: ["/api/", "/admin", "/dealer-portal", "/image-review", "/maps-test"],
+      disallow: ["/api/", "/admin", "/image-review", "/maps-test"],
     },
     sitemap: `${base}/sitemap.xml`,
     host: base,

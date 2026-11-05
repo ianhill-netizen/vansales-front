@@ -226,7 +226,7 @@ export function MapSplit({
               {(groups.find((g) => g.key === selectedKey)?.items ?? []).slice(0, 3).map((l) => (
                 <Link key={l.id} href={`/listing/${l.slug}`} className="flex items-center justify-between gap-3 text-[length:var(--text-sm)]">
                   <span className="truncate font-semibold text-ink-900">{l.make} {l.model}</span>
-                  <span className="shrink-0 font-mono font-bold text-ink-900">{l.price != null ? `£${l.price.toLocaleString("en-GB")}` : "POA"}</span>
+                  <span className="shrink-0 font-bold tabular-nums text-ink-900">{l.price != null ? `£${l.price.toLocaleString("en-GB")}` : "POA"}</span>
                 </Link>
               ))}
             </div>

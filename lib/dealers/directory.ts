@@ -33,9 +33,12 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
     fetchApiDealers(), // bounded and fail-safe: [] when the API is down
   ]);
 
-  const stats = (names: string[]) => {
+  const apiBySlug = new Map(apiDealers.map((a) => [a.slug, a]));
+
+  // Stock for a dealer = its adverts in the catalogue, matched by the API dealer slug (what the listing grid and the dealer page use) or, for older sources, the seller name.
+  const stats = (names: string[], slug?: string) => {
     const wanted = new Set(names.map((n) => n.toLowerCase()));
-    const mine = listings.filter((l) => wanted.has(l.seller.name.toLowerCase()));
+    const mine = listings.filter((l) => (slug != null && l.dealer_contact?.slug === slug) || wanted.has(l.seller.name.toLowerCase()));
     const byMake = new Map<string, number>();
     for (const l of mine) byMake.set(l.make, (byMake.get(l.make) ?? 0) + 1);
     const at = mine.find((l) => l.location.lat != null && l.location.lng != null);
@@ -50,16 +53,17 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
   const out: DirectoryDealer[] = [];
   for (const d of Object.values(DEALERS)) {
     if (!showDemo && d.sellerNames.some((n) => /acme/i.test(n))) continue;
-    const s = stats([...d.sellerNames, d.dealskiTenant].filter(Boolean));
-    out.push({ slug: d.slug, name: d.name, town: d.location.town, county: d.location.county, vanCount: s.count, makes: s.makes, featured: d.featured, rating: d.googleRating, lat: s.lat, lng: s.lng });
+    const s = stats([...d.sellerNames, d.dealskiTenant].filter(Boolean), d.slug);
+    const api = apiBySlug.get(d.slug);
+    out.push({ slug: d.slug, name: d.name, town: d.location.town, county: d.location.county, vanCount: Math.max(s.count, api?.stock_count ?? 0), makes: s.makes, featured: d.featured, rating: d.googleRating, logoUrl: api?.logo_url ?? null, lat: s.lat, lng: s.lng });
   }
   for (const d of dbDealers) {
     if (out.some((o) => o.slug === d.slug)) continue;
-    const s = stats([d.name]);
+    const s = stats([d.name], d.slug);
     const [town = "", county = ""] = (d.location ?? "").split(",").map((x) => x.trim());
-    out.push({ slug: d.slug, name: d.name, town, county, vanCount: s.count, makes: s.makes, featured: false, rating: d.googleRating, lat: d.lat ?? s.lat, lng: d.lng ?? s.lng });
+    out.push({ slug: d.slug, name: d.name, town, county, vanCount: s.count, makes: s.makes, featured: false, rating: d.googleRating, logoUrl: apiBySlug.get(d.slug)?.logo_url ?? null, lat: d.lat ?? s.lat, lng: d.lng ?? s.lng });
   }
-  // Dealers from the vansales API (dealer portal): de-duplicated by slug against the config and database dealers above. Their stock is the dealer-portal adverts in the catalogue.
+  // Dealers from the vansales API (dealer portal): de-duplicated by slug against the config and database dealers above. Their stock is the dealer portal adverts in the catalogue.
   for (const d of apiDealers) {
     if (out.some((o) => o.slug === d.slug)) continue;
     const mine = listings.filter((l) => l.dealer_contact?.slug === d.slug);

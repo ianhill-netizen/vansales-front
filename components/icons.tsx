@@ -169,6 +169,14 @@ export function IconChevronLeft(p: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+export function IconMap(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...p}>
+      <path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4z" />
+      <path d="M9 4v13.5M15 6.5V20" />
+    </svg>
+  );
+}
 export function IconList(p: SVGProps<SVGSVGElement>) {
   return (
     <svg {...base} {...p}>

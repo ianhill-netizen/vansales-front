@@ -114,7 +114,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Private sellers are messaged through their own form on the advert." }, { status: 409 });
   }
 
-  // A vansales dealer-portal advert is the same: its enquiry goes to the vansales API (POST /api/public/listings/{id}/enquire) so it lands in that dealer's own portal inbox,
+  // A vansales dealer portal advert is the same: its enquiry goes to the vansales API (POST /api/public/listings/{id}/enquire) so it lands in that dealer's own portal inbox,
   // never in a Dealski tenant's leads.
   if (vehicleRef.startsWith("vansales-dealer:") || /^dealer-.+-\d+$/.test(slug)) {   // advert slugs end in the numeric id; the dealer modal's "dealer-<tenant>" does not
     return NextResponse.json({ ok: false, error: "This dealer is messaged through the enquiry form on the advert." }, { status: 409 });
@@ -181,7 +181,7 @@ export async function POST(req: Request) {
       // Log full lead so it's never lost even if the downstream is unavailable.
       console.error("[enquiry] LEAD_FALLBACK", JSON.stringify({ ...payload, forward_url: forwardUrl }));
       return NextResponse.json(
-        { ok: false, error: "Could not submit — please call us on 01656 507619." },
+        { ok: false, error: "Could not submit — please try again in a moment." },
         { status: 502 },
       );
     }
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
     console.error("[enquiry] fetch failed:", err);
     console.error("[enquiry] LEAD_FALLBACK", JSON.stringify({ ...payload, forward_url: forwardUrl }));
     return NextResponse.json(
-      { ok: false, error: "Network error — please call us on 01656 507619." },
+      { ok: false, error: "Network error — please try again in a moment." },
       { status: 502 },
     );
   }

@@ -72,11 +72,11 @@ export default function DealerSignUpPage() {
     if (result?.error) {
       setError("Account created — please sign in.");
       setLoading(false);
-      router.push("/dealer-portal/login");
+      window.location.href = "https://dealer.vansales.com/login";
       return;
     }
 
-    router.push("/dealer-portal");
+    window.location.href = "https://dealer.vansales.com/login";
     router.refresh();
   }
 

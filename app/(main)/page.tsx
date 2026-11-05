@@ -59,7 +59,6 @@ export default async function HomePage() {
     name: SITE.name,
     url: base,
     logo: `${base}/favicon.ico`,
-    contactPoint: { "@type": "ContactPoint", telephone: SITE.phone, contactType: "sales", areaServed: "GB" },
   };
   const websiteSchema = {
     "@context": "https://schema.org",

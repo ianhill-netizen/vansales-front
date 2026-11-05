@@ -6,7 +6,7 @@ import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({
   title: "Van Insurance | Commercial Vehicle Cover",
-  description: `Compare commercial van insurance options for sole traders, small fleets and businesses. Call ${SITE.phone} for guidance on the right cover.`,
+  description: `Compare commercial van insurance options for sole traders, small fleets and businesses. Understand the right cover for your van.`,
   path: "/van-insurance",
 });
 
@@ -59,9 +59,6 @@ export default function VanInsurancePage() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Button href="#compare" variant="primary" size="lg">
                 Compare cover types <IconArrow width={18} height={18} />
-              </Button>
-              <Button href="tel:+441656507619" variant="outline" size="lg">
-                Speak to us: 01656 507619
               </Button>
             </div>
           </div>
@@ -140,13 +137,6 @@ export default function VanInsurancePage() {
                 ))}
               </ul>
             </div>
-            <p className="mt-6 text-[length:var(--text-sm)] text-ink-500">
-              Got questions about a van you&apos;re buying?{" "}
-              <a href="tel:+441656507619" className="font-semibold text-brand-600 hover:underline">
-                Call 01656 507619
-              </a>{" "}
-              — our team can help you understand the spec before you insure it.
-            </p>
           </div>
         </Container>
       </section>

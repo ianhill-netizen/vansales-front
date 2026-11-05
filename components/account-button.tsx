@@ -18,12 +18,12 @@ export function AccountButton() {
           Customer login
         </Link>
         <span className="text-border" aria-hidden>|</span>
-        <Link
-          href="/dealer-portal"
+        <a
+          href="https://dealer.vansales.com/login"
           className="flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[length:var(--text-sm)] font-semibold text-ink-600 transition-colors hover:bg-surface-2 hover:text-ink-900"
         >
-          Dealer portal
-        </Link>
+          Dealer login
+        </a>
       </div>
     );
   }

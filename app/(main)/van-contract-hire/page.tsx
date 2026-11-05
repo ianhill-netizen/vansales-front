@@ -7,7 +7,7 @@ import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({
   title: "Van Contract Hire | Fixed Monthly Payments",
-  description: `New vans on fixed monthly contract hire from leading funders. Browse van leasing deals or call ${SITE.phone} to discuss your requirements.`,
+  description: `New vans on fixed monthly contract hire from leading funders. Browse van leasing deals and compare the monthly costs.`,
   path: "/van-contract-hire",
 });
 
@@ -53,9 +53,6 @@ export default function VanContractHirePage() {
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button href="#enquire" variant="primary" size="lg">
                   Get a quote <IconArrow width={18} height={18} />
-                </Button>
-                <Button href="tel:+441656507619" variant="outline-light" size="lg">
-                  Call 01656 507619
                 </Button>
               </div>
             </div>
@@ -172,9 +169,6 @@ export default function VanContractHirePage() {
               <Button variant="primary" size="lg" className="mt-2 w-full" disabled>
                 Request quotes
               </Button>
-              <p className="text-center text-[length:var(--text-xs)] text-ink-400">
-                Or call <a href="tel:+441656507619" className="font-semibold text-ink-600 underline">01656 507619</a> — we respond same day.
-              </p>
             </div>
           </div>
         </Container>

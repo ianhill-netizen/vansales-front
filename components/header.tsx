@@ -204,12 +204,12 @@ export function Header() {
 
         {/* Right: dealer login + sell */}
         <div className="ml-auto flex items-center gap-2">
-          <Link
-            href="/dealer-portal/login"
+          <a
+            href="https://dealer.vansales.com/login"
             className="hidden rounded-[var(--radius-md)] border border-border-strong px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-900 md:inline-flex"
           >
             Dealer login
-          </Link>
+          </a>
           <a
             href={SELL_URL}
             className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
