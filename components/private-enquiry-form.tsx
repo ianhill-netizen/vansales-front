@@ -16,7 +16,7 @@ type State = "idle" | "submitting" | "success" | "error";
  * buyer nothing about the seller. The `website` input is a honeypot: invisible to people, so a bot that fills it is ignored.
  */
 export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
-  const dealer = listing.dealer_contact; // a dealer-portal advert: same endpoint, the enquiry lands in that dealer's portal inbox
+  const dealer = listing.dealer_contact; // a dealer portal advert: same endpoint, the enquiry lands in that dealer's portal inbox
   const who = dealer ? "the dealer" : "the seller";
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");

@@ -50,7 +50,7 @@ function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   return Promise.race([p, timeout]).finally(() => clearTimeout(timer));
 }
 
-/** Native (portal-added) listings + private sellers' adverts + vansales dealer-portal adverts. Never throws; an upstream that fails or is slow contributes nothing for the next 60 s. */
+/** Native (portal-added) listings + private sellers' adverts + vansales dealer portal adverts. Never throws; an upstream that fails or is slow contributes nothing for the next 60 s. */
 const loadExtras = unstable_cache(
   async (): Promise<Listing[]> => {
     const t0 = Date.now();
@@ -326,7 +326,7 @@ async function getListingBySlugUncached(slug: string): Promise<{ listing: Listin
   if (slug.startsWith(PRIVATE_SLUG_PREFIX)) {
     return { listing: await fetchPrivateSellerListingBySlug(slug).catch(() => null), servedBy: "vansales" };
   }
-  // A dealer-portal advert (vansales API): same idea, its own prefix.
+  // A dealer portal advert (vansales API): same idea, its own prefix.
   if (slug.startsWith(DEALER_SLUG_PREFIX)) {
     return { listing: await fetchDealerPortalListingBySlug(slug).catch(() => null), servedBy: "vansales" };
   }

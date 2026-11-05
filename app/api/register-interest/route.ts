@@ -108,7 +108,7 @@ export async function POST(req: Request) {
       // Log full lead so no submission is lost if Dealski is temporarily down.
       console.error("[register-interest] LEAD_FALLBACK", JSON.stringify(payload));
       return NextResponse.json(
-        { ok: false, error: "Could not submit — please call us on 01656 507619." },
+        { ok: false, error: "Could not submit — please try again in a moment." },
         { status: 502 },
       );
     }
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
     console.error("[register-interest] fetch failed:", err);
     console.error("[register-interest] LEAD_FALLBACK", JSON.stringify(payload));
     return NextResponse.json(
-      { ok: false, error: "Network error — please call us on 01656 507619." },
+      { ok: false, error: "Network error — please try again in a moment." },
       { status: 502 },
     );
   }

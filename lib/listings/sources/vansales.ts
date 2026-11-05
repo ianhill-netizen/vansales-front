@@ -42,7 +42,7 @@ interface ApiCard {
   town?: string | null; latitude?: number | null; longitude?: number | null;
   /** List-card enrichment (the detail has the same fields). */
   seller_type?: "dealer" | "private";
-  /** Present on dealer adverts (and legacy dealer stock); has_call_booking is true only for dealer-portal adverts. */
+  /** Present on dealer adverts (and legacy dealer stock); has_call_booking is true only for dealer portal adverts. */
   dealer?: { name: string; slug: string; logo_url?: string | null; town?: string | null; whatsapp_number?: string | null; finance_url?: string | null; has_call_booking?: boolean } | null;
   ulez_compliant?: boolean | null; vehicle_condition?: "excellent" | "good" | "fair" | "project" | null; v5_present?: boolean | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; features?: { slug: string; label: string }[]; hpi_checked?: boolean;
 }
@@ -61,7 +61,7 @@ const or = (v: string | null | undefined, fallback: string) => (v && v.trim() !=
 /** A private seller's map pin is rounded to ~1 km: enough for "near X", never their street. */
 const coarse = (v: number | null | undefined) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v * 100) / 100 : null);
 
-/** The dealer-portal advert rows: the dealer block says has_call_booking. (Leftover legacy `listings` rows have it false and are dropped.) */
+/** The dealer portal advert rows: the dealer block says has_call_booking. (Leftover legacy `listings` rows have it false and are dropped.) */
 const isDealerAdvert = (c: ApiCard): boolean => c.seller_type === "dealer" && !!c.dealer && c.dealer.slug !== "" && c.dealer.has_call_booking === true;
 
 /** A dealer's pin is their premises, so unlike a private seller's it is NOT coarsened. */
@@ -174,13 +174,13 @@ export async function fetchPrivateSellerListingBySlug(slug: string): Promise<Lis
   return body && body.data.seller_type === "private" ? toListing(body.data) : null;
 }
 
-/** A dealer-portal advert card from a dealer profile or list response, as a Listing; null for anything else (leftover legacy rows, private adverts). */
+/** A dealer portal advert card from a dealer profile or list response, as a Listing; null for anything else (leftover legacy rows, private adverts). */
 export function dealerAdvertCardToListing(card: unknown): Listing | null {
   const c = card as ApiCard | null;
   return c && typeof c === "object" && isDealerAdvert(c) ? toListing(c) : null;
 }
 
-/** Every active dealer-portal advert (leftover legacy rows in the same feed are skipped). Failure is the caller's to swallow. */
+/** Every active dealer portal advert (leftover legacy rows in the same feed are skipped). Failure is the caller's to swallow. */
 export async function fetchDealerPortalListings(): Promise<Listing[]> {
   const out: Listing[] = [];
   for (let page = 1; page <= MAX_PAGES; page++) {
@@ -192,7 +192,7 @@ export async function fetchDealerPortalListings(): Promise<Listing[]> {
   return out;
 }
 
-/** One dealer-portal advert by its front-end slug ("dealer-<backend slug>"). Null if it is not (or no longer) active, or is a leftover legacy row. */
+/** One dealer portal advert by its front-end slug ("dealer-<backend slug>"). Null if it is not (or no longer) active, or is a leftover legacy row. */
 export async function fetchDealerPortalListingBySlug(slug: string): Promise<Listing | null> {
   if (!slug.startsWith(DEALER_SLUG_PREFIX)) return null;
   const backendSlug = slug.slice(DEALER_SLUG_PREFIX.length);

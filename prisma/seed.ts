@@ -44,7 +44,7 @@ async function main() {
       location: "Bridgend",
       lat: 51.5045,
       lng: -3.5797,
-      phone: "01656 507619",
+      phone: "01656 674620",
       googleRating: 4.9,
       plan: "pro",
       ownerUserId: svUser.id,

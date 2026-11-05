@@ -4,15 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand";
 import {
-  IconBarChart, IconGrid, IconLeads, IconSettings, IconPlus, IconChevronLeft,
+  IconBarChart, IconGrid, IconLeads, IconSettings, IconChevronLeft,
 } from "@/components/icons";
 
 const NAV_ITEMS = [
-  { href: "/dealer-portal",           label: "Dashboard",  icon: <IconGrid    width={16} height={16} /> },
-  { href: "/dealer-portal/listings",  label: "Listings",   icon: <IconBarChart width={16} height={16} /> },
-  { href: "/dealer-portal/leads",     label: "Leads",      icon: <IconLeads   width={16} height={16} /> },
-  { href: "/dealer-portal/analytics", label: "Analytics",  icon: <IconBarChart width={16} height={16} /> },
-  { href: "/dealer-portal/account",   label: "Account",    icon: <IconSettings width={16} height={16} /> },
+  { href: "/admin",              label: "Overview",     icon: <IconGrid    width={16} height={16} /> },
+  { href: "/admin/listings",     label: "Listings",     icon: <IconBarChart width={16} height={16} /> },
+  { href: "/admin/dealers",      label: "Dealers",      icon: <IconLeads   width={16} height={16} /> },
+  { href: "/admin/integrations", label: "Integrations", icon: <IconSettings width={16} height={16} /> },
 ] as const;
 
 function SidebarNav() {
@@ -33,26 +32,14 @@ function SidebarNav() {
       {/* Divider */}
       <div className="mx-4 mb-4 h-px bg-white/8" />
 
-      {/* Add van CTA */}
-      <div className="px-3 pb-3">
-        <Link
-          href="/dealer-portal/add-van"
-          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] py-2.5 text-[length:var(--text-sm)] font-bold text-white transition-all"
-          style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
-        >
-          <IconPlus width={14} height={14} strokeWidth={2.5} />
-          Add van
-        </Link>
-      </div>
-
       {/* Primary nav */}
       <nav className="flex-1 px-3 py-1" aria-label="Portal navigation">
         <p className="mb-2 px-2.5 text-[length:var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-white/30">
-          Dealer portal
+          Admin
         </p>
         <ul className="space-y-0.5">
           {NAV_ITEMS.map((item) => {
-            const exact  = item.href === "/dealer-portal";
+            const exact  = item.href === "/admin";
             const active = exact ? pathname === item.href : pathname.startsWith(item.href);
             return (
               <li key={item.href}>
@@ -93,13 +80,6 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       >
         <Link href="/">
           <Logo tone="light" />
-        </Link>
-        <Link
-          href="/dealer-portal/add-van"
-          className="flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[length:var(--text-xs)] font-bold text-white"
-          style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
-        >
-          <IconPlus width={12} height={12} strokeWidth={2.5} /> Add van
         </Link>
       </header>
 

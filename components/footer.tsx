@@ -37,9 +37,9 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/van-contract-hire", label: "Van leasing" },
       { href: "/van-reviews",       label: "Van reviews" },
       { href: "/blog",              label: "Guides & news" },
-      { href: "/dealer-portal",     label: "Dealer portal" },
-      { href: "/signup/trade",       label: "List my stock free" },
-      { href: "/signup/advertise",   label: "Advertise with us" },
+      { href: "https://dealer.vansales.com/login",       label: "Dealer login" },
+      { href: "/advertise",                              label: "Advertise with us" },
+      { href: "https://sell.vansales.com/signup/private", label: "List my van free" },
     ],
   },
 ];
@@ -58,12 +58,6 @@ export function Footer() {
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-3 sm:items-end">
-            <a
-              href={`tel:${SITE.phone.replace(/[^\d+]/g, "")}`}
-              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-ink-700 px-4 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-300 transition-colors hover:border-ink-500 hover:text-white"
-            >
-              {SITE.phone}
-            </a>
             <Link
               href="/sell"
               className="inline-flex items-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-[length:var(--text-sm)] font-bold text-white"
