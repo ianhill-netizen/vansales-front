@@ -22,6 +22,8 @@ export interface DealerConfig {
   socials?: { facebook?: string; instagram?: string; linkedin?: string; youtube?: string; twitter?: string };
   /** The dealer's Google reviews page (a link only; no rating is invented). */
   googleReviewsUrl?: string;
+  /** Optional wide banner image for the profile header (unset: the plain dark header). */
+  coverUrl?: string;
   phone: string;
   /* WhatsApp number in international format, digits only, no + (e.g. 447XXXXXXXXX).
      Null = button renders disabled. */

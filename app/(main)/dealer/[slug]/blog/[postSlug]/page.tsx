@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getBlogPost, formatDate } from "@/lib/content/blog";
 import { mdToHtml } from "@/lib/content/markdown";
 import { DEALERS } from "@/lib/dealers/config";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 interface Props { params: Promise<{ slug: string; postSlug: string }> }
 
@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: post.description.slice(0, 155),
     alternates: { canonical: absUrl(`/dealer/${slug}/blog/${postSlug}`) },
     openGraph: {
+    images: DEFAULT_OG_IMAGES,
       title: `${title} · ${SITE.name}`,
       description: post.description,
       url: absUrl(`/dealer/${slug}/blog/${postSlug}`),

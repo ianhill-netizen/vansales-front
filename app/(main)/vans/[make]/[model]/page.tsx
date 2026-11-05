@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/empty/empty-state";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
@@ -5,7 +6,6 @@ import { ListingCard } from "@/components/listing-card";
 import { FilterRail } from "@/components/filter-rail";
 import { Pagination } from "@/components/pagination";
 import { JsonLd } from "@/components/json-ld";
-import { IconArrow } from "@/components/icons";
 import { SpecCard } from "@/components/spec-card";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { InternalLinks } from "@/components/seo/internal-links";
@@ -252,20 +252,12 @@ export default async function ModelPage({
             )}
 
             {listings.length === 0 ? (
-              <div className="rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-card p-10 text-center">
-                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
-                  No {modelName} vans match those filters
-                </h2>
-                <p className="mx-auto mt-2 max-w-sm text-[var(--text-sm)] text-ink-500">
-                  Try widening your price or year range, or clearing a filter to see more stock.
-                </p>
-                <Link
-                  href={`/vans/${makeSlug}/${modelSlug}`}
-                  className="mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline"
-                >
-                  Clear filters <IconArrow width={16} height={16} />
-                </Link>
-              </div>
+              <EmptyState
+                illustration="no-vans"
+                title={`No ${modelName} vans match those filters`}
+                body="Try widening your price or year range, or clearing a filter to see more stock."
+                action={{ label: "Clear filters", href: `/vans/${makeSlug}/${modelSlug}` }}
+              />
             ) : (
               <>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">

@@ -1,3 +1,4 @@
+import { MakeLogo } from "@/components/make-logo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
@@ -11,7 +12,7 @@ import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
 import { getMakeByName } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
-import { SITE, absUrl, siteUrl } from "@/lib/site";
+import { SITE, absUrl, siteUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Vans for Sale UK | Used & New Vans | Vansales",
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     "Used and new vans for sale across the UK, from dealers and private sellers. Panel vans, crew cabs, Lutons, dropsides and pickups. Search by payload, wheelbase and ULEZ, not just price.",
   alternates: { canonical: absUrl("/") },
   openGraph: {
+    images: DEFAULT_OG_IMAGES,
     title: "Vans for Sale UK | Used & New Vans | Vansales",
     description: "Used and new vans for sale across the UK, from dealers and private sellers. Real photos, honest listings.",
     url: absUrl("/"),
@@ -151,8 +153,9 @@ export default async function HomePage() {
                   <li key={m.value}>
                     <Link
                       href={`/vans?v=${slug}`}
-                      className="inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-border bg-white px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+                      className="group inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-border bg-white py-1.5 pl-2 pr-4 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
                     >
+                      <MakeLogo make={slug} name={m.value} size={28} />
                       {m.value}
                       <span className="font-mono text-[var(--text-xs)] font-normal text-ink-400">{m.count}</span>
                     </Link>

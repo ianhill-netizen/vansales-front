@@ -1,5 +1,6 @@
 "use client";
 
+import { EmptyState } from "@/components/empty/empty-state";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Listing } from "@/lib/listings/types";
@@ -188,7 +189,13 @@ export function MapSplit({
             className={`min-h-0 space-y-4 overflow-y-auto bg-surface-1 p-3 lg:rounded-[var(--radius-xl)] lg:border lg:border-border ${pane === "list" ? "max-lg:block" : "max-lg:hidden"}`}
           >
             {visible.length === 0 ? (
-              <p className="p-6 text-center text-[var(--text-sm)] text-ink-500">No vans in this map area. Zoom out or drag the map.</p>
+              <EmptyState
+                illustration="pin"
+                title="No vans in this map area"
+                body="Zoom out or drag the map to look somewhere else."
+                action={{ label: "Back to the grid", href: closeHref }}
+                className="border-0 bg-transparent"
+              />
             ) : (
               visible.map((l, i) => (
                 <div

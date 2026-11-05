@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
+import { EmptyState } from "@/components/empty/empty-state";
+import { BodyTypeIcon } from "@/components/icons/body-types";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
@@ -7,7 +9,7 @@ import { InternalLinks } from "@/components/seo/internal-links";
 import { getListings } from "@/lib/listings/client";
 import { getBlogIndex } from "@/lib/content/blog";
 import { matchBlogPosts } from "@/lib/content/cross-links";
-import { absUrl } from "@/lib/site";
+import { absUrl, DEFAULT_OG_IMAGES, DEFAULT_TWITTER_IMAGES } from "@/lib/site";
 import { getCategory } from "@/lib/seo/categories";
 import { categoryListings, loadCatalogue, popularModelsFor, statOf } from "@/lib/seo/catalogue";
 import { categoryIntro, priceRange } from "@/lib/seo/intro";
@@ -31,8 +33,8 @@ export async function categoryMetadata(slug: string): Promise<Metadata> {
     title: { absolute: title },
     description,
     alternates: { canonical: url },
-    openGraph: { title, description, url, type: "website" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { images: DEFAULT_OG_IMAGES, title, description, url, type: "website" },
+    twitter: { card: "summary_large_image", title, description, images: DEFAULT_TWITTER_IMAGES },
   };
 }
 
@@ -83,7 +85,10 @@ export async function CategoryPage({ slug }: { slug: string }) {
             <span className="font-medium text-ink-700">{c.label}</span>
           </nav>
           <Eyebrow>{c.eyebrow}</Eyebrow>
-          <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">{c.label} for sale</h1>
+          <div className="mt-2 flex items-center gap-4">
+            {c.kind === "body" && <BodyTypeIcon slug={c.slug} className="h-16 w-24 shrink-0 text-brand-300" />}
+            <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">{c.label} for sale</h1>
+          </div>
           <p className="mt-3 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">{c.intro}</p>
           {intro && <p className="mt-3 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">{intro}</p>}
           <div className="mt-4 flex flex-wrap gap-3">
@@ -114,7 +119,12 @@ export async function CategoryPage({ slug }: { slug: string }) {
             </div>
           </>
         ) : (
-          <p className="text-[var(--text-sm)] text-ink-500">No {c.label.toLowerCase()} in stock right now. Check back soon, or browse the models below.</p>
+          <EmptyState
+            illustration="no-vans"
+            title={`No ${c.label.toLowerCase()} in stock right now`}
+            body="Stock updates through the day. Browse every van in the meantime, or try the models below."
+            action={{ label: "Browse all vans", href: "/vans" }}
+          />
         )}
       </Container>
 

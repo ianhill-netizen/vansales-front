@@ -3,13 +3,14 @@ import type React from "react";
 import Link from "next/link";
 import { Container, Eyebrow, Badge, Button } from "@/components/ui";
 import { IconCheck, IconArrow, IconBolt, IconTruck, IconUser } from "@/components/icons";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Advertise with Vansales | Dealer & Trade Packages",
   description: "Reach 100,000+ UK van buyers. Cheaper than AutoTrader, leads straight to WhatsApp, van-specialist audience. 14-day free trial — no contract.",
   alternates: { canonical: absUrl("/advertise") },
   openGraph: {
+    images: DEFAULT_OG_IMAGES,
     title: `Advertise with Vansales · ${SITE.name}`,
     description: "Reach 100,000+ UK van buyers. Cheaper than AutoTrader, leads straight to WhatsApp.",
     url: absUrl("/advertise"),

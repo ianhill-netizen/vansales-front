@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { SELL_URL } from "@/lib/site";
+import { PanelVanIcon } from "@/components/icons/body-types";
 
 const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
@@ -11,7 +12,7 @@ const CARDS = [
     href: "/vans",
     link: "Find a van",
     external: false,
-    icon: (<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden {...stroke}><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg>),
+    icon: (<PanelVanIcon className="h-5 w-[30px]" strokeWidth={1.75} />),
   },
   {
     title: "For sellers",

@@ -12,7 +12,7 @@ import { inferBodyType, makeToSlug, matchBlogPosts, matchRelatedVans } from "@/l
 import { getListings } from "@/lib/listings/client";
 import { mdToHtml } from "@/lib/content/markdown";
 import { getNewVanPrice } from "@/lib/content/prices";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     alternates: { canonical: absUrl(`/new-vans/${slug}`) },
     openGraph: {
+    images: DEFAULT_OG_IMAGES,
       title: `${title} · ${SITE.name}`,
       description,
       url: absUrl(`/new-vans/${slug}`),

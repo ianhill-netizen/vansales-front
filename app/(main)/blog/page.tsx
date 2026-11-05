@@ -3,13 +3,14 @@ import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
 import { getBlogIndex, formatDate } from "@/lib/content/blog";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Van Guides & News",
   description: "Van buying guides, news, finance tips, dimensions, reviews and more. Updated guides for UK van buyers and fleet operators.",
   alternates: { canonical: absUrl("/blog") },
   openGraph: {
+    images: DEFAULT_OG_IMAGES,
     title: `Van Guides & News · ${SITE.name}`,
     description: "Van buying guides, news and finance tips for UK businesses.",
     url: absUrl("/blog"),

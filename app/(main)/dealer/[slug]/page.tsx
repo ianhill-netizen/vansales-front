@@ -1,3 +1,5 @@
+import { DealerLogo } from "@/components/dealer-logo";
+import { EmptyState } from "@/components/empty/empty-state";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -24,7 +26,7 @@ import {
   IconStar,
   IconWhatsApp,
 } from "@/components/icons";
-import { SITE, absUrl } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 // 5 minutes: a dealer-portal profile edit (about, hours, logo) shows within minutes; the Dealski-fed dealers are unaffected by the shorter window.
 export const revalidate = 300;
@@ -37,21 +39,21 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (dealer) {
     const title = `${dealer.name} — Van Dealer in ${dealer.location.town}`;
     const description = `${dealer.name} is a van dealer in ${dealer.location.town}, ${dealer.location.county}. Browse their stock on ${SITE.name}.`;
-    return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website" } };
+    return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
   }
   const api = await fetchApiDealerProfile(slug);
   if (api.kind === "ok") {
     const d = api.dealer;
     const title = `${d.name} — Van Dealer${d.town ? ` in ${d.town}` : ""}`;
     const description = `${d.name}${d.town ? ` is a van dealer in ${d.town}` : " sells vans"}. Browse ${d.stock_count > 0 ? `their ${d.stock_count} van${d.stock_count === 1 ? "" : "s"}` : "their stock"} on ${SITE.name}.`;
-    return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website", images: d.logo_url ? [{ url: d.logo_url }] : undefined } };
+    return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website", images: d.logo_url ? [{ url: d.logo_url }] : DEFAULT_OG_IMAGES } };
   }
   const dbDealer = await safeDb("dealer metadata lookup", () => prisma.dealer.findUnique({ where: { slug } }), null);
   if (!dbDealer) return { title: api.kind === "error" ? "Van dealer" : "Dealer not found" };
   const town = (dbDealer.location ?? "").split(",")[0].trim() || "UK";
   const title = `${dbDealer.name} — Van Dealer${town ? ` in ${town}` : ""}`;
   const description = `Browse ${dbDealer.name}'s stock on ${SITE.name}.`;
-  return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website" } };
+  return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
 }
 
 const DAY_LABELS: Record<string, string> = {
@@ -68,9 +70,10 @@ type Hours = Record<"mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun", { ope
 const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 
 /** What the page renders: a config dealer as it is, or a vansales-API / database dealer shaped like one (plus the optional extras). */
-type ProfileDealer = Omit<DealerConfig, "hours"> & {
+type ProfileDealer = Omit<DealerConfig, "hours" | "coverUrl"> & {
   hours: Hours;
   logoUrl?: string | null;
+  coverUrl?: string | null;
   /** A direct finance link (vansales-API dealers); config dealers use their Dealski tenant's. */
   financeHref?: string | null;
   isApi?: boolean;
@@ -101,6 +104,7 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     },
     googleReviewsUrl: d.google_reviews_url ?? undefined,
     logoUrl: d.logo_url,
+    coverUrl: d.cover_url ?? null,
     financeHref: d.finance_url,
     isApi: true,
   };
@@ -282,18 +286,18 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
       <JsonLd data={dealerLd} />
 
       {/* ── 1. HEADER ─────────────────────────────────────────────── */}
-      <div className="border-b border-border bg-ink-900 text-white">
-        <Container className="py-10 md:py-14">
+      <div className="relative isolate overflow-hidden border-b border-border bg-ink-900 text-white">
+        {effectiveDealer.coverUrl && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={effectiveDealer.coverUrl} alt="" className="absolute inset-0 -z-20 size-full object-cover" />
+            <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-ink-900/95 via-ink-900/70 to-ink-900/40" />
+          </>
+        )}
+        <Container className={effectiveDealer.coverUrl ? "py-14 md:py-20" : "py-10 md:py-14"}>
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="flex items-center gap-4 md:gap-5">
-              {effectiveDealer.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={effectiveDealer.logoUrl} alt={`${effectiveDealer.name} logo`} width={80} height={80} className="size-16 shrink-0 rounded-[var(--radius-lg)] bg-white object-contain p-1 md:size-20" />
-              ) : isApi ? (
-                <span aria-hidden className="grid size-16 shrink-0 place-items-center rounded-[var(--radius-lg)] bg-brand-600 font-display text-[var(--text-xl)] font-extrabold text-white md:size-20">
-                  {effectiveDealer.name.trim().split(/\s+/).slice(0, 2).map((w) => (w[0] ?? "").toUpperCase()).join("")}
-                </span>
-              ) : null}
+              <DealerLogo name={effectiveDealer.name} logoUrl={effectiveDealer.logoUrl} size={72} className="md:!size-20" />
             <div className="min-w-0">
               <p className="mb-2 font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
                 Van dealer{effectiveDealer.location.town ? ` · ${effectiveDealer.location.town}` : ""}
@@ -433,6 +437,18 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                     </Link>
                   </div>
                 )}
+              </section>
+            )}
+            {listings.length === 0 && (
+              <section>
+                <SectionHeading>Current stock</SectionHeading>
+                <EmptyState
+                  illustration="no-vans"
+                  title="No vans in stock right now"
+                  body="This dealer has nothing listed at the moment. Browse every van in the meantime."
+                  action={{ label: "Browse all vans", href: "/vans" }}
+                  className="mt-5"
+                />
               </section>
             )}
           </div>
