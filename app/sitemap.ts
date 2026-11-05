@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getListings } from "@/lib/listings/client";
 import { getNewVanSlugs } from "@/lib/content/new-vans";
 import { getBlogSlugs } from "@/lib/content/blog";
+import { getBackendGuides } from "@/lib/content/backend";
 import { getDealerDirectory } from "@/lib/dealers/directory";
 import { listingPath } from "@/lib/listings/slug";
 import { CATEGORIES } from "@/lib/seo/categories";
@@ -10,10 +11,11 @@ import { siteUrl } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
-  const [{ listings }, idx, dealers] = await Promise.all([
+  const [{ listings }, idx, dealers, guides] = await Promise.all([
     getListings({}),
     loadCatalogue(),
     getDealerDirectory().catch(() => []),
+    getBackendGuides().catch(() => []), // guides Mason publishes through vansales-backend; [] when the API is down
   ]);
   // lastmod = the newest listing update behind the page (never an invented date); a page with no data of its own falls back to the newest update site-wide.
   const siteLast = idx.site.lastModified ?? undefined;
@@ -80,6 +82,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
+  const localBlog = new Set(getBlogSlugs());
+  const guideRoutes: MetadataRoute.Sitemap = guides
+    .filter((g) => !localBlog.has(g.slug))
+    .slice(0, 1000)
+    .map((g) => ({
+      url: `${base}/blog/${g.slug}`,
+      lastModified: Number.isNaN(Date.parse(g.date)) ? undefined : new Date(g.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    }));
+
   const listingRoutes: MetadataRoute.Sitemap = listings
     .filter((l) => l.status === "active" || l.status === "reserved")
     .map((l) => ({
@@ -97,6 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...dealerRoutes,
     ...newVanRoutes,
     ...blogRoutes,
+    ...guideRoutes,
     ...listingRoutes,
   ];
 }
