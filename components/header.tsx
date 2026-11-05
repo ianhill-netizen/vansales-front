@@ -210,12 +210,21 @@ export function Header() {
           >
             Dealer login
           </a>
+          <Link href="/saved" className="hidden px-2 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:text-ink-900 md:inline-flex">
+            Saved
+          </Link>
+          <a
+            href="https://sell.vansales.com/login"
+            className="hidden px-2 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:text-ink-900 md:inline-flex"
+          >
+            Sign in
+          </a>
           <a
             href={SELL_URL}
             className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
             style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
           >
-            Sell your van
+            Sell your van →
           </a>
           <MobileNav />
         </div>
