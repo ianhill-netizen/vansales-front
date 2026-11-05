@@ -2,7 +2,7 @@
  * Guides that vansales-backend stores in content_pages (Mason publishes them through its POST /api/internal/pages/create). Read-only, server-side.
  *   GET {VANSALES_API_URL}/api/public/content/pages            paginated list {data:[{slug,title,meta_title,meta_description,page_type,published_at,word_count,...}], last_page}
  *   GET {VANSALES_API_URL}/api/public/content/pages/{slug}     {data:{...,h1,body_html,hero_image_url,images:[{role,url,alt,caption,section}]}}  (404 = no such PUBLISHED page)
- * Cached 5 minutes. An outage of the API must never break the blog: the list and the sitemap quietly fall back to the local posts, and a guide page that cannot be fetched throws (an uncached error) rather
+ * Only page_type 'guide' is rendered (make_model and body_type pages belong to the /vans/* routes). Cached 5 minutes. An outage of the API must never break the blog: the list and the sitemap quietly fall back to the local posts, and a guide page that cannot be fetched throws (an uncached error) rather
  * than caching a 404 for a page that exists.
  */
 import { escapeHtml, safeImageUrl, sanitizeGuideHtml } from "@/lib/content/sanitize";
@@ -71,7 +71,8 @@ export async function getBackendGuides(): Promise<BackendGuideSummary[]> {
     const rows = Array.isArray(body.data) ? body.data : [];
     for (const row of rows) {
       const s = row && typeof row === "object" ? summary(row as Record<string, unknown>) : null;
-      if (s && !seen.has(s.slug)) {
+      // only articles: make/model and body-type pages in content_pages belong to the /vans/* routes, not to /blog
+      if (s && s.pageType === "guide" && !seen.has(s.slug)) {
         seen.add(s.slug);
         out.push(s);
       }
@@ -91,7 +92,7 @@ export async function getBackendGuide(slug: string): Promise<GuideResult> {
   if (!row || typeof row !== "object") return { status: "missing" };
   const r = row as Record<string, unknown>;
   const s = summary(r);
-  if (!s || str(r.status) === "archived" || str(r.body_html).trim() === "") return { status: "missing" };
+  if (!s || s.pageType !== "guide" || str(r.status) === "archived" || str(r.body_html).trim() === "") return { status: "missing" };
   const images: BackendImage[] = [];
   for (const i of Array.isArray(r.images) ? r.images : []) {
     const o = i as Record<string, unknown>;
