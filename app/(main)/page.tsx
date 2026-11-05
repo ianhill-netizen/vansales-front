@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { HomeSearch } from "@/components/home-search";
-import { HeroVan } from "@/components/home/hero-van";
+import Image from "next/image";
 import { WhyVansales } from "@/components/home/why-vansales";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
@@ -78,13 +78,21 @@ export default async function HomePage() {
       <JsonLd data={[orgSchema, websiteSchema]} />
 
       {/* ── HERO: the search is the hero ─────────────────────────────────── */}
-      <section className="relative border-b border-border bg-gradient-to-b from-brand-50/70 to-white">
-        <HeroVan />
-        <Container className="relative pb-6 pt-8 sm:pt-12">
-          <h1 className="font-display text-[clamp(1.9rem,1.2rem+3vw,3rem)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
+      <section className="relative isolate flex min-h-[440px] items-center overflow-hidden bg-ink-900 md:min-h-[520px]">
+        <Image
+          src="/hero.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover object-[85%_center] md:object-right"
+        />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(15,23,42,0.55)] to-[rgba(15,23,42,0.75)]" />
+        <Container className="relative w-full pb-8 pt-10 sm:pt-12">
+          <h1 className="font-display text-[length:28px] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-white md:text-[length:clamp(1.9rem,1.2rem+3vw,3rem)]">
             Find the right van. No nonsense.
           </h1>
-          <p className="mt-2 max-w-2xl text-[var(--text-md)] text-ink-600">
+          <p className="mt-2 max-w-2xl text-[length:var(--text-md)] text-white/85">
             {all.total > 1000 ? "Thousands of used vans" : "Used vans"} from UK dealers and private sellers. Real photos, honest listings, and an HPI badge on every van that has been checked.
           </p>
 
@@ -93,19 +101,18 @@ export default async function HomePage() {
           </div>
 
           {/* Trust row */}
-          <ul className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-[var(--text-sm)] text-ink-500">
+          <ul className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-[length:var(--text-sm)] text-white/90">
             {[
               { label: "HPI-checked vans are marked", d: "M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z M9 12l2 2 4-4" },
               { label: "Private sellers list free", d: "M12 3v18 M16.5 7.5c-.8-1.2-2.4-2-4.5-2-2.5 0-4 1.2-4 3 0 4 8.5 2 8.5 6.2 0 1.8-1.7 3-4.5 3-2.2 0-3.9-.9-4.7-2.3" },
               { label: "No hidden fees", d: "M5 12.5l4.5 4.5L19 7.5" },
             ].map((t) => (
               <li key={t.label} className="inline-flex items-center gap-2">
-                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-brand-600"><path d={t.d} /></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d={t.d} /></svg>
                 {t.label}
               </li>
             ))}
           </ul>
-
         </Container>
       </section>
 

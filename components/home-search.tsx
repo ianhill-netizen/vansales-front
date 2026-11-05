@@ -107,7 +107,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
               onChange={(e) => setWhere(e.target.value)}
               placeholder="Town or postcode"
               aria-label="Town or postcode"
-              className="h-10 w-44 rounded-[var(--radius-pill)] border border-border bg-white px-4 text-[var(--text-sm)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400"
+              className="h-10 w-full rounded-[var(--radius-pill)] md:w-44 border border-border bg-white px-4 text-[var(--text-sm)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400"
             />
             {where.trim() && (
               <select value={radius} onChange={(e) => setRadius(e.target.value)} aria-label="Search radius" className="h-10 rounded-[var(--radius-pill)] border border-border bg-white px-3 text-[var(--text-sm)] font-medium text-ink-800 outline-none">
@@ -118,7 +118,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
               type="button"
               onClick={nearMe}
               disabled={locating}
-              className="inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-pill)] border border-border bg-white px-4 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 disabled:opacity-60"
+              className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-border bg-white px-4 md:w-auto text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 disabled:opacity-60"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /><circle cx="12" cy="12" r="8" /></svg>
               {locating ? "Locating…" : "Near me"}
