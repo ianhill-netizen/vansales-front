@@ -36,17 +36,17 @@ const CARDS = [
 export function WhyVansales() {
   return (
     <Container className="pt-10"><section aria-labelledby="why-heading">
-      <h2 id="why-heading" className="font-display text-[var(--text-xl)] font-bold text-ink-900">Why Vansales</h2>
+      <h2 id="why-heading" className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Why Vansales</h2>
       <ul className="mt-4 grid gap-4 md:grid-cols-3">
         {CARDS.map((c) => (
           <li key={c.title} className="flex flex-col rounded-[var(--radius-xl)] border border-border bg-white p-5 shadow-[var(--shadow-xs)]">
             <span className="grid size-10 place-items-center rounded-[var(--radius-lg)] bg-brand-50 text-brand-700">{c.icon}</span>
-            <h3 className="mt-3 font-display text-[var(--text-lg)] font-bold text-ink-900">{c.title}</h3>
-            <p className="mt-1 text-[var(--text-sm)] leading-relaxed text-ink-600">{c.body}</p>
+            <h3 className="mt-3 font-display text-[length:var(--text-lg)] font-bold text-ink-900">{c.title}</h3>
+            <p className="mt-1 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{c.body}</p>
             {c.external ? (
-              <a href={c.href} className="mt-4 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">{c.link} →</a>
+              <a href={c.href} className="mt-4 text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">{c.link} →</a>
             ) : (
-              <Link href={c.href} className="mt-4 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">{c.link} →</Link>
+              <Link href={c.href} className="mt-4 text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">{c.link} →</Link>
             )}
           </li>
         ))}

@@ -37,21 +37,21 @@ export default async function DealersPage() {
       <JsonLd data={[ld]} />
       <section className="border-b border-border bg-white">
         <Container className="py-8">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-700">Home</Link>
             <span aria-hidden>/</span>
             <span className="font-medium text-ink-600">Dealers</span>
           </nav>
           <Eyebrow>Directory</Eyebrow>
-          <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">Van dealers</h1>
-          <p className="mt-2 max-w-2xl text-[var(--text-md)] text-ink-500">
+          <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">Van dealers</h1>
+          <p className="mt-2 max-w-2xl text-[length:var(--text-md)] text-ink-500">
             Dealers listing vans on {SITE.name}. Open a dealer to see their stock, opening hours and how to get in touch.
           </p>
         </Container>
       </section>
       <Container className="py-8">
         <DealerGrid dealers={dealers} />
-        <p className="mt-10 text-[var(--text-sm)] text-ink-500">
+        <p className="mt-10 text-[length:var(--text-sm)] text-ink-500">
           Are you a dealer? <Link href="/advertise" className="font-semibold text-brand-600 hover:underline">See our advertising packages</Link>.
         </p>
       </Container>

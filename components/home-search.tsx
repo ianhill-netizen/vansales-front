@@ -84,7 +84,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
   }
 
   const seg = (active: boolean) =>
-    `rounded-[var(--radius-md)] px-3.5 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${active ? "bg-ink-900 text-white" : "text-ink-600 hover:text-ink-900"}`;
+    `rounded-[var(--radius-md)] px-3.5 py-1.5 text-[length:var(--text-sm)] font-semibold transition-colors ${active ? "bg-ink-900 text-white" : "text-ink-600 hover:text-ink-900"}`;
 
   return (
     <form onSubmit={submit} className="rounded-[var(--radius-2xl)] border border-border bg-white p-3 shadow-[var(--shadow-lg)] sm:p-4">
@@ -93,7 +93,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
       <div className="mt-3 flex flex-wrap items-center gap-2.5">
         {/* Location */}
         {geo ? (
-          <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 py-1 pl-3 pr-1.5 text-[var(--text-sm)] font-semibold text-brand-700">
+          <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 py-1 pl-3 pr-1.5 text-[length:var(--text-sm)] font-semibold text-brand-700">
             {geo.town} ·
             <select value={radius} onChange={(e) => setRadius(e.target.value)} aria-label="Search radius" className="cursor-pointer bg-transparent py-0.5 font-semibold text-brand-700 outline-none">
               {RADII.map((r) => <option key={r} value={r}>{r} mi</option>)}
@@ -107,10 +107,10 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
               onChange={(e) => setWhere(e.target.value)}
               placeholder="Town or postcode"
               aria-label="Town or postcode"
-              className="h-10 w-full rounded-[var(--radius-pill)] md:w-44 border border-border bg-white px-4 text-[var(--text-sm)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400"
+              className="h-10 w-full rounded-[var(--radius-pill)] md:w-44 border border-border bg-white px-4 text-[length:var(--text-sm)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400"
             />
             {where.trim() && (
-              <select value={radius} onChange={(e) => setRadius(e.target.value)} aria-label="Search radius" className="h-10 rounded-[var(--radius-pill)] border border-border bg-white px-3 text-[var(--text-sm)] font-medium text-ink-800 outline-none">
+              <select value={radius} onChange={(e) => setRadius(e.target.value)} aria-label="Search radius" className="h-10 rounded-[var(--radius-pill)] border border-border bg-white px-3 text-[length:var(--text-sm)] font-medium text-ink-800 outline-none">
                 {RADII.map((r) => <option key={r} value={r}>{r} mi</option>)}
               </select>
             )}
@@ -118,7 +118,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
               type="button"
               onClick={nearMe}
               disabled={locating}
-              className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-border bg-white px-4 md:w-auto text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 disabled:opacity-60"
+              className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-border bg-white px-4 md:w-auto text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 disabled:opacity-60"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /><circle cx="12" cy="12" r="8" /></svg>
               {locating ? "Locating…" : "Near me"}
@@ -142,7 +142,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
             type="button"
             aria-pressed={on}
             onClick={() => set(!on)}
-            className={`inline-flex h-9 items-center rounded-full border px-3.5 text-[var(--text-sm)] font-semibold transition-colors ${on ? "border-brand-600 bg-brand-600 text-white" : "border-border bg-surface-1 text-ink-700 hover:border-brand-300 hover:text-brand-700"}`}
+            className={`inline-flex h-9 items-center rounded-full border px-3.5 text-[length:var(--text-sm)] font-semibold transition-colors ${on ? "border-brand-600 bg-brand-600 text-white" : "border-border bg-surface-1 text-ink-700 hover:border-brand-300 hover:text-brand-700"}`}
           >
             {label}
           </button>
@@ -150,14 +150,14 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
 
         <button
           type="submit"
-          className="ml-auto inline-flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-xl)] px-7 text-[var(--text-base)] font-bold text-white shadow-[var(--shadow-md)] transition-all active:scale-[0.98] sm:w-auto"
+          className="ml-auto inline-flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-xl)] px-7 text-[length:var(--text-base)] font-bold text-white shadow-[var(--shadow-md)] transition-all active:scale-[0.98] sm:w-auto"
           style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
         >
           <IconSearch width={17} height={17} />
           {(() => { const n = sel.vehicles.length || sel.body.length || sel.fuel.length ? countMatches(picker, sel) : total; return n >= 20 ? `Search ${n.toLocaleString("en-GB")} vans` : "Search vans"; })()}
         </button>
       </div>
-      {geoError && <p role="alert" className="mt-2 text-[var(--text-xs)] text-red-600">{geoError}</p>}
+      {geoError && <p role="alert" className="mt-2 text-[length:var(--text-xs)] text-red-600">{geoError}</p>}
     </form>
   );
 }

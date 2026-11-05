@@ -8,7 +8,7 @@ import { IconWhatsApp, IconMessage, IconPhone, IconExternalLink } from "./icons"
 /** Fired by the Enquire button; components/enquiry-panel.tsx opens its form and focuses it. */
 export const OPEN_ENQUIRY_EVENT = "vansales:open-enquiry";
 
-const btn = "flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] px-3 text-[var(--text-sm)] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+const btn = "flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
 /**
  * The button row on a listing: Enquire, then WhatsApp / Apply for finance / Book a call, each only when the seller offers it. The same row serves config dealers (Swiss Vans via

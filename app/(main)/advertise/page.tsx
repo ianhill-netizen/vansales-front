@@ -172,7 +172,7 @@ export default function AdvertisePage() {
                 Advertise your vans to{" "}
                 <span className="text-brand-400">100,000+ UK van buyers.</span>
               </h1>
-              <p className="mt-5 max-w-xl text-[var(--text-md)] leading-relaxed text-white/70">
+              <p className="mt-5 max-w-xl text-[length:var(--text-md)] leading-relaxed text-white/70">
                 Cheaper than AutoTrader. Every lead lands in WhatsApp. A van-specialist audience
                 who filter by payload and ULEZ — not just colour.
               </p>
@@ -184,7 +184,7 @@ export default function AdvertisePage() {
                   Talk to the team
                 </Button>
               </div>
-              <p className="mt-4 text-[var(--text-xs)] text-white/40">
+              <p className="mt-4 text-[length:var(--text-xs)] text-white/40">
                 14-day free trial · No credit card · Cancel anytime
               </p>
             </div>
@@ -193,12 +193,12 @@ export default function AdvertisePage() {
             <div className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-white/10 bg-white/6 p-7 backdrop-blur-sm lg:self-center">
               {VS_REASONS.map((r) => (
                 <div key={r.stat} className="flex items-start gap-4">
-                  <div className="w-16 shrink-0 font-display text-[var(--text-2xl)] font-extrabold leading-none text-brand-400">
+                  <div className="w-16 shrink-0 font-display text-[length:var(--text-2xl)] font-extrabold leading-none text-brand-400">
                     {r.stat}
                   </div>
                   <div>
-                    <p className="text-[var(--text-sm)] font-bold text-white">{r.label}</p>
-                    <p className="mt-0.5 text-[var(--text-xs)] leading-relaxed text-white/55">{r.body}</p>
+                    <p className="text-[length:var(--text-sm)] font-bold text-white">{r.label}</p>
+                    <p className="mt-0.5 text-[length:var(--text-xs)] leading-relaxed text-white/55">{r.body}</p>
                   </div>
                 </div>
               ))}
@@ -212,7 +212,7 @@ export default function AdvertisePage() {
         <Container>
           <div className="mb-8 text-center">
             <Eyebrow>Who are you?</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">
               The right plan starts here
             </h2>
           </div>
@@ -225,11 +225,11 @@ export default function AdvertisePage() {
                 <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-brand-tint">
                   <s.Icon width={20} height={20} className="text-brand-700" aria-hidden />
                 </div>
-                <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">{s.who}</h3>
-                <p className="mt-1.5 flex-1 text-[var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
+                <h3 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">{s.who}</h3>
+                <p className="mt-1.5 flex-1 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
                 <Link
                   href={s.ctaHref}
-                  className="mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline"
+                  className="mt-4 inline-flex items-center gap-1.5 text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline"
                 >
                   {s.cta} <IconArrow width={14} height={14} />
                 </Link>
@@ -244,13 +244,13 @@ export default function AdvertisePage() {
         <Container>
           <div className="mb-8 text-center">
             <Eyebrow>Pricing</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">
               Simple, honest pricing
             </h2>
-            <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+            <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
               All plans include a 14-day free trial. No contract. All prices +VAT.
             </p>
-            <p className="mt-1 text-[var(--text-xs)] text-ink-400">
+            <p className="mt-1 text-[length:var(--text-xs)] text-ink-400">
               Boost tokens are used for promoting individual listings and HPI checks.
             </p>
           </div>
@@ -266,16 +266,16 @@ export default function AdvertisePage() {
                 }`}
               >
                 {plan.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-500 px-3 py-1 text-[var(--text-xs)] font-bold text-white">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-500 px-3 py-1 text-[length:var(--text-xs)] font-bold text-white">
                     Most popular
                   </span>
                 )}
 
                 <div className="mb-1">
-                  <p className={`font-display text-[var(--text-xl)] font-extrabold ${plan.highlight ? "text-white" : "text-ink-900"}`}>
+                  <p className={`font-display text-[length:var(--text-xl)] font-extrabold ${plan.highlight ? "text-white" : "text-ink-900"}`}>
                     {plan.name}
                   </p>
-                  <p className={`text-[var(--text-xs)] ${plan.highlight ? "text-white/55" : "text-ink-500"}`}>
+                  <p className={`text-[length:var(--text-xs)] ${plan.highlight ? "text-white/55" : "text-ink-500"}`}>
                     {plan.tagline}
                   </p>
                 </div>
@@ -283,29 +283,29 @@ export default function AdvertisePage() {
                 <div className="my-4 flex items-baseline gap-1">
                   {plan.price !== null ? (
                     <>
-                      <span className={`font-display text-[var(--text-3xl)] font-extrabold ${plan.highlight ? "text-white" : "text-ink-900"}`}>
+                      <span className={`font-display text-[length:var(--text-3xl)] font-extrabold ${plan.highlight ? "text-white" : "text-ink-900"}`}>
                         £{plan.price}
                       </span>
-                      <span className={`text-[var(--text-xs)] ${plan.highlight ? "text-white/50" : "text-ink-400"}`}>
+                      <span className={`text-[length:var(--text-xs)] ${plan.highlight ? "text-white/50" : "text-ink-400"}`}>
                         {plan.priceSuffix}
                       </span>
                     </>
                   ) : (
-                    <span className={`font-display text-[var(--text-base)] font-bold ${plan.highlight ? "text-white" : "text-ink-700"}`}>
+                    <span className={`font-display text-[length:var(--text-base)] font-bold ${plan.highlight ? "text-white" : "text-ink-700"}`}>
                       {plan.priceSuffix}
                     </span>
                   )}
                 </div>
 
                 {plan.trial && (
-                  <p className={`mb-4 text-[var(--text-2xs)] font-semibold ${plan.highlight ? "text-brand-300" : "text-brand-700"}`}>
+                  <p className={`mb-4 text-[length:var(--text-2xs)] font-semibold ${plan.highlight ? "text-brand-300" : "text-brand-700"}`}>
                     14-day free trial included
                   </p>
                 )}
 
                 <ul className="flex-1 space-y-2">
                   {plan.bullets.map((b) => (
-                    <li key={b} className={`flex items-start gap-2 text-[var(--text-xs)] ${plan.highlight ? "text-white/80" : "text-ink-700"}`}>
+                    <li key={b} className={`flex items-start gap-2 text-[length:var(--text-xs)] ${plan.highlight ? "text-white/80" : "text-ink-700"}`}>
                       <IconCheck
                         width={14}
                         height={14}
@@ -331,10 +331,10 @@ export default function AdvertisePage() {
 
           {/* Custom row */}
           <div className="mt-5 rounded-[var(--radius-xl)] border border-dashed border-border bg-surface-1 p-6 text-center">
-            <p className="font-display text-[var(--text-lg)] font-bold text-ink-900">
+            <p className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">
               Dealer groups · Finance companies · Hire fleets
             </p>
-            <p className="mt-1.5 text-[var(--text-sm)] text-ink-500">
+            <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
               Multi-location stock, bulk lead routing, API integration, white-label options. Custom pricing.
             </p>
             <div className="mt-4 flex justify-center">
@@ -351,7 +351,7 @@ export default function AdvertisePage() {
         <Container>
           <div className="mb-8 text-center">
             <Eyebrow>Why Vansales</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">
               Not AutoTrader. Better.
             </h2>
           </div>
@@ -379,8 +379,8 @@ export default function AdvertisePage() {
                 className="rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)]"
               >
                 <IconCheck width={18} height={18} className="mb-3 text-success-600" />
-                <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">{item.title}</h3>
-                <p className="mt-2 text-[var(--text-sm)] leading-relaxed text-ink-600">{item.body}</p>
+                <h3 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">{item.title}</h3>
+                <p className="mt-2 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{item.body}</p>
               </div>
             ))}
           </div>
@@ -392,7 +392,7 @@ export default function AdvertisePage() {
         <Container>
           <div className="mb-8 text-center">
             <Eyebrow>Already on Dealski?</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">
               Your stock can be live in 5 minutes
             </h2>
           </div>
@@ -403,15 +403,15 @@ export default function AdvertisePage() {
               { n: "3", title: "Receive live enquiries", body: "Lead goes straight to WhatsApp and your Dealski CRM. Nothing to check, nothing to miss." },
             ].map((s) => (
               <div key={s.n} className="rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)]">
-                <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-tint font-display text-[var(--text-base)] font-bold text-brand-700">
+                <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-tint font-display text-[length:var(--text-base)] font-bold text-brand-700">
                   {s.n}
                 </span>
-                <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">{s.title}</h3>
-                <p className="mt-2 text-[var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
+                <h3 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">{s.title}</h3>
+                <p className="mt-2 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
               </div>
             ))}
           </div>
-          <p className="mt-6 text-center text-[var(--text-sm)] text-ink-500">
+          <p className="mt-6 text-center text-[length:var(--text-sm)] text-ink-500">
             Not on Dealski yet?{" "}
             <a
               href="https://dealski.co.uk"
@@ -430,10 +430,10 @@ export default function AdvertisePage() {
         <div className="hero-grid absolute inset-0" aria-hidden />
         <Container className="relative text-center">
           <Badge tone="brand" className="mb-4">14-day free trial</Badge>
-          <h2 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-white">
+          <h2 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-white">
             Ready to advertise?
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-[var(--text-md)] leading-relaxed text-white/65">
+          <p className="mx-auto mt-4 max-w-md text-[length:var(--text-md)] leading-relaxed text-white/65">
             Start free. No credit card. Cancel any time.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -450,7 +450,7 @@ export default function AdvertisePage() {
       {/* ─── PRIVATE SELLER NOTE ─────────────────────────────── */}
       <section className="border-t border-border py-7">
         <Container className="text-center">
-          <p className="text-[var(--text-sm)] text-ink-500">
+          <p className="text-[length:var(--text-sm)] text-ink-500">
             Not a dealer?{" "}
             <Link href="/sell" className="font-semibold text-brand-700 hover:underline">
               List your van as a private seller — it&apos;s free →

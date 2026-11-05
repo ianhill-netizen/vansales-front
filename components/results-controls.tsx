@@ -28,7 +28,7 @@ function useUrlUpdater() {
 
 const SEG_WRAP = "inline-flex rounded-[var(--radius-lg)] border border-border bg-surface-1 p-1";
 const seg = (active: boolean) =>
-  `flex items-center gap-1.5 rounded-[var(--radius-md)] px-3.5 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
+  `flex items-center gap-1.5 rounded-[var(--radius-md)] px-3.5 py-1.5 text-[length:var(--text-sm)] font-semibold transition-colors ${
     active ? "bg-ink-900 text-white shadow-[var(--shadow-xs)]" : "text-ink-600 hover:text-ink-900"
   }`;
 
@@ -94,7 +94,7 @@ export function PayToggle({ mode, terms }: { mode: PayMode; terms: FinanceTerms 
             type="button"
             aria-expanded={adjust}
             onClick={() => setAdjust((v) => !v)}
-            className="text-[var(--text-sm)] font-semibold text-brand-600 underline-offset-2 hover:underline"
+            className="text-[length:var(--text-sm)] font-semibold text-brand-600 underline-offset-2 hover:underline"
           >
             {adjust ? "Hide" : "Adjust"} deposit, term &amp; APR
           </button>
@@ -103,7 +103,7 @@ export function PayToggle({ mode, terms }: { mode: PayMode; terms: FinanceTerms 
 
       {mode !== "cash" && adjust && (
         <div className="mt-3 grid gap-4 rounded-[var(--radius-lg)] border border-border bg-surface-1 p-4 sm:grid-cols-3">
-          <label className="block text-[var(--text-xs)] font-semibold text-ink-600">
+          <label className="block text-[length:var(--text-xs)] font-semibold text-ink-600">
             Deposit: <span className="font-mono text-ink-900">{local.depositPct}%</span>
             <input
               type="range" min={0} max={50} step={5} value={local.depositPct}
@@ -111,17 +111,17 @@ export function PayToggle({ mode, terms }: { mode: PayMode; terms: FinanceTerms 
               className="mt-2 w-full accent-[var(--color-brand-600)]"
             />
           </label>
-          <label className="block text-[var(--text-xs)] font-semibold text-ink-600">
+          <label className="block text-[length:var(--text-xs)] font-semibold text-ink-600">
             Term
             <select
               value={local.termMonths}
               onChange={(e) => commit({ ...local, termMonths: Number(e.target.value) })}
-              className="mt-2 h-9 w-full rounded-[var(--radius-md)] border border-border bg-white px-2 text-[var(--text-sm)] font-medium text-ink-900"
+              className="mt-2 h-9 w-full rounded-[var(--radius-md)] border border-border bg-white px-2 text-[length:var(--text-sm)] font-medium text-ink-900"
             >
               {TERM_OPTIONS.map((t) => <option key={t} value={t}>{t} months</option>)}
             </select>
           </label>
-          <label className="block text-[var(--text-xs)] font-semibold text-ink-600">
+          <label className="block text-[length:var(--text-xs)] font-semibold text-ink-600">
             APR: <span className="font-mono text-ink-900">{local.apr.toFixed(1)}%</span>
             <input
               type="range" min={0} max={20} step={0.1} value={local.apr}
@@ -133,7 +133,7 @@ export function PayToggle({ mode, terms }: { mode: PayMode; terms: FinanceTerms 
       )}
 
       {mode !== "cash" && (
-        <p className="mt-2 max-w-3xl text-[var(--text-xs)] leading-relaxed text-ink-500">
+        <p className="mt-2 max-w-3xl text-[length:var(--text-xs)] leading-relaxed text-ink-500">
           <strong className="font-semibold text-ink-600">Representative example:</strong> a £10,000 van with a {local.depositPct}% deposit over {local.termMonths} months at {local.apr.toFixed(1)}% APR
           (representative) is about £{Math.round(example).toLocaleString("en-GB")} a month. Monthly figures are estimates, not an offer or a quote. Finance is subject to status and
           lender approval; the rate you are offered may differ.

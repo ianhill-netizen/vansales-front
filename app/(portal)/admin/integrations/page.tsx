@@ -76,8 +76,8 @@ export default function IntegrationsHubPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6">
-        <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Integrations</h1>
-        <p className="mt-1 text-[var(--text-sm)] text-ink-500">
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Integrations</h1>
+        <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">
           Manage API keys, AI providers, and site-wide tracking — all encrypted at rest.
         </p>
       </div>
@@ -85,7 +85,7 @@ export default function IntegrationsHubPage() {
       {supabaseConfigured === false && !loading && (
         <div className="mb-6 rounded-[var(--radius-xl)] border border-amber-300 bg-amber-50 px-5 py-4">
           <p className="font-semibold text-amber-800">Supabase not configured</p>
-          <p className="mt-1 text-[var(--text-sm)] text-amber-700">
+          <p className="mt-1 text-[length:var(--text-sm)] text-amber-700">
             Add{" "}
             <code className="rounded bg-amber-100 px-1 font-mono">SUPABASE_URL</code>,{" "}
             <code className="rounded bg-amber-100 px-1 font-mono">SUPABASE_ANON_KEY</code>,{" "}
@@ -108,18 +108,18 @@ export default function IntegrationsHubPage() {
               <div className="mb-3 flex items-start justify-between gap-2">
                 <pill.Icon width={24} height={24} className="text-ink-500" aria-hidden />
                 {supabaseConfigured && !loading ? (
-                  <span className={`rounded-full px-2.5 py-0.5 text-[var(--text-2xs)] font-semibold ${count.connected > 0 ? "bg-success-tint text-success-700" : "bg-surface-2 text-ink-400"}`}>
+                  <span className={`rounded-full px-2.5 py-0.5 text-[length:var(--text-2xs)] font-semibold ${count.connected > 0 ? "bg-success-tint text-success-700" : "bg-surface-2 text-ink-400"}`}>
                     {count.connected}/{count.total} connected
                   </span>
                 ) : (
                   <span className="h-5 w-20 animate-pulse rounded-full bg-surface-2" />
                 )}
               </div>
-              <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900 group-hover:text-brand-600">
+              <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900 group-hover:text-brand-600">
                 {pill.label}
               </h2>
-              <p className="mt-1 text-[var(--text-xs)] text-ink-500">{pill.description}</p>
-              <div className="mt-4 text-[var(--text-xs)] font-semibold text-brand-600">
+              <p className="mt-1 text-[length:var(--text-xs)] text-ink-500">{pill.description}</p>
+              <div className="mt-4 text-[length:var(--text-xs)] font-semibold text-brand-600">
                 Configure →
               </div>
             </Link>

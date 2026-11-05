@@ -51,11 +51,11 @@ export default function VanFinancePage() {
         <Container className="py-14">
           <div className="max-w-2xl">
             <Eyebrow>Van Finance</Eyebrow>
-            <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+            <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
               Spread the cost.<br />
               <span className="text-brand-500">Keep cash in the business.</span>
             </h1>
-            <p className="mt-4 text-[var(--text-md)] leading-relaxed text-ink-600">
+            <p className="mt-4 text-[length:var(--text-md)] leading-relaxed text-ink-600">
               Van finance lets you get on the road without tying up working capital. This guide explains the
               main options — HP, PCP and finance lease — so you can choose the right structure for your
               business before you apply.
@@ -77,25 +77,25 @@ export default function VanFinancePage() {
         <Container>
           <div className="mb-8">
             <Eyebrow>Finance options</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">HP, PCP or Finance Lease?</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">HP, PCP or Finance Lease?</h2>
           </div>
           <div className="grid gap-6 lg:grid-cols-3">
             {PRODUCTS.map((p) => (
               <div key={p.name} className="flex flex-col rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)]">
-                <span className="inline-flex self-start rounded-full bg-brand-tint px-2.5 py-0.5 text-[var(--text-xs)] font-semibold text-brand-700 mb-4">
+                <span className="inline-flex self-start rounded-full bg-brand-tint px-2.5 py-0.5 text-[length:var(--text-xs)] font-semibold text-brand-700 mb-4">
                   {p.tag}
                 </span>
-                <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">{p.name}</h3>
-                <p className="mt-2 text-[var(--text-sm)] leading-relaxed text-ink-600">{p.description}</p>
+                <h3 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">{p.name}</h3>
+                <p className="mt-2 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{p.description}</p>
                 <ul className="mt-4 flex-1 space-y-2">
                   {p.pros.map((pr) => (
-                    <li key={pr} className="flex items-start gap-2.5 text-[var(--text-sm)] text-ink-700">
+                    <li key={pr} className="flex items-start gap-2.5 text-[length:var(--text-sm)] text-ink-700">
                       <IconCheck width={14} height={14} className="mt-0.5 shrink-0 text-success-600" />
                       {pr}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-5 text-[var(--text-xs)] font-semibold text-ink-500">{p.best}</p>
+                <p className="mt-5 text-[length:var(--text-xs)] font-semibold text-ink-500">{p.best}</p>
               </div>
             ))}
           </div>
@@ -107,14 +107,14 @@ export default function VanFinancePage() {
         <Container>
           <div className="mx-auto max-w-2xl">
             <Eyebrow>Buyer tips</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">5 things to check before you sign</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">5 things to check before you sign</h2>
             <ul className="mt-5 space-y-3">
               {TIPS.map((tip, i) => (
                 <li key={tip} className="flex items-start gap-3 rounded-[var(--radius-lg)] border border-border bg-white p-4 shadow-[var(--shadow-xs)]">
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-brand-tint font-mono text-[var(--text-sm)] font-bold text-brand-600">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-brand-tint font-mono text-[length:var(--text-sm)] font-bold text-brand-600">
                     {i + 1}
                   </span>
-                  <span className="text-[var(--text-sm)] leading-relaxed text-ink-700">{tip}</span>
+                  <span className="text-[length:var(--text-sm)] leading-relaxed text-ink-700">{tip}</span>
                 </li>
               ))}
             </ul>
@@ -127,16 +127,16 @@ export default function VanFinancePage() {
         <Container>
           <div className="mx-auto max-w-2xl">
             <Eyebrow>Important</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-xl)] font-bold text-ink-900">We&apos;re not a lender or broker</h2>
-            <p className="mt-3 text-[var(--text-md)] leading-relaxed text-ink-600">
+            <h2 className="mt-2 font-display text-[length:var(--text-xl)] font-bold text-ink-900">We&apos;re not a lender or broker</h2>
+            <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
               Vansales provides this guide for information only. We do not offer finance directly, nor are
               we authorised to give financial advice. For a personalised quote, speak to a finance broker
               or your bank. Always read the full credit agreement before signing.
             </p>
             <div className="mt-5 rounded-[var(--radius-lg)] border border-amber-200 bg-amber-50 p-5">
-              <p className="text-[var(--text-sm)] font-semibold text-amber-800">Finance is credit. Think carefully before using any loan to buy a vehicle. Your van may be repossessed if you do not keep up repayments.</p>
+              <p className="text-[length:var(--text-sm)] font-semibold text-amber-800">Finance is credit. Think carefully before using any loan to buy a vehicle. Your van may be repossessed if you do not keep up repayments.</p>
             </div>
-            <p className="mt-6 text-[var(--text-sm)] text-ink-500">
+            <p className="mt-6 text-[length:var(--text-sm)] text-ink-500">
               Looking at specific stock?{" "}
               <Link href="/vans" className="font-semibold text-brand-600 hover:underline">Browse available vans →</Link>
             </p>

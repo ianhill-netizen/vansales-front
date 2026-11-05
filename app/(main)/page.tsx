@@ -120,8 +120,8 @@ export default async function HomePage() {
       {listings.length > 0 && (
       <Container className="pt-8">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Latest vans</h2>
-          <Link href="/vans" className="text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">{all.total >= 20 ? `View all ${all.total.toLocaleString("en-GB")}` : "View all vans"} →</Link>
+          <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Latest vans</h2>
+          <Link href="/vans" className="text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">{all.total >= 20 ? `View all ${all.total.toLocaleString("en-GB")}` : "View all vans"} →</Link>
         </div>
         <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {listings.map((l, i) => (
@@ -139,8 +139,8 @@ export default async function HomePage() {
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-xl)] border border-border bg-border sm:grid-cols-4">
           {stats.map((s) => (
             <div key={s.label} className="bg-white px-5 py-4 text-center">
-              <dd className="font-mono text-[var(--text-2xl)] font-bold text-ink-900">{s.value.toLocaleString("en-GB")}</dd>
-              <dt className="mt-0.5 text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">{s.label}</dt>
+              <dd className="font-mono text-[length:var(--text-2xl)] font-bold text-ink-900">{s.value.toLocaleString("en-GB")}</dd>
+              <dt className="mt-0.5 text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">{s.label}</dt>
             </div>
           ))}
         </dl>
@@ -151,7 +151,7 @@ export default async function HomePage() {
       {/* ── POPULAR MAKES ────────────────────────────────────────────────── */}
       {topMakes.length > 0 && (
         <Container className="pt-8">
-          <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Popular makes</h2>
+          <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Popular makes</h2>
           <div className="-mx-[var(--gutter)] mt-3 overflow-x-auto px-[var(--gutter)] pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <ul className="flex w-max gap-2">
               {topMakes.map((m) => {
@@ -160,11 +160,11 @@ export default async function HomePage() {
                   <li key={m.value}>
                     <Link
                       href={`/vans?v=${slug}`}
-                      className="group inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-border bg-white py-1.5 pl-2 pr-4 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+                      className="group inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-border bg-white py-1.5 pl-2 pr-4 text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
                     >
                       <MakeLogo make={slug} name={m.value} size={28} />
                       {m.value}
-                      <span className="font-mono text-[var(--text-xs)] font-normal text-ink-400">{m.count}</span>
+                      <span className="font-mono text-[length:var(--text-xs)] font-normal text-ink-400">{m.count}</span>
                     </Link>
                   </li>
                 );
@@ -183,10 +183,10 @@ export default async function HomePage() {
         >
           <div className="pointer-events-none absolute inset-0 opacity-30" aria-hidden style={{ backgroundImage: "radial-gradient(circle at 80% 40%, #f47c1e 0, transparent 38%), radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1px)", backgroundSize: "auto, 26px 26px" }} />
           <div className="relative">
-            <p className="font-display text-[var(--text-xl)] font-extrabold sm:text-[var(--text-2xl)]">Search by map</p>
-            <p className="mt-1 max-w-md text-[var(--text-sm)] text-white/70">Find vans near you on a map. Drag it around and the list follows.</p>
+            <p className="font-display text-[length:var(--text-xl)] font-extrabold sm:text-[length:var(--text-2xl)]">Search by map</p>
+            <p className="mt-1 max-w-md text-[length:var(--text-sm)] text-white/70">Find vans near you on a map. Drag it around and the list follows.</p>
           </div>
-          <span className="relative inline-flex shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-white px-4 py-2.5 text-[var(--text-sm)] font-bold text-ink-900 group-hover:bg-accent-50">
+          <span className="relative inline-flex shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-white px-4 py-2.5 text-[length:var(--text-sm)] font-bold text-ink-900 group-hover:bg-accent-50">
             Open map <IconArrow width={14} height={14} />
           </span>
         </Link>

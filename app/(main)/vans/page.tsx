@@ -175,7 +175,7 @@ export default async function VansPage({
       <section className="border-b border-border bg-white">
         <Container className="py-7">
           {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-700">Home</Link>
             <span aria-hidden className="text-ink-300">/</span>
             <span className="font-medium text-ink-600">Vans for sale</span>
@@ -184,7 +184,7 @@ export default async function VansPage({
           <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
             Vans for sale
           </h1>
-          <p className="mt-2 text-[var(--text-md)] text-ink-500">
+          <p className="mt-2 text-[length:var(--text-md)] text-ink-500">
             <span className="font-display font-bold text-brand-600">{facets.total.toLocaleString()}</span>{" "}
             {facets.total === 1 ? "van" : "vans"} available
           </p>
@@ -199,7 +199,7 @@ export default async function VansPage({
         {/* Results bar: count · Cash/Finance/Both · Grid/Map */}
         <div className="mb-5 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[var(--text-sm)] text-ink-500">
+            <p className="text-[length:var(--text-sm)] text-ink-500">
               {total > 0 ? (
                 <>
                   Showing <span className="font-mono font-semibold text-ink-800">{firstOnPage}–{lastOnPage}</span> of{" "}

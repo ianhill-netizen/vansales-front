@@ -39,14 +39,14 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
   const totalRepayable = deposit + monthly * term + residual;
   const totalCostOfCredit = totalRepayable - price;
 
-  const pill = "flex-1 rounded-[var(--radius-md)] border py-2 text-center text-[var(--text-sm)] font-semibold transition-colors";
+  const pill = "flex-1 rounded-[var(--radius-md)] border py-2 text-center text-[length:var(--text-sm)] font-semibold transition-colors";
   const activeP = "border-brand-500 bg-brand-500 text-white";
   const inactiveP = "border-border bg-white text-ink-600 hover:border-brand-500/50";
 
   return (
     <div className="rounded-[var(--radius-xl)] border border-border bg-card p-5">
-      <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Finance calculator</h3>
-      <p className="mt-0.5 text-[var(--text-xs)] text-ink-400">Illustrative only — apply for a personalised quote</p>
+      <h3 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Finance calculator</h3>
+      <p className="mt-0.5 text-[length:var(--text-xs)] text-ink-400">Illustrative only — apply for a personalised quote</p>
 
       {/* Finance type */}
       <div className="mt-4 flex gap-2">
@@ -61,7 +61,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
       {/* Van price */}
       {!vanPrice && (
         <div className="mt-4">
-          <label className="block text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
+          <label className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
             Van price
           </label>
           <div className="mt-1.5 flex items-center rounded-[var(--radius-md)] border border-border bg-surface-0 px-3">
@@ -71,7 +71,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
               min={1000} max={150000} step={500}
               value={price}
               onChange={(e) => setPrice(Math.max(1000, Number(e.target.value) || defaultPrice))}
-              className="h-10 flex-1 bg-transparent pl-2 text-[var(--text-base)] text-ink-800 outline-none"
+              className="h-10 flex-1 bg-transparent pl-2 text-[length:var(--text-base)] text-ink-800 outline-none"
             />
           </div>
         </div>
@@ -79,7 +79,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
 
       {/* Deposit */}
       <div className="mt-4">
-        <label className="block text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
+        <label className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
           Deposit — {depositPct}% ({fmt(deposit)})
         </label>
         <div className="mt-2 flex gap-2">
@@ -94,7 +94,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
 
       {/* Term */}
       <div className="mt-4">
-        <label className="block text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
+        <label className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
           Term
         </label>
         <div className="mt-2 flex gap-2">
@@ -109,7 +109,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
 
       {/* APR */}
       <div className="mt-4">
-        <label className="block text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
+        <label className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
           Representative APR — {apr}%
         </label>
         <input
@@ -118,7 +118,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
           onChange={(e) => setApr(Number(e.target.value))}
           className="mt-2 w-full accent-brand-500"
         />
-        <div className="flex justify-between text-[var(--text-2xs)] text-ink-400">
+        <div className="flex justify-between text-[length:var(--text-2xs)] text-ink-400">
           <span>3%</span><span>29.9%</span>
         </div>
       </div>
@@ -127,9 +127,9 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
       <div className="mt-5 rounded-[var(--radius-lg)] bg-ink-900 p-4 text-white">
         <div className="flex items-baseline gap-2">
           <span className="font-display text-[clamp(1.8rem,4vw,2.4rem)] font-extrabold">{fmt(monthly)}</span>
-          <span className="text-[var(--text-sm)] text-white/60">/ month</span>
+          <span className="text-[length:var(--text-sm)] text-white/60">/ month</span>
         </div>
-        <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[var(--text-xs)] text-white/55">
+        <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[length:var(--text-xs)] text-white/55">
           <span>Deposit</span><span className="text-right text-white/80">{fmt(deposit)}</span>
           <span>Borrowed</span><span className="text-right text-white/80">{fmt(borrowed)}</span>
           {type === "pcp" && condition === "new" && <><span>Optional final pmt</span><span className="text-right text-white/80">{fmt(residual)}</span></>}
@@ -139,7 +139,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
         </div>
       </div>
 
-      <p className="mt-2 text-[var(--text-2xs)] leading-relaxed text-ink-400">
+      <p className="mt-2 text-[length:var(--text-2xs)] leading-relaxed text-ink-400">
         Representative example for illustration only. Subject to status. Finance arranged through Dealski Finance Ltd.
         {type === "pcp" && condition === "new" && " PCP residual estimated at 30% of purchase price — actual value varies."}
       </p>
@@ -149,7 +149,7 @@ export function FinanceCalculator({ vanPrice, applyUrl, condition }: Props) {
           href={applyUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-600"
+          className="mt-4 flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-500 text-[length:var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-600"
         >
           Apply for finance →
         </Link>

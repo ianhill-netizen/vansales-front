@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <div className="border-b border-border bg-surface-1">
         <Container className="py-10">
-          <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-[length:var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
             <Link href="/" className="hover:text-ink-700 transition-colors">Home</Link>
             <span className="text-ink-300">/</span>
             <Link href="/blog" className="hover:text-ink-700 transition-colors">Blog</Link>
@@ -128,12 +128,12 @@ export default async function BlogPostPage({ params }: Props) {
           </nav>
           <div className="max-w-[var(--content-max)]">
             {post.date && (
-              <div className="flex items-center gap-2 text-[var(--text-sm)] text-ink-500">
+              <div className="flex items-center gap-2 text-[length:var(--text-sm)] text-ink-500">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent-500" />
                 <time dateTime={post.date} className="font-medium">{formatDate(post.date)}</time>
               </div>
             )}
-            <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight tracking-[var(--tracking-display)] text-ink-900">
+            <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight tracking-[var(--tracking-display)] text-ink-900">
               {post.title}
             </h1>
             {post.heroImage && (
@@ -194,7 +194,7 @@ export default async function BlogPostPage({ params }: Props) {
           )}
 
           <div className="mt-10 border-t border-border pt-8">
-            <Link href="/blog" className="text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">
+            <Link href="/blog" className="text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">
               ← Back to all guides
             </Link>
           </div>

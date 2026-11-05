@@ -78,8 +78,8 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
       <div className="p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 id={titleId} className="font-display text-[var(--text-lg)] font-bold text-ink-900">Book a call</h2>
-            <p className="mt-1 text-[var(--text-sm)] text-ink-500">{dealerName} will call you back about this van.</p>
+            <h2 id={titleId} className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Book a call</h2>
+            <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">{dealerName} will call you back about this van.</p>
           </div>
           <button type="button" onClick={() => ref.current?.close()} aria-label="Close" className="grid size-9 shrink-0 place-items-center rounded-[var(--radius-md)] text-ink-500 hover:bg-surface-1 hover:text-ink-900">
             <IconX width={18} height={18} aria-hidden />
@@ -92,7 +92,7 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
               <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
               <div>
                 <p className="font-semibold text-success-600">Request sent.</p>
-                <p className="mt-1 text-[var(--text-sm)] text-ink-600">{dealerName} will call you back.</p>
+                <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">{dealerName} will call you back.</p>
               </div>
             </div>
             <Button type="button" variant="primary" size="lg" className="mt-4 w-full" onClick={() => ref.current?.close()}>Done</Button>
@@ -116,13 +116,13 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
             </Field>
 
             {state === "error" && (
-              <p role="alert" className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-sold-600">{error}</p>
+              <p role="alert" className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-sold-600">{error}</p>
             )}
 
             <Button type="submit" variant="primary" size="lg" className="w-full" disabled={state === "submitting"}>
               {state === "submitting" ? "Sending…" : "Request a call back"}
             </Button>
-            <p className="text-center text-[var(--text-xs)] text-ink-400">Your details go only to {dealerName}.</p>
+            <p className="text-center text-[length:var(--text-xs)] text-ink-400">Your details go only to {dealerName}.</p>
           </form>
         )}
       </div>

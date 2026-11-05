@@ -35,11 +35,11 @@ export default function SellPage() {
           <div className="grid items-center gap-10 lg:grid-cols-2">
             <div>
               <Eyebrow>Sell your van</Eyebrow>
-              <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+              <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
                 Sell your van for free.<br />
                 <span className="text-brand-500">No fees. No hassle.</span>
               </h1>
-              <p className="mt-4 max-w-lg text-[var(--text-md)] leading-relaxed text-ink-600">
+              <p className="mt-4 max-w-lg text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 List your van in under 5 minutes and reach thousands of UK buyers who are actively
                 searching right now. Private listings are completely free.
               </p>
@@ -54,10 +54,10 @@ export default function SellPage() {
             </div>
             {/* Feature checklist */}
             <div className="rounded-[var(--radius-xl)] border border-border bg-white p-8 shadow-[var(--shadow-md)]">
-              <p className="font-display text-[var(--text-lg)] font-bold text-ink-900">What you get, free</p>
+              <p className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">What you get, free</p>
               <ul className="mt-4 space-y-3">
                 {FEATURES.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-[var(--text-sm)] text-ink-700">
+                  <li key={f} className="flex items-start gap-3 text-[length:var(--text-sm)] text-ink-700">
                     <IconCheck width={16} height={16} className="mt-0.5 shrink-0 text-success-600" />
                     {f}
                   </li>
@@ -73,16 +73,16 @@ export default function SellPage() {
         <Container>
           <div className="mb-8 text-center">
             <Eyebrow>How it works</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">3 steps to sold</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">3 steps to sold</h2>
           </div>
           <div className="grid gap-6 sm:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.n} className="relative rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)]">
-                <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-tint font-mono text-[var(--text-base)] font-bold text-brand-600">
+                <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-tint font-mono text-[length:var(--text-base)] font-bold text-brand-600">
                   {s.n}
                 </span>
-                <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">{s.title}</h3>
-                <p className="mt-2 text-[var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
+                <h3 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">{s.title}</h3>
+                <p className="mt-2 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{s.body}</p>
               </div>
             ))}
           </div>
@@ -94,25 +94,25 @@ export default function SellPage() {
         <Container>
           <div className="mx-auto max-w-xl rounded-[var(--radius-2xl)] border border-border bg-white p-8 shadow-[var(--shadow-md)]">
             <Eyebrow>Get started</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">List your van</h2>
-            <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">List your van</h2>
+            <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
               Full self-serve listing is coming soon. In the meantime, contact us and we&apos;ll list your van within 1 business hour.
             </p>
             <div className="mt-6 space-y-3">
               {["Your name", "Email address", "Phone number", "Van registration"].map((label, i) => (
                 <label key={label} className="block">
-                  <span className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">{label}</span>
+                  <span className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">{label}</span>
                   <input
                     type={i === 1 ? "email" : i === 2 ? "tel" : "text"}
                     placeholder={i === 3 ? "e.g. AB12 CDE" : ""}
-                    className="h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-base)] text-ink-800 outline-none focus-visible:border-brand-500"
+                    className="h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-base)] text-ink-800 outline-none focus-visible:border-brand-500"
                   />
                 </label>
               ))}
               <Button variant="primary" size="lg" className="mt-2 w-full" disabled>
                 Submit listing request
               </Button>
-              <p className="text-center text-[var(--text-xs)] text-ink-400">
+              <p className="text-center text-[length:var(--text-xs)] text-ink-400">
                 Or call <a href="tel:+441656507619" className="font-semibold text-ink-600 underline">01656 507619</a> — we&apos;ll list it for you in minutes.
               </p>
             </div>
@@ -124,7 +124,7 @@ export default function SellPage() {
       <section className="py-14">
         <Container>
           <div className="mx-auto max-w-2xl">
-            <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Common questions</h2>
+            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Common questions</h2>
             <div className="mt-4 divide-y divide-border">
               {[
                 { q: "Is it really free?", a: "Yes. Private listings are always free on Vansales. No card required, no trial period." },
@@ -134,11 +134,11 @@ export default function SellPage() {
               ].map((item) => (
                 <div key={item.q} className="py-4">
                   <p className="font-semibold text-ink-900">{item.q}</p>
-                  <p className="mt-1 text-[var(--text-sm)] text-ink-600">{item.a}</p>
+                  <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">{item.a}</p>
                 </div>
               ))}
             </div>
-            <p className="mt-6 text-[var(--text-sm)] text-ink-500">
+            <p className="mt-6 text-[length:var(--text-sm)] text-ink-500">
               More questions?{" "}
               <Link href="/advertise" className="font-semibold text-brand-600 hover:underline">
                 See our dealer / trade options →

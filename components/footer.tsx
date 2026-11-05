@@ -53,20 +53,20 @@ export function Footer() {
         <Container className="flex flex-col items-start justify-between gap-6 py-12 sm:flex-row sm:items-center">
           <div>
             <Logo tone="light" />
-            <p className="mt-4 max-w-sm text-[var(--text-base)] leading-relaxed text-ink-400">
+            <p className="mt-4 max-w-sm text-[length:var(--text-base)] leading-relaxed text-ink-400">
               The UK&rsquo;s straight-talking van marketplace — spec-first search from verified dealers.
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-3 sm:items-end">
             <a
               href={`tel:${SITE.phone.replace(/[^\d+]/g, "")}`}
-              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-ink-700 px-4 py-2.5 text-[var(--text-sm)] font-semibold text-ink-300 transition-colors hover:border-ink-500 hover:text-white"
+              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-ink-700 px-4 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-300 transition-colors hover:border-ink-500 hover:text-white"
             >
               {SITE.phone}
             </a>
             <Link
               href="/sell"
-              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-[var(--text-sm)] font-bold text-white"
+              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-[length:var(--text-sm)] font-bold text-white"
               style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
             >
               Advertise your van →
@@ -79,7 +79,7 @@ export function Footer() {
       <Container className="grid gap-10 py-12 md:grid-cols-[1.2fr_repeat(3,1fr)]">
         {/* SEO text column */}
         <div>
-          <p className="text-[var(--text-sm)] leading-relaxed text-ink-500">
+          <p className="text-[length:var(--text-sm)] leading-relaxed text-ink-500">
             Vansales brings together thousands of used and new vans for sale from verified UK
             dealers. Filter by payload, wheelbase, ULEZ compliance and Euro 6 status to find
             the van that fits the job.
@@ -96,7 +96,7 @@ export function Footer() {
               <Link
                 key={m.href}
                 href={m.href}
-                className="rounded-[var(--radius-sm)] border border-ink-800 px-2.5 py-1 text-[var(--text-xs)] font-semibold text-ink-500 transition-colors hover:border-ink-600 hover:text-ink-300"
+                className="rounded-[var(--radius-sm)] border border-ink-800 px-2.5 py-1 text-[length:var(--text-xs)] font-semibold text-ink-500 transition-colors hover:border-ink-600 hover:text-ink-300"
               >
                 {m.label}
               </Link>
@@ -106,7 +106,7 @@ export function Footer() {
 
         {COLS.map((col) => (
           <nav key={col.title} aria-label={col.title}>
-            <h2 className="font-mono text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
+            <h2 className="font-mono text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">
               {col.title}
             </h2>
             <ul className="mt-5 space-y-3">
@@ -114,7 +114,7 @@ export function Footer() {
                 <li key={l.label}>
                   <Link
                     href={l.href}
-                    className="text-[var(--text-sm)] text-ink-400 transition-colors hover:text-white"
+                    className="text-[length:var(--text-sm)] text-ink-400 transition-colors hover:text-white"
                   >
                     {l.label}
                   </Link>
@@ -127,7 +127,7 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-ink-800">
-        <Container className="flex flex-col gap-2 py-5 text-[var(--text-xs)] text-ink-600 sm:flex-row sm:items-center sm:justify-between">
+        <Container className="flex flex-col gap-2 py-5 text-[length:var(--text-xs)] text-ink-600 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="mb-1 text-ink-500">Vansales — the UK&apos;s straight-talking van marketplace. Built in Wales.</p>
             <p>© {new Date().getFullYear()} {SITE.name}</p>

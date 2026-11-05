@@ -21,8 +21,8 @@ export function InternalLinks({
   const heading = id ?? `links-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   return (
     <section aria-labelledby={heading} className={className}>
-      <h2 id={heading} className="font-display text-[var(--text-lg)] font-bold text-ink-900">{title}</h2>
-      <ul className={`mt-3 ${cols} gap-x-8 text-[var(--text-sm)]`}>
+      <h2 id={heading} className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">{title}</h2>
+      <ul className={`mt-3 ${cols} gap-x-8 text-[length:var(--text-sm)]`}>
         {links.map((l) => (
           <li key={l.href + l.label} className="break-inside-avoid py-1">
             <Link href={l.href} className="text-brand-700 hover:underline">{l.label}</Link>

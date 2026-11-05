@@ -36,7 +36,7 @@ export function countMatches(data: PickerData, sel: PickerSelection): number {
 const norm = (s: string) => s.normalize("NFD").replace(/\p{Mn}/gu, "").toLowerCase().trim();
 
 function pillCls(on: boolean): string {
-  return `group inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
+  return `group inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[length:var(--text-sm)] font-semibold transition-colors ${
     on ? "border-brand-600 bg-brand-600 text-white" : "border-border bg-surface-1 text-ink-700 hover:border-brand-300 hover:text-brand-700"
   }`;
 }
@@ -47,7 +47,7 @@ function Pill({ pill, on, onClick, kind }: { pill: PickerPill; on: boolean; onCl
       {kind === "make" && <MakeLogo make={pill.slug} name={pill.name} size={24} />}
       {kind === "body" && <BodyTypeIcon slug={pill.slug} strokeWidth={1.6} className="h-4 w-6 shrink-0" />}
       {pill.name}
-      <span className={`text-[var(--text-xs)] font-normal ${on ? "text-white/75" : "text-ink-400"}`}>{pill.count}</span>
+      <span className={`text-[length:var(--text-xs)] font-normal ${on ? "text-white/75" : "text-ink-400"}`}>{pill.count}</span>
     </button>
   );
 }
@@ -55,7 +55,7 @@ function Pill({ pill, on, onClick, kind }: { pill: PickerPill; on: boolean; onCl
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-4 first:mt-0">
-      <h3 className="mb-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">{title}</h3>
+      <h3 className="mb-2 text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">{title}</h3>
       <div className="flex flex-wrap gap-2">{children}</div>
     </section>
   );
@@ -168,11 +168,11 @@ export function VehiclePicker({
       )}
       {modelGroups.length > 0 && (
         <section className="mt-4">
-          <h3 className="mb-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">Models</h3>
+          <h3 className="mb-2 text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">Models</h3>
           <div className="space-y-3">
             {modelGroups.map((g) => (
               <div key={g.make.slug}>
-                {makesSelected.length > 1 && <p className="mb-1.5 text-[var(--text-xs)] font-semibold text-ink-500">{g.make.name}</p>}
+                {makesSelected.length > 1 && <p className="mb-1.5 text-[length:var(--text-xs)] font-semibold text-ink-500">{g.make.name}</p>}
                 <div className="flex flex-wrap gap-2">
                   {g.models.map((m) => <Pill key={m.slug} pill={m} on={isModel(g.make.slug, m.slug)} onClick={() => toggleModel(g.make.slug, m.slug)} />)}
                 </div>
@@ -192,7 +192,7 @@ export function VehiclePicker({
         </Section>
       )}
       {makePills.length === 0 && modelGroups.length === 0 && bodyPills.length === 0 && fuelPills.length === 0 && (
-        <p className="py-4 text-[var(--text-sm)] text-ink-500">{text ? `Nothing matches “${text}”.` : "No vans are listed yet."}</p>
+        <p className="py-4 text-[length:var(--text-sm)] text-ink-500">{text ? `Nothing matches “${text}”.` : "No vans are listed yet."}</p>
       )}
     </div>
   );
@@ -230,11 +230,11 @@ export function VehiclePicker({
         aria-label="Search makes, models, body types and fuels"
         aria-controls={sheetId}
         autoComplete="off"
-        className="min-w-[8rem] flex-1 bg-transparent px-1.5 py-1.5 text-[var(--text-base)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400"
+        className="min-w-[8rem] flex-1 bg-transparent px-1.5 py-1.5 text-[length:var(--text-base)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400"
         readOnly={isMobile && !open}
       />
       {anySelected && (
-        <button type="button" onClick={(e) => { e.stopPropagation(); clearAll(); }} className="px-2 text-[var(--text-xs)] font-semibold text-ink-400 hover:text-brand-600">
+        <button type="button" onClick={(e) => { e.stopPropagation(); clearAll(); }} className="px-2 text-[length:var(--text-xs)] font-semibold text-ink-400 hover:text-brand-600">
           Clear
         </button>
       )}
@@ -257,8 +257,8 @@ export function VehiclePicker({
       {isMobile && open && typeof document !== "undefined" && createPortal(
         <div id={sheetId} role="dialog" aria-modal="true" aria-label="Choose make, model, body type and fuel" className="fixed inset-0 z-[70] flex flex-col bg-white">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <p className="font-display text-[var(--text-base)] font-bold text-ink-900">Find a van</p>
-            <button type="button" onClick={() => setOpen(false)} className="rounded-[var(--radius-md)] px-3 py-1.5 text-[var(--text-sm)] font-semibold text-brand-600">Done</button>
+            <p className="font-display text-[length:var(--text-base)] font-bold text-ink-900">Find a van</p>
+            <button type="button" onClick={() => setOpen(false)} className="rounded-[var(--radius-md)] px-3 py-1.5 text-[length:var(--text-sm)] font-semibold text-brand-600">Done</button>
           </div>
           <div className="border-b border-border px-4 py-3">{bar}</div>
           <div className="flex-1 overflow-y-auto px-4 py-4">{panel}</div>
@@ -266,7 +266,7 @@ export function VehiclePicker({
             <button
               type="button"
               onClick={() => { setOpen(false); onSubmit?.(); }}
-              className="h-12 w-full rounded-[var(--radius-xl)] text-[var(--text-base)] font-bold text-white shadow-[var(--shadow-md)]"
+              className="h-12 w-full rounded-[var(--radius-xl)] text-[length:var(--text-base)] font-bold text-white shadow-[var(--shadow-md)]"
               style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
             >
               Show {liveCount.toLocaleString("en-GB")} {liveCount === 1 ? "van" : "vans"}
@@ -281,7 +281,7 @@ export function VehiclePicker({
 
 function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-brand-600 py-1 pl-3 pr-1.5 text-[var(--text-sm)] font-semibold text-white">
+    <span className="inline-flex items-center gap-1 rounded-full bg-brand-600 py-1 pl-3 pr-1.5 text-[length:var(--text-sm)] font-semibold text-white">
       {label}
       <button
         type="button"

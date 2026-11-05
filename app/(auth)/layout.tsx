@@ -12,8 +12,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/"><Logo tone="dark" /></Link>
           <div className="flex items-center gap-4">
-            <Link href="/vans" className="text-[var(--text-sm)] font-medium text-ink-500 hover:text-ink-900">Browse vans</Link>
-            <Link href="/advertise" className="rounded-[var(--radius-md)] border border-border px-3 py-1.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400 hover:bg-surface-1 transition-colors">For dealers →</Link>
+            <Link href="/vans" className="text-[length:var(--text-sm)] font-medium text-ink-500 hover:text-ink-900">Browse vans</Link>
+            <Link href="/advertise" className="rounded-[var(--radius-md)] border border-border px-3 py-1.5 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400 hover:bg-surface-1 transition-colors">For dealers →</Link>
           </div>
         </div>
       </header>

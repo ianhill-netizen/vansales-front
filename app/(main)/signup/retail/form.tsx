@@ -65,10 +65,10 @@ export function RetailSignupForm() {
         <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-accent-tint text-accent-500">
           <CheckIcon />
         </div>
-        <h3 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+        <h3 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
           You&rsquo;re on the list
         </h3>
-        <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+        <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
           We&rsquo;ll alert you the moment matching stock arrives.
         </p>
       </div>
@@ -107,7 +107,7 @@ export function RetailSignupForm() {
       <div className="flex flex-col gap-1">
         <label
           htmlFor="looking_for"
-          className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500"
+          className="text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500"
         >
           What are you after?{" "}
           <span className="normal-case tracking-normal text-ink-400">(optional)</span>
@@ -117,12 +117,12 @@ export function RetailSignupForm() {
           name="looking_for"
           rows={3}
           placeholder="e.g. Ford Transit Custom, medium wheelbase, diesel, under £20k"
-          className="w-full resize-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3.5 py-2.5 text-[var(--text-base)] font-medium text-ink-800 placeholder:text-ink-400 outline-none transition-colors duration-[var(--dur-fast)] focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)]"
+          className="w-full resize-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3.5 py-2.5 text-[length:var(--text-base)] font-medium text-ink-800 placeholder:text-ink-400 outline-none transition-colors duration-[var(--dur-fast)] focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)]"
         />
       </div>
 
       {formState === "error" && (
-        <p className="rounded-[var(--radius-md)] bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] text-danger-600">
+        <p className="rounded-[var(--radius-md)] bg-danger-tint px-3 py-2.5 text-[length:var(--text-sm)] text-danger-600">
           {errorMsg}
         </p>
       )}
@@ -130,7 +130,7 @@ export function RetailSignupForm() {
       <button
         type="submit"
         disabled={formState === "submitting"}
-        className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] text-[var(--text-base)] font-bold text-white transition disabled:opacity-60"
+        className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] text-[length:var(--text-base)] font-bold text-white transition disabled:opacity-60"
         style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
       >
         {formState === "submitting" ? (

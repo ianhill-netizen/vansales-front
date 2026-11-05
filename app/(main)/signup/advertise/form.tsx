@@ -75,10 +75,10 @@ export function AdvertiseSignupForm() {
         <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-accent-tint text-accent-500">
           <CheckIcon />
         </div>
-        <h3 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+        <h3 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
           Media pack on its way
         </h3>
-        <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+        <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
           We&rsquo;ll send our media pack within 1 business day.
         </p>
       </div>
@@ -132,7 +132,7 @@ export function AdvertiseSignupForm() {
       />
 
       {formState === "error" && (
-        <p className="rounded-[var(--radius-md)] bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] text-danger-600">
+        <p className="rounded-[var(--radius-md)] bg-danger-tint px-3 py-2.5 text-[length:var(--text-sm)] text-danger-600">
           {errorMsg}
         </p>
       )}
@@ -140,7 +140,7 @@ export function AdvertiseSignupForm() {
       <button
         type="submit"
         disabled={formState === "submitting"}
-        className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] text-[var(--text-base)] font-bold text-white transition disabled:opacity-60"
+        className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] text-[length:var(--text-base)] font-bold text-white transition disabled:opacity-60"
         style={{ background: "linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%)" }}
       >
         {formState === "submitting" ? (

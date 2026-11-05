@@ -65,7 +65,7 @@ export function QuickFilters({ sp = {}, className = "" }: { sp?: Search; classNa
                 href={hrefFor(c, sp)}
                 scroll={false}
                 aria-current={active ? "true" : undefined}
-                className={`inline-flex whitespace-nowrap rounded-[var(--radius-pill)] border px-4 py-2 text-[var(--text-sm)] font-semibold transition-colors ${
+                className={`inline-flex whitespace-nowrap rounded-[var(--radius-pill)] border px-4 py-2 text-[length:var(--text-sm)] font-semibold transition-colors ${
                   active ? "border-brand-600 bg-brand-600 text-white" : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
                 }`}
               >

@@ -78,7 +78,7 @@ export function ChipSearch({
         {value.map((c, i) => (
           <span
             key={`${c.make}:${c.model ?? ""}`}
-            className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-brand-600 py-1 pl-3 pr-1.5 text-[var(--text-sm)] font-semibold text-white"
+            className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-brand-600 py-1 pl-3 pr-1.5 text-[length:var(--text-sm)] font-semibold text-white"
           >
             {chipLabel(c)}
             <button
@@ -105,7 +105,7 @@ export function ChipSearch({
           onKeyDown={onKeyDown}
           placeholder={value.length === 0 ? placeholder : "Add another make or model…"}
           autoComplete="off"
-          className={`min-w-[10rem] flex-1 bg-transparent px-1.5 py-1.5 text-[var(--text-base)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400 ${inputClassName}`}
+          className={`min-w-[10rem] flex-1 bg-transparent px-1.5 py-1.5 text-[length:var(--text-base)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400 ${inputClassName}`}
         />
       </div>
 
@@ -123,10 +123,10 @@ export function ChipSearch({
               aria-selected={i === active}
               onMouseDown={(e) => { e.preventDefault(); add(s); }}
               onMouseEnter={() => setActive(i)}
-              className={`flex cursor-pointer items-center justify-between rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] ${i === active ? "bg-brand-50 text-brand-700" : "text-ink-700"}`}
+              className={`flex cursor-pointer items-center justify-between rounded-[var(--radius-md)] px-3 py-2 text-[length:var(--text-sm)] ${i === active ? "bg-brand-50 text-brand-700" : "text-ink-700"}`}
             >
               <span className="font-semibold">{s.label}</span>
-              <span className="text-[var(--text-2xs)] uppercase tracking-wider text-ink-400">{s.model ? "Model" : "Make"}</span>
+              <span className="text-[length:var(--text-2xs)] uppercase tracking-wider text-ink-400">{s.model ? "Model" : "Make"}</span>
             </li>
           ))}
         </ul>

@@ -46,7 +46,7 @@ export default function ComingSoonPage() {
       <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-16">
         <div className="mx-auto w-full max-w-2xl">
           {/* Eyebrow */}
-          <p className="mb-4 inline-flex items-center gap-2 rounded-[var(--radius-pill)] border border-white/15 bg-white/8 px-3.5 py-1.5 font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/60">
+          <p className="mb-4 inline-flex items-center gap-2 rounded-[var(--radius-pill)] border border-white/15 bg-white/8 px-3.5 py-1.5 font-mono text-[length:var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/60">
             <span
               className="inline-block size-2 rounded-full bg-accent-400"
               style={{ animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite" }}
@@ -61,14 +61,14 @@ export default function ComingSoonPage() {
             style={{ background: "linear-gradient(135deg, #0e2a6e 0%, #1a4ab0 60%, #0f3060 100%)" }}
           >
             <div className="p-7 pb-5">
-              <p className="font-mono text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-white/40">
+              <p className="font-mono text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-white/40">
                 {SITE.name}
               </p>
               <h1 className="mt-2 font-display text-[clamp(2.2rem,1rem+5vw,3.6rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white">
                 Opening August&nbsp;2026
                 <span className="text-accent-400">.</span>
               </h1>
-              <p className="mt-4 max-w-lg text-[var(--text-md)] leading-relaxed text-white/65">
+              <p className="mt-4 max-w-lg text-[length:var(--text-md)] leading-relaxed text-white/65">
                 The UK marketplace for new &amp; used vans — dealers and private sellers in one
                 honest place. Find your next van by the numbers that matter.
               </p>
@@ -86,10 +86,10 @@ export default function ComingSoonPage() {
                   key={item.label}
                   className="flex flex-1 flex-col gap-0.5 border-r border-white/10 px-4 py-3 last:border-r-0"
                 >
-                  <span className="font-mono text-[var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/35">
+                  <span className="font-mono text-[length:var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/35">
                     {item.label}
                   </span>
-                  <span className="text-[var(--text-sm)] font-semibold text-white/80">
+                  <span className="text-[length:var(--text-sm)] font-semibold text-white/80">
                     {item.value}
                   </span>
                 </div>
@@ -99,7 +99,7 @@ export default function ComingSoonPage() {
 
           {/* Register interest form */}
           <div>
-            <p className="mb-4 font-display text-[var(--text-lg)] font-bold text-white">
+            <p className="mb-4 font-display text-[length:var(--text-lg)] font-bold text-white">
               Get notified at launch
             </p>
             <WaitlistForm />
@@ -109,7 +109,7 @@ export default function ComingSoonPage() {
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/10 px-6 py-6">
-        <div className="mx-auto flex max-w-2xl flex-col gap-1 text-[var(--text-xs)] text-white/35 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-2xl flex-col gap-1 text-[length:var(--text-xs)] text-white/35 sm:flex-row sm:items-center sm:justify-between">
           <p>
             Questions?{" "}
             <a

@@ -83,10 +83,10 @@ export default async function VanReviewsPage() {
       <section className="border-b border-border bg-surface-1">
         <Container className="py-12">
           <Eyebrow>Van Reviews</Eyebrow>
-          <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+          <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
             Expert van reviews
           </h1>
-          <p className="mt-3 max-w-xl text-[var(--text-md)] leading-relaxed text-ink-600">
+          <p className="mt-3 max-w-xl text-[length:var(--text-md)] leading-relaxed text-ink-600">
             In-depth guides to the UK&apos;s most popular commercial vans — real-world pros, cons and who
             each model suits best. No manufacturer money, no sponsored rankings.
           </p>
@@ -98,7 +98,7 @@ export default async function VanReviewsPage() {
         <Container>
           <div className="mb-8">
             <Eyebrow>Our picks</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">Most searched-for models</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">Most searched-for models</h2>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURED.map((r) => (
@@ -108,10 +108,10 @@ export default async function VanReviewsPage() {
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <span className="inline-flex rounded-full bg-brand-tint px-2.5 py-0.5 text-[var(--text-xs)] font-semibold text-brand-700">
+                    <span className="inline-flex rounded-full bg-brand-tint px-2.5 py-0.5 text-[length:var(--text-xs)] font-semibold text-brand-700">
                       {r.tag}
                     </span>
-                    <h3 className="mt-2 font-display text-[var(--text-lg)] font-bold text-ink-900">
+                    <h3 className="mt-2 font-display text-[length:var(--text-lg)] font-bold text-ink-900">
                       {r.make} {r.model}
                     </h3>
                   </div>
@@ -121,20 +121,20 @@ export default async function VanReviewsPage() {
                     ))}
                   </div>
                 </div>
-                <p className="mt-3 flex-1 text-[var(--text-sm)] leading-relaxed text-ink-600">{r.verdict}</p>
+                <p className="mt-3 flex-1 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{r.verdict}</p>
                 <div className="mt-4 space-y-1">
                   {r.pros.map((p) => (
-                    <p key={p} className="flex items-start gap-2 text-[var(--text-xs)] text-success-700">
+                    <p key={p} className="flex items-start gap-2 text-[length:var(--text-xs)] text-success-700">
                       <IconCheck width={13} height={13} className="mt-0.5 shrink-0 text-success-600" />{p}
                     </p>
                   ))}
-                  <p className="flex items-start gap-2 text-[var(--text-xs)] text-ink-500">
-                    <span className="mt-0.5 shrink-0 text-[var(--text-base)] leading-none text-ink-300">—</span>{r.con}
+                  <p className="flex items-start gap-2 text-[length:var(--text-xs)] text-ink-500">
+                    <span className="mt-0.5 shrink-0 text-[length:var(--text-base)] leading-none text-ink-300">—</span>{r.con}
                   </p>
                 </div>
                 <Link
                   href={`/vans/${slugify(r.make)}/${slugify(r.model)}`}
-                  className="mt-5 flex items-center gap-1.5 text-[var(--text-sm)] font-semibold text-brand-600 hover:underline"
+                  className="mt-5 flex items-center gap-1.5 text-[length:var(--text-sm)] font-semibold text-brand-600 hover:underline"
                 >
                   See {r.make} {r.model} stock <IconArrow width={15} height={15} />
                 </Link>
@@ -149,20 +149,20 @@ export default async function VanReviewsPage() {
         <Container>
           <div className="mb-6">
             <Eyebrow>Browse by make</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">Explore stock by brand</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">Explore stock by brand</h2>
           </div>
           <div className="flex flex-wrap gap-2">
             {topMakes.map((make) => (
               <Link
                 key={make}
                 href={`/vans/${slugify(make)}`}
-                className="rounded-[var(--radius-pill)] border border-border bg-white px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] transition-colors hover:border-brand-500 hover:text-brand-600"
+                className="rounded-[var(--radius-pill)] border border-border bg-white px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] transition-colors hover:border-brand-500 hover:text-brand-600"
               >
                 {make}
               </Link>
             ))}
           </div>
-          <p className="mt-5 text-[var(--text-sm)] text-ink-500">
+          <p className="mt-5 text-[length:var(--text-sm)] text-ink-500">
             <Link href="/directory" className="font-semibold text-brand-600 hover:underline">
               Full A–Z directory of all makes &amp; models →
             </Link>
@@ -174,7 +174,7 @@ export default async function VanReviewsPage() {
       <section className="py-10">
         <Container>
           <div className="mx-auto max-w-2xl rounded-[var(--radius-lg)] border border-border bg-white p-6 text-center shadow-[var(--shadow-xs)]">
-            <p className="text-[var(--text-sm)] text-ink-600">
+            <p className="text-[length:var(--text-sm)] text-ink-600">
               Our reviews are written by the Vansales team based on experience, owner feedback and
               published test data. We have no commercial arrangement with any manufacturer. Stock
               availability and prices come from our live Dealski feed and change daily.

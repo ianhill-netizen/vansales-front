@@ -17,8 +17,8 @@ export default function FinanceHireFleetPage() {
         <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-[var(--radius-xl)] bg-ink-900 text-white">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         </div>
-        <h1 className="mt-3 font-display text-[var(--text-xl)] font-extrabold text-ink-900">Finance / hire / fleet enquiry</h1>
-        <p className="mt-1 text-[var(--text-sm)] text-ink-500">Bulk disposal, fleet remarketing, wholesale. Tell us about your operation and we&apos;ll arrange a call.</p>
+        <h1 className="mt-3 font-display text-[length:var(--text-xl)] font-extrabold text-ink-900">Finance / hire / fleet enquiry</h1>
+        <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">Bulk disposal, fleet remarketing, wholesale. Tell us about your operation and we&apos;ll arrange a call.</p>
       </div>
       <div className="rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-md)]">
         <form onSubmit={handleSubmit} className="space-y-4 px-6 py-6">
@@ -29,15 +29,15 @@ export default function FinanceHireFleetPage() {
             { id: "phone", label: "Phone", type: "tel", auto: "tel" },
           ].map((f) => (
             <div key={f.id}>
-              <label htmlFor={f.id} className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">{f.label}</label>
+              <label htmlFor={f.id} className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">{f.label}</label>
               <input id={f.id} name={f.id} type={f.type} autoComplete={f.auto} required
-                className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
+                className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500" />
             </div>
           ))}
           <div>
-            <label htmlFor="type" className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Operation type</label>
+            <label htmlFor="type" className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Operation type</label>
             <select id="type" name="type"
-              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500">
+              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500">
               <option>Finance company (disposal)</option>
               <option>Daily / weekly hire</option>
               <option>Fleet management / leasing</option>
@@ -46,21 +46,21 @@ export default function FinanceHireFleetPage() {
             </select>
           </div>
           <div>
-            <label htmlFor="volume" className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Monthly disposal volume</label>
+            <label htmlFor="volume" className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Monthly disposal volume</label>
             <input id="volume" name="volume" type="number" placeholder="e.g. 30"
-              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
+              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500" />
           </div>
           <div>
-            <label htmlFor="notes" className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Tell us more</label>
+            <label htmlFor="notes" className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Tell us more</label>
             <textarea id="notes" name="notes" rows={3}
-              className="mt-1 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 py-2 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
+              className="mt-1 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 py-2 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500" />
           </div>
           <Button type="submit" variant="brand" size="md" className="w-full">
             Send enquiry →
           </Button>
         </form>
       </div>
-      <p className="mt-4 text-center text-[var(--text-xs)] text-ink-400">
+      <p className="mt-4 text-center text-[length:var(--text-xs)] text-ink-400">
         <Link href="/sign-up" className="hover:underline">← All account types</Link>
       </p>
     </div>

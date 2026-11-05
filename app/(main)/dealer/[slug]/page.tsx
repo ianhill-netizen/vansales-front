@@ -302,13 +302,13 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
             <div className="flex items-center gap-4 md:gap-5">
               <DealerLogo name={effectiveDealer.name} logoUrl={effectiveDealer.logoUrl} size={72} className="md:!size-20" />
             <div className="min-w-0">
-              <p className="mb-2 font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
+              <p className="mb-2 font-mono text-[length:var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
                 Van dealer{effectiveDealer.location.town ? ` · ${effectiveDealer.location.town}` : ""}
               </p>
               <h1 className="font-display text-[clamp(2rem,1rem+4vw,3rem)] font-extrabold leading-tight tracking-[-0.03em] text-white">
                 {effectiveDealer.name}
               </h1>
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[var(--text-sm)] text-white/65">
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[length:var(--text-sm)] text-white/65">
                 <span className="flex items-center gap-1.5">
                   <IconPin width={15} height={15} />
                   {[effectiveDealer.location.line1, effectiveDealer.location.town, effectiveDealer.location.postcode].filter(Boolean).join(", ") || "UK"}
@@ -335,8 +335,8 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   key={label}
                   className="flex flex-col items-center rounded-[var(--radius-md)] border border-white/15 bg-white/6 px-4 py-2.5"
                 >
-                  <span className="font-display text-[var(--text-xl)] font-bold text-white">{value}</span>
-                  <span className="font-mono text-[var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/45">
+                  <span className="font-display text-[length:var(--text-xl)] font-bold text-white">{value}</span>
+                  <span className="font-mono text-[length:var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/45">
                     {label}
                   </span>
                 </div>
@@ -354,7 +354,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
             {/* ── 4. ABOUT ──────────────────────────────────────────── */}
             <section>
               <SectionHeading>About {effectiveDealer.name}</SectionHeading>
-              <p className="mt-4 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">
+              <p className="mt-4 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 {effectiveDealer.about}
               </p>
             </section>
@@ -365,7 +365,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                 <SectionHeading>What we offer</SectionHeading>
                 <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {effectiveDealer.services.map((svc) => (
-                    <li key={svc} className="flex items-center gap-2.5 text-[var(--text-md)] text-ink-700">
+                    <li key={svc} className="flex items-center gap-2.5 text-[length:var(--text-md)] text-ink-700">
                       <IconCheck width={16} height={16} className="shrink-0 text-success-500" />
                       {svc}
                     </li>
@@ -389,10 +389,10 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                       .map((l) => ({ id: l.id, slug: l.slug, title: `${l.make} ${l.model}`, price: l.price, lat: l.location.lat!, lng: l.location.lng! }))}
                   />
                 ) : (
-                  <p className="grid h-40 place-items-center bg-surface-1 px-6 text-center text-[var(--text-sm)] text-ink-500">{mapAddress || "Location coming soon"}</p>
+                  <p className="grid h-40 place-items-center bg-surface-1 px-6 text-center text-[length:var(--text-sm)] text-ink-500">{mapAddress || "Location coming soon"}</p>
                 )}
               </div>
-              <div className="mt-3 flex items-start gap-1.5 text-[var(--text-sm)] text-ink-500">
+              <div className="mt-3 flex items-start gap-1.5 text-[length:var(--text-sm)] text-ink-500">
                 <IconPin width={14} height={14} className="mt-0.5 shrink-0 text-ink-400" />
                 <span>
                   {effectiveDealer.location.directions && <span className="block font-medium text-ink-700">{effectiveDealer.location.directions}</span>}
@@ -419,7 +419,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   {!isApi && (
                     <Link
                       href="/vans"
-                      className="text-[var(--text-sm)] font-semibold text-brand-700 hover:underline"
+                      className="text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline"
                     >
                       View all
                     </Link>
@@ -434,7 +434,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   <div className="mt-6 text-center">
                     <Link
                       href="/vans"
-                      className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-border bg-white px-5 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400 hover:bg-surface-1 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-border bg-white px-5 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400 hover:bg-surface-1 transition-colors"
                     >
                       See all {listings.length} vans
                     </Link>
@@ -459,10 +459,10 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
           {/* ── RIGHT COLUMN — sticky contact card ─────────────────── */}
           <aside className="lg:sticky lg:top-20 lg:self-start">
             <div className="rounded-[var(--radius-xl)] border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
-              <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">
+              <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">
                 Get in touch
               </h2>
-              <p className="mt-1 text-[var(--text-sm)] text-ink-500">
+              <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">
                 {effectiveDealer.name} · {effectiveDealer.location.town}
               </p>
 
@@ -472,26 +472,26 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   // vansales-API dealers: there is no dealer-level enquiry endpoint (enquiries and call-backs are per advert), so this card offers the dealer's own contact routes.
                   <div className="flex flex-col gap-2">
                     {waUrl && (
-                      <a href={waUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[#25D366] text-[var(--text-base)] font-semibold text-white transition-colors hover:bg-[#1ebe5d]">
+                      <a href={waUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[#25D366] text-[length:var(--text-base)] font-semibold text-white transition-colors hover:bg-[#1ebe5d]">
                         <IconWhatsApp width={18} height={18} aria-hidden />
                         WhatsApp
                       </a>
                     )}
                     {effectiveDealer.phone && (
-                      <a href={`tel:${effectiveDealer.phone.replace(/[^\d+]/g, "")}`} className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border bg-white text-[var(--text-base)] font-semibold text-ink-800 transition-colors hover:border-ink-400 hover:bg-surface-1">
+                      <a href={`tel:${effectiveDealer.phone.replace(/[^\d+]/g, "")}`} className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border bg-white text-[length:var(--text-base)] font-semibold text-ink-800 transition-colors hover:border-ink-400 hover:bg-surface-1">
                         <IconPhone width={18} height={18} aria-hidden />
                         {effectiveDealer.phone}
                       </a>
                     )}
                     {effectiveDealer.websites[0] && (
-                      <a href={effectiveDealer.websites[0].url} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border bg-white text-[var(--text-base)] font-semibold text-ink-800 transition-colors hover:border-ink-400 hover:bg-surface-1">
+                      <a href={effectiveDealer.websites[0].url} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border bg-white text-[length:var(--text-base)] font-semibold text-ink-800 transition-colors hover:border-ink-400 hover:bg-surface-1">
                         <IconGlobe width={18} height={18} aria-hidden />
                         Visit website
                         <IconExternalLink width={13} height={13} aria-hidden />
                       </a>
                     )}
                     {!waUrl && !effectiveDealer.phone && !effectiveDealer.websites[0] && (
-                      <p className="text-[var(--text-sm)] text-ink-500">Open one of their vans below to send an enquiry.</p>
+                      <p className="text-[length:var(--text-sm)] text-ink-500">Open one of their vans below to send an enquiry.</p>
                     )}
                   </div>
                 ) : (
@@ -502,7 +502,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               {/* Websites */}
               {!isApi && effectiveDealer.websites.length > 0 && (
                 <div className="mt-5 border-t border-border pt-4">
-                  <p className="mb-2 text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+                  <p className="mb-2 text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
                     Websites
                   </p>
                   <ul className="space-y-1.5">
@@ -512,7 +512,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                           href={site.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-[var(--text-sm)] text-brand-700 hover:underline"
+                          className="flex items-center gap-2 text-[length:var(--text-sm)] text-brand-700 hover:underline"
                         >
                           <IconGlobe width={14} height={14} className="shrink-0" />
                           {site.label}
@@ -527,7 +527,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               {/* Social profiles: only the ones that are set */}
               {hasSocials(effectiveDealer.socials) && (
                 <div className="mt-4 border-t border-border pt-4">
-                  <p className="mb-2 text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">Follow us</p>
+                  <p className="mb-2 text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">Follow us</p>
                   <SocialLinks socials={effectiveDealer.socials} />
                 </div>
               )}
@@ -535,7 +535,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               {/* Google reviews: a link to the dealer's own page, no rating is shown that we do not have */}
               {effectiveDealer.googleReviewsUrl && (
                 <div className="mt-4 border-t border-border pt-4">
-                  <a href={effectiveDealer.googleReviewsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">
+                  <a href={effectiveDealer.googleReviewsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">
                     <IconStar width={14} height={14} className="shrink-0" aria-hidden />
                     Read our Google reviews
                     <IconExternalLink width={12} height={12} className="ml-auto shrink-0 text-ink-400" aria-hidden />
@@ -546,14 +546,14 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               {/* Hours */}
               {hasHours && (
               <div className="mt-4 border-t border-border pt-4">
-                <p className="mb-2 flex items-center gap-1.5 text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+                <p className="mb-2 flex items-center gap-1.5 text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
                   <IconClock width={13} height={13} />
                   Opening hours
                 </p>
                 <ul className="space-y-1">
                   {(Object.entries(effectiveDealer.hours) as [string, { open: string; close: string } | null][]).map(
                     ([day, hours]) => (
-                      <li key={day} className="flex justify-between text-[var(--text-sm)]">
+                      <li key={day} className="flex justify-between text-[length:var(--text-sm)]">
                         <span className="text-ink-600">{DAY_LABELS[day]}</span>
                         <span className={hours ? "font-medium text-ink-800" : "text-ink-400"}>
                           {hours ? `${hours.open} – ${hours.close}` : "Closed"}
@@ -572,7 +572,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   href={effectiveDealer.financeHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-brand-500/40 bg-brand-tint py-2.5 text-[var(--text-sm)] font-semibold text-brand-700 transition-colors hover:bg-brand-500 hover:text-white"
+                  className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-brand-500/40 bg-brand-tint py-2.5 text-[length:var(--text-sm)] font-semibold text-brand-700 transition-colors hover:bg-brand-500 hover:text-white"
                 >
                   Apply for finance
                   <IconExternalLink width={13} height={13} />
@@ -589,6 +589,6 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-display text-[var(--text-2xl)] font-bold text-ink-900">{children}</h2>
+    <h2 className="font-display text-[length:var(--text-2xl)] font-bold text-ink-900">{children}</h2>
   );
 }

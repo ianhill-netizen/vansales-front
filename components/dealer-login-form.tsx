@@ -39,18 +39,18 @@ export function DealerLoginForm() {
   }
 
   const inputCls =
-    "mt-1.5 h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-base)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/15";
+    "mt-1.5 h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-base)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/15";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {error && (
-        <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-danger-700">
+        <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-danger-700">
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="dp-email" className="block text-[var(--text-xs)] font-semibold text-ink-600">
+        <label htmlFor="dp-email" className="block text-[length:var(--text-xs)] font-semibold text-ink-600">
           Email address
         </label>
         <input
@@ -65,10 +65,10 @@ export function DealerLoginForm() {
 
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="dp-password" className="text-[var(--text-xs)] font-semibold text-ink-600">
+          <label htmlFor="dp-password" className="text-[length:var(--text-xs)] font-semibold text-ink-600">
             Password
           </label>
-          <a href="/dealer-portal/forgot-password" className="text-[var(--text-xs)] text-brand-600 hover:underline">
+          <a href="/dealer-portal/forgot-password" className="text-[length:var(--text-xs)] text-brand-600 hover:underline">
             Forgot password?
           </a>
         </div>
@@ -79,7 +79,7 @@ export function DealerLoginForm() {
             type="password"
             autoComplete="current-password"
             placeholder="••••••••"
-            className="h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 pr-14 text-[var(--text-base)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/15"
+            className="h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 pr-14 text-[length:var(--text-base)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/15"
           />
           <button
             type="button"
@@ -92,7 +92,7 @@ export function DealerLoginForm() {
               btn.setAttribute("aria-label", isText ? "Show password" : "Hide password");
               btn.textContent = isText ? "Show" : "Hide";
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-xs)] font-semibold text-ink-400 hover:text-ink-700"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[length:var(--text-xs)] font-semibold text-ink-400 hover:text-ink-700"
           >
             Show
           </button>
@@ -103,7 +103,7 @@ export function DealerLoginForm() {
         {loading ? "Logging in…" : "Log in"}
       </Button>
 
-      <p className="text-center text-[var(--text-xs)] text-ink-400">
+      <p className="text-center text-[length:var(--text-xs)] text-ink-400">
         Don&apos;t have an account?{" "}
         <a href="/sign-up/dealer" className="text-brand-600 hover:underline">
           Get started

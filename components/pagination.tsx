@@ -21,7 +21,7 @@ export function Pagination({
   const pages = [...nums].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b);
 
   const base =
-    "inline-flex h-10 min-w-10 items-center justify-center rounded-[var(--radius-md)] px-3 text-[var(--text-sm)] font-semibold transition-colors";
+    "inline-flex h-10 min-w-10 items-center justify-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] font-semibold transition-colors";
 
   return (
     <nav className="mt-8 flex items-center justify-center gap-1.5" aria-label="Pagination">

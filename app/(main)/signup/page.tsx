@@ -48,10 +48,10 @@ export default function SignupHubPage() {
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>Get started</Eyebrow>
-          <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+          <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
             Which best describes you?
           </h1>
-          <p className="mt-4 text-[var(--text-md)] text-ink-500">
+          <p className="mt-4 text-[length:var(--text-md)] text-ink-500">
             Choose your path — we&rsquo;ll ask only what&rsquo;s relevant.
           </p>
         </div>
@@ -71,18 +71,18 @@ export default function SignupHubPage() {
                 <Icon width={22} height={22} />
               </div>
 
-              <p className="text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+              <p className="text-[length:var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
                 {label}
               </p>
-              <h2 className="mt-1 font-display text-[var(--text-lg)] font-bold text-ink-900">
+              <h2 className="mt-1 font-display text-[length:var(--text-lg)] font-bold text-ink-900">
                 {tagline}
               </h2>
-              <p className="mt-2 flex-1 text-[var(--text-sm)] leading-relaxed text-ink-500">
+              <p className="mt-2 flex-1 text-[length:var(--text-sm)] leading-relaxed text-ink-500">
                 {description}
               </p>
 
               <span
-                className={`mt-6 text-[var(--text-sm)] font-semibold transition ${
+                className={`mt-6 text-[length:var(--text-sm)] font-semibold transition ${
                   accent === "accent"
                     ? "text-accent-600 group-hover:text-accent-700"
                     : "text-brand-600 group-hover:text-brand-700"

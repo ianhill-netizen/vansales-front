@@ -42,7 +42,7 @@ export default function TradeSignupPage() {
                 <br />
                 <span className="text-accent-500">Buyer enquiries in your inbox.</span>
               </h1>
-              <p className="mt-5 max-w-lg text-[var(--text-md)] leading-relaxed text-ink-600">
+              <p className="mt-5 max-w-lg text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 The van marketplace built for dealers. Your stock in front of thousands of active UK
                 buyers — enquiries delivered directly to you. No middlemen, no commission.
               </p>
@@ -56,7 +56,7 @@ export default function TradeSignupPage() {
                     </span>
                     <div>
                       <p className="font-semibold text-ink-900">{title}</p>
-                      <p className="mt-0.5 text-[var(--text-sm)] leading-relaxed text-ink-500">
+                      <p className="mt-0.5 text-[length:var(--text-sm)] leading-relaxed text-ink-500">
                         {body}
                       </p>
                     </div>
@@ -65,7 +65,7 @@ export default function TradeSignupPage() {
               </ul>
 
               {/* Social proof */}
-              <div className="mt-8 flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-white px-5 py-3.5 text-[var(--text-sm)] text-ink-600 shadow-[var(--shadow-xs)]">
+              <div className="mt-8 flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-white px-5 py-3.5 text-[length:var(--text-sm)] text-ink-600 shadow-[var(--shadow-xs)]">
                 <span className="flex size-7 items-center justify-center rounded-full bg-accent-tint text-accent-600">
                   <IconCheck width={14} height={14} />
                 </span>
@@ -78,10 +78,10 @@ export default function TradeSignupPage() {
 
             {/* Right — form card */}
             <div className="rounded-[var(--radius-2xl)] border border-border bg-white p-8 shadow-[var(--shadow-md)]">
-              <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+              <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
                 Register your dealership
               </h2>
-              <p className="mt-1.5 text-[var(--text-sm)] text-ink-500">
+              <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
                 Takes 2 minutes. Free to list — always.
               </p>
               <div className="mt-6">
@@ -95,7 +95,7 @@ export default function TradeSignupPage() {
       {/* Trust strip */}
       <section className="border-b border-border bg-white py-10">
         <Container>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[var(--text-sm)] text-ink-500">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[length:var(--text-sm)] text-ink-500">
             {[
               "Free to list — no fees, ever",
               "Direct enquiries — no middlemen",

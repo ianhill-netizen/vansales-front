@@ -79,7 +79,7 @@ export async function CategoryPage({ slug }: { slug: string }) {
 
       <section className="border-b border-border bg-surface-1">
         <Container className="py-10">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span aria-hidden>/</span>
             <span className="font-medium text-ink-700">{c.label}</span>
@@ -89,16 +89,16 @@ export async function CategoryPage({ slug }: { slug: string }) {
             {c.kind === "body" && <BodyTypeIcon slug={c.slug} className="h-16 w-24 shrink-0 text-brand-300" />}
             <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">{c.label} for sale</h1>
           </div>
-          <p className="mt-3 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">{c.intro}</p>
-          {intro && <p className="mt-3 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">{intro}</p>}
+          <p className="mt-3 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">{c.intro}</p>
+          {intro && <p className="mt-3 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">{intro}</p>}
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link href={browseHref(c)} className="rounded-[var(--radius-pill)] bg-ink-900 px-5 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">
+            <Link href={browseHref(c)} className="rounded-[var(--radius-pill)] bg-ink-900 px-5 py-2 text-[length:var(--text-sm)] font-semibold text-white hover:bg-ink-700">
               Browse {result.total > 0 ? `all ${result.total}` : ""} {c.label.toLowerCase()} →
             </Link>
-            <Link href={browseHref(c, "&condition=new")} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
+            <Link href={browseHref(c, "&condition=new")} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               New {c.label.toLowerCase()}
             </Link>
-            <Link href={browseHref(c, "&condition=used")} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
+            <Link href={browseHref(c, "&condition=used")} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               Used {c.label.toLowerCase()}
             </Link>
           </div>
@@ -108,12 +108,12 @@ export async function CategoryPage({ slug }: { slug: string }) {
       <Container className="py-10">
         {result.listings.length > 0 ? (
           <>
-            <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">Latest {c.label.toLowerCase()}</h2>
+            <h2 className="mb-4 font-display text-[length:var(--text-xl)] font-bold text-ink-900">Latest {c.label.toLowerCase()}</h2>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {result.listings.map((l, i) => <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />)}
             </div>
             <div className="mt-8 text-center">
-              <Link href={browseHref(c)} className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">
+              <Link href={browseHref(c)} className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[length:var(--text-sm)] font-semibold text-white hover:bg-ink-700">
                 View all {result.total} {c.label.toLowerCase()} →
               </Link>
             </div>

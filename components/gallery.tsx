@@ -17,7 +17,7 @@ export function Gallery({ listing }: { listing: Listing }) {
     return (
       <div className="relative flex aspect-[16/10] flex-col items-center justify-center gap-3 overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-2">
         <BodyTypeIcon slug={listing.van_spec.body_style} className="h-24 w-36 text-ink-300" />
-        <p className="font-mono text-[var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+        <p className="font-mono text-[length:var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
           Photos coming soon
         </p>
       </div>
@@ -36,12 +36,12 @@ export function Gallery({ listing }: { listing: Listing }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={current.url} alt={current.alt} className="size-full object-cover" />
         {isFallbackImage && (
-          <span className="absolute bottom-3 left-3 rounded-[var(--radius-pill)] bg-ink-900/70 px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
+          <span className="absolute bottom-3 left-3 rounded-[var(--radius-pill)] bg-ink-900/70 px-2.5 py-1 text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
             Stock image
           </span>
         )}
         {shots.length > 1 && (
-          <span className="absolute bottom-3 right-3 rounded-[var(--radius-pill)] bg-ink-900/80 px-2.5 py-1 font-mono text-[var(--text-xs)] text-white">
+          <span className="absolute bottom-3 right-3 rounded-[var(--radius-pill)] bg-ink-900/80 px-2.5 py-1 font-mono text-[length:var(--text-xs)] text-white">
             {active + 1} / {shots.length}
           </span>
         )}

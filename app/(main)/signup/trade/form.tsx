@@ -74,10 +74,10 @@ export function TradeSignupForm() {
         <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-accent-tint text-accent-500">
           <CheckIcon />
         </div>
-        <h3 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+        <h3 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
           We&rsquo;ll be in touch
         </h3>
-        <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+        <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
           Your dealer registration is received. Expect a call before launch in August 2026.
         </p>
       </div>
@@ -140,7 +140,7 @@ export function TradeSignupForm() {
       />
 
       {formState === "error" && (
-        <p className="rounded-[var(--radius-md)] bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] text-danger-600">
+        <p className="rounded-[var(--radius-md)] bg-danger-tint px-3 py-2.5 text-[length:var(--text-sm)] text-danger-600">
           {errorMsg}
         </p>
       )}
@@ -148,7 +148,7 @@ export function TradeSignupForm() {
       <button
         type="submit"
         disabled={formState === "submitting"}
-        className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] text-[var(--text-base)] font-bold text-white transition disabled:opacity-60"
+        className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] text-[length:var(--text-base)] font-bold text-white transition disabled:opacity-60"
         style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
       >
         {formState === "submitting" ? (
@@ -161,7 +161,7 @@ export function TradeSignupForm() {
         )}
       </button>
 
-      <p className="text-center text-[var(--text-xs)] text-ink-400">
+      <p className="text-center text-[length:var(--text-xs)] text-ink-400">
         No card required. No setup fee. Cancel any time.
       </p>
     </form>
