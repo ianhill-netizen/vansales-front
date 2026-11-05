@@ -58,6 +58,8 @@ const SECTIONS = [
   {
     heading: "Account",
     links: [
+      { href: "/saved", label: "Saved vans" },
+      { href: "https://sell.vansales.com/login", label: "Sign in" },
       { href: "/sign-in", label: "Customer login" },
       { href: "https://dealer.vansales.com/login", label: "Dealer login" },
     ],

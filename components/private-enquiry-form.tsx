@@ -9,6 +9,9 @@ import { Field, inputCls } from "./enquiry-fields";
 /** The vansales API's public host. Public on purpose: the browser posts to it directly, so the API sees the buyer's own address for its rate limit (5 messages an hour). */
 const API = (process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
 
+/** 40px inputs; the label (see Field) is 12px. */
+const compact = inputCls.replace("h-11", "h-10");
+
 type State = "idle" | "submitting" | "success" | "error";
 
 /**
@@ -17,7 +20,6 @@ type State = "idle" | "submitting" | "success" | "error";
  */
 export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
   const dealer = listing.dealer_contact; // a dealer portal advert: same endpoint, the enquiry lands in that dealer's portal inbox
-  const who = dealer ? "the dealer" : "the seller";
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
   const [sentTo, setSentTo] = useState("");
@@ -34,9 +36,11 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          buyer_name: String(fd.get("name") ?? "").trim(),
-          buyer_email: email,
-          buyer_phone: String(fd.get("phone") ?? "").trim() || null,
+          first_name: String(fd.get("first_name") ?? "").trim(),
+          last_name: String(fd.get("last_name") ?? "").trim(),
+          company: String(fd.get("company") ?? "").trim() || null,
+          mobile: String(fd.get("mobile") ?? "").trim() || null,
+          email,
           message: String(fd.get("message") ?? "").trim(),
           website: fd.get("website"), // honeypot
         }),
@@ -73,24 +77,32 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           </div>
         </div>
       ) : (
-        <form onSubmit={onSubmit} className="space-y-3" noValidate={false}>
+        <form onSubmit={onSubmit} className="space-y-4" noValidate={false}>
           {/* Honeypot: invisible to real users */}
           <input type="text" name="website" tabIndex={-1} aria-hidden="true" autoComplete="off" className="sr-only" />
 
-          <Field label="Your name" required>
-            <input type="text" name="name" required minLength={2} maxLength={120} autoComplete="name" placeholder="Jane Smith" className={inputCls} />
+          <div className="grid grid-cols-2 gap-4">
+            <Field compact label="First name" required>
+              <input type="text" name="first_name" required maxLength={60} autoComplete="given-name" className={compact} />
+            </Field>
+            <Field compact label="Last name" required>
+              <input type="text" name="last_name" required maxLength={60} autoComplete="family-name" className={compact} />
+            </Field>
+          </div>
+          <Field compact label="Company (optional)">
+            <input type="text" name="company" maxLength={120} autoComplete="organization" className={compact} />
           </Field>
-          <Field label="Email address" required>
-            <input type="email" name="email" required autoComplete="email" placeholder="you@example.com" className={inputCls} />
+          <Field compact label="Mobile" required>
+            <input type="tel" name="mobile" required inputMode="tel" autoComplete="tel" placeholder="07700 900000" maxLength={30} className={compact} />
           </Field>
-          <Field label="Phone number (optional)">
-            <input type="tel" name="phone" autoComplete="tel" placeholder="07700 900 000" maxLength={30} className={inputCls} />
+          <Field compact label="Email" required>
+            <input type="email" name="email" required autoComplete="email" placeholder="you@example.com" className={compact} />
           </Field>
-          <Field label="Message" required>
+          <Field compact label="Message" required>
             <textarea
-              name="message" rows={4} required minLength={5} maxLength={2000}
+              name="message" rows={3} required minLength={5} maxLength={2000}
               defaultValue={`Hi, I'm interested in the ${listing.make} ${listing.model}. Is it still available?`}
-              className={inputCls + " h-auto py-2.5"}
+              className={compact + " h-auto py-2"}
             />
           </Field>
 
@@ -99,11 +111,9 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           )}
 
           <Button type="submit" variant="primary" size="lg" className="w-full" disabled={state === "submitting"}>
-            {state === "submitting" ? "Sending…" : "Send message"}
+            {state === "submitting" ? "Sending…" : "Send to dealer"}
           </Button>
-          <p className="text-center text-[length:var(--text-xs)] text-ink-400">
-            Your name, email and phone number are sent to {who} so they can reply. Never agree to pay a deposit before you have seen the van.
-          </p>
+          <p className="text-center text-[length:var(--text-xs)] text-ink-500">We&apos;ll email you a link to track this enquiry.</p>
         </form>
       )}
     </>

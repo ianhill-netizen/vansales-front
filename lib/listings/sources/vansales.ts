@@ -174,6 +174,12 @@ export async function fetchPrivateSellerListingBySlug(slug: string): Promise<Lis
   return body && body.data.seller_type === "private" ? toListing(body.data) : null;
 }
 
+/** Any advert card from the vansales API (private or dealer portal) as a Listing: for the saved-vans page, which asks for cards by id. */
+export function advertCardToListing(card: unknown): Listing | null {
+  const c = card as ApiCard | null;
+  return c && typeof c === "object" && typeof c.id === "number" ? toListing(c) : null;
+}
+
 /** A dealer portal advert card from a dealer profile or list response, as a Listing; null for anything else (leftover legacy rows, private adverts). */
 export function dealerAdvertCardToListing(card: unknown): Listing | null {
   const c = card as ApiCard | null;

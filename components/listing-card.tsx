@@ -8,6 +8,7 @@ import { monthlyForTerms, type FinanceTerms, type PayMode } from "@/lib/finance"
 import { BodyTypeIcon } from "@/components/icons/body-types";
 import { Price, StatusBadge, Badge } from "./ui";
 import { IconGearbox, IconRuler, IconArrow } from "./icons";
+import { SaveButton } from "./save-button";
 
 const FUEL_PILL: Record<string, string> = {
   electric:         "bg-success-500 text-white",
@@ -133,6 +134,9 @@ export function ListingCard({
             ULEZ ✓
           </span>
         )}
+
+        {/* Save (heart): vansales-API adverts only, they are the ones the saved page can look up */}
+        {listing.source === "vansales" && !sold && <SaveButton id={listing.source_id} className="absolute bottom-3 right-3" />}
 
         {/* Sold overlay */}
         {sold && (

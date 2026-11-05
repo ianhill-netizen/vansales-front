@@ -5,6 +5,7 @@ import { Container, Eyebrow, Price, PlateBadge, StatusBadge, Badge } from "@/com
 import { Gallery } from "@/components/gallery";
 import { SpecTable } from "@/components/spec-table";
 import { EnquiryPanel } from "@/components/enquiry-panel";
+import { SaveButton } from "@/components/save-button";
 import { SpecReadout } from "@/components/spec-readout";
 import { HpiCard } from "@/components/hpi-card";
 import { JsonLd } from "@/components/json-ld";
@@ -304,7 +305,10 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
       <Eyebrow>{listing.van_spec.body_style}</Eyebrow>
       <div className="mt-2 flex items-start justify-between gap-3">
         <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">{title}</h1>
-        {listing.year > 0 && <PlateBadge text={listing.plate || String(listing.year)} size="md" />}
+        <div className="flex shrink-0 items-center gap-2">
+          {listing.source === "vansales" && <SaveButton id={listing.source_id} label />}
+          {listing.year > 0 && <PlateBadge text={listing.plate || String(listing.year)} size="md" />}
+        </div>
       </div>
       <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
         {listing.year > 0 ? `${listing.year} · ` : ""}
