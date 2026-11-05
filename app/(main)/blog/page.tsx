@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
 import { getBlogIndex, formatDate } from "@/lib/content/blog";
+import { getBackendGuides } from "@/lib/content/backend";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -18,8 +19,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogIndexPage() {
-  const posts = getBlogIndex();
+// Local posts plus the guides Mason publishes through vansales-backend; refreshed every 5 minutes so a new guide appears without a deploy.
+export const revalidate = 300;
+
+export default async function BlogIndexPage() {
+  const local = getBlogIndex();
+  const localSlugs = new Set(local.map((p) => p.slug));
+  const backend = (await getBackendGuides())
+    .filter((g) => !localSlugs.has(g.slug)) // a local post wins on a clash
+    .map((g) => ({ slug: g.slug, title: g.title, date: g.date, description: g.description }));
+  // newest first; a post with no date sorts last, ties keep their order
+  const posts = [...local, ...backend]
+    .map((p, i) => ({ p, i }))
+    .sort((a, b) => (Date.parse(b.p.date) || 0) - (Date.parse(a.p.date) || 0) || a.i - b.i)
+    .map(({ p }) => p);
 
   const breadcrumbs = [
     { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },

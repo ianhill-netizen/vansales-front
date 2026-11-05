@@ -9,9 +9,37 @@ import { getBlogPost, getBlogIndex, getBlogSlugs, formatDate } from "@/lib/conte
 import { getNewVanIndex } from "@/lib/content/new-vans";
 import { blogKeywords, matchBlogPosts, matchRelatedVans } from "@/lib/content/cross-links";
 import { mdToHtml } from "@/lib/content/markdown";
+import { bodyWithImages, getBackendGuide } from "@/lib/content/backend";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 interface Props { params: Promise<{ slug: string }> }
+
+// A guide published by Mason lives in vansales-backend, not in content/blog: ISR so a NEW slug works without a rebuild (dynamicParams is on by default), refreshed every 5 minutes.
+export const revalidate = 300;
+
+interface PostView {
+  title: string;
+  metaTitle: string;
+  date: string;
+  description: string;
+  heroImage?: string;
+  heroAlt?: string;
+  html: string;
+  fromBackend: boolean;
+}
+
+/** The local markdown post first (it wins on a clash); otherwise the guide from vansales-backend. null = no such page (404). Throws when the API is unreachable, so a real page is never cached as a 404. */
+async function loadPost(slug: string): Promise<PostView | null> {
+  const local = getBlogPost(slug);
+  if (local) {
+    return { title: local.title, metaTitle: local.title, date: local.date, description: local.description, heroImage: local.heroImage, heroAlt: local.heroAlt, html: mdToHtml(local.body), fromBackend: false };
+  }
+  const r = await getBackendGuide(slug);
+  if (r.status === "missing") return null;
+  if (r.status === "unavailable") throw new Error(`guide ${slug} could not be fetched from the API`);
+  const g = r.guide;
+  return { title: g.h1, metaTitle: g.metaTitle, date: g.date, description: g.description, heroImage: g.heroUrl ?? undefined, heroAlt: g.images.find((i) => i.role === "hero")?.alt || g.h1, html: bodyWithImages(g), fromBackend: true };
+}
 
 export async function generateStaticParams() {
   return getBlogSlugs().map((slug) => ({ slug }));
@@ -19,18 +47,23 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  let post: PostView | null = null;
+  try {
+    post = await loadPost(slug);
+  } catch {
+    return {};
+  }
   if (!post) return {};
   const heroUrl = post.heroImage
     ? (post.heroImage.startsWith("http") ? post.heroImage : absUrl(post.heroImage))
     : undefined;
   return {
-    title: post.title.slice(0, 60),
+    title: post.metaTitle.slice(0, 60),
     description: post.description.slice(0, 155),
     alternates: { canonical: absUrl(`/blog/${slug}`) },
     openGraph: {
     images: DEFAULT_OG_IMAGES,
-      title: `${post.title.slice(0, 60)} · ${SITE.name}`,
+      title: `${post.metaTitle.slice(0, 60)} · ${SITE.name}`,
       description: post.description.slice(0, 155),
       url: absUrl(`/blog/${slug}`),
       type: "article",
@@ -42,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = await loadPost(slug);
   if (!post) notFound();
 
   // Cross-link data
@@ -145,6 +178,7 @@ export default async function BlogPostPage({ params }: Props) {
                   className="object-cover"
                   sizes="(max-width: 48rem) 100vw, 48rem"
                   priority
+                  unoptimized={post.fromBackend}
                 />
               </div>
             )}
@@ -154,7 +188,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <Container className="py-10">
         <div className="mx-auto max-w-[var(--content-max)]">
-          <article dangerouslySetInnerHTML={{ __html: mdToHtml(post.body) }} />
+          <article dangerouslySetInnerHTML={{ __html: post.html }} />
 
           {/* Related cross-links */}
           {(relatedPosts.length > 0 || relatedModels.length > 0 || relatedCategories.length > 0) && (
