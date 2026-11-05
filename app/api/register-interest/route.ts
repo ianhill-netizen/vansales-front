@@ -75,11 +75,16 @@ export async function POST(req: Request) {
     );
   }
 
+  const context = String(body.context ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, 120);
+  const rawPath = String(body.page_path ?? "").trim();
+  const pagePath = /^\/[a-z0-9\-/]{0,150}$/.test(rawPath) ? rawPath : "";
+
   const { first_name, last_name } = splitName(name);
   const enquiryLabel = enquiryType === "retail" ? "Retail (buying a van)" : "Trade (dealer)";
   const notes = [
     `Enquiry type: ${enquiryLabel}`,
-    message || "Registered interest via vansales.com opening banner.",
+    ...(context ? [`Page: ${context}${pagePath ? ` (${pagePath})` : ""}`] : []),
+    message || (context ? "No message left." : "Registered interest via vansales.com opening banner."),
   ].join("\n");
 
   const payload = {
@@ -90,8 +95,9 @@ export async function POST(req: Request) {
     source: "vansales-register-interest",
     enquiry_type: enquiryType,
     notes,
-    page_url: "https://vansales.com",
-    page_name: "Register Interest — Opening August 2026",
+    // Optional context from a page that reuses this endpoint (e.g. /used-vans/{make}/{model}): a short label and a same-site path. Without them the original banner values stand.
+    page_url: pagePath ? `https://vansales.com${pagePath}` : "https://vansales.com",
+    page_name: context ? `Wanted: ${context}` : "Register Interest — Opening August 2026",
   };
 
   try {

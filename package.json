@@ -10,7 +10,7 @@
     "postinstall": "prisma generate",
     "db:seed": "npx tsx prisma/seed.ts",
     "db:migrate": "prisma migrate deploy",
-    "test": "node --test lib/content/sanitize.test.ts"
+    "test": "node --test lib/content/sanitize.test.ts lib/used-vans/models.test.ts"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
