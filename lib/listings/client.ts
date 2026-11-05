@@ -11,8 +11,6 @@ import type {
 import { haversineDistanceMiles } from "../distance";
 import { getMockListings } from "./sources/mock";
 import { getAcmeDemoListings } from "./sources/acme-demo";
-import { fetchDealskiCatalogue, fetchDealskiBySourceId } from "./sources/dealski";
-import { fetchMarketplaceCatalogue } from "./sources/dealski-marketplace";
 import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
 import { fetchPrivateSellerListings, fetchPrivateSellerListingBySlug, fetchDealerPortalListings, fetchDealerPortalListingBySlug, PRIVATE_SLUG_PREFIX, DEALER_SLUG_PREFIX } from "./sources/vansales";
 import { sourceIdFromSlug, slugify } from "./slug";
@@ -21,12 +19,13 @@ import { WHEELBASE_LABEL, titleCase } from "./format";
 
 /* =============================================================================
    DATA LAYER  — the only module screens import.
+   ALL live stock comes from vansales-backend (/api/public/listings): dealer
+   adverts (every Dealski-synced dealer is imported there by vansales:sync-dealski,
+   Swiss Vans included) and private sellers. There is no direct Dealski feed any
+   more; reading it as well showed a synced van twice.
    Source is chosen by env LISTINGS_SOURCE:
-     'marketplace'  — live aggregate feed (dealski-marketplace.ts, authenticated)
-     'dealski'      — single-tenant Swiss Vans feed (dealski.ts, unauthenticated)
-     'native'       — local DB only
-     'mock'         — static fixture data (default / fallback)
-   The live source falls back to mock when the upstream is unreachable.
+     'mock' (default) / 'native' — fixtures, for local development
+     anything else (e.g. 'marketplace', 'dealski', 'live') — the live vansales-backend feed only
    ========================================================================== */
 
 /* ---------------------------------------------------------------------------
@@ -80,11 +79,10 @@ function demoListings(): Listing[] {
   return process.env.SHOW_DEMO_LISTINGS === "true" ? getAcmeDemoListings() : [];
 }
 
-function configuredSource(): ListingSource | "mock" | "marketplace" {
+function configuredSource(): "mock" | "native" | "live" {
   const v = (process.env.LISTINGS_SOURCE || "mock").toLowerCase();
-  if (v === "marketplace") return "marketplace";
-  if (v === "dealski" || v === "native") return v;
-  return "mock";
+  if (v === "mock" || v === "native") return v;
+  return "live"; // "marketplace" / "dealski" (the old direct-feed values) now mean the same: the vansales-backend feed
 }
 
 /** Load the ENTIRE catalogue from the active source (cached), with fallback.
@@ -103,49 +101,11 @@ async function loadAllUncached(): Promise<{
   // Demo dealer listings are opt-in (SHOW_DEMO_LISTINGS) and off in production.
   const demo = demoListings();
 
-  if (source === "marketplace") {
-    // Primary: authenticated aggregate feed (cursor-paginated, multi-tenant).
-    try {
-      const { listings, feedTotal } = await fetchMarketplaceCatalogue();
-      if (listings.length > 0) {
-        console.info(`[listings] served by marketplace feed (${listings.length} vehicles)`);
-        const merged = [...listings, ...(await extrasP), ...demo];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + (await extrasP).length + demo.length };
-      }
-      console.warn("[listings] marketplace returned 0 vehicles — falling back to legacy feed");
-    } catch (err) {
-      console.warn("[listings] marketplace feed error, falling back to legacy feed:", (err as Error).message);
-    }
-    // Secondary: unauthenticated single-tenant legacy feed (keeps site live if key/endpoint breaks).
-    try {
-      const { listings, feedTotal } = await fetchDealskiCatalogue();
-      if (listings.length > 0) {
-        console.info(`[listings] served by legacy dealski feed (${listings.length} vehicles)`);
-        const merged = [...listings, ...(await extrasP), ...demo];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + (await extrasP).length + demo.length };
-      }
-    } catch {
-      /* fall through to mock */
-    }
-    console.warn("[listings] both dealski feeds failed — serving mock data");
-    const mock = getMockListings();
-    const merged = [...mock, ...(await extrasP), ...demo];
-    return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
-  }
-
-  if (source === "dealski") {
-    try {
-      const { listings, feedTotal } = await fetchDealskiCatalogue();
-      if (listings.length > 0) {
-        const merged = [...listings, ...(await extrasP), ...demo];
-        return { listings: merged, servedBy: "dealski", live: true, feedTotal: feedTotal + (await extrasP).length + demo.length };
-      }
-    } catch {
-      /* fall through */
-    }
-    const mock = getMockListings();
-    const merged = [...mock, ...(await extrasP), ...demo];
-    return { listings: merged, servedBy: "mock", live: false, feedTotal: merged.length };
+  if (source === "live") {
+    // Real stock only: an empty catalogue is an honest answer, never a reason to show fixture vans.
+    const extras = await extrasP;
+    const merged = [...extras, ...demo];
+    return { listings: merged, servedBy: "vansales", live: true, feedTotal: merged.length };
   }
 
   // 'native' and 'mock' modes.
@@ -293,9 +253,9 @@ function statusRank(l: Listing): number {
   return l.status === "active" ? 0 : l.status === "reserved" ? 1 : 2;
 }
 
-// Live feed stock (dealski) sorts before demo/native listings.
+// Dealers' stock sorts before private and demo/native listings.
 function sourceRank(l: Listing): number {
-  return l.source === "dealski" ? 0 : 1;
+  return l.seller_type === "dealer" ? 0 : 1;
 }
 
 /* ---------------------------------------------------------------------------
@@ -382,23 +342,8 @@ async function getListingBySlugUncached(slug: string): Promise<{ listing: Listin
     : null;
   if (nativeListing) return { listing: nativeListing, servedBy: "native" };
 
-  if (source === "marketplace") {
-    // Hit the per-tenant detail endpoint for full spec + multi-photo support.
-    // Works for SwissVans (the only current marketplace tenant) since vehicle
-    // IDs are stable across the aggregate and per-tenant endpoints.
-    const live = await fetchDealskiBySourceId(sourceId);
-    if (live) return { listing: { ...live, enquiry_url: live.enquiry_url }, servedBy: "dealski" };
-    // Fall through to the cached catalogue (covers the case when the per-tenant
-    // endpoint is temporarily unavailable).
-    const { listings: catalogue } = await fetchMarketplaceCatalogue().catch(() => ({ listings: [] as Listing[] }));
-    const cached = catalogue.find((l) => l.source_id === sourceId || l.slug === slug);
-    if (cached) return { listing: cached, servedBy: "dealski" };
-  }
-
-  if (source === "dealski") {
-    const live = await fetchDealskiBySourceId(sourceId);
-    if (live) return { listing: live, servedBy: "dealski" };
-  }
+  // Live: every real listing has a "dealer-" / "private-" slug (handled above); anything else is not a listing.
+  if (source === "live") return { listing: null, servedBy: "vansales" };
 
   const all = [...getMockListings(), ...demoListings()];
   const listing =

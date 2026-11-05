@@ -159,8 +159,11 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   let listings: import("@/lib/listings/types").Listing[] = [];
   if (dealer) {
     const result = await getListings({ sort: "newest" });
-    const bySellerName = result.listings.filter((l) =>
-      effectiveDealer.sellerNames.some((n) => n.toLowerCase() === l.seller.name.toLowerCase()),
+    // Stock is the dealer's adverts from the vansales API (dealer_contact.slug); the seller-name match is kept for native/demo rows.
+    const bySellerName = result.listings.filter(
+      (l) =>
+        l.dealer_contact?.slug === slug ||
+        effectiveDealer.sellerNames.some((n) => n.toLowerCase() === l.seller.name.toLowerCase()),
     );
     if (dealer.dealskiTenant) {
       // The database is optional for a configured dealer: if it is down, the dealer page still renders from the feed.
