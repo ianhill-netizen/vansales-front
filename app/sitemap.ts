@@ -3,6 +3,8 @@ import { getListings } from "@/lib/listings/client";
 import { getNewVanSlugs } from "@/lib/content/new-vans";
 import { getBlogSlugs } from "@/lib/content/blog";
 import { getBackendGuides } from "@/lib/content/backend";
+import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
+import { USED_VAN_MODELS, usedVanPath } from "@/lib/used-vans/models";
 import { getDealerDirectory } from "@/lib/dealers/directory";
 import { listingPath } from "@/lib/listings/slug";
 import { CATEGORIES } from "@/lib/seo/categories";
@@ -17,6 +19,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getDealerDirectory().catch(() => []),
     getBackendGuides().catch(() => []), // guides Mason publishes through vansales-backend; [] when the API is down
   ]);
+  // /used-vans: only the allowlisted models that have a published editorial page (empty set when the API is down), and the makes/index that have at least one.
+  const liveModelPages = await getLiveModelPageSlugs().catch(() => new Set<string>());
+  const usedVanModels = USED_VAN_MODELS.filter((m) => liveModelPages.has(m.pageSlug));
+  const usedVanRoutes: MetadataRoute.Sitemap = usedVanModels.length === 0 ? [] : [
+    { url: `${base}/used-vans`, changeFrequency: "weekly", priority: 0.7 },
+    ...[...new Set(usedVanModels.map((m) => m.makeSlug))].map((slug) => ({ url: `${base}/used-vans/${slug}`, changeFrequency: "weekly" as const, priority: 0.6 })),
+    ...usedVanModels.map((m) => ({ url: `${base}${usedVanPath(m)}`, changeFrequency: "weekly" as const, priority: 0.65 })),
+  ];
   // lastmod = the newest listing update behind the page (never an invented date); a page with no data of its own falls back to the newest update site-wide.
   const siteLast = idx.site.lastModified ?? undefined;
 
@@ -111,6 +121,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...newVanRoutes,
     ...blogRoutes,
     ...guideRoutes,
+    ...usedVanRoutes,
     ...listingRoutes,
   ];
 }
