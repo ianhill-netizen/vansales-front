@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/empty/empty-state";
 import { PinMap, type Pin } from "./pin-map";
+import { IconList, IconMap } from "@/components/icons";
 import type { DirectoryDealer } from "@/lib/dealers/directory";
 
 export function DealerGrid({ dealers }: { dealers: DirectoryDealer[] }) {
@@ -99,6 +100,19 @@ export function DealerGrid({ dealers }: { dealers: DirectoryDealer[] }) {
           {makes.map((m) => <option key={m} value={m}>{m}</option>)}
         </select>
         {toggle}
+      </div>
+
+      {/* A second, obvious way into the same view: it flips the same `view` state as the List / Map toggle above. */}
+      <div className="mt-3">
+        <button
+          type="button"
+          aria-pressed={view === "map"}
+          onClick={() => { setView(view === "map" ? "list" : "map"); setSelected(null); }}
+          className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-lg)] bg-brand-600 px-6 text-[length:var(--text-base)] font-semibold text-white transition-colors hover:bg-brand-700 focus-visible:shadow-[var(--shadow-focus)] focus-visible:outline-none"
+        >
+          {view === "map" ? <IconList width={20} height={20} aria-hidden /> : <IconMap width={20} height={20} aria-hidden />}
+          {view === "map" ? "Show list" : "Show on map"}
+        </button>
       </div>
 
       <p className="mt-4 text-[length:var(--text-sm)] text-ink-500">

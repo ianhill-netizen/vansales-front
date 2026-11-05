@@ -19,7 +19,7 @@ import { MODEL_CONTENT, getModelContent } from "@/lib/models/content.generated";
 import { SITE, absUrl } from "@/lib/site";
 import { getMakeBySlug, getModelBySlug } from "@/lib/taxonomy/van-makes";
 
-export const revalidate = 3600; // ISR — rebuild every 1 h
+export const revalidate = 300; // ISR: 5 min (stock comes from the vansales API)
 
 /** Pre-render all 35 known make/model paths; unknown combos render on demand. */
 export async function generateStaticParams() {

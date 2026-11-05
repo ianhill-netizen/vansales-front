@@ -55,7 +55,7 @@ export function DealerStockMap({
           {van ? (
             <Link href={`/listing/${van.slug}`} className="flex items-center justify-between gap-3">
               <span className="truncate font-semibold text-ink-900">{van.title}</span>
-              <span className="shrink-0 font-mono font-bold text-ink-900">{van.price != null ? `£${van.price.toLocaleString("en-GB")}` : "POA"} →</span>
+              <span className="shrink-0 font-bold tabular-nums text-ink-900">{van.price != null ? `£${van.price.toLocaleString("en-GB")}` : "POA"} →</span>
             </Link>
           ) : (
             <p><span className="font-semibold text-ink-900">{name}</span>{address && <span className="text-ink-500"> · {address}</span>}</p>

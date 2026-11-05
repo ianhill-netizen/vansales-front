@@ -19,7 +19,7 @@ import { loadCatalogue, makeStat, modelsOfMake, topModels } from "@/lib/seo/cata
 import { makeIntro, priceRange } from "@/lib/seo/intro";
 import { categoryLinks, makeLinks, popularModelLinks } from "@/lib/seo/links";
 
-export const revalidate = 3600;
+export const revalidate = 300; // 5 min: counts come from the vansales API (60 s data cache), so an hour showed stale "0 vans"
 
 export async function generateStaticParams() {
   return ALL_MAKES.map((m) => ({ make: m.slug }));

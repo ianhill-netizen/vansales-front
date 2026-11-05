@@ -202,7 +202,7 @@ export function ListingCard({
             {payMode === "finance" && monthly != null ? (
               <>
                 <p className="flex items-baseline gap-1.5">
-                  <span className="font-mono text-[length:var(--text-2xl)] font-bold leading-none text-ink-900">£{monthly.toLocaleString("en-GB")}</span>
+                  <span className="text-[length:var(--text-2xl)] font-bold leading-none tabular-nums text-ink-900">£{monthly.toLocaleString("en-GB")}</span>
                   <span className="text-[length:var(--text-xs)] font-medium text-ink-500">/month</span>
                 </p>
                 <p className="mt-1 text-[length:var(--text-xs)] text-ink-400">Cash price {listing.price != null ? `£${listing.price.toLocaleString("en-GB")}` : "POA"}</p>
