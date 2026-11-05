@@ -118,7 +118,7 @@ Not on the card (data exists on `Listing` in some form): roof height, payload, b
 
 Data caveat for private adverts: the **list** endpoint (`ApiCard`) gives only title/make/model/variant/year/mileage/price/fuel/transmission/body/colour/image/has_video. Everything richer (`details`, `extras`, HPI, MOT, ULEZ, condition, V5) is only mapped from the **detail** endpoint (`ApiDetail`), so cards for private adverts cannot show those without the backend adding them to the list payload (or a per-advert detail fetch). `ulez_compliant` is read off the card only if the list endpoint happens to send it.
 
-Dealer-feed caveats (`dealski.ts`, `dealski-marketplace.ts`): `features: []` is hard-coded in all three dealer mappers; `euro_status: null`; **`ulez` is a heuristic** (`year === 0 ? true : year >= 2016`, and "optimistic true" on list rows) — so the green ULEZ ✓ on dealer cards is an estimate, not a fact.
+*(Historical: the caveats below described the removed Dealski adapters.)* Dealer-feed caveats (`dealski.ts`, `dealski-marketplace.ts`): `features: []` is hard-coded in all three dealer mappers; `euro_status: null`; **`ulez` is a heuristic** (`year === 0 ? true : year >= 2016`, and "optimistic true" on list rows) — so the green ULEZ ✓ on dealer cards is an estimate, not a fact.
 
 ---
 
@@ -168,7 +168,7 @@ Private adverts are a separate source (`ListingSource = "vansales"`):
 - Seller shown as "Private seller" (name/email never exposed); no location (`town: "UK"`, no coords), no stock ref, no dealer link/CTAs.
 - Own enquiry form (§5); `/api/enquiry` blocks them server-side.
 - Only `active` adverts exist upstream.
-- Merged into the catalogue by `loadExtras()` and **sorted after** the live Dealski feed (`sourceRank`), so on newest-first they sit behind dealer stock in each status tier.
+- Merged into the catalogue by `loadExtras()`; dealer adverts sort ahead of private ones (`sourceRank`).
 - No private-seller profile page; no "other adverts from this seller".
 - Private sellers' own flow: `/sell` (landing), `/sign-up/private-seller`, `/garage` (mock-driven).
 
@@ -176,23 +176,21 @@ Private adverts are a separate source (`ListingSource = "vansales"`):
 
 ## 8. Data sources
 
-`lib/listings/client.ts` is the only module screens import. `LISTINGS_SOURCE` env selects: `marketplace` | `dealski` | `native` | `mock` (default `mock`).
+`lib/listings/client.ts` is the only module screens import. `LISTINGS_SOURCE` env selects: `mock` (default) | `native` (fixtures) | anything else (`marketplace`, `dealski`, `live`) = **live stock from vansales-backend only**. *Update 2026-11-05: the direct Dealski feeds (`sources/dealski.ts`, `sources/dealski-marketplace.ts`) were removed; Dealski dealers' stock is imported into vansales-backend by `vansales:sync-dealski` and arrives as dealer adverts, so a synced van is no longer shown twice.*
 
 | Source | File | Auth | Cache |
 |---|---|---|---|
-| Dealski **marketplace** (aggregate, cursor-paginated, 100/page) | `sources/dealski-marketplace.ts` | `DEALSKI_MARKETPLACE_KEY` | `unstable_cache` 6 h (presigned photo TTL is 24 h); tag `dealski-marketplace` |
-| Dealski **legacy** single tenant (Swiss Vans) | `sources/dealski.ts` | none | `unstable_cache` + versioned URL/key constant (cache-bust PRs #74/#75) ; tag `dealski` |
 | **Native DB** (Prisma/Postgres, portal-added) | `sources/db.ts` | `DATABASE_URL` | part of `loadExtras` |
-| **vansales-backend** private adverts | `sources/vansales.ts` | none (public API), `VANSALES_API_URL` default `https://api.vansales.com` | fetch `revalidate: 60`, tag `vansales-private`, 8 s timeout, up to 20 pages |
+| **vansales-backend** dealer + private adverts (all dealer stock, incl. Swiss Vans) | `sources/vansales.ts` | none (public API), `VANSALES_API_URL` default `https://api.vansales.com` | fetch `revalidate: 60`, tags `vansales-private` / `vansales-dealer`, 8 s timeout, up to 20 pages |
 | Mock + ACME demo | `sources/mock.ts`, `acme-demo.ts` | – | static |
 
-How a page gets listings: `loadAll()` (per-request memoised via `cache()`) = main feed (marketplace → legacy → mock fallback) **+ `loadExtras()` (native + private, parallel, 2.5 s / 5 s budgets, 60 s cache even on failure) + ACME demo listings, always appended**. Everything is then filtered/sorted/paginated **in memory** over the full catalogue (~1,100+ rows) on every render of a given ISR page.
+How a page gets listings: `loadAll()` (per-request memoised via `cache()`) = **`loadExtras()` (native + private + dealer adverts from vansales-backend, parallel, 2.5 s / 5 s budgets, 60 s cache even on failure) + ACME demo listings if `SHOW_DEMO_LISTINGS`**. Live mode never falls back to mock. Everything is then filtered/sorted/paginated **in memory** on every render of a given ISR page.
 
 Notes:
 - **ACME demo listings are always merged into the live catalogue**, in every mode (`client.ts` `getAcmeDemoListings()`), including production. (Inferred impact: demo vans can appear in live search, counts, sitemap.)
-- Postcode geocode: server → Dealski `/api/marketplace/geocode`, 24 h cache.
+- Postcode geocode: server → Dealski `/api/marketplace/geocode` (still needs `DEALSKI_MARKETPLACE_KEY`; this and the maps key are its only remaining uses), 24 h cache.
 - Freshness mismatch: `/vans`, make, model and dealer pages are ISR **3600 s**, but private adverts refresh every **60 s** — a new private advert can take up to an hour to appear in listings while its detail page (60 s) resolves immediately. `/api/revalidate` exists to purge tags.
-- Single-listing detail resolves: private prefix → native DB (cuid only) → marketplace/dealski per-tenant detail → cached catalogue → mock.
+- Single-listing detail resolves: `private-` / `dealer-` prefix → vansales API detail; native DB (cuid only); mock only in mock/native mode. Old numeric Dealski-style URLs now 404 in live mode.
 - Env vars referenced include `LISTINGS_SOURCE`, `DEALSKI_API_URL`, `DEALSKI_MARKETPLACE_URL/KEY`, `VANSALES_API_URL`, `DATABASE_URL`, `COMING_SOON`, Supabase + NextAuth + maps keys.
 - `proxy.ts` preview key is committed in source (see §1).
 

@@ -13,10 +13,11 @@ import { titleCase } from "../format";
    one (the API already prefers it). Unlike the dealer feeds this one has no
    location and no VAT.
 
-   DEALER-PORTAL ADVERTS come from the same API (?seller_type=dealer): rows whose
-   dealer block has has_call_booking === true. The same filter also returns the
-   legacy Dealski-synced stock (has_call_booking false), which the Dealski feeds
-   already serve, so those rows are dropped here to avoid duplicates. Dealer adverts
+   DEALER ADVERTS come from the same API (?seller_type=dealer): rows whose
+   dealer block has has_call_booking === true. That is every advert in seller_listings,
+   whether posted in the dealer portal or imported by vansales:sync-dealski (Swiss Vans
+   included: the front no longer reads the Dealski feed). The same filter also returns
+   any leftover legacy `listings` rows (has_call_booking false); those are dropped here. Dealer adverts
    get the "dealer-" slug prefix (agreed convention with the backend; note components/enquiry-modal.tsx posts slug "dealer-<tenant>" to /api/enquiry, so that route tells them apart by the trailing advert id), seller_type "dealer", the dealer's exact pin and a
    `dealer_contact` block; their enquiries and call requests go to the vansales API
    (components/listing-actions.tsx), never to /api/enquiry. Buyers message the seller through
@@ -60,7 +61,7 @@ const or = (v: string | null | undefined, fallback: string) => (v && v.trim() !=
 /** A private seller's map pin is rounded to ~1 km: enough for "near X", never their street. */
 const coarse = (v: number | null | undefined) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v * 100) / 100 : null);
 
-/** The dealer-portal advert rows: the dealer block says has_call_booking. (Legacy Dealski-synced stock has it false and is served by the Dealski feeds.) */
+/** The dealer-portal advert rows: the dealer block says has_call_booking. (Leftover legacy `listings` rows have it false and are dropped.) */
 const isDealerAdvert = (c: ApiCard): boolean => c.seller_type === "dealer" && !!c.dealer && c.dealer.slug !== "" && c.dealer.has_call_booking === true;
 
 /** A dealer's pin is their premises, so unlike a private seller's it is NOT coarsened. */
@@ -173,13 +174,13 @@ export async function fetchPrivateSellerListingBySlug(slug: string): Promise<Lis
   return body && body.data.seller_type === "private" ? toListing(body.data) : null;
 }
 
-/** A dealer-portal advert card from a dealer profile or list response, as a Listing; null for anything else (legacy Dealski stock, private adverts). */
+/** A dealer-portal advert card from a dealer profile or list response, as a Listing; null for anything else (leftover legacy rows, private adverts). */
 export function dealerAdvertCardToListing(card: unknown): Listing | null {
   const c = card as ApiCard | null;
   return c && typeof c === "object" && isDealerAdvert(c) ? toListing(c) : null;
 }
 
-/** Every active dealer-portal advert (legacy Dealski-synced rows in the same feed are skipped: the Dealski feeds already serve them). Failure is the caller's to swallow. */
+/** Every active dealer-portal advert (leftover legacy rows in the same feed are skipped). Failure is the caller's to swallow. */
 export async function fetchDealerPortalListings(): Promise<Listing[]> {
   const out: Listing[] = [];
   for (let page = 1; page <= MAX_PAGES; page++) {
@@ -191,7 +192,7 @@ export async function fetchDealerPortalListings(): Promise<Listing[]> {
   return out;
 }
 
-/** One dealer-portal advert by its front-end slug ("dealer-<backend slug>"). Null if it is not (or no longer) active, or is legacy Dealski stock. */
+/** One dealer-portal advert by its front-end slug ("dealer-<backend slug>"). Null if it is not (or no longer) active, or is a leftover legacy row. */
 export async function fetchDealerPortalListingBySlug(slug: string): Promise<Listing | null> {
   if (!slug.startsWith(DEALER_SLUG_PREFIX)) return null;
   const backendSlug = slug.slice(DEALER_SLUG_PREFIX.length);

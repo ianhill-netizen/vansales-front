@@ -32,8 +32,8 @@ source is chosen by env **`LISTINGS_SOURCE`**:
 | Value | Behaviour |
 |---|---|
 | `mock` *(default)* | 12 bundled fixtures incl. several VW Transporters (`sources/mock.ts`) |
-| `dealski` | Live Swiss Vans stock feed (`sources/dealski.ts`), **auto-falls back to mock** if unreachable |
 | `native` | This repo's own fixtures, badged as first-party |
+| anything else (`marketplace`, `dealski`, `live`) | **Live stock from vansales-backend only** (`sources/vansales.ts`). No fixtures, no direct Dealski feed |
 
 Every result reports which source served it (`servedBy`, `live`).
 
@@ -49,20 +49,11 @@ buyer's own IP; the API emails the seller with Reply-To = the buyer and tells th
 refuses their adverts (409) so a private seller's enquiry can never be forwarded to a dealer's inbox. `VANSALES_API_URL`
 (server) and `NEXT_PUBLIC_VANSALES_API_URL` (browser) both default to `https://api.vansales.com`.
 
-### Live feed notes
+### Dealer stock
 
-The Dealski adapter targets the verified public endpoints behind
-`swissvans.dealski.co.uk/stock`:
-
-- `GET /api/public/stock?make=&page=&per_page=` — list
-- `GET /api/public/stock/{id}` — detail
-- `GET /api/public/stock/vehicles/facets` — facets
-
-At time of writing the live feed serves rich make/model/spec data but **no photos
-and no prices**, so mapped listings come through as POA with the SVG van renderer.
-VW Transporters are coded `T28/T30/T32/T34` upstream and are normalised to model
-`Transporter` in the adapter. The preview defaults to `mock` for visual fidelity;
-set `LISTINGS_SOURCE=dealski` to serve live stock.
+Dealski dealers' stock (Swiss Vans included) is imported into vansales-backend by `vansales:sync-dealski` (used vans only
+for now) and reaches this site as dealer adverts via `/api/public/listings?seller_type=dealer`. The front end no longer
+calls the Dealski stock feed. `DEALSKI_MARKETPLACE_KEY` is still used, but only for postcode geocoding and the maps key.
 
 ## Slugs
 
