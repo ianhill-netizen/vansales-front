@@ -31,7 +31,9 @@ export interface ApiDealer {
   /** Wide banner photo for the profile header. Optional: absent/null until the dealer uploads one. */
   cover_url?: string | null;
   about: string | null;
-  whatsapp_number: string | null;
+  /** Never a number (gated contact): whether the dealer has WhatsApp / a phone. The dealer's own public `phone` above stays. */
+  has_whatsapp?: boolean;
+  has_phone?: boolean;
   finance_url: string | null;
   website_url: string | null;
   social: Partial<Record<"facebook" | "instagram" | "linkedin" | "youtube" | "twitter", string | null>>;

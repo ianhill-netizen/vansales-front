@@ -1,18 +1,15 @@
 import type { Listing } from "@/lib/listings/types";
-import { financeUrl, whatsappUrl, type DealerConfig } from "@/lib/dealers/config";
+import { financeUrl, type DealerConfig } from "@/lib/dealers/config";
 
 /** What the button row on a listing offers. A field that is null/false means that button is not shown. */
 export interface ListingActionLinks {
-  whatsappHref: string | null;
+  /** WhatsApp and Call do NOT carry a number: they open the contact modal, which logs a lead (POST /api/public/listings/{id}/lead) and only then hands over the wa.me link / phone number. */
+  whatsapp: { listingId: string; dealerName: string; label: string } | null;
+  call: { listingId: string; dealerName: string; label: string } | null;
   /** Opens in a new tab. */
   financeHref: string | null;
   /** The numeric advert id the vansales API's book-call endpoint takes; null = no call booking. */
   bookCall: { listingId: string; dealerName: string } | null;
-}
-
-/** "Hi, I'm interested in your <make model> <reg> on vansales.com"; the registration only when the listing has one. */
-export function whatsappPrefill(l: Pick<Listing, "make" | "model" | "vrm">): string {
-  return `Hi, I'm interested in your ${l.make} ${l.model}${l.vrm ? ` ${l.vrm}` : ""} on vansales.com`;
 }
 
 /** Only an http(s) URL is ever linked (a stored value is data, never trusted as a scheme). */
@@ -26,24 +23,20 @@ function safeHttpUrl(v: string | null | undefined): string | null {
   }
 }
 
-/** Links for one listing: a vansales-API dealer's own details (listing.dealer_contact), else the config dealer (Swiss Vans via Dealski), else nothing. */
+/** Links for one listing: a vansales-API dealer's own details (listing.dealer_contact); a config dealer only gets finance (its WhatsApp number is never rendered: contact goes through a logged lead). */
 export function listingActionLinks(listing: Listing, dealerConfig: DealerConfig | null): ListingActionLinks {
-  const prefill = whatsappPrefill(listing);
   const dc = listing.dealer_contact;
+  const label = `${listing.make} ${listing.model}${listing.vrm ? ` ${listing.vrm}` : ""}`;
   if (dc) {
-    const digits = (dc.whatsapp_number ?? "").replace(/\D/g, "");
     return {
-      whatsappHref: digits ? whatsappUrl(digits, prefill) : null,
+      whatsapp: dc.has_whatsapp ? { listingId: listing.source_id, dealerName: dc.name, label } : null,
+      call: dc.has_phone ? { listingId: listing.source_id, dealerName: dc.name, label } : null,
       financeHref: safeHttpUrl(dc.finance_url),
       bookCall: dc.has_call_booking ? { listingId: listing.source_id, dealerName: dc.name } : null,
     };
   }
   if (dealerConfig) {
-    return {
-      whatsappHref: whatsappUrl(dealerConfig.whatsapp, prefill),
-      financeHref: dealerConfig.dealskiTenant ? financeUrl(dealerConfig.dealskiTenant, listing.slug) : null,
-      bookCall: null,
-    };
+    return { whatsapp: null, call: null, financeHref: dealerConfig.dealskiTenant ? financeUrl(dealerConfig.dealskiTenant, listing.slug) : null, bookCall: null };
   }
-  return { whatsappHref: null, financeHref: null, bookCall: null };
+  return { whatsapp: null, call: null, financeHref: null, bookCall: null };
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ListingActionLinks } from "@/lib/dealers/actions";
 import { BookCallModal } from "./book-call-modal";
+import { ContactModal, type ContactChannel } from "./contact-modal";
 import { IconWhatsApp, IconMessage, IconPhone, IconExternalLink } from "./icons";
 
 /** Fired by the Enquire button; components/enquiry-panel.tsx opens its form and focuses it. */
@@ -16,6 +17,7 @@ const btn = "flex h-11 w-full items-center justify-center gap-2 rounded-[var(--r
  */
 export function ListingActions({ links, sold = false, showEnquire = true }: { links: ListingActionLinks; sold?: boolean; showEnquire?: boolean }) {
   const [callOpen, setCallOpen] = useState(false);
+  const [contact, setContact] = useState<ContactChannel | null>(null);
   return (
     <>
       <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2" data-testid="listing-actions">
@@ -30,11 +32,17 @@ export function ListingActions({ links, sold = false, showEnquire = true }: { li
             Enquire
           </button>
         )}
-        {links.whatsappHref && (
-          <a href={links.whatsappHref} target="_blank" rel="noopener noreferrer" className={`${btn} bg-[#25D366] text-white hover:bg-[#1ebe5d] focus-visible:ring-[#25D366]`}>
+        {links.whatsapp && (
+          <button type="button" disabled={sold} onClick={() => setContact("whatsapp")} className={`${btn} bg-[#25D366] text-white hover:bg-[#1ebe5d] focus-visible:ring-[#25D366] disabled:opacity-50`}>
             <IconWhatsApp width={16} height={16} aria-hidden />
             WhatsApp
-          </a>
+          </button>
+        )}
+        {links.call && (
+          <button type="button" disabled={sold} onClick={() => setContact("call")} className={`${btn} border border-border bg-white text-ink-800 hover:border-ink-400 hover:bg-surface-1 focus-visible:ring-brand-500 disabled:opacity-50`}>
+            <IconPhone width={16} height={16} aria-hidden />
+            Call
+          </button>
         )}
         {links.financeHref && (
           <a href={links.financeHref} target="_blank" rel="noopener noreferrer" className={`${btn} bg-brand-600 text-white hover:bg-brand-700 focus-visible:ring-brand-500`}>
@@ -49,6 +57,9 @@ export function ListingActions({ links, sold = false, showEnquire = true }: { li
           </button>
         )}
       </div>
+      {(links.whatsapp || links.call) && (
+        <ContactModal listingId={(links.whatsapp ?? links.call)!.listingId} dealerName={(links.whatsapp ?? links.call)!.dealerName} label={(links.whatsapp ?? links.call)!.label} channel={contact ?? "whatsapp"} open={contact !== null} onClose={() => setContact(null)} />
+      )}
       {links.bookCall && (
         <BookCallModal listingId={links.bookCall.listingId} dealerName={links.bookCall.dealerName} open={callOpen} onClose={() => setCallOpen(false)} />
       )}

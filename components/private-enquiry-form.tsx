@@ -23,6 +23,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
   const [sentTo, setSentTo] = useState("");
+  const [leadRef, setLeadRef] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,7 +46,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           website: fd.get("website"), // honeypot
         }),
       });
-      if (res.status === 201) { setSentTo(email); setState("success"); return; }
+      if (res.status === 201) { const b = (await res.json().catch(() => ({}))) as { ref?: string | null }; setLeadRef(b.ref ?? null); setSentTo(email); setState("success"); return; }
       const body = (await res.json().catch(() => ({}))) as { message?: string; errors?: Record<string, string[]> };
       setError(
         res.status === 422 ? (Object.values(body.errors ?? {})[0]?.[0] ?? "Please check your details and try again.")
@@ -73,7 +74,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
           <div>
             <p className="font-semibold text-success-600">Sent — {dealer ? dealer.name : "the seller"} will get back to you.</p>
-            <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">They will reply to <span className="font-semibold text-ink-800">{sentTo}</span>, so keep an eye on your inbox (and spam).</p>
+            <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">They will reply to <span className="font-semibold text-ink-800">{sentTo}</span>, so keep an eye on your inbox (and spam).{leadRef ? <> Your reference is <span className="font-semibold text-ink-800">{leadRef}</span>.</> : null}</p>
           </div>
         </div>
       ) : (

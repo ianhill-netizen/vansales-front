@@ -65,8 +65,9 @@ export interface DealerContact {
   name: string;
   logo_url: string | null;
   town: string | null;
-  /** International digits, no "+" (e.g. 447700900123): ready for wa.me. */
-  whatsapp_number?: string | null;
+  /** Whether the dealer has WhatsApp / a phone. The NUMBERS are never in a listing: they are only given out by POST /api/public/listings/{id}/lead, after the buyer has been logged. */
+  has_whatsapp?: boolean;
+  has_phone?: boolean;
   finance_url?: string | null;
   /** True when the advert takes call-back requests (POST /api/public/listings/{id}/book-call). */
   has_call_booking: boolean;

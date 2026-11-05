@@ -79,7 +79,7 @@ export default async function ListingPage({
 
   const dealerConfig = listing.dealer_contact ? null : getDealerConfigBySeller(listing.seller.name);
   const actionLinks = listingActionLinks(listing, dealerConfig);
-  const hasExtraActions = !!(actionLinks.whatsappHref || actionLinks.financeHref || actionLinks.bookCall);
+  const hasExtraActions = !!(actionLinks.whatsapp || actionLinks.call || actionLinks.financeHref || actionLinks.bookCall);
   const displayTown = dealerConfig?.location.town ?? listing.location.town;
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
