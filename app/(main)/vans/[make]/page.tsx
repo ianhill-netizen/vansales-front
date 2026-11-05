@@ -122,7 +122,7 @@ export default async function MakePage({
           <Eyebrow>Make</Eyebrow>
           <div className="group mt-2 flex items-center gap-3">
             <MakeLogo make={make} name={makeName} size={56} colour />
-            <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+            <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
               {makeName} vans for sale
             </h1>
           </div>

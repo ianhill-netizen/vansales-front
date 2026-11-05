@@ -191,7 +191,7 @@ export default async function ModelPage({
           <div className="grid items-center gap-6 lg:grid-cols-[1fr_minmax(0,440px)]">
             <div>
               <Eyebrow>{makeName}</Eyebrow>
-              <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+              <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
                 {makeName} {modelName} vans for sale
               </h1>
               {/* Unique intro written from this model's real stock (page 1 only, so paginated pages stay lean) */}

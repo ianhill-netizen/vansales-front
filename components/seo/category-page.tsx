@@ -87,7 +87,7 @@ export async function CategoryPage({ slug }: { slug: string }) {
           <Eyebrow>{c.eyebrow}</Eyebrow>
           <div className="mt-2 flex items-center gap-4">
             {c.kind === "body" && <BodyTypeIcon slug={c.slug} className="h-16 w-24 shrink-0 text-brand-300" />}
-            <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">{c.label} for sale</h1>
+            <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">{c.label} for sale</h1>
           </div>
           <p className="mt-3 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">{c.intro}</p>
           {intro && <p className="mt-3 max-w-2xl text-[var(--text-md)] leading-relaxed text-ink-600">{intro}</p>}
