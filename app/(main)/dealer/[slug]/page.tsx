@@ -89,7 +89,7 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     dealskiTenant: "",
     location: { line1: d.address ?? "", town: d.town ?? "", county: d.county ?? "", postcode: d.postcode ?? "" },
     phone: d.phone ?? "",
-    whatsapp: d.whatsapp_number ? d.whatsapp_number.replace(/\D/g, "") || null : null,
+    whatsapp: null,   // gated contact: the API no longer publishes a WhatsApp number; buyers reach a dealer through a listing's Contact buttons
     featured: false,
     websites: d.website_url && host ? [{ label: host, url: d.website_url }] : [],
     hours,

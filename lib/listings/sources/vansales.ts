@@ -43,7 +43,7 @@ interface ApiCard {
   /** List-card enrichment (the detail has the same fields). */
   seller_type?: "dealer" | "private";
   /** Present on dealer adverts (and legacy dealer stock); has_call_booking is true only for dealer portal adverts. */
-  dealer?: { name: string; slug: string; logo_url?: string | null; town?: string | null; whatsapp_number?: string | null; finance_url?: string | null; has_call_booking?: boolean } | null;
+  dealer?: { name: string; slug: string; logo_url?: string | null; town?: string | null; has_whatsapp?: boolean; has_phone?: boolean; finance_url?: string | null; has_call_booking?: boolean } | null;
   ulez_compliant?: boolean | null; vehicle_condition?: "excellent" | "good" | "fair" | "project" | null; v5_present?: boolean | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; features?: { slug: string; label: string }[]; hpi_checked?: boolean;
 }
 interface ApiDetail extends ApiCard {
@@ -73,7 +73,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
   const dealer_contact: DealerContact | undefined = dealer
     ? {
         slug: dealer.slug, name: dealer.name, logo_url: dealer.logo_url ?? null, town: dealer.town ?? null,
-        whatsapp_number: dealer.whatsapp_number ? String(dealer.whatsapp_number).replace(/\D/g, "") || null : null,
+        has_whatsapp: !!dealer.has_whatsapp, has_phone: !!dealer.has_phone,
         finance_url: dealer.finance_url || null,
         has_call_booking: true,
       }

@@ -20,6 +20,7 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
   const titleId = useId();
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
+  const [ref2, setRef] = useState<string | null>(null);
 
   useEffect(() => {
     const d = ref.current;
@@ -52,7 +53,7 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
           website: fd.get("website"), // honeypot
         }),
       });
-      if (res.status === 201 || res.status === 200) { setState("success"); return; }
+      if (res.status === 201 || res.status === 200) { const b = (await res.json().catch(() => ({}))) as { ref?: string | null }; setRef(b.ref ?? null); setState("success"); return; }
       const body = (await res.json().catch(() => ({}))) as { message?: string; errors?: Record<string, string[]> };
       setError(
         res.status === 422 ? (Object.values(body.errors ?? {})[0]?.[0] ?? body.message ?? "Please check your details and try again.")
@@ -92,7 +93,7 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
               <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
               <div>
                 <p className="font-semibold text-success-600">Request sent.</p>
-                <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">{dealerName} will call you back.</p>
+                <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">{dealerName} will call you back.{ref2 ? <> Your reference is <span className="font-semibold text-ink-900">{ref2}</span>.</> : null}</p>
               </div>
             </div>
             <Button type="button" variant="primary" size="lg" className="mt-4 w-full" onClick={() => ref.current?.close()}>Done</Button>
