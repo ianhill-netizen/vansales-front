@@ -21,23 +21,23 @@ const OPTIONS = [
     accent: "brand",
   },
   {
-    href: "/signup/trade",
+    href: "https://dealer.vansales.com/signup/dealer",
     icon: IconTruck,
     label: "Dealer / trade",
     tagline: "I want to list my stock",
     description:
       "List your vehicles free and receive buyer enquiries directly. No middlemen, no call centres.",
-    cta: "List my stock free →",
+    cta: "Create a dealer account →",
     accent: "accent",
   },
   {
-    href: "/signup/advertise",
+    href: "/advertise",
     icon: IconBarChart,
     label: "Advertiser",
     tagline: "I want to reach van buyers",
     description:
-      "Put your brand in front of 50,000+ UK buyers actively comparing, financing and insuring.",
-    cta: "Request media pack →",
+      "Reach van-specialist buyers. See how advertising on Vansales works.",
+    cta: "See advertising →",
     accent: "brand",
   },
 ] as const;

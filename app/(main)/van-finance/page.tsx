@@ -7,7 +7,7 @@ import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({
   title: "Van Finance | HP, PCP & Finance Lease",
-  description: `Spread the cost of your next van with HP, PCP or finance lease. Compare van finance options or call ${SITE.phone} for a tailored quote.`,
+  description: `Spread the cost of your next van with HP, PCP or finance lease. Compare van finance options before you apply.`,
   path: "/van-finance",
 });
 
@@ -63,9 +63,6 @@ export default function VanFinancePage() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Button href="#products" variant="primary" size="lg">
                 Compare products <IconArrow width={18} height={18} />
-              </Button>
-              <Button href="tel:+441656507619" variant="outline" size="lg">
-                Call 01656 507619
               </Button>
             </div>
           </div>

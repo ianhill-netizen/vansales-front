@@ -63,7 +63,7 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
     const [town = "", county = ""] = (d.location ?? "").split(",").map((x) => x.trim());
     out.push({ slug: d.slug, name: d.name, town, county, vanCount: s.count, makes: s.makes, featured: false, rating: d.googleRating, logoUrl: apiBySlug.get(d.slug)?.logo_url ?? null, lat: d.lat ?? s.lat, lng: d.lng ?? s.lng });
   }
-  // Dealers from the vansales API (dealer portal): de-duplicated by slug against the config and database dealers above. Their stock is the dealer-portal adverts in the catalogue.
+  // Dealers from the vansales API (dealer portal): de-duplicated by slug against the config and database dealers above. Their stock is the dealer portal adverts in the catalogue.
   for (const d of apiDealers) {
     if (out.some((o) => o.slug === d.slug)) continue;
     const mine = listings.filter((l) => l.dealer_contact?.slug === d.slug);

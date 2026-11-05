@@ -12,7 +12,7 @@ export default function DealskiConnectPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setPersona("dealer");
-    router.push("/dealer-portal");
+    window.location.href = "https://dealer.vansales.com/login";
   }
 
   return (

@@ -59,7 +59,7 @@ const SECTIONS = [
     heading: "Account",
     links: [
       { href: "/sign-in", label: "Customer login" },
-      { href: "/dealer-portal/login", label: "Dealer login" },
+      { href: "https://dealer.vansales.com/login", label: "Dealer login" },
     ],
   },
 ];

@@ -11,7 +11,7 @@ const API = (process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.c
 type State = "idle" | "submitting" | "success" | "error";
 
 /**
- * "Book a call" for a dealer-portal advert: POST {API}/api/public/listings/{id}/book-call {name, phone, email?, preferred_time?}.
+ * "Book a call" for a dealer portal advert: POST {API}/api/public/listings/{id}/book-call {name, phone, email?, preferred_time?}.
  * Built on the native <dialog> opened with showModal(), so the browser traps focus inside it, makes the page behind it inert, closes on Esc and
  * hands focus back to the button that opened it. The `website` input is a honeypot, invisible to people.
  */

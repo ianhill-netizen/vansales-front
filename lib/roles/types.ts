@@ -33,7 +33,7 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     displayName: "John Smith",
     email: "john@midlandscommercial.co.uk",
     initials: "JS",
-    accountHref: "/dealer-portal",
+    accountHref: "https://dealer.vansales.com/login",
   },
   "swiss-vans": {
     id: "swiss-vans",
@@ -41,7 +41,7 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     displayName: "Swiss Vans",
     email: "ian@swissvans26.com",
     initials: "SV",
-    accountHref: "/dealer-portal",
+    accountHref: "https://dealer.vansales.com/login",
   },
   admin: {
     id: "admin",

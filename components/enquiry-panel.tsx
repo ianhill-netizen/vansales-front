@@ -22,8 +22,6 @@ function dealerInitials(name: string): string {
     .join("");
 }
 
-const PHONE_DISPLAY = "01656 507619";
-const PHONE_TEL = "tel:+441656507619";
 
 export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; autoOpen?: boolean }) {
   const [state, setState] = useState<FormState>(autoOpen ? "open" : "idle");
@@ -165,13 +163,13 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
       </div>
 
       {/* Phone CTA — dealer only; never shown for private listings */}
-      {!isPrivate && !apiDealer && (
+      {!isPrivate && !apiDealer && dealerConfig && (
         <a
-          href={dealerConfig ? `tel:${dealerConfig.phone.replace(/[^\d+]/g, "")}` : PHONE_TEL}
+          href={`tel:${dealerConfig.phone.replace(/[^\d+]/g, "")}`}
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3 text-[length:var(--text-base)] font-bold text-success-600 transition-colors hover:bg-success-500 hover:text-white"
         >
           <PhoneIcon />
-          <span>{dealerConfig?.phone ?? PHONE_DISPLAY}</span>
+          <span>{dealerConfig.phone}</span>
           <span className="text-[length:var(--text-sm)] font-normal opacity-75">· Request callback</span>
         </a>
       )}
@@ -201,8 +199,10 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
               {isPrivate
                 ? "Your message has been sent. The seller will be in touch shortly."
                 : <>
-                    {displayName} has your details and will be in touch shortly. For a faster
-                    reply, call <a href={PHONE_TEL} className="font-bold text-ink-800 underline">{PHONE_DISPLAY}</a>.
+                    {displayName} has your details and will be in touch shortly.
+                    {dealerConfig && (
+                      <> For a faster reply, call <a href={`tel:${dealerConfig.phone.replace(/[^\d+]/g, "")}`} className="font-bold text-ink-800 underline">{dealerConfig.phone}</a>.</>
+                    )}
                   </>
               }
             </p>

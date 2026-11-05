@@ -126,9 +126,9 @@ export default function SignInPage() {
       </p>
       <p className="mt-3 text-center text-[length:var(--text-xs)] text-ink-400">
         Are you a dealer?{" "}
-        <Link href="/dealer-portal/login" className="text-brand-600 hover:underline">
-          Log in to Dealer Portal
-        </Link>
+        <a href="https://dealer.vansales.com/login" className="text-brand-600 hover:underline">
+          Dealer login
+        </a>
       </p>
     </div>
   );

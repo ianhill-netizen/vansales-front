@@ -32,10 +32,10 @@ Stack: Next.js 16.2.9 (App Router), React 19, Tailwind v4, Prisma 7 (Postgres), 
 | `/robots.txt`, `/sitemap.xml` | Sitemap lists every listing from `getListings({})` | | |
 
 ### Auth (`app/(auth)`)
-`/sign-in`, `/sign-up` + `/sign-up/{buyer,private-seller,dealer,dealer-group,dealski-connect,finance-hire-fleet}`, `/dealer-portal/login`.
+`/sign-in`, `/sign-up` + `/sign-up/{buyer,private-seller,dealer,dealer-group,dealski-connect,finance-hire-fleet}`, `/dealer portal/login`.
 
 ### Portal (`app/(portal)`, logged-in)
-`/dealer-portal` (dashboard, 710 lines, **mock data** from `lib/dealer/mock-dashboard-data.ts`), `/dealer-portal/{add-van,listings,leads,analytics,account}`, `/admin`, `/admin/{dealers,listings,integrations/*}`.
+`/dealer portal` (dashboard, 710 lines, **mock data** from `lib/dealer/mock-dashboard-data.ts`), `/dealer portal/{add-van,listings,leads,analytics,account}`, `/admin`, `/admin/{dealers,listings,integrations/*}`.
 
 ### Utility/dev pages
 `/image-review` (force-dynamic, internal), `/maps-test`.
@@ -154,9 +154,9 @@ Not shown anywhere on detail: a dedicated HPI/vehicle-history card, price histor
 
 **Dealer directory** — `/directory` is *not* one; it is a make/model A–Z index. There is no `/dealers` route and no list of dealers anywhere.
 
-**`/advertise`** — exists and is substantial (462 lines): hero, seller types, 4 plans — Private ("pay as you go"), £39/mo, £89/mo, £199/mo (+VAT, 14-day trial), comparison/"why us" copy. All paid CTAs go to `/dealer-portal/login`; the private CTA goes to `/sell`. **No checkout or plan selection** — plans are marketing copy only (`lib/garage/api.ts` calls a `/api/wallet/topup` endpoint on the wallet/garage side; no plan checkout is wired to `/advertise`).
+**`/advertise`** — exists and is substantial (462 lines): hero, seller types, 4 plans — Private ("pay as you go"), £39/mo, £89/mo, £199/mo (+VAT, 14-day trial), comparison/"why us" copy. All paid CTAs go to `/dealer portal/login`; the private CTA goes to `/sell`. **No checkout or plan selection** — plans are marketing copy only (`lib/garage/api.ts` calls a `/api/wallet/topup` endpoint on the wallet/garage side; no plan checkout is wired to `/advertise`).
 
-`/dealer-portal/*` exists but the dashboard runs on mock data; `add-van` is an 813-line form.
+`/dealer portal/*` exists but the dashboard runs on mock data; `add-van` is an 813-line form.
 
 ---
 
@@ -231,7 +231,7 @@ Notes:
 2. Dealer `features[]` and `euro_status` are never populated; dealer ULEZ is a year heuristic.
 3. ACME demo listings are merged into the live catalogue in all modes.
 4. `/saved` is linked in `header.tsx` but no `/saved` route exists (`SavedVan`/`SavedSearch` exist in Prisma only) → 404.
-5. `/garage`, `/dealer-portal` dashboard run on mock data.
+5. `/garage`, `/dealer portal` dashboard run on mock data.
 6. Private-advert freshness: 60 s source cache vs 3600 s ISR on listing pages.
 7. `--font-display` points at `--font-jakarta`, which isn't loaded.
 8. Preview-gate key is committed in `proxy.ts`.

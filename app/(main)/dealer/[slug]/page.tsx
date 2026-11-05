@@ -28,7 +28,7 @@ import {
 } from "@/components/icons";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
-// 5 minutes: a dealer-portal profile edit (about, hours, logo) shows within minutes; the Dealski-fed dealers are unaffected by the shorter window.
+// 5 minutes: a dealer portal profile edit (about, hours, logo) shows within minutes; the Dealski-fed dealers are unaffected by the shorter window.
 export const revalidate = 300;
 
 type Params = { slug: string };

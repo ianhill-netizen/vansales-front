@@ -114,12 +114,12 @@ export async function POST(req: Request) {
     source = "vansales-signup-trade";
     enquiry_type = "trade";
     notes = [
-      "Trade sign-up via vansales.com/signup/trade.",
+      "Trade sign-up via the vansales.com sign-up form.",
       `Dealership: ${dealership}`,
       `Phone: ${phone}`,
       `Typical stock size: ${stock_size}`,
     ].join("\n");
-    page_url = "https://vansales.com/signup/trade";
+    page_url = "https://vansales.com/signup";
     page_name = "Sign Up — Dealer / Trade";
   } else {
     // advertise
@@ -150,11 +150,11 @@ export async function POST(req: Request) {
     source = "vansales-signup-advertise";
     enquiry_type = "advertiser";
     notes = [
-      "Advertiser sign-up via vansales.com/signup/advertise.",
+      "Advertiser sign-up via the vansales.com sign-up form.",
       `Company: ${company}`,
       `Advertising: ${advertise_category}`,
     ].join("\n");
-    page_url = "https://vansales.com/signup/advertise";
+    page_url = "https://vansales.com/signup";
     page_name = "Sign Up — Advertise";
   }
 
@@ -185,7 +185,7 @@ export async function POST(req: Request) {
       console.error(`[signup] Dealski ${res.status}:`, text.slice(0, 200));
       console.error("[signup] LEAD_FALLBACK", JSON.stringify(payload));
       return NextResponse.json(
-        { ok: false, error: "Could not submit — please call us on 01656 507619." },
+        { ok: false, error: "Could not submit — please try again in a moment." },
         { status: 502 },
       );
     }
@@ -196,7 +196,7 @@ export async function POST(req: Request) {
     console.error("[signup] fetch failed:", err);
     console.error("[signup] LEAD_FALLBACK", JSON.stringify(payload));
     return NextResponse.json(
-      { ok: false, error: "Network error — please call us on 01656 507619." },
+      { ok: false, error: "Network error — please try again in a moment." },
       { status: 502 },
     );
   }
