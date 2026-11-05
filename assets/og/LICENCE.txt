@@ -1,0 +1,1 @@
+Geist-Bold.ttf: Geist by Vercel in collaboration with basement.studio, SIL Open Font License 1.1 (https://github.com/vercel/geist-font/blob/main/LICENSE.TXT). Used only to render share images (next/og).
