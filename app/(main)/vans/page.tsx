@@ -181,7 +181,7 @@ export default async function VansPage({
             <span className="font-medium text-ink-600">Vans for sale</span>
           </nav>
 
-          <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
+          <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
             Vans for sale
           </h1>
           <p className="mt-2 text-[var(--text-md)] text-ink-500">
