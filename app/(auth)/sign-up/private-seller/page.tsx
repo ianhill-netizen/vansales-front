@@ -21,12 +21,12 @@ export default function PrivateSellerSignUpPage() {
         <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-[var(--radius-xl)] bg-success-tint">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0c8a4a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><rect x="1" y="3" width="22" height="13" rx="2"/><path d="M5 16v2"/><path d="M19 16v2"/><path d="M1 13h22"/><circle cx="6" cy="18" r="1"/><circle cx="18" cy="18" r="1"/></svg>
         </div>
-        <h1 className="mt-3 font-display text-[var(--text-xl)] font-extrabold text-ink-900">Sell your van</h1>
-        <p className="mt-1 text-[var(--text-sm)] text-ink-500">Free listing. No subscription. Ready in 5 minutes.</p>
+        <h1 className="mt-3 font-display text-[length:var(--text-xl)] font-extrabold text-ink-900">Sell your van</h1>
+        <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">Free listing. No subscription. Ready in 5 minutes.</p>
       </div>
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-md)]">
         <div className="border-b border-border bg-success-tint px-6 py-3">
-          <p className="text-[var(--text-xs)] font-semibold text-success-700">✓ Completely free — no credit card needed</p>
+          <p className="text-[length:var(--text-xs)] font-semibold text-success-700">✓ Completely free — no credit card needed</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4 px-6 py-6">
           <div className="grid grid-cols-2 gap-3">
@@ -35,33 +35,33 @@ export default function PrivateSellerSignUpPage() {
               { id: "last", label: "Last name", auto: "family-name" },
             ].map((f) => (
               <div key={f.id}>
-                <label htmlFor={f.id} className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">{f.label}</label>
+                <label htmlFor={f.id} className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">{f.label}</label>
                 <input id={f.id} name={f.id} type="text" autoComplete={f.auto} required
-                  className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
+                  className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500" />
               </div>
             ))}
           </div>
           <div>
-            <label htmlFor="email" className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Email address</label>
+            <label htmlFor="email" className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Email address</label>
             <input id="email" name="email" type="email" autoComplete="email" required
-              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
+              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500" />
           </div>
           <div>
-            <label htmlFor="phone" className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Phone (optional — for WhatsApp enquiries)</label>
+            <label htmlFor="phone" className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Phone (optional — for WhatsApp enquiries)</label>
             <input id="phone" name="phone" type="tel" autoComplete="tel"
-              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
+              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500" />
           </div>
           <div>
-            <label htmlFor="password" className="block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Password</label>
+            <label htmlFor="password" className="block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500">Password</label>
             <input id="password" name="password" type="password" autoComplete="new-password" required placeholder="Min. 8 characters"
-              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500" />
+              className="mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500" />
           </div>
           <Button type="submit" variant="brand" size="md" className="w-full">
             Create free account &amp; list my van →
           </Button>
         </form>
       </div>
-      <p className="mt-4 text-center text-[var(--text-xs)] text-ink-400">
+      <p className="mt-4 text-center text-[length:var(--text-xs)] text-ink-400">
         <Link href="/sign-up" className="hover:underline">← All account types</Link>
       </p>
     </div>

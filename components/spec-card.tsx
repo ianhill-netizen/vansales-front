@@ -98,7 +98,7 @@ export function SpecCard({
       aria-label={`${make} ${model} — photos coming soon`}
     >
       {/* Tag */}
-      <span className="absolute right-3 top-3 rounded-[var(--radius-pill)] bg-white/10 px-2.5 py-0.5 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white/60 backdrop-blur-sm">
+      <span className="absolute right-3 top-3 rounded-[var(--radius-pill)] bg-white/10 px-2.5 py-0.5 text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white/60 backdrop-blur-sm">
         Photos coming soon
       </span>
 
@@ -108,18 +108,18 @@ export function SpecCard({
       </div>
 
       {/* Make */}
-      <p className="font-mono text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-white/45">
+      <p className="font-mono text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-white/45">
         {make}
       </p>
 
       {/* Model — display headline */}
-      <p className="font-display text-[var(--text-2xl)] font-extrabold leading-tight tracking-[-0.025em] text-white">
+      <p className="font-display text-[length:var(--text-2xl)] font-extrabold leading-tight tracking-[-0.025em] text-white">
         {model}
       </p>
 
       {/* Body style label */}
       {van_spec.body_style && (
-        <span className="mt-2 inline-flex self-start rounded-[var(--radius-sm)] bg-white/10 px-2 py-0.5 text-[var(--text-xs)] text-white/55">
+        <span className="mt-2 inline-flex self-start rounded-[var(--radius-sm)] bg-white/10 px-2 py-0.5 text-[length:var(--text-xs)] text-white/55">
           {van_spec.body_style}
         </span>
       )}
@@ -144,7 +144,7 @@ export function BodyTypeTile({
       className={`flex items-end p-4 text-white ${className}`}
       style={{ background: `linear-gradient(${gradientStr})` }}
     >
-      <span className="font-display text-[var(--text-base)] font-bold">{label}</span>
+      <span className="font-display text-[length:var(--text-base)] font-bold">{label}</span>
     </div>
   );
 }

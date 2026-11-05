@@ -48,11 +48,11 @@ export default function VanInsurancePage() {
         <Container className="py-14">
           <div className="max-w-2xl">
             <Eyebrow>Van Insurance</Eyebrow>
-            <h1 className="mt-3 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+            <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
               Commercial van insurance.<br />
               <span className="text-brand-500">Know what you&apos;re buying.</span>
             </h1>
-            <p className="mt-4 text-[var(--text-md)] leading-relaxed text-ink-600">
+            <p className="mt-4 text-[length:var(--text-md)] leading-relaxed text-ink-600">
               Commercial van insurance isn&apos;t the same as car insurance. This guide covers what to look
               for, the types of cover available, and the common traps that leave businesses underinsured.
             </p>
@@ -73,16 +73,16 @@ export default function VanInsurancePage() {
         <Container>
           <div className="mb-8">
             <Eyebrow>Types of cover</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">Which level of cover do you need?</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">Which level of cover do you need?</h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-3">
             {COVER_TYPES.map((ct) => (
               <div key={ct.title} className="flex flex-col rounded-[var(--radius-xl)] border border-border bg-white p-7 shadow-[var(--shadow-xs)]">
-                <span className={`inline-flex self-start rounded-full px-2.5 py-0.5 text-[var(--text-xs)] font-semibold ${ct.badgeColor} mb-4`}>
+                <span className={`inline-flex self-start rounded-full px-2.5 py-0.5 text-[length:var(--text-xs)] font-semibold ${ct.badgeColor} mb-4`}>
                   {ct.badge}
                 </span>
-                <h3 className="font-display text-[var(--text-lg)] font-bold text-ink-900">{ct.title}</h3>
-                <p className="mt-2 flex-1 text-[var(--text-sm)] leading-relaxed text-ink-600">{ct.description}</p>
+                <h3 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">{ct.title}</h3>
+                <p className="mt-2 flex-1 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{ct.description}</p>
               </div>
             ))}
           </div>
@@ -94,7 +94,7 @@ export default function VanInsurancePage() {
         <Container>
           <div className="mb-8">
             <Eyebrow>What to check</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">6 things to get right</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">6 things to get right</h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {CONSIDERATIONS.map((c) => (
@@ -102,8 +102,8 @@ export default function VanInsurancePage() {
                 <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-brand-tint text-brand-600">
                   {c.icon}
                 </div>
-                <h3 className="font-display text-[var(--text-base)] font-bold text-ink-900">{c.title}</h3>
-                <p className="mt-1.5 text-[var(--text-sm)] leading-relaxed text-ink-600">{c.body}</p>
+                <h3 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">{c.title}</h3>
+                <p className="mt-1.5 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{c.body}</p>
               </div>
             ))}
           </div>
@@ -115,13 +115,13 @@ export default function VanInsurancePage() {
         <Container>
           <div className="mx-auto max-w-2xl">
             <Eyebrow>Honest info</Eyebrow>
-            <h2 className="mt-2 font-display text-[var(--text-2xl)] font-bold text-ink-900">We don&apos;t sell insurance</h2>
-            <p className="mt-3 text-[var(--text-md)] leading-relaxed text-ink-600">
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">We don&apos;t sell insurance</h2>
+            <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
               Vansales is a van marketplace, not an insurance broker. We&apos;ve written this guide because
               we see buyers purchase the wrong cover — or discover they&apos;re underinsured only when
               it&apos;s too late.
             </p>
-            <p className="mt-3 text-[var(--text-md)] leading-relaxed text-ink-600">
+            <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
               For a quote, we recommend using a specialist commercial vehicle broker rather than a price
               comparison site — brokers can negotiate better rates and will read your policy wording for you.
             </p>
@@ -133,14 +133,14 @@ export default function VanInsurancePage() {
                   "Read the excess structure — commercial van excesses can be high",
                   "Confirm your tools/goods are covered if you carry them regularly",
                 ].map((t) => (
-                  <li key={t} className="flex items-start gap-2.5 text-[var(--text-sm)] text-amber-800">
+                  <li key={t} className="flex items-start gap-2.5 text-[length:var(--text-sm)] text-amber-800">
                     <IconCheck width={15} height={15} className="mt-0.5 shrink-0" />
                     {t}
                   </li>
                 ))}
               </ul>
             </div>
-            <p className="mt-6 text-[var(--text-sm)] text-ink-500">
+            <p className="mt-6 text-[length:var(--text-sm)] text-ink-500">
               Got questions about a van you&apos;re buying?{" "}
               <a href="tel:+441656507619" className="font-semibold text-brand-600 hover:underline">
                 Call 01656 507619

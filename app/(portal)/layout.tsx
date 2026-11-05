@@ -37,7 +37,7 @@ function SidebarNav() {
       <div className="px-3 pb-3">
         <Link
           href="/dealer-portal/add-van"
-          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] py-2.5 text-[var(--text-sm)] font-bold text-white transition-all"
+          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] py-2.5 text-[length:var(--text-sm)] font-bold text-white transition-all"
           style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
         >
           <IconPlus width={14} height={14} strokeWidth={2.5} />
@@ -47,7 +47,7 @@ function SidebarNav() {
 
       {/* Primary nav */}
       <nav className="flex-1 px-3 py-1" aria-label="Portal navigation">
-        <p className="mb-2 px-2.5 text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-white/30">
+        <p className="mb-2 px-2.5 text-[length:var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-white/30">
           Dealer portal
         </p>
         <ul className="space-y-0.5">
@@ -96,7 +96,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         </Link>
         <Link
           href="/dealer-portal/add-van"
-          className="flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-xs)] font-bold text-white"
+          className="flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-[length:var(--text-xs)] font-bold text-white"
           style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
         >
           <IconPlus width={12} height={12} strokeWidth={2.5} /> Add van

@@ -199,7 +199,7 @@ Notes:
 ## 9. Styling
 
 - **Tailwind CSS v4** (`@tailwindcss/postcss`, `@import "tailwindcss"`), no component library; hand-rolled primitives in `components/ui.tsx`.
-- **Design tokens** in `app/styles/tokens.css` ("Ink Navy + Signal Orange" v3, 2026): colour scales (`ink-*`, `surface-*`, `brand-*` navy, orange accent, success/warning), semantic aliases, type scale (`--text-2xs`…`--text-3xl`), radii, shadows, motion, gradients. Components use arbitrary-value classes like `rounded-[var(--radius-xl)]`, `text-[var(--text-sm)]`.
+- **Design tokens** in `app/styles/tokens.css` ("Ink Navy + Signal Orange" v3, 2026): colour scales (`ink-*`, `surface-*`, `brand-*` navy, orange accent, success/warning), semantic aliases, type scale (`--text-2xs`…`--text-3xl`), radii, shadows, motion, gradients. Components use arbitrary-value classes like `rounded-[var(--radius-xl)]`, `text-[length:var(--text-sm)]`.
 - **Fonts**: Geist (sans) + Geist Mono (labels/figures) via `next/font/google` (`app/fonts.ts`); `--font-display` is mapped to `--font-jakarta` in `globals.css`, but **no Plus Jakarta Sans is loaded** (`fonts.ts` only loads Geist), so headings fall back to a locally-installed Jakarta or the system sans stack (verify in a browser).
 - Brand orange `#f47c1e → #d96410` used inline on card hover; dark navy bands with `.hero-grid` dot texture.
 - **Responsive**: mobile-first Tailwind breakpoints (`sm/md/lg/xl`); card grid 1/2/3 columns; filter is a bottom-sheet-style modal; `FilterRail` collapses to `<details>` on mobile; separate `mobile-nav.tsx`.

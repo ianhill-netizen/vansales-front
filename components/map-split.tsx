@@ -172,11 +172,11 @@ export function MapSplit({
       <div className="max-lg:fixed max-lg:inset-0 max-lg:z-40 max-lg:flex max-lg:flex-col max-lg:bg-white lg:block">
         {/* Mobile top bar */}
         <div className="flex items-center justify-between gap-3 border-b border-border bg-white px-4 py-3 lg:hidden">
-          <Link href={closeHref} scroll={false} className="text-[var(--text-sm)] font-semibold text-brand-600">← Back to grid</Link>
-          <p className="text-[var(--text-sm)] font-semibold text-ink-700">{visible.length} on map</p>
+          <Link href={closeHref} scroll={false} className="text-[length:var(--text-sm)] font-semibold text-brand-600">← Back to grid</Link>
+          <p className="text-[length:var(--text-sm)] font-semibold text-ink-700">{visible.length} on map</p>
         </div>
 
-        <p className="mb-3 hidden text-[var(--text-sm)] text-ink-500 lg:block">
+        <p className="mb-3 hidden text-[length:var(--text-sm)] text-ink-500 lg:block">
           <span className="font-semibold text-ink-800">{visible.length}</span> van{visible.length === 1 ? "" : "s"} in this map area
           {withoutLocation > 0 && <span className="text-ink-400"> · {withoutLocation} more without a location are not shown</span>}
           <span className="text-ink-400"> · move or zoom the map to narrow the list</span>
@@ -224,7 +224,7 @@ export function MapSplit({
           {pane === "map" && selectedKey && (
             <div className="absolute inset-x-3 bottom-16 z-[1000] space-y-1.5 rounded-[var(--radius-lg)] bg-white p-3 shadow-[var(--shadow-lg)] lg:hidden">
               {(groups.find((g) => g.key === selectedKey)?.items ?? []).slice(0, 3).map((l) => (
-                <Link key={l.id} href={`/listing/${l.slug}`} className="flex items-center justify-between gap-3 text-[var(--text-sm)]">
+                <Link key={l.id} href={`/listing/${l.slug}`} className="flex items-center justify-between gap-3 text-[length:var(--text-sm)]">
                   <span className="truncate font-semibold text-ink-900">{l.make} {l.model}</span>
                   <span className="shrink-0 font-mono font-bold text-ink-900">{l.price != null ? `£${l.price.toLocaleString("en-GB")}` : "POA"}</span>
                 </Link>
@@ -236,7 +236,7 @@ export function MapSplit({
           <button
             type="button"
             onClick={() => setPane((p) => (p === "map" ? "list" : "map"))}
-            className="absolute bottom-5 left-1/2 z-[1000] -translate-x-1/2 rounded-full bg-ink-900 px-5 py-2.5 text-[var(--text-sm)] font-bold text-white shadow-[var(--shadow-lg)] lg:hidden"
+            className="absolute bottom-5 left-1/2 z-[1000] -translate-x-1/2 rounded-full bg-ink-900 px-5 py-2.5 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-lg)] lg:hidden"
           >
             {pane === "map" ? `List (${visible.length})` : "Map"}
           </button>

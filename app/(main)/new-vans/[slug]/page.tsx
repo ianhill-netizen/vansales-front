@@ -97,7 +97,7 @@ export default async function NewVanDetailPage({ params }: Props) {
       {/* Hero */}
       <section className="border-b border-border bg-surface-1">
         <Container className="py-10">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span>/</span>
             <Link href="/new-vans" className="hover:text-ink-900">New vans</Link>
@@ -108,31 +108,31 @@ export default async function NewVanDetailPage({ params }: Props) {
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
               <Eyebrow>{van.make}</Eyebrow>
-              <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+              <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
                 {van.title}
               </h1>
               {van.description && (
-                <p className="mt-3 text-[var(--text-md)] text-ink-600">{van.description}</p>
+                <p className="mt-3 text-[length:var(--text-md)] text-ink-600">{van.description}</p>
               )}
               {price != null && (
                 <div className="mt-4 inline-flex items-baseline gap-1.5 rounded-[var(--radius-lg)] bg-brand-50 px-4 py-2.5 ring-1 ring-brand-200">
-                  <span className="text-[var(--text-xs)] font-semibold uppercase tracking-wide text-brand-600">From</span>
-                  <span className="font-display text-[var(--text-2xl)] font-extrabold text-brand-700">
+                  <span className="text-[length:var(--text-xs)] font-semibold uppercase tracking-wide text-brand-600">From</span>
+                  <span className="font-display text-[length:var(--text-2xl)] font-extrabold text-brand-700">
                     £{price.toLocaleString("en-GB")}
                   </span>
-                  <span className="text-[var(--text-xs)] text-brand-600">/month exc. VAT</span>
+                  <span className="text-[length:var(--text-xs)] text-brand-600">/month exc. VAT</span>
                 </div>
               )}
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href={van.stockHref}
-                  className="rounded-[var(--radius-pill)] bg-brand-500 px-6 py-2.5 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600"
+                  className="rounded-[var(--radius-pill)] bg-brand-500 px-6 py-2.5 text-[length:var(--text-sm)] font-bold text-white hover:bg-brand-600"
                 >
                   {stockResult.total > 0 ? `${stockResult.total} in stock now →` : "Browse stock →"}
                 </Link>
                 <Link
                   href="/advertise"
-                  className="rounded-[var(--radius-pill)] border border-border bg-white px-6 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
+                  className="rounded-[var(--radius-pill)] border border-border bg-white px-6 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
                 >
                   Advertise your {van.make}
                 </Link>
@@ -152,7 +152,7 @@ export default async function NewVanDetailPage({ params }: Props) {
               </div>
             ) : (
               <div className="flex h-56 items-center justify-center rounded-[var(--radius-2xl)] bg-gradient-to-br from-brand-900 to-ink-900 lg:h-72">
-                <span className="font-display text-[var(--text-2xl)] font-extrabold text-white/20">{van.make}</span>
+                <span className="font-display text-[length:var(--text-2xl)] font-extrabold text-white/20">{van.make}</span>
               </div>
             )}
           </div>
@@ -164,10 +164,10 @@ export default async function NewVanDetailPage({ params }: Props) {
         <section className="border-b border-border bg-white py-8">
           <Container>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+              <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
                 {van.make} vans in stock now
               </h2>
-              <Link href={van.stockHref} className="text-[var(--text-sm)] font-semibold text-brand-700 hover:underline">
+              <Link href={van.stockHref} className="text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">
                 View all {stockResult.total} →
               </Link>
             </div>

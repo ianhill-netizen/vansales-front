@@ -41,7 +41,7 @@ export function RoleSimulator() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] font-mono text-[var(--text-xs)]">
+    <div className="fixed bottom-4 right-4 z-[9999] font-mono text-[length:var(--text-xs)]">
       {/* Collapsed pill */}
       <button
         type="button"
@@ -59,10 +59,10 @@ export function RoleSimulator() {
       {open && (
         <div className="absolute bottom-full right-0 mb-2 w-64 overflow-hidden rounded-[var(--radius-lg)] border border-border bg-white shadow-[var(--shadow-xl)]">
           <div className="border-b border-border bg-ink-900 px-4 py-3">
-            <p className="text-[var(--text-2xs)] font-bold uppercase tracking-widest text-white/50">
+            <p className="text-[length:var(--text-2xs)] font-bold uppercase tracking-widest text-white/50">
               SIMULATION
             </p>
-            <p className="mt-0.5 text-[var(--text-xs)] font-semibold text-white/80">
+            <p className="mt-0.5 text-[length:var(--text-xs)] font-semibold text-white/80">
               Switch persona → navigates to their dashboard
             </p>
           </div>

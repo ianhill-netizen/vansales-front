@@ -27,10 +27,10 @@ export function SpecReadout({
             {it.icon}
           </span>
           <div className="min-w-0">
-            <dt className="text-[var(--text-2xs)] uppercase tracking-[var(--tracking-wide)] text-ink-400">
+            <dt className="text-[length:var(--text-2xs)] uppercase tracking-[var(--tracking-wide)] text-ink-400">
               {it.label}
             </dt>
-            <dd className="truncate font-mono text-[var(--text-sm)] font-medium text-ink-800">
+            <dd className="truncate font-mono text-[length:var(--text-sm)] font-medium text-ink-800">
               {it.value}
             </dd>
           </div>

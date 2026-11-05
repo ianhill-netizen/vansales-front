@@ -65,19 +65,19 @@ export function IntegrationsPage({
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-1">
-        <Link href={backHref} className="text-[var(--text-xs)] font-semibold text-brand-600 hover:underline">
+        <Link href={backHref} className="text-[length:var(--text-xs)] font-semibold text-brand-600 hover:underline">
           ← Integrations hub
         </Link>
       </div>
       <div className="mb-6 mt-2">
-        <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">{title}</h1>
-        <p className="mt-1 text-[var(--text-sm)] text-ink-500">{description}</p>
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">{title}</h1>
+        <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">{description}</p>
       </div>
 
       {supabaseConfigured === false && (
         <div className="mb-6 rounded-[var(--radius-xl)] border border-amber-300 bg-amber-50 px-5 py-4">
           <p className="font-semibold text-amber-800">Supabase not configured</p>
-          <p className="mt-1 text-[var(--text-sm)] text-amber-700">
+          <p className="mt-1 text-[length:var(--text-sm)] text-amber-700">
             Add <code className="rounded bg-amber-100 px-1">SUPABASE_URL</code>,{" "}
             <code className="rounded bg-amber-100 px-1">SUPABASE_SERVICE_ROLE_KEY</code>, and{" "}
             <code className="rounded bg-amber-100 px-1">ENCRYPTION_KEY</code> to Vercel environment variables, then run the schema SQL and seed script.

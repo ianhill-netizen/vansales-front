@@ -19,10 +19,10 @@ const PRICES = [10000, 15000, 20000, 25000, 30000, 40000, 50000];
 const YEARS  = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
 const LEGEND_CLS =
-  "mb-2 block text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-wide)] text-ink-500";
+  "mb-2 block text-[length:var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-wide)] text-ink-500";
 
 const SELECT_CLS =
-  "h-10 w-full appearance-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] font-medium text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)] cursor-pointer";
+  "h-10 w-full appearance-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] font-medium text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)] cursor-pointer";
 
 export function FilterRail({
   resultCount,
@@ -62,7 +62,7 @@ export function FilterRail({
         key={value}
         type="button"
         onClick={() => setParam(paramKey, active ? "" : value)}
-        className={`rounded-[var(--radius-pill)] border px-3 py-1.5 text-[var(--text-xs)] font-semibold transition-all duration-[var(--dur-fast)] ${
+        className={`rounded-[var(--radius-pill)] border px-3 py-1.5 text-[length:var(--text-xs)] font-semibold transition-all duration-[var(--dur-fast)] ${
           active
             ? "border-accent-500 bg-accent-tint text-accent-700"
             : "border-border bg-surface-0 text-ink-600 hover:border-ink-400 hover:text-ink-800"
@@ -171,7 +171,7 @@ export function FilterRail({
         <button
           type="button"
           onClick={() => router.push(pathname, { scroll: false })}
-          className="self-start text-[var(--text-sm)] font-semibold text-accent-600 underline-offset-2 hover:underline"
+          className="self-start text-[length:var(--text-sm)] font-semibold text-accent-600 underline-offset-2 hover:underline"
         >
           Clear all {activeCount} filter{activeCount !== 1 ? "s" : ""}
         </button>
@@ -183,16 +183,16 @@ export function FilterRail({
     <>
       {/* Mobile: details drawer */}
       <details className="group rounded-[var(--radius-xl)] border border-border bg-white p-4 shadow-[var(--shadow-xs)] lg:hidden">
-        <summary className="flex cursor-pointer items-center justify-between font-display text-[var(--text-base)] font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer items-center justify-between font-display text-[length:var(--text-base)] font-bold text-ink-900 [&::-webkit-details-marker]:hidden">
           <span>
             Filters
             {activeCount > 0 && (
-              <span className="ml-2 rounded-[var(--radius-pill)] bg-accent-tint px-2 py-0.5 text-[var(--text-xs)] font-bold text-accent-700">
+              <span className="ml-2 rounded-[var(--radius-pill)] bg-accent-tint px-2 py-0.5 text-[length:var(--text-xs)] font-bold text-accent-700">
                 {activeCount}
               </span>
             )}
           </span>
-          <span className="text-[var(--text-sm)] font-medium text-ink-500 group-open:hidden">
+          <span className="text-[length:var(--text-sm)] font-medium text-ink-500 group-open:hidden">
             {resultCount.toLocaleString()} results
           </span>
         </summary>
@@ -202,9 +202,9 @@ export function FilterRail({
       {/* Desktop: sticky aside */}
       <aside className="sticky top-[calc(var(--header-h,6.25rem)+1rem)] hidden self-start rounded-[var(--radius-xl)] border border-border bg-white p-5 shadow-[var(--shadow-xs)] lg:block">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-display text-[var(--text-base)] font-bold text-ink-900">Refine results</h2>
+          <h2 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">Refine results</h2>
           {activeCount > 0 && (
-            <span className="rounded-[var(--radius-pill)] bg-accent-tint px-2.5 py-0.5 text-[var(--text-xs)] font-bold text-accent-700">
+            <span className="rounded-[var(--radius-pill)] bg-accent-tint px-2.5 py-0.5 text-[length:var(--text-xs)] font-bold text-accent-700">
               {activeCount} active
             </span>
           )}

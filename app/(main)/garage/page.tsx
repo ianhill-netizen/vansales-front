@@ -71,13 +71,13 @@ function SectionHeader({ onBack, title }: { onBack: () => void; title: string })
     <div className="mb-6 flex items-center gap-3">
       <button
         onClick={onBack}
-        className="flex items-center gap-1 text-[var(--text-sm)] font-semibold text-ink-500 hover:text-ink-800"
+        className="flex items-center gap-1 text-[length:var(--text-sm)] font-semibold text-ink-500 hover:text-ink-800"
       >
         <IconChevronLeft width={16} height={16} />
         My Garage
       </button>
       <span className="text-ink-300">/</span>
-      <span className="text-[var(--text-sm)] font-semibold text-ink-800">{title}</span>
+      <span className="text-[length:var(--text-sm)] font-semibold text-ink-800">{title}</span>
     </div>
   );
 }
@@ -94,7 +94,7 @@ function StatusPill({ status }: { status: VehicleStatus }) {
     sold: "Sold",
   };
   return (
-    <span className={`inline-flex rounded-[var(--radius-pill)] px-2.5 py-0.5 text-[var(--text-2xs)] font-semibold ${map[status]}`}>
+    <span className={`inline-flex rounded-[var(--radius-pill)] px-2.5 py-0.5 text-[length:var(--text-2xs)] font-semibold ${map[status]}`}>
       {labels[status]}
     </span>
   );
@@ -152,7 +152,7 @@ function AddVehicleModal({ onClose, onAdd }: {
     onClose();
   }
 
-  const inputCls = "h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-base)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20";
+  const inputCls = "h-11 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-base)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20";
 
   return (
     <div
@@ -161,14 +161,14 @@ function AddVehicleModal({ onClose, onAdd }: {
     >
       <div className="w-full max-w-md rounded-t-[var(--radius-2xl)] bg-white p-6 shadow-[var(--shadow-lg)] sm:rounded-[var(--radius-2xl)]">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Add vehicle</h2>
+          <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Add vehicle</h2>
           <button onClick={onClose} className="text-ink-400 hover:text-ink-700"><IconX width={20} height={20} /></button>
         </div>
 
         <div className="space-y-4">
           {/* Reg lookup */}
           <div>
-            <label className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
+            <label className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
               Registration number
             </label>
             <div className="flex gap-2">
@@ -181,7 +181,7 @@ function AddVehicleModal({ onClose, onAdd }: {
               <button
                 onClick={handleLookup}
                 disabled={!reg.trim() || looking}
-                className="h-11 rounded-[var(--radius-md)] bg-brand-500 px-4 text-[var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-11 rounded-[var(--radius-md)] bg-brand-500 px-4 text-[length:var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {looking ? "…" : "Look up"}
               </button>
@@ -191,11 +191,11 @@ function AddVehicleModal({ onClose, onAdd }: {
           {/* Autofill result */}
           {autofill && (
             <div className="rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3">
-              <p className="text-[var(--text-xs)] font-semibold uppercase tracking-wider text-success-700">Found</p>
+              <p className="text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-success-700">Found</p>
               <p className="mt-0.5 font-semibold text-ink-900">
                 {autofill.year} {autofill.make} {autofill.model}
               </p>
-              <p className="text-[var(--text-sm)] text-ink-500">{autofill.derivative}</p>
+              <p className="text-[length:var(--text-sm)] text-ink-500">{autofill.derivative}</p>
             </div>
           )}
 
@@ -203,7 +203,7 @@ function AddVehicleModal({ onClose, onAdd }: {
           {looked && (
             <>
               <div>
-                <label className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
+                <label className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
                   Mileage
                 </label>
                 <input
@@ -215,7 +215,7 @@ function AddVehicleModal({ onClose, onAdd }: {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
+                <label className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
                   Asking price (£)
                 </label>
                 <input
@@ -229,10 +229,10 @@ function AddVehicleModal({ onClose, onAdd }: {
 
               {/* Photo placeholder */}
               <div>
-                <label className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
+                <label className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-500">
                   Photos
                 </label>
-                <div className="flex h-24 w-full cursor-not-allowed items-center justify-center gap-2 rounded-[var(--radius-md)] border border-dashed border-border bg-surface-1 text-[var(--text-sm)] text-ink-400">
+                <div className="flex h-24 w-full cursor-not-allowed items-center justify-center gap-2 rounded-[var(--radius-md)] border border-dashed border-border bg-surface-1 text-[length:var(--text-sm)] text-ink-400">
                   <IconUpload width={18} height={18} />
                   Photo upload — coming soon
                 </div>
@@ -244,14 +244,14 @@ function AddVehicleModal({ onClose, onAdd }: {
         <div className="mt-5 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-[var(--radius-md)] border border-border py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
+            className="flex-1 rounded-[var(--radius-md)] border border-border py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
           >
             Cancel
           </button>
           <button
             onClick={handleAdd}
             disabled={!autofill || !mileage}
-            className="flex-1 rounded-[var(--radius-md)] bg-accent-500 py-2.5 text-[var(--text-sm)] font-semibold text-white transition-colors hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-[var(--radius-md)] bg-accent-500 py-2.5 text-[length:var(--text-sm)] font-semibold text-white transition-colors hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Add vehicle
           </button>
@@ -279,10 +279,10 @@ function VehiclesView({
       <SectionHeader onBack={onBack} title="My Vehicles" />
 
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">My Vehicles</h1>
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">My Vehicles</h1>
         <button
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-2 rounded-[var(--radius-md)] bg-accent-500 px-4 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-accent-600"
+          className="flex items-center gap-2 rounded-[var(--radius-md)] bg-accent-500 px-4 py-2 text-[length:var(--text-sm)] font-semibold text-white hover:bg-accent-600"
         >
           <IconPlus width={16} height={16} />
           Add vehicle
@@ -312,8 +312,8 @@ function VehiclesView({
                 </p>
                 <StatusPill status={v.status} />
               </div>
-              <p className="mt-0.5 font-mono text-[var(--text-sm)] font-semibold text-ink-500">{v.reg}</p>
-              <p className="text-[var(--text-xs)] text-ink-400">
+              <p className="mt-0.5 font-mono text-[length:var(--text-sm)] font-semibold text-ink-500">{v.reg}</p>
+              <p className="text-[length:var(--text-xs)] text-ink-400">
                 {v.mileage.toLocaleString("en-GB")} mi
                 {v.price != null ? ` · £${v.price.toLocaleString("en-GB")}` : " · Price TBC"}
               </p>
@@ -322,7 +322,7 @@ function VehiclesView({
             {/* List on Vansales toggle */}
             {v.status !== "sold" && (
               <div className="flex shrink-0 flex-col items-end gap-1.5">
-                <p className="text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">
+                <p className="text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">
                   List on Vansales
                 </p>
                 <button
@@ -345,7 +345,7 @@ function VehiclesView({
         ))}
 
         {vehicles.length === 0 && (
-          <p className="rounded-[var(--radius-xl)] border border-dashed border-border bg-white py-10 text-center text-[var(--text-sm)] text-ink-400">
+          <p className="rounded-[var(--radius-xl)] border border-dashed border-border bg-white py-10 text-center text-[length:var(--text-sm)] text-ink-400">
             No vehicles yet.{" "}
             <button onClick={() => setShowAdd(true)} className="text-brand-600 hover:underline">
               Add your first one →
@@ -387,7 +387,7 @@ function TopUpModal({ onClose }: { onClose: () => void }) {
     >
       <div className="w-full max-w-md rounded-t-[var(--radius-2xl)] bg-white p-6 shadow-[var(--shadow-lg)] sm:rounded-[var(--radius-2xl)]">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Top up tokens</h2>
+          <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Top up tokens</h2>
           <button onClick={onClose} className="text-ink-400 hover:text-ink-700"><IconX width={20} height={20} /></button>
         </div>
 
@@ -403,12 +403,12 @@ function TopUpModal({ onClose }: { onClose: () => void }) {
               }`}
             >
               <p className="font-display font-bold text-ink-900">{pack.label}</p>
-              <p className="mt-0.5 text-[var(--text-sm)] text-ink-500">
+              <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-500">
                 {pack.tokens.toLocaleString("en-GB")} tokens
               </p>
               <p className="mt-1 font-semibold text-ink-800">£{pack.price_gbp}</p>
               {pack.bonus_pct && (
-                <span className="mt-1 inline-block rounded-full border border-success-500/20 bg-success-tint px-2 py-0.5 text-[var(--text-2xs)] font-semibold text-success-700">
+                <span className="mt-1 inline-block rounded-full border border-success-500/20 bg-success-tint px-2 py-0.5 text-[length:var(--text-2xs)] font-semibold text-success-700">
                   +{pack.bonus_pct}% bonus
                 </span>
               )}
@@ -417,12 +417,12 @@ function TopUpModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {error && (
-          <p className="mt-3 text-center text-[var(--text-xs)] text-red-500">{error}</p>
+          <p className="mt-3 text-center text-[length:var(--text-xs)] text-red-500">{error}</p>
         )}
         <button
           disabled={!selected || redirecting}
           onClick={handleContinue}
-          className="mt-5 w-full rounded-[var(--radius-md)] bg-accent-500 py-3 text-[var(--text-base)] font-semibold text-white transition-colors hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-40"
+          className="mt-5 w-full rounded-[var(--radius-md)] bg-accent-500 py-3 text-[length:var(--text-base)] font-semibold text-white transition-colors hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {redirecting ? "Redirecting…" : selected ? "Continue to payment" : "Select a pack"}
         </button>
@@ -455,18 +455,18 @@ function WalletView({
       {/* Balance header */}
       <div className="mb-6 flex items-start justify-between rounded-[var(--radius-xl)] border border-border bg-white px-6 py-5 shadow-[var(--shadow-sm)]">
         <div>
-          <p className="text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Token balance</p>
-          <p className="mt-1 font-display text-[var(--text-3xl)] font-extrabold text-ink-900">
+          <p className="text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Token balance</p>
+          <p className="mt-1 font-display text-[length:var(--text-3xl)] font-extrabold text-ink-900">
             {tokens.toLocaleString("en-GB")}
-            <span className="ml-1 text-[var(--text-base)] font-normal text-ink-400">tokens</span>
+            <span className="ml-1 text-[length:var(--text-base)] font-normal text-ink-400">tokens</span>
           </p>
-          <p className="mt-0.5 text-[var(--text-sm)] text-ink-500">
+          <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-500">
             £{(tokens / 100).toFixed(2)} equivalent · 1 token = 1p
           </p>
         </div>
         <button
           onClick={() => setShowTopUp(true)}
-          className="rounded-[var(--radius-md)] bg-accent-500 px-4 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-accent-600"
+          className="rounded-[var(--radius-md)] bg-accent-500 px-4 py-2 text-[length:var(--text-sm)] font-semibold text-white hover:bg-accent-600"
         >
           Top up
         </button>
@@ -475,14 +475,14 @@ function WalletView({
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Action costs */}
         <section>
-          <h2 className="mb-3 font-display text-[var(--text-base)] font-bold text-ink-900">Action costs</h2>
+          <h2 className="mb-3 font-display text-[length:var(--text-base)] font-bold text-ink-900">Action costs</h2>
           <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white">
-            <table className="w-full text-[var(--text-sm)]">
+            <table className="w-full text-[length:var(--text-sm)]">
               <thead>
                 <tr className="border-b border-border bg-surface-0">
-                  <th className="px-4 py-2.5 text-left text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Action</th>
-                  <th className="px-4 py-2.5 text-right text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Tokens</th>
-                  <th className="px-4 py-2.5 text-right text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">£</th>
+                  <th className="px-4 py-2.5 text-left text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Action</th>
+                  <th className="px-4 py-2.5 text-right text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Tokens</th>
+                  <th className="px-4 py-2.5 text-right text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">£</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -508,21 +508,21 @@ function WalletView({
 
         {/* Ledger */}
         <section>
-          <h2 className="mb-3 font-display text-[var(--text-base)] font-bold text-ink-900">Recent activity</h2>
+          <h2 className="mb-3 font-display text-[length:var(--text-base)] font-bold text-ink-900">Recent activity</h2>
           <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white">
-            <table className="w-full text-[var(--text-sm)]">
+            <table className="w-full text-[length:var(--text-sm)]">
               <thead>
                 <tr className="border-b border-border bg-surface-0">
-                  <th className="px-4 py-2.5 text-left text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Date</th>
-                  <th className="px-4 py-2.5 text-left text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Action</th>
-                  <th className="px-4 py-2.5 text-right text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Tokens</th>
-                  <th className="px-4 py-2.5 text-right text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Balance</th>
+                  <th className="px-4 py-2.5 text-left text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Date</th>
+                  <th className="px-4 py-2.5 text-left text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Action</th>
+                  <th className="px-4 py-2.5 text-right text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Tokens</th>
+                  <th className="px-4 py-2.5 text-right text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Balance</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {ledger.map((entry) => (
                   <tr key={entry.id} className="hover:bg-surface-0">
-                    <td className="px-4 py-3 font-mono text-[var(--text-xs)] text-ink-500">{entry.date}</td>
+                    <td className="px-4 py-3 font-mono text-[length:var(--text-xs)] text-ink-500">{entry.date}</td>
                     <td className="px-4 py-3 text-ink-700">{entry.action}</td>
                     <td className={`px-4 py-3 text-right font-mono font-semibold ${entry.tokens > 0 ? "text-success-600" : "text-red-500"}`}>
                       {entry.tokens > 0 ? `+${entry.tokens}` : entry.tokens}
@@ -582,20 +582,20 @@ function ThreadView({
       <div className="mb-6 flex items-center gap-3">
         <button
           onClick={onBack}
-          className="flex items-center gap-1 text-[var(--text-sm)] font-semibold text-ink-500 hover:text-ink-800"
+          className="flex items-center gap-1 text-[length:var(--text-sm)] font-semibold text-ink-500 hover:text-ink-800"
         >
           <IconChevronLeft width={16} height={16} />
           Messages
         </button>
         <span className="text-ink-300">/</span>
-        <span className="text-[var(--text-sm)] font-semibold text-ink-800">{thread.buyer_name}</span>
+        <span className="text-[length:var(--text-sm)] font-semibold text-ink-800">{thread.buyer_name}</span>
       </div>
 
       <div className="rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-sm)]">
         {/* Thread header */}
         <div className="border-b border-border px-5 py-4">
           <p className="font-semibold text-ink-900">{thread.buyer_name}</p>
-          <p className="text-[var(--text-xs)] text-ink-400">re: {thread.vehicle}</p>
+          <p className="text-[length:var(--text-xs)] text-ink-400">re: {thread.vehicle}</p>
         </div>
 
         {/* Messages */}
@@ -606,14 +606,14 @@ function ThreadView({
               className={`flex ${msg.from === "seller" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-xs rounded-[var(--radius-lg)] px-4 py-2.5 text-[var(--text-sm)] ${
+                className={`max-w-xs rounded-[var(--radius-lg)] px-4 py-2.5 text-[length:var(--text-sm)] ${
                   msg.from === "seller"
                     ? "bg-brand-500 text-white"
                     : "bg-surface-1 text-ink-800"
                 }`}
               >
                 <p>{msg.body}</p>
-                <p className={`mt-1 text-[var(--text-2xs)] ${msg.from === "seller" ? "text-blue-100" : "text-ink-400"}`}>
+                <p className={`mt-1 text-[length:var(--text-2xs)] ${msg.from === "seller" ? "text-blue-100" : "text-ink-400"}`}>
                   {formatTime(msg.sent_at)}
                 </p>
               </div>
@@ -631,17 +631,17 @@ function ThreadView({
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
               rows={2}
               placeholder="Type a reply…"
-              className="flex-1 resize-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 py-2 text-[var(--text-sm)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20"
+              className="flex-1 resize-none rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 py-2 text-[length:var(--text-sm)] text-ink-800 outline-none transition-colors focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20"
             />
             <button
               onClick={handleSend}
               disabled={!draft.trim()}
-              className="self-end rounded-[var(--radius-md)] bg-brand-500 px-4 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-brand-600 disabled:opacity-40"
+              className="self-end rounded-[var(--radius-md)] bg-brand-500 px-4 py-2 text-[length:var(--text-sm)] font-semibold text-white hover:bg-brand-600 disabled:opacity-40"
             >
               Send
             </button>
           </div>
-          <p className="mt-1.5 text-[var(--text-2xs)] text-ink-400">
+          <p className="mt-1.5 text-[length:var(--text-2xs)] text-ink-400">
             Sending costs 1 token · you have {tokens} token{tokens !== 1 ? "s" : ""} remaining
           </p>
         </div>
@@ -708,11 +708,11 @@ function MessagingView({
     <Container className="py-10">
       <SectionHeader onBack={onBack} title="Messaging" />
 
-      <h1 className="mb-6 font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Messaging</h1>
+      <h1 className="mb-6 font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Messaging</h1>
 
       {/* Contact preference */}
       <section className="mb-6 rounded-[var(--radius-xl)] border border-border bg-white px-5 py-5 shadow-[var(--shadow-sm)]">
-        <h2 className="mb-3 font-display text-[var(--text-base)] font-bold text-ink-900">Contact preference</h2>
+        <h2 className="mb-3 font-display text-[length:var(--text-base)] font-bold text-ink-900">Contact preference</h2>
         <div className="space-y-2">
           {PREFS.map((option) => (
             <label
@@ -738,12 +738,12 @@ function MessagingView({
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-ink-900">{option.label}</span>
                   {option.disabled && (
-                    <span className="rounded-[var(--radius-pill)] bg-amber-50 px-2 py-0.5 text-[var(--text-2xs)] font-semibold text-amber-600">
+                    <span className="rounded-[var(--radius-pill)] bg-amber-50 px-2 py-0.5 text-[length:var(--text-2xs)] font-semibold text-amber-600">
                       Coming soon
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 text-[var(--text-xs)] text-ink-500">{option.desc}</p>
+                <p className="mt-0.5 text-[length:var(--text-xs)] text-ink-500">{option.desc}</p>
               </div>
             </label>
           ))}
@@ -752,7 +752,7 @@ function MessagingView({
 
       {/* Thread list */}
       <section>
-        <h2 className="mb-3 font-display text-[var(--text-base)] font-bold text-ink-900">Conversations</h2>
+        <h2 className="mb-3 font-display text-[length:var(--text-base)] font-bold text-ink-900">Conversations</h2>
         <div className="space-y-2">
           {threads.map((thread) => (
             <button
@@ -760,27 +760,27 @@ function MessagingView({
               onClick={() => setActiveId(thread.id)}
               className="flex w-full items-center gap-4 rounded-[var(--radius-xl)] border border-border bg-white px-5 py-4 text-left shadow-[var(--shadow-sm)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]"
             >
-              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink-900 font-display text-[var(--text-sm)] font-bold text-white">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink-900 font-display text-[length:var(--text-sm)] font-bold text-white">
                 {thread.buyer_name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-ink-900">{thread.buyer_name}</p>
                   {thread.unread > 0 && (
-                    <span className="rounded-full bg-brand-500 px-1.5 py-0.5 text-[var(--text-2xs)] font-bold text-white">
+                    <span className="rounded-full bg-brand-500 px-1.5 py-0.5 text-[length:var(--text-2xs)] font-bold text-white">
                       {thread.unread}
                     </span>
                   )}
                 </div>
-                <p className="truncate text-[var(--text-xs)] text-ink-400">{thread.last_message}</p>
-                <p className="text-[var(--text-2xs)] text-ink-300">{thread.vehicle}</p>
+                <p className="truncate text-[length:var(--text-xs)] text-ink-400">{thread.last_message}</p>
+                <p className="text-[length:var(--text-2xs)] text-ink-300">{thread.vehicle}</p>
               </div>
-              <p className="shrink-0 text-[var(--text-xs)] text-ink-400">{formatTime(thread.last_message_at)}</p>
+              <p className="shrink-0 text-[length:var(--text-xs)] text-ink-400">{formatTime(thread.last_message_at)}</p>
             </button>
           ))}
 
           {threads.length === 0 && (
-            <p className="rounded-[var(--radius-xl)] border border-dashed border-border bg-white py-10 text-center text-[var(--text-sm)] text-ink-400">
+            <p className="rounded-[var(--radius-xl)] border border-dashed border-border bg-white py-10 text-center text-[length:var(--text-sm)] text-ink-400">
               No messages yet.
             </p>
           )}
@@ -809,7 +809,7 @@ function PxOffersView({
     <Container className="py-10">
       <SectionHeader onBack={onBack} title="PX Offers" />
 
-      <h1 className="mb-6 font-display text-[var(--text-2xl)] font-extrabold text-ink-900">PX Offers</h1>
+      <h1 className="mb-6 font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">PX Offers</h1>
 
       <div className="space-y-3">
         {offers.map((offer) => (
@@ -822,17 +822,17 @@ function PxOffersView({
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-ink-900">{offer.dealer_name}</p>
                   {offer.status !== "pending" && (
-                    <span className={`rounded-full px-2.5 py-0.5 text-[var(--text-2xs)] font-semibold ${
+                    <span className={`rounded-full px-2.5 py-0.5 text-[length:var(--text-2xs)] font-semibold ${
                       offer.status === "accepted" ? "bg-success-tint text-success-700" : "bg-red-50 text-red-600"
                     }`}>
                       {offer.status === "accepted" ? "Accepted" : "Declined"}
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 text-[var(--text-sm)] text-ink-500">{offer.vehicle}</p>
-                <p className="text-[var(--text-xs)] text-ink-400">{offer.date}</p>
+                <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-500">{offer.vehicle}</p>
+                <p className="text-[length:var(--text-xs)] text-ink-400">{offer.date}</p>
               </div>
-              <p className="font-display text-[var(--text-xl)] font-extrabold text-ink-900">
+              <p className="font-display text-[length:var(--text-xl)] font-extrabold text-ink-900">
                 £{offer.offer_amount.toLocaleString("en-GB")}
               </p>
             </div>
@@ -841,14 +841,14 @@ function PxOffersView({
               <div className="mt-4 flex gap-3">
                 <button
                   onClick={() => handleAction(offer.id, "accepted")}
-                  className="flex items-center gap-1.5 rounded-[var(--radius-md)] bg-success-600 px-4 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-success-700"
+                  className="flex items-center gap-1.5 rounded-[var(--radius-md)] bg-success-600 px-4 py-2 text-[length:var(--text-sm)] font-semibold text-white hover:bg-success-700"
                 >
                   <IconCheck width={16} height={16} />
                   Accept
                 </button>
                 <button
                   onClick={() => handleAction(offer.id, "declined")}
-                  className="flex items-center gap-1.5 rounded-[var(--radius-md)] border border-border px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-red-300 hover:text-red-500"
+                  className="flex items-center gap-1.5 rounded-[var(--radius-md)] border border-border px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-red-300 hover:text-red-500"
                 >
                   <IconX width={16} height={16} />
                   Decline
@@ -859,7 +859,7 @@ function PxOffersView({
         ))}
 
         {offers.length === 0 && (
-          <p className="rounded-[var(--radius-xl)] border border-dashed border-border bg-white py-10 text-center text-[var(--text-sm)] text-ink-400">
+          <p className="rounded-[var(--radius-xl)] border border-dashed border-border bg-white py-10 text-center text-[length:var(--text-sm)] text-ink-400">
             No PX offers yet. List a vehicle to start receiving offers.
           </p>
         )}
@@ -910,8 +910,8 @@ function MultiPxView({
     <Container className="py-10">
       <SectionHeader onBack={onBack} title="Batch PX" />
 
-      <h1 className="mb-2 font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Batch PX Request</h1>
-      <p className="mb-6 text-[var(--text-sm)] text-ink-500">
+      <h1 className="mb-2 font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Batch PX Request</h1>
+      <p className="mb-6 text-[length:var(--text-sm)] text-ink-500">
         Select vehicles and send a part-exchange request to the dealer network. Costs {BATCH_COST_PER_VEHICLE} tokens per vehicle.
       </p>
 
@@ -920,7 +920,7 @@ function MultiPxView({
           <IconCheck width={24} height={24} className="mt-0.5 shrink-0 text-success-600" />
           <div>
             <p className="font-semibold text-success-700">Batch PX request sent!</p>
-            <p className="mt-0.5 text-[var(--text-sm)] text-ink-600">
+            <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-600">
               Your request has been submitted to the dealer network. Offers will arrive in PX Offers.
             </p>
           </div>
@@ -944,14 +944,14 @@ function MultiPxView({
                   <p className="font-semibold text-ink-900">
                     {v.year} {v.make} {v.model}
                   </p>
-                  <p className="font-mono text-[var(--text-xs)] text-ink-400">
+                  <p className="font-mono text-[length:var(--text-xs)] text-ink-400">
                     {v.reg} · {v.mileage.toLocaleString("en-GB")} mi
                   </p>
                 </div>
               </label>
             ))}
             {activeVehicles.length === 0 && (
-              <p className="text-[var(--text-sm)] text-ink-400">No active vehicles to select.</p>
+              <p className="text-[length:var(--text-sm)] text-ink-400">No active vehicles to select.</p>
             )}
           </div>
 
@@ -960,21 +960,21 @@ function MultiPxView({
             <div className="rounded-[var(--radius-xl)] border border-border bg-white px-5 py-4 shadow-[var(--shadow-sm)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[var(--text-sm)] text-ink-600">
+                  <p className="text-[length:var(--text-sm)] text-ink-600">
                     {count} vehicle{count !== 1 ? "s" : ""} × {BATCH_COST_PER_VEHICLE} tokens
                   </p>
-                  <p className="font-display text-[var(--text-lg)] font-bold text-ink-900">
+                  <p className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">
                     Total: {cost} tokens (£{(cost / 100).toFixed(2)})
                   </p>
                   {!canAfford && (
-                    <p className="mt-1 text-[var(--text-xs)] text-red-500">Insufficient tokens — top up your wallet first.</p>
+                    <p className="mt-1 text-[length:var(--text-xs)] text-red-500">Insufficient tokens — top up your wallet first.</p>
                   )}
                 </div>
                 {!confirming ? (
                   <button
                     onClick={() => setConfirming(true)}
                     disabled={!canAfford}
-                    className="rounded-[var(--radius-md)] bg-accent-500 px-5 py-2.5 text-[var(--text-sm)] font-semibold text-white hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-[var(--radius-md)] bg-accent-500 px-5 py-2.5 text-[length:var(--text-sm)] font-semibold text-white hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Send batch PX
                   </button>
@@ -982,13 +982,13 @@ function MultiPxView({
                   <div className="flex gap-2">
                     <button
                       onClick={() => setConfirming(false)}
-                      className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
+                      className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleConfirm}
-                      className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-2 text-[var(--text-sm)] font-semibold text-white hover:bg-brand-600"
+                      className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-2 text-[length:var(--text-sm)] font-semibold text-white hover:bg-brand-600"
                     >
                       Confirm & send
                     </button>
@@ -1013,16 +1013,16 @@ function UploadDocModal({ onClose }: { onClose: () => void }) {
     >
       <div className="w-full max-w-md rounded-t-[var(--radius-2xl)] bg-white p-6 shadow-[var(--shadow-lg)] sm:rounded-[var(--radius-2xl)]">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Upload document</h2>
+          <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Upload document</h2>
           <button onClick={onClose} className="text-ink-400 hover:text-ink-700"><IconX width={20} height={20} /></button>
         </div>
-        <div className="flex h-32 w-full cursor-not-allowed items-center justify-center gap-2 rounded-[var(--radius-lg)] border border-dashed border-border bg-surface-1 text-[var(--text-sm)] text-ink-400">
+        <div className="flex h-32 w-full cursor-not-allowed items-center justify-center gap-2 rounded-[var(--radius-lg)] border border-dashed border-border bg-surface-1 text-[length:var(--text-sm)] text-ink-400">
           <IconUpload width={20} height={20} />
           Document upload — coming soon
         </div>
         <button
           onClick={onClose}
-          className="mt-5 w-full rounded-[var(--radius-md)] border border-border py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
+          className="mt-5 w-full rounded-[var(--radius-md)] border border-border py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
         >
           Close
         </button>
@@ -1050,10 +1050,10 @@ function DocumentsView({
       <SectionHeader onBack={onBack} title="My Documents" />
 
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">My Documents</h1>
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">My Documents</h1>
         <button
           onClick={() => setShowUpload(true)}
-          className="flex items-center gap-2 rounded-[var(--radius-md)] border border-border px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-brand-500 hover:text-brand-700"
+          className="flex items-center gap-2 rounded-[var(--radius-md)] border border-border px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-brand-500 hover:text-brand-700"
         >
           <IconUpload width={16} height={16} />
           Upload
@@ -1062,12 +1062,12 @@ function DocumentsView({
 
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-sm)]">
         {docs.length > 0 ? (
-          <table className="w-full text-[var(--text-sm)]">
+          <table className="w-full text-[length:var(--text-sm)]">
             <thead>
               <tr className="border-b border-border bg-surface-0">
-                <th className="px-4 py-2.5 text-left text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Name</th>
-                <th className="px-4 py-2.5 text-left text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Type</th>
-                <th className="px-4 py-2.5 text-left text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Date</th>
+                <th className="px-4 py-2.5 text-left text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Name</th>
+                <th className="px-4 py-2.5 text-left text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Type</th>
+                <th className="px-4 py-2.5 text-left text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -1075,17 +1075,17 @@ function DocumentsView({
                 <tr key={doc.id} className="hover:bg-surface-0">
                   <td className="px-4 py-3 font-medium text-ink-800">{doc.name}</td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-[var(--radius-pill)] px-2.5 py-0.5 text-[var(--text-2xs)] font-semibold capitalize ${DOC_TYPE_STYLE[doc.type] ?? "bg-surface-2 text-ink-600"}`}>
+                    <span className={`inline-flex rounded-[var(--radius-pill)] px-2.5 py-0.5 text-[length:var(--text-2xs)] font-semibold capitalize ${DOC_TYPE_STYLE[doc.type] ?? "bg-surface-2 text-ink-600"}`}>
                       {doc.type}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-[var(--text-xs)] text-ink-500">{doc.date}</td>
+                  <td className="px-4 py-3 font-mono text-[length:var(--text-xs)] text-ink-500">{doc.date}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p className="py-10 text-center text-[var(--text-sm)] text-ink-400">No documents yet.</p>
+          <p className="py-10 text-center text-[length:var(--text-sm)] text-ink-400">No documents yet.</p>
         )}
       </div>
 
@@ -1126,7 +1126,7 @@ export default function GaragePage() {
   if (!garage) {
     return (
       <Container className="py-20 text-center">
-        <p className="text-[var(--text-sm)] text-ink-400">Loading…</p>
+        <p className="text-[length:var(--text-sm)] text-ink-400">Loading…</p>
       </Container>
     );
   }
@@ -1268,18 +1268,18 @@ export default function GaragePage() {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">
+          <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">
             Hi, {garage.profile.name.split(" ")[0]}
           </h1>
-          <p className="mt-0.5 text-[var(--text-sm)] text-ink-500">
+          <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-500">
             Private Seller · {garage.profile.email}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="rounded-[var(--radius-pill)] bg-surface-2 px-3 py-1.5 text-[var(--text-xs)] font-semibold text-ink-600">
+          <span className="rounded-[var(--radius-pill)] bg-surface-2 px-3 py-1.5 text-[length:var(--text-xs)] font-semibold text-ink-600">
             {tokens.toLocaleString("en-GB")} tokens
           </span>
-          <button className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
+          <button className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
             Edit profile
           </button>
         </div>
@@ -1298,15 +1298,15 @@ export default function GaragePage() {
               <div className={`flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] ${colors.bg} ${colors.text}`}>
                 <card.Icon width={22} height={22} />
               </div>
-              <p className="mt-3 font-display text-[var(--text-base)] font-bold text-ink-900">{card.title}</p>
-              <p className="mt-0.5 text-[var(--text-xs)] text-ink-500">{card.stat}</p>
+              <p className="mt-3 font-display text-[length:var(--text-base)] font-bold text-ink-900">{card.title}</p>
+              <p className="mt-0.5 text-[length:var(--text-xs)] text-ink-500">{card.stat}</p>
             </button>
           );
         })}
       </div>
 
       {/* Private seller mask reminder */}
-      <div className="mt-8 flex items-center justify-center gap-2 text-[var(--text-xs)] text-ink-400">
+      <div className="mt-8 flex items-center justify-center gap-2 text-[length:var(--text-xs)] text-ink-400">
         <IconShield width={13} height={13} className="text-ink-300" />
         You appear as <span className="font-semibold text-ink-600">&ldquo;Private seller&rdquo;</span> to all buyers — your name and contact details are never revealed.
       </div>

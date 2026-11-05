@@ -20,8 +20,8 @@ export function DealerCTAButtons({
   );
   const telHref = `tel:${dealer.phone.replace(/[^\d+]/g, "")}`;
   const btnBase = compact
-    ? "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-[var(--text-sm)] font-semibold transition-colors"
-    : "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] h-12 px-5 text-[var(--text-base)] font-semibold transition-colors";
+    ? "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-[length:var(--text-sm)] font-semibold transition-colors"
+    : "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] h-12 px-5 text-[length:var(--text-base)] font-semibold transition-colors";
 
   return (
     <>

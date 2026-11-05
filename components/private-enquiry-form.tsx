@@ -60,7 +60,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
     <>
       <div className="relative my-4 flex items-center gap-3">
         <div className="flex-1 border-t border-border" />
-        <span className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">{dealer ? "message the dealer" : "message the seller"}</span>
+        <span className="text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">{dealer ? "message the dealer" : "message the seller"}</span>
         <div className="flex-1 border-t border-border" />
       </div>
 
@@ -69,7 +69,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
           <div>
             <p className="font-semibold text-success-600">Sent — {dealer ? dealer.name : "the seller"} will get back to you.</p>
-            <p className="mt-1 text-[var(--text-sm)] text-ink-600">They will reply to <span className="font-semibold text-ink-800">{sentTo}</span>, so keep an eye on your inbox (and spam).</p>
+            <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">They will reply to <span className="font-semibold text-ink-800">{sentTo}</span>, so keep an eye on your inbox (and spam).</p>
           </div>
         </div>
       ) : (
@@ -95,13 +95,13 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           </Field>
 
           {state === "error" && (
-            <p role="alert" className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-sold-600">{error}</p>
+            <p role="alert" className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-sold-600">{error}</p>
           )}
 
           <Button type="submit" variant="primary" size="lg" className="w-full" disabled={state === "submitting"}>
             {state === "submitting" ? "Sending…" : "Send message"}
           </Button>
-          <p className="text-center text-[var(--text-xs)] text-ink-400">
+          <p className="text-center text-[length:var(--text-xs)] text-ink-400">
             Your name, email and phone number are sent to {who} so they can reply. Never agree to pay a deposit before you have seen the van.
           </p>
         </form>

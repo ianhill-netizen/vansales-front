@@ -40,7 +40,7 @@ export default async function DealerBlogIndexPage({ params }: Props) {
 
       <section className="border-b border-border bg-surface-1">
         <Container className="py-8">
-          <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span>/</span>
             <Link href={`/dealer/${slug}`} className="hover:text-ink-900">{dealerName}</Link>
@@ -48,8 +48,8 @@ export default async function DealerBlogIndexPage({ params }: Props) {
             <span className="font-medium text-ink-700">Blog</span>
           </nav>
           <Eyebrow>{dealerName}</Eyebrow>
-          <h1 className="mt-1.5 font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Van guides &amp; news</h1>
-          <p className="mt-2 text-[var(--text-sm)] text-ink-600">Tips, buying guides and stock news from {dealerName}.</p>
+          <h1 className="mt-1.5 font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Van guides &amp; news</h1>
+          <p className="mt-2 text-[length:var(--text-sm)] text-ink-600">Tips, buying guides and stock news from {dealerName}.</p>
         </Container>
       </section>
 
@@ -64,15 +64,15 @@ export default async function DealerBlogIndexPage({ params }: Props) {
               <div className="h-1.5 bg-gradient-to-r from-brand-500 to-brand-300" />
               <div className="flex flex-1 flex-col p-4">
                 {post.date && (
-                  <time dateTime={post.date} className="text-[var(--text-2xs)] text-ink-400">{formatDate(post.date)}</time>
+                  <time dateTime={post.date} className="text-[length:var(--text-2xs)] text-ink-400">{formatDate(post.date)}</time>
                 )}
-                <h2 className="mt-1 font-display text-[var(--text-sm)] font-bold leading-snug text-ink-900 group-hover:text-brand-700">
+                <h2 className="mt-1 font-display text-[length:var(--text-sm)] font-bold leading-snug text-ink-900 group-hover:text-brand-700">
                   {post.title}
                 </h2>
                 {post.description && (
-                  <p className="mt-1.5 line-clamp-2 flex-1 text-[var(--text-xs)] text-ink-500">{post.description}</p>
+                  <p className="mt-1.5 line-clamp-2 flex-1 text-[length:var(--text-xs)] text-ink-500">{post.description}</p>
                 )}
-                <span className="mt-3 text-[var(--text-2xs)] font-semibold text-brand-700">Read →</span>
+                <span className="mt-3 text-[length:var(--text-2xs)] font-semibold text-brand-700">Read →</span>
               </div>
             </Link>
           ))}

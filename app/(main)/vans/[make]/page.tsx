@@ -114,7 +114,7 @@ export default async function MakePage({
 
       <section className="border-b border-border bg-surface-1">
         <Container className="py-10">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span aria-hidden>/</span>
             <span className="font-medium text-ink-700">{makeName} vans</span>
@@ -126,16 +126,16 @@ export default async function MakePage({
               {makeName} vans for sale
             </h1>
           </div>
-          <p className="mt-2 text-[var(--text-md)] text-ink-600">
+          <p className="mt-2 text-[length:var(--text-md)] text-ink-600">
             <span className="font-mono font-bold text-brand-600">{result.total.toLocaleString()}</span>{" "}
             {result.total === 1 ? "van" : "vans"} available
           </p>
-          <p className="mt-3 max-w-3xl text-[var(--text-md)] leading-relaxed text-ink-600">{makeIntro(makeName, stat, modelStats)}</p>
+          <p className="mt-3 max-w-3xl text-[length:var(--text-md)] leading-relaxed text-ink-600">{makeIntro(makeName, stat, modelStats)}</p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link href={`/vans?condition=new&q=${encodeURIComponent(makeName)}`} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
+            <Link href={`/vans?condition=new&q=${encodeURIComponent(makeName)}`} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               New {makeName}
             </Link>
-            <Link href={`/vans?condition=used&q=${encodeURIComponent(makeName)}`} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
+            <Link href={`/vans?condition=used&q=${encodeURIComponent(makeName)}`} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               Used {makeName}
             </Link>
           </div>
@@ -147,7 +147,7 @@ export default async function MakePage({
           <div className="lg:col-span-2">
             {modelStats.length > 0 && (
               <section aria-labelledby="models-heading" className="mb-10">
-                <h2 id="models-heading" className="font-display text-[var(--text-xl)] font-bold text-ink-900">{makeName} models</h2>
+                <h2 id="models-heading" className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{makeName} models</h2>
                 <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {modelStats.map((m) => (
                     <li key={m.modelSlug}>
@@ -155,8 +155,8 @@ export default async function MakePage({
                         href={`/vans/${make}/${m.modelSlug}`}
                         className={`block rounded-[var(--radius-lg)] border p-4 transition-colors hover:border-brand-300 ${m.count > 0 ? "border-border bg-white" : "border-border/70 bg-surface-1"}`}
                       >
-                        <span className="block font-display text-[var(--text-base)] font-bold text-ink-900">{makeName} {m.name}</span>
-                        <span className={`mt-1 block text-[var(--text-sm)] ${m.count > 0 ? "font-semibold text-brand-700" : "text-ink-400"}`}>
+                        <span className="block font-display text-[length:var(--text-base)] font-bold text-ink-900">{makeName} {m.name}</span>
+                        <span className={`mt-1 block text-[length:var(--text-sm)] ${m.count > 0 ? "font-semibold text-brand-700" : "text-ink-400"}`}>
                           {m.count > 0 ? `${m.count} ${m.count === 1 ? "van" : "vans"} for sale` : "None in stock now"}
                         </span>
                       </Link>
@@ -166,7 +166,7 @@ export default async function MakePage({
               </section>
             )}
 
-            {result.listings.length > 0 && <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">All {makeName} vans for sale</h2>}
+            {result.listings.length > 0 && <h2 className="mb-4 font-display text-[length:var(--text-xl)] font-bold text-ink-900">All {makeName} vans for sale</h2>}
             {result.listings.length === 0 ? (
               <EmptyState
                 illustration="no-vans"
@@ -184,7 +184,7 @@ export default async function MakePage({
 
             {result.total > 24 && (
               <div className="mt-8 text-center">
-                <Link href={`/vans?v=${make}`} className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[var(--text-sm)] font-semibold text-white hover:bg-ink-700">
+                <Link href={`/vans?v=${make}`} className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[length:var(--text-sm)] font-semibold text-white hover:bg-ink-700">
                   View all {result.total} {makeName} vans →
                 </Link>
               </div>
@@ -199,7 +199,7 @@ export default async function MakePage({
                     title={`${makeName} model guide`}
                     links={makeNewVans.map((e) => ({ href: `/new-vans/${e.slug}`, label: e.title }))}
                   />
-                  <Link href="/new-vans" className="mt-4 block text-[var(--text-sm)] font-semibold text-ink-500 hover:text-ink-900">
+                  <Link href="/new-vans" className="mt-4 block text-[length:var(--text-sm)] font-semibold text-ink-500 hover:text-ink-900">
                     All new van models →
                   </Link>
                 </div>

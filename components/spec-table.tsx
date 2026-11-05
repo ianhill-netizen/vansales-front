@@ -61,14 +61,14 @@ export function SpecTable({ listing }: { listing: Listing }) {
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {groups.map((g) => (
         <section key={g.title} className="rounded-[var(--radius-lg)] border border-border bg-card p-1">
-          <h3 className="px-3 pb-1 pt-3 font-display text-[var(--text-base)] font-bold text-ink-900">
+          <h3 className="px-3 pb-1 pt-3 font-display text-[length:var(--text-base)] font-bold text-ink-900">
             {g.title}
           </h3>
           <dl className="divide-y divide-border">
             {g.rows.map((r) => (
               <div key={r.label} className="flex items-baseline justify-between gap-4 px-3 py-2.5">
-                <dt className="text-[var(--text-sm)] text-ink-500">{r.label}</dt>
-                <dd className="text-right font-mono text-[var(--text-sm)] font-medium text-ink-800">
+                <dt className="text-[length:var(--text-sm)] text-ink-500">{r.label}</dt>
+                <dd className="text-right font-mono text-[length:var(--text-sm)] font-medium text-ink-800">
                   {r.value}
                 </dd>
               </div>

@@ -114,7 +114,7 @@ export function MobileNav() {
           <nav className="mt-2 space-y-6 border-t border-border pt-5">
             {SECTIONS.map((section) => (
               <div key={section.heading}>
-                <p className="mb-2 text-[var(--text-xs)] font-bold uppercase tracking-wider text-ink-400">
+                <p className="mb-2 text-[length:var(--text-xs)] font-bold uppercase tracking-wider text-ink-400">
                   {section.heading}
                 </p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
@@ -123,7 +123,7 @@ export function MobileNav() {
                       key={l.href}
                       href={l.href}
                       onClick={() => setOpen(false)}
-                      className="py-1.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:text-brand-600"
+                      className="py-1.5 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:text-brand-600"
                     >
                       {l.label}
                     </Link>

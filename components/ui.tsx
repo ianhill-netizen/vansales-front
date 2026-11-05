@@ -78,9 +78,9 @@ const BTN_GRADIENT: Record<ButtonVariant, string> = {
 };
 
 const BTN_SIZE: Record<ButtonSize, string> = {
-  sm: "text-[var(--text-sm)] h-9 px-4",
-  md: "text-[var(--text-base)] h-11 px-5",
-  lg: "text-[var(--text-md)] px-7 py-3.5",
+  sm: "text-[length:var(--text-sm)] h-9 px-4",
+  md: "text-[length:var(--text-base)] h-11 px-5",
+  lg: "text-[length:var(--text-md)] px-7 py-3.5",
 };
 
 type ButtonProps = {
@@ -136,13 +136,13 @@ export function Input({ label, hint, error, className = "", id, ...rest }: Input
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
       {label && (
-        <label htmlFor={inputId} className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">
+        <label htmlFor={inputId} className="text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">
           {label}
         </label>
       )}
       <input
         id={inputId}
-        className={`h-11 w-full rounded-[var(--radius-md)] border bg-surface-0 px-3.5 text-[var(--text-base)] font-medium text-ink-800 placeholder:text-ink-400 outline-none transition-colors duration-[var(--dur-fast)] ${
+        className={`h-11 w-full rounded-[var(--radius-md)] border bg-surface-0 px-3.5 text-[length:var(--text-base)] font-medium text-ink-800 placeholder:text-ink-400 outline-none transition-colors duration-[var(--dur-fast)] ${
           error
             ? "border-danger-500 focus-visible:border-danger-500 focus-visible:shadow-[0_0_0_3px_rgba(239,68,68,0.2)]"
             : "border-border focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)]"
@@ -150,7 +150,7 @@ export function Input({ label, hint, error, className = "", id, ...rest }: Input
         {...rest}
       />
       {(hint || error) && (
-        <p className={`text-[var(--text-xs)] ${error ? "text-danger-600" : "text-ink-500"}`}>
+        <p className={`text-[length:var(--text-xs)] ${error ? "text-danger-600" : "text-ink-500"}`}>
           {error ?? hint}
         </p>
       )}
@@ -173,14 +173,14 @@ export function Select({ label, hint, className = "", options, id, ...rest }: Se
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
       {label && (
-        <label htmlFor={selectId} className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">
+        <label htmlFor={selectId} className="text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-500">
           {label}
         </label>
       )}
       <div className="relative">
         <select
           id={selectId}
-          className="h-11 w-full appearance-none rounded-[var(--radius-md)] border border-border bg-surface-0 pl-3.5 pr-8 text-[var(--text-base)] font-medium text-ink-800 outline-none transition-colors duration-[var(--dur-fast)] focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)] cursor-pointer"
+          className="h-11 w-full appearance-none rounded-[var(--radius-md)] border border-border bg-surface-0 pl-3.5 pr-8 text-[length:var(--text-base)] font-medium text-ink-800 outline-none transition-colors duration-[var(--dur-fast)] focus-visible:border-brand-500 focus-visible:shadow-[var(--shadow-focus)] cursor-pointer"
           {...rest}
         >
           {options.map((o) => (
@@ -191,7 +191,7 @@ export function Select({ label, hint, className = "", options, id, ...rest }: Se
           <path d="M6 9l6 6 6-6" />
         </svg>
       </div>
-      {hint && <p className="text-[var(--text-xs)] text-ink-500">{hint}</p>}
+      {hint && <p className="text-[length:var(--text-xs)] text-ink-500">{hint}</p>}
     </div>
   );
 }
@@ -222,7 +222,7 @@ export function Badge({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-[var(--radius-pill)] px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${BADGE_TONE[tone]} ${className}`}
+      className={`inline-flex items-center gap-1 rounded-[var(--radius-pill)] px-2.5 py-1 text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${BADGE_TONE[tone]} ${className}`}
     >
       {children}
     </span>
@@ -256,10 +256,10 @@ export function PlateBadge({
 }) {
   const dims =
     size === "lg"
-      ? "h-9 text-[var(--text-lg)] px-3"
+      ? "h-9 text-[length:var(--text-lg)] px-3"
       : size === "sm"
-        ? "h-6 text-[var(--text-xs)] px-2"
-        : "h-7 text-[var(--text-base)] px-2.5";
+        ? "h-6 text-[length:var(--text-xs)] px-2"
+        : "h-7 text-[length:var(--text-base)] px-2.5";
   return (
     <span
       className={`inline-flex items-center rounded-[var(--radius-sm)] bg-plate font-mono font-bold tracking-[var(--tracking-plate)] text-plate-ink ring-2 ring-ink-900/85 ${dims} ${className}`}
@@ -284,10 +284,10 @@ export function Price({
 }) {
   const text =
     size === "lg"
-      ? "text-[var(--text-3xl)]"
+      ? "text-[length:var(--text-3xl)]"
       : size === "sm"
-        ? "text-[var(--text-lg)]"
-        : "text-[var(--text-2xl)]";
+        ? "text-[length:var(--text-lg)]"
+        : "text-[length:var(--text-2xl)]";
   const poa = listing.price == null;
   return (
     <div className={`flex items-baseline gap-2 ${className}`}>
@@ -295,7 +295,7 @@ export function Price({
         {formatPrice(listing.price)}
       </span>
       {!poa && (
-        <span className="text-[var(--text-xs)] font-medium text-ink-500">
+        <span className="text-[length:var(--text-xs)] font-medium text-ink-500">
           {vatLabel(listing.price_type, listing.vat_qualifying)}
         </span>
       )}
@@ -325,12 +325,12 @@ export function SectionHeader({
     <div className={`${centered ? "text-center" : ""} ${className}`}>
       {eyebrow && <Eyebrow light={light}>{eyebrow}</Eyebrow>}
       <h2
-        className={`mt-2 font-display text-[var(--text-2xl)] font-extrabold leading-[1.1] tracking-[var(--tracking-display)] ${light ? "text-white" : "text-ink-900"}`}
+        className={`mt-2 font-display text-[length:var(--text-2xl)] font-extrabold leading-[1.1] tracking-[var(--tracking-display)] ${light ? "text-white" : "text-ink-900"}`}
       >
         {heading}
       </h2>
       {sub && (
-        <p className={`mt-2 text-[var(--text-md)] leading-relaxed ${light ? "text-white/65" : "text-ink-500"}`}>
+        <p className={`mt-2 text-[length:var(--text-md)] leading-relaxed ${light ? "text-white/65" : "text-ink-500"}`}>
           {sub}
         </p>
       )}

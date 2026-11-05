@@ -34,10 +34,10 @@ function Chevron({ open }: { open: boolean }) {
 }
 
 const NAV_LINK_CLS =
-  "flex shrink-0 items-center whitespace-nowrap px-3 text-[var(--text-sm)] font-semibold text-ink-600 transition-colors hover:text-ink-900 focus-visible:outline-none focus-visible:text-brand-600 lg:px-3.5 relative";
+  "flex shrink-0 items-center whitespace-nowrap px-3 text-[length:var(--text-sm)] font-semibold text-ink-600 transition-colors hover:text-ink-900 focus-visible:outline-none focus-visible:text-brand-600 lg:px-3.5 relative";
 
 const DROP_ITEM_CLS =
-  "block px-4 py-2.5 text-[var(--text-sm)] font-medium text-ink-700 hover:bg-surface-1 hover:text-brand-700 transition-colors duration-[var(--dur-fast)] rounded-[var(--radius-sm)]";
+  "block px-4 py-2.5 text-[length:var(--text-sm)] font-medium text-ink-700 hover:bg-surface-1 hover:text-brand-700 transition-colors duration-[var(--dur-fast)] rounded-[var(--radius-sm)]";
 
 const GUIDES_ITEMS = [
   { href: "/blog",        label: "Guides & news" },
@@ -124,7 +124,7 @@ function VansForSaleDropdown({
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <Link
             href="/vans"
-            className="text-[var(--text-sm)] font-bold text-brand-600 hover:text-brand-700"
+            className="text-[length:var(--text-sm)] font-bold text-brand-600 hover:text-brand-700"
             onClick={onClose}
           >
             All vans for sale →
@@ -132,7 +132,7 @@ function VansForSaleDropdown({
         </div>
         <div className="grid grid-cols-2 divide-x divide-border p-1">
           <div className="py-1.5 pr-1">
-            <p className="px-3 pb-1.5 pt-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+            <p className="px-3 pb-1.5 pt-2 text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
               By body type
             </p>
             {VAN_BODY_TYPES.map((item) => (
@@ -142,7 +142,7 @@ function VansForSaleDropdown({
             ))}
           </div>
           <div className="py-1.5 pl-1">
-            <p className="px-3 pb-1.5 pt-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+            <p className="px-3 pb-1.5 pt-2 text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
               By make
             </p>
             {POPULAR_MAKES.map((m) => (
@@ -206,13 +206,13 @@ export function Header() {
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/dealer-portal/login"
-            className="hidden rounded-[var(--radius-md)] border border-border-strong px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-900 md:inline-flex"
+            className="hidden rounded-[var(--radius-md)] border border-border-strong px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-900 md:inline-flex"
           >
             Dealer login
           </Link>
           <a
             href={SELL_URL}
-            className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
+            className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
             style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
           >
             Sell your van

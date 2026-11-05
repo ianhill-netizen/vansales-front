@@ -42,7 +42,7 @@ export default function AdvertiseSignupPage() {
                 <br />
                 <span className="text-brand-500">at the moment they&rsquo;re ready.</span>
               </h1>
-              <p className="mt-5 max-w-lg text-[var(--text-md)] leading-relaxed text-ink-600">
+              <p className="mt-5 max-w-lg text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 Vansales puts your brand in front of a high-intent audience of UK van buyers
                 actively comparing, financing and insuring their next vehicle. Audience and intent
                 targeting — not spray-and-pray display.
@@ -57,7 +57,7 @@ export default function AdvertiseSignupPage() {
                     </span>
                     <div>
                       <p className="font-semibold text-ink-900">{title}</p>
-                      <p className="mt-0.5 text-[var(--text-sm)] leading-relaxed text-ink-500">
+                      <p className="mt-0.5 text-[length:var(--text-sm)] leading-relaxed text-ink-500">
                         {body}
                       </p>
                     </div>
@@ -66,7 +66,7 @@ export default function AdvertiseSignupPage() {
               </ul>
 
               {/* Social proof */}
-              <div className="mt-8 flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-white px-5 py-3.5 text-[var(--text-sm)] text-ink-600 shadow-[var(--shadow-xs)]">
+              <div className="mt-8 flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-white px-5 py-3.5 text-[length:var(--text-sm)] text-ink-600 shadow-[var(--shadow-xs)]">
                 <span className="flex size-7 items-center justify-center rounded-full bg-brand-tint text-brand-600">
                   <IconCheck width={14} height={14} />
                 </span>
@@ -79,10 +79,10 @@ export default function AdvertiseSignupPage() {
 
             {/* Right — form card */}
             <div className="rounded-[var(--radius-2xl)] border border-border bg-white p-8 shadow-[var(--shadow-md)]">
-              <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+              <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
                 Request our media pack
               </h2>
-              <p className="mt-1.5 text-[var(--text-sm)] text-ink-500">
+              <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
                 Audience data, formats, and rates. No hard sell.
               </p>
               <div className="mt-6">
@@ -96,7 +96,7 @@ export default function AdvertiseSignupPage() {
       {/* Audience stats strip */}
       <section className="border-b border-border bg-white py-10">
         <Container>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[var(--text-sm)] text-ink-500">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[length:var(--text-sm)] text-ink-500">
             {[
               "50,000+ monthly active buyers",
               "Audience, intent & geo targeting",

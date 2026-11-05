@@ -80,16 +80,16 @@ export default function DealerSignUpPage() {
     router.refresh();
   }
 
-  const inputCls = "mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] outline-none focus-visible:border-brand-500";
-  const labelCls = "block text-[var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500";
+  const inputCls = "mt-1 h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] outline-none focus-visible:border-brand-500";
+  const labelCls = "block text-[length:var(--text-xs)] font-semibold uppercase tracking-widest text-ink-500";
 
   const loadingText = `Start ${plan === "trial" ? "free trial" : plan === "payg" ? "listing" : "plan"} →`;
 
   return (
     <div className="w-full max-w-lg">
       <div className="mb-6 text-center">
-        <h1 className="font-display text-[var(--text-xl)] font-extrabold text-ink-900">Trade dealer account</h1>
-        <p className="mt-1 text-[var(--text-sm)] text-ink-500">Step {step} of 2 · {step === 1 ? "Your details" : "Choose a plan"}</p>
+        <h1 className="font-display text-[length:var(--text-xl)] font-extrabold text-ink-900">Trade dealer account</h1>
+        <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">Step {step} of 2 · {step === 1 ? "Your details" : "Choose a plan"}</p>
       </div>
 
       <div className="rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-md)]">
@@ -123,20 +123,20 @@ export default function DealerSignUpPage() {
         ) : (
           <form onSubmit={handleStep2} className="space-y-3 px-6 py-6" noValidate>
             {error && (
-              <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-danger-700">
+              <div role="alert" className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-danger-700">
                 {error}
               </div>
             )}
-            <p className="text-[var(--text-sm)] font-semibold text-ink-700">Choose your plan</p>
+            <p className="text-[length:var(--text-sm)] font-semibold text-ink-700">Choose your plan</p>
             {PLANS.map((p) => (
               <label key={p.id} className={`flex cursor-pointer items-center gap-4 rounded-[var(--radius-lg)] border p-4 transition-colors ${plan === p.id ? "border-brand-500 bg-brand-tint" : "border-border hover:border-brand-400/40"}`}>
                 <input type="radio" name="plan" value={p.id} checked={plan === p.id} onChange={() => setPlan(p.id)} className="accent-brand-500" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-ink-900">{p.label}</span>
-                    {p.popular && <span className="rounded-full bg-brand-tint px-2 py-0.5 text-[var(--text-2xs)] font-bold text-brand-700">Recommended</span>}
+                    {p.popular && <span className="rounded-full bg-brand-tint px-2 py-0.5 text-[length:var(--text-2xs)] font-bold text-brand-700">Recommended</span>}
                   </div>
-                  <p className="text-[var(--text-xs)] text-ink-500">{p.desc}</p>
+                  <p className="text-[length:var(--text-xs)] text-ink-500">{p.desc}</p>
                 </div>
               </label>
             ))}
@@ -151,7 +151,7 @@ export default function DealerSignUpPage() {
           </form>
         )}
       </div>
-      <p className="mt-4 text-center text-[var(--text-xs)] text-ink-400">
+      <p className="mt-4 text-center text-[length:var(--text-xs)] text-ink-400">
         <Link href="/sign-up" className="hover:underline">← All account types</Link>
       </p>
     </div>

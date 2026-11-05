@@ -44,7 +44,7 @@ const CHANNEL_ICON: Record<LeadChannel, string> = {
 
 function ChannelTag({ channel }: { channel: LeadChannel }) {
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[var(--text-2xs)] font-semibold ${CHANNEL_STYLE[channel]}`}>
+    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[length:var(--text-2xs)] font-semibold ${CHANNEL_STYLE[channel]}`}>
       <span aria-hidden>{CHANNEL_ICON[channel]}</span>
       {channel}
     </span>
@@ -59,7 +59,7 @@ const STATUS_STYLE: Record<LeadStatus, string> = {
 };
 function LeadStatusBadge({ status }: { status: LeadStatus }) {
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[var(--text-2xs)] font-semibold capitalize ${STATUS_STYLE[status]}`}>
+    <span className={`rounded-full px-2 py-0.5 text-[length:var(--text-2xs)] font-semibold capitalize ${STATUS_STYLE[status]}`}>
       {status}
     </span>
   );
@@ -75,7 +75,7 @@ const PRICE_BADGE: Record<PricePosition, { label: string; cls: string }> = {
 function PriceBadge({ position }: { position: PricePosition }) {
   const { label, cls } = PRICE_BADGE[position];
   return (
-    <span className={`rounded-full px-2.5 py-0.5 text-[var(--text-xs)] font-bold ${cls}`}>{label}</span>
+    <span className={`rounded-full px-2.5 py-0.5 text-[length:var(--text-xs)] font-bold ${cls}`}>{label}</span>
   );
 }
 
@@ -134,12 +134,12 @@ function KPICard({
         warn ? "border-warning-600/30 bg-warning-tint/30" : "border-border"
       }`}
     >
-      <span className={`font-display text-[var(--text-2xl)] font-extrabold leading-none ${warn ? "text-warning-600" : "text-ink-900"}`}>
+      <span className={`font-display text-[length:var(--text-2xl)] font-extrabold leading-none ${warn ? "text-warning-600" : "text-ink-900"}`}>
         {value}{suffix}
       </span>
-      <span className="mt-1.5 text-[var(--text-xs)] font-semibold text-ink-500">{label}</span>
+      <span className="mt-1.5 text-[length:var(--text-xs)] font-semibold text-ink-500">{label}</span>
       {sub && (
-        <span className="mt-0.5 text-[var(--text-2xs)] text-ink-400">{sub}</span>
+        <span className="mt-0.5 text-[length:var(--text-2xs)] text-ink-400">{sub}</span>
       )}
     </Link>
   );
@@ -156,14 +156,14 @@ function ScoreCard({
       href={href}
       className="group flex flex-col rounded-[var(--radius-xl)] border border-border bg-white px-5 py-5 shadow-[var(--shadow-xs)] transition-all hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5"
     >
-      <span className={`font-display text-[var(--text-2xl)] font-extrabold leading-none ${color}`}>
-        {score}<span className="text-[var(--text-base)] font-semibold">%</span>
+      <span className={`font-display text-[length:var(--text-2xl)] font-extrabold leading-none ${color}`}>
+        {score}<span className="text-[length:var(--text-base)] font-semibold">%</span>
       </span>
       <div className="my-2 h-1.5 w-full rounded-full bg-surface-2">
         <div className={`h-full rounded-full ${barColor} transition-all`} style={{ width: `${score}%` }} />
       </div>
-      <span className="text-[var(--text-xs)] font-semibold text-ink-500">Quality score</span>
-      <span className="mt-0.5 text-[var(--text-2xs)] text-ink-400">{issues} issue{issues !== 1 ? "s" : ""} to fix</span>
+      <span className="text-[length:var(--text-xs)] font-semibold text-ink-500">Quality score</span>
+      <span className="mt-0.5 text-[length:var(--text-2xs)] text-ink-400">{issues} issue{issues !== 1 ? "s" : ""} to fix</span>
     </Link>
   );
 }
@@ -228,7 +228,7 @@ export default function DealerDashboardPage() {
 
       {/* ── Toast ──────────────────────────────────────────────────────── */}
       {toastMsg && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-[var(--radius-lg)] bg-ink-900 px-5 py-3 text-[var(--text-sm)] font-semibold text-white shadow-[var(--shadow-lg)]">
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-[var(--radius-lg)] bg-ink-900 px-5 py-3 text-[length:var(--text-sm)] font-semibold text-white shadow-[var(--shadow-lg)]">
           {toastMsg}
         </div>
       )}
@@ -237,29 +237,29 @@ export default function DealerDashboardPage() {
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">
+            <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">
               {persona.displayName}
             </h1>
             {isSwissVans && (
-              <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[var(--text-xs)] font-semibold text-amber-700">
+              <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[length:var(--text-xs)] font-semibold text-amber-700">
                 Owner
               </span>
             )}
           </div>
-          <p className="mt-0.5 text-[var(--text-sm)] text-ink-500">
+          <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-500">
             Dealer dashboard · June 2026
           </p>
         </div>
         <div className="flex gap-2.5">
           <Link
             href="/dealer-portal/listings"
-            className="rounded-[var(--radius-md)] border border-border bg-white px-4 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] transition-all hover:border-brand-300 hover:shadow-[var(--shadow-sm)]"
+            className="rounded-[var(--radius-md)] border border-border bg-white px-4 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] transition-all hover:border-brand-300 hover:shadow-[var(--shadow-sm)]"
           >
             Manage listings
           </Link>
           <Link
             href="/dealer-portal/add-van"
-            className="rounded-[var(--radius-md)] px-4 py-2.5 text-[var(--text-sm)] font-bold text-white shadow-[var(--shadow-sm)] transition-all hover:shadow-[var(--shadow-md)]"
+            className="rounded-[var(--radius-md)] px-4 py-2.5 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-sm)] transition-all hover:shadow-[var(--shadow-md)]"
             style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
           >
             + Add van
@@ -305,8 +305,8 @@ export default function DealerDashboardPage() {
       <section className="mb-7 rounded-[var(--radius-xl)] border border-border bg-white p-6 shadow-[var(--shadow-xs)]">
         <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Advert performance</h2>
-            <p className="text-[var(--text-xs)] text-ink-500">Last 30 days</p>
+            <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Advert performance</h2>
+            <p className="text-[length:var(--text-xs)] text-ink-500">Last 30 days</p>
           </div>
           {/* Metric selector — pill tabs */}
           <div className="flex rounded-[var(--radius-lg)] border border-border bg-surface-1 p-1 gap-1">
@@ -314,7 +314,7 @@ export default function DealerDashboardPage() {
               <button
                 key={m}
                 onClick={() => setPerfMetric(m)}
-                className={`rounded-[var(--radius-md)] px-3 py-1.5 text-[var(--text-xs)] font-semibold capitalize transition-all ${
+                className={`rounded-[var(--radius-md)] px-3 py-1.5 text-[length:var(--text-xs)] font-semibold capitalize transition-all ${
                   perfMetric === m
                     ? "bg-white text-ink-900 shadow-[var(--shadow-xs)]"
                     : "text-ink-500 hover:text-ink-700"
@@ -338,10 +338,10 @@ export default function DealerDashboardPage() {
                 onClick={() => setPerfMetric(m)}
                 className={`text-left transition-opacity ${active ? "opacity-100" : "opacity-35 hover:opacity-60"}`}
               >
-                <div className={`font-display text-[var(--text-xl)] font-extrabold ${active ? col : "text-ink-900"}`}>
+                <div className={`font-display text-[length:var(--text-xl)] font-extrabold ${active ? col : "text-ink-900"}`}>
                   {total.toLocaleString()}
                 </div>
-                <div className="text-[var(--text-xs)] text-ink-500 capitalize">
+                <div className="text-[length:var(--text-xs)] text-ink-500 capitalize">
                   {m === "appearances" ? "Search appearances" : m}
                 </div>
               </button>
@@ -353,10 +353,10 @@ export default function DealerDashboardPage() {
 
         {/* Per-listing table */}
         <div className="mt-6 overflow-x-auto">
-          <p className="mb-2.5 text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+          <p className="mb-2.5 text-[length:var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
             Per-listing breakdown
           </p>
-          <table className="w-full text-[var(--text-xs)]">
+          <table className="w-full text-[length:var(--text-xs)]">
             <thead>
               <tr className="border-b border-border text-left">
                 {["Listing", "Views", "Leads", "Appearances", "Days listed"].map((h, i) => (
@@ -370,7 +370,7 @@ export default function DealerDashboardPage() {
                   <td className="py-2.5">
                     <span className="font-medium text-ink-800">{p.van}</span>
                     {p.aged && (
-                      <span className="ml-2 rounded-full bg-amber-100 px-1.5 py-0.5 text-[var(--text-2xs)] font-semibold text-amber-700">
+                      <span className="ml-2 rounded-full bg-amber-100 px-1.5 py-0.5 text-[length:var(--text-2xs)] font-semibold text-amber-700">
                         Aged
                       </span>
                     )}
@@ -389,7 +389,7 @@ export default function DealerDashboardPage() {
           </table>
         </div>
         <div className="mt-4 flex justify-end">
-          <Link href="/dealer-portal/analytics" className="text-[var(--text-xs)] font-semibold text-brand-600 hover:underline">
+          <Link href="/dealer-portal/analytics" className="text-[length:var(--text-xs)] font-semibold text-brand-600 hover:underline">
             Full analytics →
           </Link>
         </div>
@@ -401,15 +401,15 @@ export default function DealerDashboardPage() {
         {/* Leads feed */}
         <section className="lg:col-span-2">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="flex items-center gap-2 font-display text-[var(--text-lg)] font-bold text-ink-900">
+            <h2 className="flex items-center gap-2 font-display text-[length:var(--text-lg)] font-bold text-ink-900">
               Recent leads
               {newLeadCount > 0 && (
-                <span className="inline-flex items-center rounded-full bg-brand-500 px-2.5 py-0.5 text-[var(--text-xs)] font-bold text-white">
+                <span className="inline-flex items-center rounded-full bg-brand-500 px-2.5 py-0.5 text-[length:var(--text-xs)] font-bold text-white">
                   {newLeadCount} new
                 </span>
               )}
             </h2>
-            <Link href="/dealer-portal/leads" className="text-[var(--text-xs)] font-semibold text-brand-600 hover:underline">
+            <Link href="/dealer-portal/leads" className="text-[length:var(--text-xs)] font-semibold text-brand-600 hover:underline">
               View all →
             </Link>
           </div>
@@ -427,8 +427,8 @@ export default function DealerDashboardPage() {
                       <ChannelTag channel={lead.channel} />
                       <LeadStatusBadge status={lead.status} />
                     </div>
-                    <p className="mt-1 truncate text-[var(--text-sm)] font-semibold text-ink-900">{lead.buyer}</p>
-                    <p className="truncate text-[var(--text-xs)] text-ink-500">{lead.van} · {lead.time}</p>
+                    <p className="mt-1 truncate text-[length:var(--text-sm)] font-semibold text-ink-900">{lead.buyer}</p>
+                    <p className="truncate text-[length:var(--text-xs)] text-ink-500">{lead.van} · {lead.time}</p>
                   </div>
                   {lead.status !== "closed" && (
                     <div className="shrink-0">
@@ -436,13 +436,13 @@ export default function DealerDashboardPage() {
                         <div className="flex gap-1">
                           <button
                             onClick={() => replyToLead(lead.id)}
-                            className="rounded-[var(--radius-sm)] bg-brand-500 px-2.5 py-1 text-[var(--text-2xs)] font-bold text-white hover:bg-brand-600"
+                            className="rounded-[var(--radius-sm)] bg-brand-500 px-2.5 py-1 text-[length:var(--text-2xs)] font-bold text-white hover:bg-brand-600"
                           >
                             Send ↵
                           </button>
                           <button
                             onClick={() => setReplyingId(null)}
-                            className="rounded-[var(--radius-sm)] border border-border px-2 py-1 text-[var(--text-2xs)] text-ink-500 hover:border-ink-400"
+                            className="rounded-[var(--radius-sm)] border border-border px-2 py-1 text-[length:var(--text-2xs)] text-ink-500 hover:border-ink-400"
                             aria-label="Cancel reply"
                           >
                             ✕
@@ -451,7 +451,7 @@ export default function DealerDashboardPage() {
                       ) : (
                         <button
                           onClick={() => setReplyingId(lead.id)}
-                          className="rounded-[var(--radius-sm)] border border-border px-3 py-1.5 text-[var(--text-2xs)] font-semibold text-ink-600 transition-colors hover:border-brand-400 hover:text-brand-700"
+                          className="rounded-[var(--radius-sm)] border border-border px-3 py-1.5 text-[length:var(--text-2xs)] font-semibold text-ink-600 transition-colors hover:border-brand-400 hover:text-brand-700"
                         >
                           {lead.status === "replied" ? "Follow up" : "Reply"}
                         </button>
@@ -466,14 +466,14 @@ export default function DealerDashboardPage() {
           {!isSwissVans && (
             <div className="mt-4 flex items-center justify-between rounded-[var(--radius-xl)] border border-brand-200 bg-brand-tint px-5 py-4">
               <div>
-                <p className="text-[var(--text-sm)] font-bold text-brand-700">Unlock instant WhatsApp leads</p>
-                <p className="text-[var(--text-xs)] text-brand-600/80">
+                <p className="text-[length:var(--text-sm)] font-bold text-brand-700">Unlock instant WhatsApp leads</p>
+                <p className="text-[length:var(--text-xs)] text-brand-600/80">
                   Dealski Pro routes enquiries straight to your WhatsApp.
                 </p>
               </div>
               <Link
                 href="/dealer-portal/account"
-                className="shrink-0 rounded-[var(--radius-md)] px-4 py-2 text-[var(--text-xs)] font-bold text-white"
+                className="shrink-0 rounded-[var(--radius-md)] px-4 py-2 text-[length:var(--text-xs)] font-bold text-white"
                 style={{ background: "linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%)" }}
               >
                 Upgrade →
@@ -488,9 +488,9 @@ export default function DealerDashboardPage() {
           {/* Listing quality */}
           <section id="listing-quality" className="rounded-[var(--radius-xl)] border border-border bg-white p-5 shadow-[var(--shadow-xs)]">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-[var(--text-base)] font-bold text-ink-900">Listing quality</h2>
+              <h2 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">Listing quality</h2>
               {totalIssues > 0 && (
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[var(--text-2xs)] font-bold text-amber-700">
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[length:var(--text-2xs)] font-bold text-amber-700">
                   {totalIssues} to fix
                 </span>
               )}
@@ -500,7 +500,7 @@ export default function DealerDashboardPage() {
                 <li key={issue.type}>
                   <Link
                     href={issue.href}
-                    className={`flex items-center justify-between rounded-[var(--radius-lg)] border px-3 py-2.5 text-[var(--text-xs)] transition-shadow hover:shadow-[var(--shadow-xs)] ${
+                    className={`flex items-center justify-between rounded-[var(--radius-lg)] border px-3 py-2.5 text-[length:var(--text-xs)] transition-shadow hover:shadow-[var(--shadow-xs)] ${
                       issue.severity === "error"
                         ? "border-danger-500/20 bg-danger-tint/60"
                         : "border-amber-200 bg-amber-50"
@@ -510,9 +510,9 @@ export default function DealerDashboardPage() {
                       <p className={`font-semibold ${issue.severity === "error" ? "text-danger-700" : "text-amber-800"}`}>
                         {issue.label}
                       </p>
-                      <p className="text-[var(--text-2xs)] text-ink-500">{issue.detail}</p>
+                      <p className="text-[length:var(--text-2xs)] text-ink-500">{issue.detail}</p>
                     </div>
-                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[var(--text-2xs)] font-bold ${
+                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[length:var(--text-2xs)] font-bold ${
                       issue.severity === "error" ? "bg-danger-tint text-danger-700" : "bg-amber-200 text-amber-800"
                     }`}>
                       {issue.count}
@@ -523,7 +523,7 @@ export default function DealerDashboardPage() {
             </ul>
             <Link
               href="/dealer-portal/listings?filter=issues"
-              className="mt-3 block text-center text-[var(--text-xs)] font-semibold text-brand-600 hover:underline"
+              className="mt-3 block text-center text-[length:var(--text-xs)] font-semibold text-brand-600 hover:underline"
             >
               Fix all issues →
             </Link>
@@ -532,15 +532,15 @@ export default function DealerDashboardPage() {
           {/* Boost listings */}
           <section className="rounded-[var(--radius-xl)] border border-border bg-white p-5 shadow-[var(--shadow-xs)]">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-[var(--text-base)] font-bold text-ink-900">Boost listings</h2>
+              <h2 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">Boost listings</h2>
               <div className="text-right">
-                <p className="font-display text-[var(--text-lg)] font-extrabold text-ink-900">{tokens}</p>
-                <p className="text-[var(--text-2xs)] text-ink-500">{isSwissVans ? "free (owner)" : "tokens"}</p>
+                <p className="font-display text-[length:var(--text-lg)] font-extrabold text-ink-900">{tokens}</p>
+                <p className="text-[length:var(--text-2xs)] text-ink-500">{isSwissVans ? "free (owner)" : "tokens"}</p>
               </div>
             </div>
 
             {isSwissVans && (
-              <p className="mb-3 rounded-[var(--radius-md)] bg-amber-50 px-3 py-2 text-[var(--text-2xs)] font-semibold text-amber-700">
+              <p className="mb-3 rounded-[var(--radius-md)] bg-amber-50 px-3 py-2 text-[length:var(--text-2xs)] font-semibold text-amber-700">
                 Owner perk: unlimited free boosts
               </p>
             )}
@@ -549,19 +549,19 @@ export default function DealerDashboardPage() {
               {boosts.map((item) => (
                 <li key={item.id} className="flex items-center justify-between gap-2 rounded-[var(--radius-lg)] border border-border px-3 py-2.5">
                   <div className="min-w-0">
-                    <p className="truncate text-[var(--text-xs)] font-semibold text-ink-800">{item.van}</p>
+                    <p className="truncate text-[length:var(--text-xs)] font-semibold text-ink-800">{item.van}</p>
                     {item.boosted && item.boostedUntil && (
-                      <p className="text-[var(--text-2xs)] text-success-600">Boosted until {item.boostedUntil}</p>
+                      <p className="text-[length:var(--text-2xs)] text-success-600">Boosted until {item.boostedUntil}</p>
                     )}
                   </div>
                   {item.boosted ? (
-                    <span className="shrink-0 rounded-full bg-success-tint px-2 py-0.5 text-[var(--text-2xs)] font-bold text-success-700">
+                    <span className="shrink-0 rounded-full bg-success-tint px-2 py-0.5 text-[length:var(--text-2xs)] font-bold text-success-700">
                       Live ✓
                     </span>
                   ) : (
                     <button
                       onClick={() => boostListing(item.id)}
-                      className="shrink-0 rounded-[var(--radius-sm)] bg-brand-500 px-2.5 py-1 text-[var(--text-2xs)] font-bold text-white hover:bg-brand-600 disabled:opacity-40"
+                      className="shrink-0 rounded-[var(--radius-sm)] bg-brand-500 px-2.5 py-1 text-[length:var(--text-2xs)] font-bold text-white hover:bg-brand-600 disabled:opacity-40"
                       disabled={!isSwissVans && tokens < item.tokenCost}
                     >
                       {isSwissVans ? "Boost free" : `Boost (${item.tokenCost})`}
@@ -574,7 +574,7 @@ export default function DealerDashboardPage() {
             {!isSwissVans && tokens < 20 && (
               <Link
                 href="/dealer-portal/account"
-                className="mt-3 block rounded-[var(--radius-md)] border border-brand-200 bg-brand-tint px-3 py-2 text-center text-[var(--text-xs)] font-semibold text-brand-600 hover:border-brand-400"
+                className="mt-3 block rounded-[var(--radius-md)] border border-brand-200 bg-brand-tint px-3 py-2 text-center text-[length:var(--text-xs)] font-semibold text-brand-600 hover:border-brand-400"
               >
                 Top up tokens →
               </Link>
@@ -584,19 +584,19 @@ export default function DealerDashboardPage() {
           {/* Upgrade prompt */}
           {!isSwissVans && (
             <section className="rounded-[var(--radius-xl)] border border-brand-200 bg-brand-tint px-5 py-4">
-              <p className="mb-2 text-[var(--text-xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-brand-600">
+              <p className="mb-2 text-[length:var(--text-xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-brand-600">
                 Upgrade to Dealski
               </p>
               <ul className="space-y-1.5">
                 {["Live stock feed sync", "Finance application routing", "Part-exchange valuations", "Priority listing placement"].map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-[var(--text-xs)] text-ink-700">
+                  <li key={f} className="flex items-center gap-2 text-[length:var(--text-xs)] text-ink-700">
                     <span className="text-success-600 font-bold">✓</span> {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/dealer-portal/account"
-                className="mt-4 block rounded-[var(--radius-md)] py-2 text-center text-[var(--text-xs)] font-bold text-white"
+                className="mt-4 block rounded-[var(--radius-md)] py-2 text-center text-[length:var(--text-xs)] font-bold text-white"
                 style={{ background: "linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%)" }}
               >
                 Get Dealski Pro →
@@ -610,10 +610,10 @@ export default function DealerDashboardPage() {
       <section className="mb-7">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Price position</h2>
-            <p className="text-[var(--text-xs)] text-ink-500">How your prices compare to the market</p>
+            <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Price position</h2>
+            <p className="text-[length:var(--text-xs)] text-ink-500">How your prices compare to the market</p>
           </div>
-          <Link href="/dealer-portal/listings" className="text-[var(--text-xs)] font-semibold text-brand-600 hover:underline">
+          <Link href="/dealer-portal/listings" className="text-[length:var(--text-xs)] font-semibold text-brand-600 hover:underline">
             Edit prices →
           </Link>
         </div>
@@ -623,14 +623,14 @@ export default function DealerDashboardPage() {
               key={p.id}
               className="flex flex-col gap-2.5 rounded-[var(--radius-xl)] border border-border bg-white px-5 py-4 shadow-[var(--shadow-xs)]"
             >
-              <p className="truncate text-[var(--text-sm)] font-semibold text-ink-800">{p.van}</p>
+              <p className="truncate text-[length:var(--text-sm)] font-semibold text-ink-800">{p.van}</p>
               <div className="flex items-center justify-between">
                 <PriceBadge position={p.position} />
-                <span className="font-display text-[var(--text-base)] font-bold text-ink-900">
+                <span className="font-display text-[length:var(--text-base)] font-bold text-ink-900">
                   £{p.price.toLocaleString()}
                 </span>
               </div>
-              <p className="text-[var(--text-2xs)] text-ink-500">
+              <p className="text-[length:var(--text-2xs)] text-ink-500">
                 Market avg: £{p.marketPrice.toLocaleString()} ·{" "}
                 {p.delta < 0 ? (
                   <span className="font-semibold text-success-600">{Math.abs(p.delta)}% below</span>
@@ -643,7 +643,7 @@ export default function DealerDashboardPage() {
               {p.position === "high" && (
                 <Link
                   href="/dealer-portal/listings"
-                  className="rounded-[var(--radius-sm)] border border-danger-500/20 bg-danger-tint px-3 py-1.5 text-center text-[var(--text-2xs)] font-semibold text-danger-700 hover:bg-danger-tint/80"
+                  className="rounded-[var(--radius-sm)] border border-danger-500/20 bg-danger-tint px-3 py-1.5 text-center text-[length:var(--text-2xs)] font-semibold text-danger-700 hover:bg-danger-tint/80"
                 >
                   Review price →
                 </Link>
@@ -661,26 +661,26 @@ export default function DealerDashboardPage() {
         >
           <div className="grid gap-6 lg:grid-cols-2 lg:items-center">
             <div>
-              <p className="mb-1 text-[var(--text-xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
+              <p className="mb-1 text-[length:var(--text-xs)] font-bold uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
                 Dealski Pro
               </p>
-              <h3 className="font-display text-[var(--text-2xl)] font-extrabold">
+              <h3 className="font-display text-[length:var(--text-2xl)] font-extrabold">
                 Supercharge your dealership
               </h3>
-              <p className="mt-2 max-w-md text-[var(--text-sm)] text-white/75">
+              <p className="mt-2 max-w-md text-[length:var(--text-sm)] text-white/75">
                 Sync your stock automatically, route finance applications from listing pages, and get
                 your vans in front of more buyers with priority placement.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link
                   href="/dealer-portal/account"
-                  className="rounded-[var(--radius-md)] bg-white px-5 py-2.5 text-[var(--text-sm)] font-bold text-brand-700 hover:bg-brand-50"
+                  className="rounded-[var(--radius-md)] bg-white px-5 py-2.5 text-[length:var(--text-sm)] font-bold text-brand-700 hover:bg-brand-50"
                 >
                   See Dealski plans →
                 </Link>
                 <a
                   href="https://dealski.co.uk"
-                  className="rounded-[var(--radius-md)] border border-white/25 px-5 py-2.5 text-[var(--text-sm)] font-semibold text-white/90 hover:border-white/50"
+                  className="rounded-[var(--radius-md)] border border-white/25 px-5 py-2.5 text-[length:var(--text-sm)] font-semibold text-white/90 hover:border-white/50"
                 >
                   Learn more
                 </a>
@@ -696,8 +696,8 @@ export default function DealerDashboardPage() {
                 <div key={f.label} className="flex items-start gap-2.5 rounded-[var(--radius-lg)] bg-white/10 px-3 py-3">
                   <span className="text-lg leading-none">{f.icon}</span>
                   <div>
-                    <p className="text-[var(--text-xs)] font-bold text-white">{f.label}</p>
-                    <p className="text-[var(--text-2xs)] text-white/55">{f.desc}</p>
+                    <p className="text-[length:var(--text-xs)] font-bold text-white">{f.label}</p>
+                    <p className="text-[length:var(--text-2xs)] text-white/55">{f.desc}</p>
                   </div>
                 </div>
               ))}

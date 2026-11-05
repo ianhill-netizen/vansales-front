@@ -113,9 +113,9 @@ export function IntegrationRow({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display font-bold text-ink-900">{def.label}</h3>
-          <p className="mt-0.5 text-[var(--text-xs)] text-ink-500">{def.description}</p>
+          <p className="mt-0.5 text-[length:var(--text-xs)] text-ink-500">{def.description}</p>
         </div>
-        <span className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[var(--text-2xs)] font-semibold ${STATUS_CHIP[status]}`}>
+        <span className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[length:var(--text-2xs)] font-semibold ${STATUS_CHIP[status]}`}>
           <span className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[status]}`} aria-hidden />
           {statusLabel}
         </span>
@@ -124,7 +124,7 @@ export function IntegrationRow({
       <div className="mt-4 space-y-3">
         {/* Value field */}
         <div>
-          <label className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">
+          <label className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">
             {def.valueLabel ?? "Value"}
             {hasValue && maskedValue && (
               <span className="ml-2 font-mono font-normal normal-case text-ink-400">{maskedValue}</span>
@@ -136,14 +136,14 @@ export function IntegrationRow({
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
             placeholder={hasValue ? "Paste new value to replace" : def.valuePlaceholder}
-            className="h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 font-mono text-[var(--text-sm)] text-ink-800 outline-none placeholder:text-ink-300 focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20"
+            className="h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 font-mono text-[length:var(--text-sm)] text-ink-800 outline-none placeholder:text-ink-300 focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20"
           />
         </div>
 
         {/* Base URL field — Dealski only */}
         {def.hasBaseUrl && (
           <div>
-            <label className="mb-1 block text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">
+            <label className="mb-1 block text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">
               {def.baseUrlLabel ?? "Base URL"}
             </label>
             <input
@@ -151,7 +151,7 @@ export function IntegrationRow({
               value={newBaseUrl}
               onChange={(e) => setNewBaseUrl(e.target.value)}
               placeholder={def.baseUrlPlaceholder}
-              className="h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[var(--text-sm)] text-ink-800 outline-none placeholder:text-ink-300 focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20"
+              className="h-10 w-full rounded-[var(--radius-md)] border border-border bg-surface-0 px-3 text-[length:var(--text-sm)] text-ink-800 outline-none placeholder:text-ink-300 focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20"
             />
           </div>
         )}
@@ -161,26 +161,26 @@ export function IntegrationRow({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-[var(--radius-md)] bg-brand-600 px-4 py-2 text-[var(--text-xs)] font-bold text-white hover:bg-brand-700 disabled:opacity-50"
+          className="rounded-[var(--radius-md)] bg-brand-600 px-4 py-2 text-[length:var(--text-xs)] font-bold text-white hover:bg-brand-700 disabled:opacity-50"
         >
           {saving ? "Saving…" : "Save"}
         </button>
         <button
           onClick={handleTest}
           disabled={testing}
-          className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[var(--text-xs)] font-semibold text-ink-600 hover:border-brand-400 hover:text-brand-600 disabled:opacity-50"
+          className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[length:var(--text-xs)] font-semibold text-ink-600 hover:border-brand-400 hover:text-brand-600 disabled:opacity-50"
         >
           {testing ? "Testing…" : "Test connection"}
         </button>
         {lastTested && (
-          <span className="text-[var(--text-2xs)] text-ink-400">
+          <span className="text-[length:var(--text-2xs)] text-ink-400">
             Last tested {new Date(lastTested).toLocaleString("en-GB")}
           </span>
         )}
       </div>
 
       {toast && (
-        <div className={`mt-3 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-xs)] font-medium ${toast.ok ? "bg-success-tint text-success-700" : "bg-danger-tint text-danger-700"}`}>
+        <div className={`mt-3 rounded-[var(--radius-md)] px-3 py-2 text-[length:var(--text-xs)] font-medium ${toast.ok ? "bg-success-tint text-success-700" : "bg-danger-tint text-danger-700"}`}>
           {toast.msg}
         </div>
       )}

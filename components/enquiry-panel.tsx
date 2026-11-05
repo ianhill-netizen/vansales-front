@@ -133,12 +133,12 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
           // eslint-disable-next-line @next/next/no-img-element
           <img src={apiDealer.logo_url} alt="" width={44} height={44} loading="lazy" className="size-11 shrink-0 rounded-[var(--radius-md)] border border-border bg-white object-contain" />
         ) : (
-          <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] bg-ink-900 font-display text-[var(--text-lg)] font-bold text-white">
+          <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] bg-ink-900 font-display text-[length:var(--text-lg)] font-bold text-white">
             {dealerInitials(displayName)}
           </span>
         )}
         <div className="min-w-0">
-          <p className="truncate font-display text-[var(--text-base)] font-bold text-ink-900">
+          <p className="truncate font-display text-[length:var(--text-base)] font-bold text-ink-900">
             {dealerConfig || apiDealer ? (
               <Link href={`/dealer/${(apiDealer ?? dealerConfig)!.slug}`} className="hover:text-brand-600">
                 {displayName}
@@ -147,32 +147,32 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
               displayName
             )}
           </p>
-          <p className="text-[var(--text-sm)] text-ink-500">
+          <p className="text-[length:var(--text-sm)] text-ink-500">
             {listing.seller_type === "dealer" ? "Van dealer" : "Private seller"}
           </p>
         </div>
       </div>
 
-      <p className="mt-3 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-500">
+      <p className="mt-3 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-500">
         <IconShield width={15} height={15} className="text-brand-600" />
         {displayLocation}
       </p>
 
       {/* Reviews placeholder — no fabricated ratings */}
       <div className="mt-3 rounded-[var(--radius-md)] bg-surface-1 px-4 py-3">
-        <p className="text-[var(--text-sm)] font-semibold text-ink-700">Reviews</p>
-        <p className="mt-0.5 text-[var(--text-sm)] text-ink-400">No reviews yet.</p>
+        <p className="text-[length:var(--text-sm)] font-semibold text-ink-700">Reviews</p>
+        <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-400">No reviews yet.</p>
       </div>
 
       {/* Phone CTA — dealer only; never shown for private listings */}
       {!isPrivate && !apiDealer && (
         <a
           href={dealerConfig ? `tel:${dealerConfig.phone.replace(/[^\d+]/g, "")}` : PHONE_TEL}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3 text-[var(--text-base)] font-bold text-success-600 transition-colors hover:bg-success-500 hover:text-white"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-success-500/30 bg-success-tint px-4 py-3 text-[length:var(--text-base)] font-bold text-success-600 transition-colors hover:bg-success-500 hover:text-white"
         >
           <PhoneIcon />
           <span>{dealerConfig?.phone ?? PHONE_DISPLAY}</span>
-          <span className="text-[var(--text-sm)] font-normal opacity-75">· Request callback</span>
+          <span className="text-[length:var(--text-sm)] font-normal opacity-75">· Request callback</span>
         </a>
       )}
 
@@ -183,7 +183,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
       {/* Divider */}
       <div className="relative my-4 flex items-center gap-3">
         <div className="flex-1 border-t border-border" />
-        <span className="text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">
+        <span className="text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-ink-400">
           {isPrivate ? "message the seller" : "or enquire online"}
         </span>
         <div className="flex-1 border-t border-border" />
@@ -197,7 +197,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
             <p className="font-semibold text-success-600">
               {isPrivate ? "Message sent!" : "Enquiry sent!"}
             </p>
-            <p className="mt-1 text-[var(--text-sm)] text-ink-600">
+            <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">
               {isPrivate
                 ? "Your message has been sent. The seller will be in touch shortly."
                 : <>
@@ -279,7 +279,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
           </Field>
 
           {state === "error" && (
-            <p className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[var(--text-sm)] font-medium text-sold-600">
+            <p className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-sold-600">
               {errorMsg}
             </p>
           )}
@@ -294,7 +294,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
             {state === "submitting" ? "Sending…" : isPrivate ? "Send message" : "Send enquiry"}
           </Button>
 
-          <p className="text-center text-[var(--text-xs)] text-ink-400">
+          <p className="text-center text-[length:var(--text-xs)] text-ink-400">
             {isPrivate
               ? "Your details go only to the seller. No spam, ever."
               : `Your details go only to ${displayName}. No spam, ever.`

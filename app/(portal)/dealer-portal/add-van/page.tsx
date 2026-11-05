@@ -111,20 +111,20 @@ const EMPTY_FORM: VanForm = {
 };
 
 // ── Style helpers ──────────────────────────────────────────────────────────────
-const LBL = "block text-[var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500 mb-1.5";
-const INPUT = "h-11 w-full rounded-[var(--radius-md)] border border-border bg-white px-3 text-[var(--text-base)] outline-none focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20";
+const LBL = "block text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500 mb-1.5";
+const INPUT = "h-11 w-full rounded-[var(--radius-md)] border border-border bg-white px-3 text-[length:var(--text-base)] outline-none focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20";
 const SELECT = `${INPUT} cursor-pointer`;
 
 function toggleCls(on: boolean) {
-  return `flex-1 rounded-[var(--radius-md)] border px-3 py-2.5 text-[var(--text-sm)] font-semibold text-center transition-colors cursor-pointer ${on ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`;
+  return `flex-1 rounded-[var(--radius-md)] border px-3 py-2.5 text-[length:var(--text-sm)] font-semibold text-center transition-colors cursor-pointer ${on ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`;
 }
 
 function checkboxBtnCls(on: boolean) {
-  return `flex items-center gap-2 rounded-[var(--radius-md)] border px-4 py-3 text-[var(--text-sm)] font-semibold cursor-pointer transition-colors ${on ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-700 hover:border-ink-300"}`;
+  return `flex items-center gap-2 rounded-[var(--radius-md)] border px-4 py-3 text-[length:var(--text-sm)] font-semibold cursor-pointer transition-colors ${on ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-700 hover:border-ink-300"}`;
 }
 
 function pillCls(on: boolean) {
-  return `rounded-[var(--radius-md)] border px-3 py-2.5 text-[var(--text-xs)] font-semibold transition-colors ${on ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`;
+  return `rounded-[var(--radius-md)] border px-3 py-2.5 text-[length:var(--text-xs)] font-semibold transition-colors ${on ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`;
 }
 
 // ── Step indicator ─────────────────────────────────────────────────────────────
@@ -140,10 +140,10 @@ function StepBar({ step }: { step: Step }) {
       {STEP_LABELS.map((label, i) => (
         <div key={label} className="flex flex-1 items-start">
           <div className="flex flex-col items-center">
-            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[var(--text-xs)] font-bold ${i < doneCount ? "bg-success-600 text-white" : i === activeIdx ? "bg-brand-500 text-white" : "bg-surface-2 text-ink-400"}`}>
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[length:var(--text-xs)] font-bold ${i < doneCount ? "bg-success-600 text-white" : i === activeIdx ? "bg-brand-500 text-white" : "bg-surface-2 text-ink-400"}`}>
               {i < doneCount ? "✓" : i + 1}
             </div>
-            <span className={`mt-1 text-[var(--text-2xs)] font-semibold whitespace-nowrap ${i === activeIdx ? "text-ink-900" : "text-ink-400"}`}>
+            <span className={`mt-1 text-[length:var(--text-2xs)] font-semibold whitespace-nowrap ${i === activeIdx ? "text-ink-900" : "text-ink-400"}`}>
               {label}
             </span>
           </div>
@@ -266,8 +266,8 @@ export default function AddVanPage() {
       <div className="mx-auto max-w-2xl px-4 py-8">
         <StepBar step={step} />
         <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-6 shadow-[var(--shadow-sm)]">
-          <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Add a van</h1>
-          <p className="mt-1 text-[var(--text-sm)] text-ink-500">Enter the registration to auto-fill vehicle details.</p>
+          <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Add a van</h1>
+          <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">Enter the registration to auto-fill vehicle details.</p>
 
           <div className="mt-6 space-y-4">
             <div>
@@ -278,7 +278,7 @@ export default function AddVanPage() {
                 onKeyDown={(e) => e.key === "Enter" && handleRegSearch()}
                 placeholder="e.g. AB12 CDE"
                 maxLength={8}
-                className={`${INPUT} font-mono text-[var(--text-lg)] uppercase tracking-widest`}
+                className={`${INPUT} font-mono text-[length:var(--text-lg)] uppercase tracking-widest`}
               />
             </div>
 
@@ -301,20 +301,20 @@ export default function AddVanPage() {
             <button
               onClick={handleRegSearch}
               disabled={!reg.trim()}
-              className="w-full rounded-[var(--radius-md)] bg-brand-500 py-3 text-[var(--text-base)] font-bold text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full rounded-[var(--radius-md)] bg-brand-500 py-3 text-[length:var(--text-base)] font-bold text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Search for vehicle
             </button>
           </div>
 
           <div className="mt-6 border-t border-border pt-5">
-            <p className="mb-3 text-[var(--text-xs)] font-semibold text-ink-500">No registration?</p>
+            <p className="mb-3 text-[length:var(--text-xs)] font-semibold text-ink-500">No registration?</p>
             <div className="flex flex-wrap gap-2">
               {(["Used van", "Brand new van", "Unregistered / move"] as const).map((label, i) => (
                 <button
                   key={label}
                   onClick={() => handleNoReg(i === 1 ? "new" : i === 2 ? "unregistered" : "used")}
-                  className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-brand-400 hover:text-brand-700"
+                  className="rounded-[var(--radius-md)] border border-border px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-brand-400 hover:text-brand-700"
                 >
                   {label}
                 </button>
@@ -333,8 +333,8 @@ export default function AddVanPage() {
         <StepBar step={step} />
 
         <div className="mb-5 rounded-[var(--radius-xl)] border border-amber-200 bg-amber-50 px-5 py-4">
-          <p className="text-[var(--text-xs)] font-bold uppercase tracking-widest text-amber-700">Stubbed lookup — demo only</p>
-          <p className="mt-1 text-[var(--text-sm)] text-amber-800">
+          <p className="text-[length:var(--text-xs)] font-bold uppercase tracking-widest text-amber-700">Stubbed lookup — demo only</p>
+          <p className="mt-1 text-[length:var(--text-sm)] text-amber-800">
             Vehicle data is from a mock stub, pending live VRM lookup API integration (Cardata UK / DVLA).{" "}
             Registration <span className="font-mono font-bold">{reg}</span> resolved to a plausible result.
           </p>
@@ -342,10 +342,10 @@ export default function AddVanPage() {
 
         <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-6 shadow-[var(--shadow-sm)]">
           <div className="mb-1 flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-success-tint text-success-600 text-[var(--text-sm)] font-bold">✓</span>
-            <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Vehicle found</h2>
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-success-tint text-success-600 text-[length:var(--text-sm)] font-bold">✓</span>
+            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Vehicle found</h2>
           </div>
-          <p className="mb-5 text-[var(--text-sm)] text-ink-500">Confirm this is the correct vehicle before continuing.</p>
+          <p className="mb-5 text-[length:var(--text-sm)] text-ink-500">Confirm this is the correct vehicle before continuing.</p>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {[
@@ -357,7 +357,7 @@ export default function AddVanPage() {
               ["Colour", stubResult.colour],
             ].map(([label, value]) => (
               <div key={label} className="rounded-[var(--radius-lg)] bg-surface-0 px-4 py-3">
-                <p className="text-[var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">{label}</p>
+                <p className="text-[length:var(--text-2xs)] font-semibold uppercase tracking-wider text-ink-400">{label}</p>
                 <p className="mt-0.5 font-semibold text-ink-800">{value}</p>
               </div>
             ))}
@@ -366,20 +366,20 @@ export default function AddVanPage() {
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => setStep("details")}
-              className="flex-1 rounded-[var(--radius-md)] bg-brand-500 py-2.5 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600"
+              className="flex-1 rounded-[var(--radius-md)] bg-brand-500 py-2.5 text-[length:var(--text-sm)] font-bold text-white hover:bg-brand-600"
             >
               This is my van — continue →
             </button>
             <button
               onClick={() => { setStubResult(null); setStep("manual-pick"); }}
-              className="rounded-[var(--radius-md)] border border-border px-4 py-2.5 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
+              className="rounded-[var(--radius-md)] border border-border px-4 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
             >
               Not my van
             </button>
           </div>
         </div>
 
-        <button onClick={() => setStep("entry")} className="mt-4 text-[var(--text-sm)] text-brand-600 hover:underline">
+        <button onClick={() => setStep("entry")} className="mt-4 text-[length:var(--text-sm)] text-brand-600 hover:underline">
           ← Back
         </button>
       </div>
@@ -394,8 +394,8 @@ export default function AddVanPage() {
         <StepBar step={step} />
 
         <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-6 shadow-[var(--shadow-sm)]">
-          <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Vehicle details</h1>
-          <p className="mt-1 mb-6 text-[var(--text-sm)] text-ink-500">Enter the make, model and key details.</p>
+          <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Vehicle details</h1>
+          <p className="mt-1 mb-6 text-[length:var(--text-sm)] text-ink-500">Enter the make, model and key details.</p>
 
           <div className="space-y-5">
             <div>
@@ -481,14 +481,14 @@ export default function AddVanPage() {
             <button
               onClick={() => setStep("details")}
               disabled={!form.make || !form.model}
-              className="w-full rounded-[var(--radius-md)] bg-brand-500 py-3 text-[var(--text-base)] font-bold text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full rounded-[var(--radius-md)] bg-brand-500 py-3 text-[length:var(--text-base)] font-bold text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Continue to details →
             </button>
           </div>
         </div>
 
-        <button onClick={() => setStep("entry")} className="mt-4 text-[var(--text-sm)] text-brand-600 hover:underline">
+        <button onClick={() => setStep("entry")} className="mt-4 text-[length:var(--text-sm)] text-brand-600 hover:underline">
           ← Back
         </button>
       </div>
@@ -504,7 +504,7 @@ export default function AddVanPage() {
         <div className="space-y-5">
           {/* Vehicle details card */}
           <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-6 shadow-[var(--shadow-sm)]">
-            <h2 className="mb-5 font-display text-[var(--text-lg)] font-bold text-ink-900">Vehicle details</h2>
+            <h2 className="mb-5 font-display text-[length:var(--text-lg)] font-bold text-ink-900">Vehicle details</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -581,8 +581,8 @@ export default function AddVanPage() {
 
           {/* Van specification card */}
           <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-6 shadow-[var(--shadow-sm)]">
-            <h2 className="mb-1 font-display text-[var(--text-lg)] font-bold text-ink-900">Van specification</h2>
-            <p className="mb-5 text-[var(--text-xs)] text-ink-400">
+            <h2 className="mb-1 font-display text-[length:var(--text-lg)] font-bold text-ink-900">Van specification</h2>
+            <p className="mb-5 text-[length:var(--text-xs)] text-ink-400">
               Van-specific fields not found on most classifieds — fill in as much as possible to attract the right buyers.
             </p>
 
@@ -618,7 +618,7 @@ export default function AddVanPage() {
                 <div className="flex gap-2">
                   {SIDE_LOADING_DOORS.map((d) => (
                     <button key={d} onClick={() => setField("sideLoadingDoors", d)}
-                      className={`flex-1 rounded-[var(--radius-md)] border px-2 py-2.5 text-[var(--text-xs)] font-semibold text-center transition-colors ${form.sideLoadingDoors === d ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`}>
+                      className={`flex-1 rounded-[var(--radius-md)] border px-2 py-2.5 text-[length:var(--text-xs)] font-semibold text-center transition-colors ${form.sideLoadingDoors === d ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`}>
                       {d}
                     </button>
                   ))}
@@ -630,7 +630,7 @@ export default function AddVanPage() {
                 <div className="flex gap-2">
                   {REAR_DOOR_TYPES.map((d) => (
                     <button key={d} onClick={() => setField("rearDoors", d)}
-                      className={`flex-1 rounded-[var(--radius-md)] border px-2 py-2.5 text-[var(--text-xs)] font-semibold text-center transition-colors ${form.rearDoors === d ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`}>
+                      className={`flex-1 rounded-[var(--radius-md)] border px-2 py-2.5 text-[length:var(--text-xs)] font-semibold text-center transition-colors ${form.rearDoors === d ? "border-brand-500 bg-brand-50 text-brand-700" : "border-border bg-white text-ink-600 hover:border-ink-300"}`}>
                       {d}
                     </button>
                   ))}
@@ -680,7 +680,7 @@ export default function AddVanPage() {
                       onClick={() => setForm((f) => ({ ...f, [key]: !f[key] }))}
                       className={checkboxBtnCls(form[key])}
                     >
-                      <span className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border text-[var(--text-2xs)] ${form[key] ? "border-brand-500 bg-brand-500 text-white" : "border-border"}`}>
+                      <span className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border text-[length:var(--text-2xs)] ${form[key] ? "border-brand-500 bg-brand-500 text-white" : "border-border"}`}>
                         {form[key] ? "✓" : ""}
                       </span>
                       {label}
@@ -693,7 +693,7 @@ export default function AddVanPage() {
 
           {/* Listing details card */}
           <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-6 shadow-[var(--shadow-sm)]">
-            <h2 className="mb-5 font-display text-[var(--text-lg)] font-bold text-ink-900">Listing details</h2>
+            <h2 className="mb-5 font-display text-[length:var(--text-lg)] font-bold text-ink-900">Listing details</h2>
             <div className="space-y-4">
               <div>
                 <label className={LBL}>Asking price (£)</label>
@@ -709,9 +709,9 @@ export default function AddVanPage() {
               <div>
                 <label className={LBL}>Photos</label>
                 <label className="flex cursor-pointer flex-col items-center rounded-[var(--radius-xl)] border-2 border-dashed border-border bg-surface-0 px-6 py-8 text-center hover:border-brand-400 hover:bg-brand-50/30 transition-colors">
-                  <span className="text-[var(--text-2xl)]">📸</span>
-                  <span className="mt-2 text-[var(--text-sm)] font-semibold text-ink-700">Upload photos</span>
-                  <span className="mt-1 text-[var(--text-xs)] text-ink-400">Click to select multiple images — JPG, PNG, WEBP</span>
+                  <span className="text-[length:var(--text-2xl)]">📸</span>
+                  <span className="mt-2 text-[length:var(--text-sm)] font-semibold text-ink-700">Upload photos</span>
+                  <span className="mt-1 text-[length:var(--text-xs)] text-ink-400">Click to select multiple images — JPG, PNG, WEBP</span>
                   <input
                     type="file"
                     multiple
@@ -727,7 +727,7 @@ export default function AddVanPage() {
                 {photoNames.length > 0 && (
                   <ul className="mt-3 space-y-1">
                     {photoNames.map((name, i) => (
-                      <li key={i} className="flex items-center gap-2 text-[var(--text-xs)] text-ink-600">
+                      <li key={i} className="flex items-center gap-2 text-[length:var(--text-xs)] text-ink-600">
                         <span className="text-success-600 font-bold">✓</span> {name}
                       </li>
                     ))}
@@ -742,28 +742,28 @@ export default function AddVanPage() {
                   onChange={(e) => setField("description", e.target.value)}
                   placeholder="Describe the van's condition, service history, any modifications or damage…"
                   rows={5}
-                  className="w-full rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-[var(--text-base)] outline-none focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20 resize-y"
+                  className="w-full rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-[length:var(--text-base)] outline-none focus-visible:border-brand-500 focus-visible:ring-2 focus-visible:ring-brand-500/20 resize-y"
                 />
               </div>
             </div>
           </div>
 
           {publishError && (
-            <div className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-4 py-3 text-[var(--text-sm)] text-danger-700">
+            <div className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-4 py-3 text-[length:var(--text-sm)] text-danger-700">
               {publishError}
             </div>
           )}
           <div className="flex gap-3 pb-4">
             <button
               onClick={() => setStep(stubResult ? "lookup-result" : "manual-pick")}
-              className="rounded-[var(--radius-md)] border border-border px-6 py-3 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
+              className="rounded-[var(--radius-md)] border border-border px-6 py-3 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
             >
               ← Back
             </button>
             <button
               onClick={handlePublish}
               disabled={!form.make || !form.model || !form.price || publishing}
-              className="flex-1 rounded-[var(--radius-md)] bg-brand-500 py-3 text-[var(--text-base)] font-bold text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-1 rounded-[var(--radius-md)] bg-brand-500 py-3 text-[length:var(--text-base)] font-bold text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {publishing ? "Publishing…" : "Publish listing"}
             </button>
@@ -778,31 +778,31 @@ export default function AddVanPage() {
     <div className="mx-auto max-w-2xl px-4 py-8">
       <StepBar step="success" />
       <div className="rounded-[var(--radius-xl)] border border-border bg-white px-8 py-10 shadow-[var(--shadow-sm)] text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success-tint text-[var(--text-2xl)] font-bold text-success-600">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success-tint text-[length:var(--text-2xl)] font-bold text-success-600">
           ✓
         </div>
-        <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Van listed!</h1>
-        <p className="mt-2 text-[var(--text-base)] text-ink-500">
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Van listed!</h1>
+        <p className="mt-2 text-[length:var(--text-base)] text-ink-500">
           <span className="font-semibold text-ink-900">
             {form.year} {form.make} {form.model}
           </span>{" "}
           has been added to your live listings.
         </p>
         {photoCount > 0 && (
-          <p className="mt-1 text-[var(--text-sm)] text-ink-400">
+          <p className="mt-1 text-[length:var(--text-sm)] text-ink-400">
             {photoCount} photo{photoCount !== 1 ? "s" : ""} uploaded
           </p>
         )}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/dealer-portal/listings"
-            className="rounded-[var(--radius-md)] bg-brand-500 px-6 py-3 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600"
+            className="rounded-[var(--radius-md)] bg-brand-500 px-6 py-3 text-[length:var(--text-sm)] font-bold text-white hover:bg-brand-600"
           >
             View your listings →
           </Link>
           <button
             onClick={resetFlow}
-            className="rounded-[var(--radius-md)] border border-border px-6 py-3 text-[var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
+            className="rounded-[var(--radius-md)] border border-border px-6 py-3 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400"
           >
             Add another van
           </button>

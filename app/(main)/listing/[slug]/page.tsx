@@ -150,7 +150,7 @@ export default async function ListingPage({
 
       <Container className="py-6">
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[var(--text-sm)] text-ink-500">
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[length:var(--text-sm)] text-ink-500">
           <Link href="/" className="hover:text-ink-800">Home</Link>
           <span aria-hidden>/</span>
           <Link href={modelPath(listing.make, listing.model)} className="hover:text-ink-800">
@@ -175,7 +175,7 @@ export default async function ListingPage({
               <section className="mt-6" aria-label={listing.seller_video_url ? "Walk-around video from the seller" : "Video of this van"}>
                 <video src={(listing.seller_video_url ?? listing.video_url) as string} controls playsInline preload="metadata" className="w-full rounded-[var(--radius-lg)] bg-black" />
                 {!listing.seller_video_url && listing.video_vertical_url && (
-                  <p className="mt-2 text-[var(--text-sm)] text-ink-500">
+                  <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
                     <a href={listing.video_vertical_url} download className="underline hover:text-ink-800">Download the vertical version</a> for stories and reels.
                   </p>
                 )}
@@ -196,11 +196,11 @@ export default async function ListingPage({
             {/* Specification the seller filled in (private adverts): only the rows they gave */}
             {specRows.length > 0 && (
               <section className="mt-6" aria-label="Specification">
-                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Specification</h2>
+                <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Specification</h2>
                 <dl className="mt-3 divide-y divide-border rounded-[var(--radius-lg)] border border-border bg-card">
                   {specRows.map((r) => (
                     <div key={r.label} className="flex items-baseline justify-between gap-4 px-4 py-2.5">
-                      <dt className="text-[var(--text-sm)] text-ink-500">{r.label}</dt>
+                      <dt className="text-[length:var(--text-sm)] text-ink-500">{r.label}</dt>
                       <dd className="text-right font-medium text-ink-900">{r.value}</dd>
                     </div>
                   ))}
@@ -210,7 +210,7 @@ export default async function ListingPage({
 
             {/* Warranty, as the seller described it */}
             {warrantyText(listing.warranty_type, listing.warranty_expiry) && (
-              <p className="mt-4 rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3 text-[var(--text-md)] text-ink-800">
+              <p className="mt-4 rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3 text-[length:var(--text-md)] text-ink-800">
                 <span className="font-medium">{warrantyText(listing.warranty_type, listing.warranty_expiry)}</span>
               </p>
             )}
@@ -218,7 +218,7 @@ export default async function ListingPage({
             {/* Features & extras the seller ticked */}
             {listing.extras && listing.extras.length > 0 && (
               <section className="mt-6" aria-label="Features and extras">
-                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Features &amp; extras</h2>
+                <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Features &amp; extras</h2>
                 <ul className="mt-3 flex flex-wrap gap-2">
                   {listing.extras.map((f) => (
                     <li key={f.slug}><Badge tone="neutral"><IconCheck width={12} height={12} aria-hidden />{f.label}</Badge></li>
@@ -233,13 +233,13 @@ export default async function ListingPage({
                 <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
                   {listing.mot_expiry && (
                     <div>
-                      <dt className="text-[var(--text-sm)] text-ink-500">MOT expiry</dt>
+                      <dt className="text-[length:var(--text-sm)] text-ink-500">MOT expiry</dt>
                       <dd className="font-medium text-ink-900">{formatMotDate(listing.mot_expiry)}</dd>
                     </div>
                   )}
                   {listing.last_mot_mileage != null && (
                     <div>
-                      <dt className="text-[var(--text-sm)] text-ink-500">Last MOT mileage</dt>
+                      <dt className="text-[length:var(--text-sm)] text-ink-500">Last MOT mileage</dt>
                       <dd className="font-medium text-ink-900">
                         {listing.last_mot_mileage.toLocaleString("en-GB")} miles
                         {listing.last_mot_date ? <span className="font-normal text-ink-500"> · {formatMotDate(listing.last_mot_date)}</span> : null}
@@ -247,7 +247,7 @@ export default async function ListingPage({
                     </div>
                   )}
                 </dl>
-                <p className="mt-2 text-[var(--text-xs,12px)] text-ink-500">From DVLA and DVSA records.</p>
+                <p className="mt-2 text-[length:var(--text-xs,12px)] text-ink-500">From DVLA and DVSA records.</p>
               </section>
             )}
 
@@ -256,8 +256,8 @@ export default async function ListingPage({
 
             {/* Description */}
             <section className="mt-8">
-              <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Description</h2>
-              <p className="mt-3 max-w-2xl whitespace-pre-line text-[var(--text-md)] leading-relaxed text-ink-600">
+              <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Description</h2>
+              <p className="mt-3 max-w-2xl whitespace-pre-line text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 {listing.description}
               </p>
             </section>
@@ -265,12 +265,12 @@ export default async function ListingPage({
             {/* Features */}
             {listing.features.length > 0 && (
               <section className="mt-8">
-                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+                <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
                   Specification &amp; features
                 </h2>
                 <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
                   {listing.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-[var(--text-md)] text-ink-700">
+                    <li key={f} className="flex items-center gap-2 text-[length:var(--text-md)] text-ink-700">
                       <IconCheck width={16} height={16} className="shrink-0 text-success-500" />
                       {f}
                     </li>
@@ -281,7 +281,7 @@ export default async function ListingPage({
 
             {/* Full spec table */}
             <section className="mt-10">
-              <h2 className="mb-4 font-display text-[var(--text-xl)] font-bold text-ink-900">Full specification</h2>
+              <h2 className="mb-4 font-display text-[length:var(--text-xl)] font-bold text-ink-900">Full specification</h2>
               <SpecTable listing={listing} />
             </section>
           </div>
@@ -303,10 +303,10 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
     <div>
       <Eyebrow>{listing.van_spec.body_style}</Eyebrow>
       <div className="mt-2 flex items-start justify-between gap-3">
-        <h1 className="font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">{title}</h1>
+        <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">{title}</h1>
         {listing.year > 0 && <PlateBadge text={listing.plate || String(listing.year)} size="md" />}
       </div>
-      <p className="mt-1.5 text-[var(--text-sm)] text-ink-500">
+      <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
         {listing.year > 0 ? `${listing.year} · ` : ""}
         {displayTown}
         {listing.colour !== "—" ? ` · ${listing.colour}` : ""}

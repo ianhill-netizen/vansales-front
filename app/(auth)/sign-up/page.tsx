@@ -61,8 +61,8 @@ export default function SignUpChoosePage() {
   return (
     <div className="w-full max-w-2xl">
       <div className="mb-8 text-center">
-        <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Join Vansales</h1>
-        <p className="mt-2 text-[var(--text-sm)] text-ink-500">Choose the account type that fits you</p>
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Join Vansales</h1>
+        <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">Choose the account type that fits you</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {JOURNEYS.map((j) => (
@@ -76,15 +76,15 @@ export default function SignUpChoosePage() {
             }`}
           >
             <div className="mb-3 text-3xl" aria-hidden>{j.icon}</div>
-            <h2 className="font-display text-[var(--text-base)] font-bold text-ink-900">{j.title}</h2>
-            <p className="mt-1 flex-1 text-[var(--text-sm)] leading-relaxed text-ink-600">{j.body}</p>
-            <span className={`mt-4 inline-flex items-center gap-1.5 text-[var(--text-sm)] font-semibold ${j.highlight ? "text-brand-700" : "text-ink-700 group-hover:text-brand-700"}`}>
+            <h2 className="font-display text-[length:var(--text-base)] font-bold text-ink-900">{j.title}</h2>
+            <p className="mt-1 flex-1 text-[length:var(--text-sm)] leading-relaxed text-ink-600">{j.body}</p>
+            <span className={`mt-4 inline-flex items-center gap-1.5 text-[length:var(--text-sm)] font-semibold ${j.highlight ? "text-brand-700" : "text-ink-700 group-hover:text-brand-700"}`}>
               {j.cta} →
             </span>
           </Link>
         ))}
       </div>
-      <p className="mt-6 text-center text-[var(--text-sm)] text-ink-500">
+      <p className="mt-6 text-center text-[length:var(--text-sm)] text-ink-500">
         Already have an account?{" "}
         <Link href="/sign-in" className="font-semibold text-brand-700 hover:underline">Sign in →</Link>
       </p>

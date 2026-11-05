@@ -34,10 +34,10 @@ export function HpiCard({ result }: { result: HpiCheckPublic }) {
       aria-label="Vehicle history check"
       className={`mt-6 rounded-[var(--radius-lg)] border p-5 ${anyFlag ? "border-red-200 bg-red-50/50" : "border-success-500/30 bg-success-500/5"}`}
     >
-      <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">Vehicle history check</h2>
+      <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Vehicle history check</h2>
       <ul className="mt-3 space-y-2.5">
         {rows.map((r) => (
-          <li key={r.label} className="flex items-start gap-2.5 text-[var(--text-md)] text-ink-800">
+          <li key={r.label} className="flex items-start gap-2.5 text-[length:var(--text-md)] text-ink-800">
             {r.state === "clear" ? (
               <IconCheck width={18} height={18} className="mt-0.5 shrink-0 text-success-500" aria-label="Clear" />
             ) : r.state === "flag" ? (
@@ -49,7 +49,7 @@ export function HpiCard({ result }: { result: HpiCheckPublic }) {
           </li>
         ))}
       </ul>
-      <dl className="mt-4 grid gap-x-8 gap-y-1 border-t border-black/5 pt-3 text-[var(--text-sm)] sm:grid-cols-2">
+      <dl className="mt-4 grid gap-x-8 gap-y-1 border-t border-black/5 pt-3 text-[length:var(--text-sm)] sm:grid-cols-2">
         {result.previous_keepers != null && (
           <div className="flex justify-between gap-3"><dt className="text-ink-500">Previous keepers</dt><dd className="font-medium text-ink-900">{result.previous_keepers}</dd></div>
         )}

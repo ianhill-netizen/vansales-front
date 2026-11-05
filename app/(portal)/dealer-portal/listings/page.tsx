@@ -85,38 +85,38 @@ export default function DealerListingsPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-[var(--text-2xl)] font-extrabold text-ink-900">Listings</h1>
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900">Listings</h1>
         <div className="flex gap-2">
           {(["all", "active", "draft", "sold"] as Filter[]).map((f) => (
             <button key={f} onClick={() => setFilter(f)}
-              className={`rounded-full px-4 py-1.5 text-[var(--text-xs)] font-semibold capitalize transition-colors ${filter === f ? "bg-ink-900 text-white" : "border border-border bg-white text-ink-600 hover:border-ink-400"}`}>
+              className={`rounded-full px-4 py-1.5 text-[length:var(--text-xs)] font-semibold capitalize transition-colors ${filter === f ? "bg-ink-900 text-white" : "border border-border bg-white text-ink-600 hover:border-ink-400"}`}>
               {f === "all" ? "All" : STATUS_LABEL[f as DbListing["status"]]}
               {f !== "all" && ` (${counts[f]})`}
             </button>
           ))}
-          <Link href="/dealer-portal/add-van" className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-1.5 text-[var(--text-xs)] font-bold text-white hover:bg-brand-600">
+          <Link href="/dealer-portal/add-van" className="rounded-[var(--radius-md)] bg-brand-500 px-4 py-1.5 text-[length:var(--text-xs)] font-bold text-white hover:bg-brand-600">
             + Add van
           </Link>
         </div>
       </div>
 
       {loading && (
-        <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-12 text-center text-[var(--text-sm)] text-ink-400 shadow-[var(--shadow-sm)]">
+        <div className="rounded-[var(--radius-xl)] border border-border bg-white px-6 py-12 text-center text-[length:var(--text-sm)] text-ink-400 shadow-[var(--shadow-sm)]">
           Loading listings…
         </div>
       )}
 
       {error && (
-        <div className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-5 py-4 text-[var(--text-sm)] text-danger-700">
+        <div className="rounded-[var(--radius-md)] border border-danger-500/20 bg-danger-tint px-5 py-4 text-[length:var(--text-sm)] text-danger-700">
           {error}
         </div>
       )}
 
       {!loading && !error && filtered.length === 0 && (
         <div className="rounded-[var(--radius-xl)] border border-dashed border-border bg-white px-6 py-16 text-center shadow-[var(--shadow-sm)]">
-          <p className="text-[var(--text-base)] font-semibold text-ink-600">No listings yet</p>
-          <p className="mt-1 text-[var(--text-sm)] text-ink-400">Add your first van to get started.</p>
-          <Link href="/dealer-portal/add-van" className="mt-5 inline-block rounded-[var(--radius-md)] bg-brand-500 px-5 py-2.5 text-[var(--text-sm)] font-bold text-white hover:bg-brand-600">
+          <p className="text-[length:var(--text-base)] font-semibold text-ink-600">No listings yet</p>
+          <p className="mt-1 text-[length:var(--text-sm)] text-ink-400">Add your first van to get started.</p>
+          <Link href="/dealer-portal/add-van" className="mt-5 inline-block rounded-[var(--radius-md)] bg-brand-500 px-5 py-2.5 text-[length:var(--text-sm)] font-bold text-white hover:bg-brand-600">
             Add a van →
           </Link>
         </div>
@@ -124,11 +124,11 @@ export default function DealerListingsPage() {
 
       {!loading && !error && filtered.length > 0 && (
         <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-sm)]">
-          <table className="w-full text-[var(--text-sm)]">
+          <table className="w-full text-[length:var(--text-sm)]">
             <thead>
               <tr className="border-b border-border bg-surface-0">
                 {["Van", "Year", "Price", "Age", "Status", ""].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-[var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">
+                  <th key={h} className="px-4 py-3 text-left text-[length:var(--text-xs)] font-semibold uppercase tracking-wider text-ink-400">
                     {h}
                   </th>
                 ))}
@@ -146,11 +146,11 @@ export default function DealerListingsPage() {
                     <td className="px-4 py-3 font-semibold text-ink-900">
                       {l.price ? `£${l.price.toLocaleString()}` : <span className="text-ink-400">POA</span>}
                     </td>
-                    <td className={`px-4 py-3 text-[var(--text-xs)] ${dayAge >= 45 ? "font-semibold text-amber-600" : "text-ink-400"}`}>
+                    <td className={`px-4 py-3 text-[length:var(--text-xs)] ${dayAge >= 45 ? "font-semibold text-amber-600" : "text-ink-400"}`}>
                       {dayAge}d
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`rounded-full px-2 py-0.5 text-[var(--text-2xs)] font-semibold ${STATUS_COLOR[l.status]}`}>
+                      <span className={`rounded-full px-2 py-0.5 text-[length:var(--text-2xs)] font-semibold ${STATUS_COLOR[l.status]}`}>
                         {STATUS_LABEL[l.status]}
                       </span>
                     </td>
@@ -160,7 +160,7 @@ export default function DealerListingsPage() {
                           <button
                             onClick={() => updateStatus(l.id, "active")}
                             disabled={updating === l.id}
-                            className="rounded-[var(--radius-sm)] bg-success-600 px-2 py-1 text-[var(--text-2xs)] font-semibold text-white hover:bg-success-700 disabled:opacity-50"
+                            className="rounded-[var(--radius-sm)] bg-success-600 px-2 py-1 text-[length:var(--text-2xs)] font-semibold text-white hover:bg-success-700 disabled:opacity-50"
                           >
                             Publish
                           </button>
@@ -169,7 +169,7 @@ export default function DealerListingsPage() {
                           <button
                             onClick={() => updateStatus(l.id, "draft")}
                             disabled={updating === l.id}
-                            className="rounded-[var(--radius-sm)] border border-border px-2 py-1 text-[var(--text-2xs)] font-semibold text-ink-600 hover:border-ink-400 disabled:opacity-50"
+                            className="rounded-[var(--radius-sm)] border border-border px-2 py-1 text-[length:var(--text-2xs)] font-semibold text-ink-600 hover:border-ink-400 disabled:opacity-50"
                           >
                             Unpublish
                           </button>
@@ -178,7 +178,7 @@ export default function DealerListingsPage() {
                           <button
                             onClick={() => updateStatus(l.id, "sold")}
                             disabled={updating === l.id}
-                            className="rounded-[var(--radius-sm)] border border-border px-2 py-1 text-[var(--text-2xs)] font-semibold text-ink-600 hover:border-ink-400 disabled:opacity-50"
+                            className="rounded-[var(--radius-sm)] border border-border px-2 py-1 text-[length:var(--text-2xs)] font-semibold text-ink-600 hover:border-ink-400 disabled:opacity-50"
                           >
                             Mark sold
                           </button>

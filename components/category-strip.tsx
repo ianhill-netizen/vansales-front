@@ -24,8 +24,8 @@ export function CategoryStrip() {
             {c.icon}
           </span>
           <span>
-            <span className="block font-display text-[var(--text-base)] font-bold text-ink-900">{c.label}</span>
-            <span className="block text-[var(--text-sm)] text-ink-500">{c.note}</span>
+            <span className="block font-display text-[length:var(--text-base)] font-bold text-ink-900">{c.label}</span>
+            <span className="block text-[length:var(--text-sm)] text-ink-500">{c.note}</span>
           </span>
         </Link>
       ))}

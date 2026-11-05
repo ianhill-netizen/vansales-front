@@ -65,7 +65,7 @@ export default async function DealerBlogPostPage({ params }: Props) {
 
       <div className="border-b border-border bg-surface-1">
         <Container className="py-10">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 flex-wrap text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 flex-wrap text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span>/</span>
             <Link href={`/dealer/${slug}`} className="hover:text-ink-900">{dealerName}</Link>
@@ -76,9 +76,9 @@ export default async function DealerBlogPostPage({ params }: Props) {
           </nav>
           <div className="max-w-3xl">
             {post.date && (
-              <time dateTime={post.date} className="text-[var(--text-sm)] text-ink-400">{formatDate(post.date)}</time>
+              <time dateTime={post.date} className="text-[length:var(--text-sm)] text-ink-400">{formatDate(post.date)}</time>
             )}
-            <h1 className="mt-2 font-display text-[var(--text-3xl)] font-extrabold leading-tight text-ink-900">
+            <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
               {post.title}
             </h1>
           </div>
@@ -88,7 +88,7 @@ export default async function DealerBlogPostPage({ params }: Props) {
       <Container className="py-10">
         <div className="mx-auto max-w-3xl">
           <article dangerouslySetInnerHTML={{ __html: mdToHtml(post.body) }} />
-          <div className="mt-10 flex gap-4 border-t border-border pt-6 text-[var(--text-sm)]">
+          <div className="mt-10 flex gap-4 border-t border-border pt-6 text-[length:var(--text-sm)]">
             <Link href={`/dealer/${slug}/blog`} className="font-semibold text-brand-700 hover:underline">← Back to {dealerName} blog</Link>
             <span className="text-ink-300">·</span>
             <Link href={`/dealer/${slug}`} className="text-ink-500 hover:text-ink-900">View {dealerName} stock →</Link>

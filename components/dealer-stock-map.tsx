@@ -51,7 +51,7 @@ export function DealerStockMap({
         className="h-[380px] w-full"
       />
       {(selected === "dealer" || van) && (
-        <div className="absolute inset-x-3 bottom-3 z-[1000] rounded-[var(--radius-lg)] bg-white p-3 text-[var(--text-sm)] shadow-[var(--shadow-lg)]">
+        <div className="absolute inset-x-3 bottom-3 z-[1000] rounded-[var(--radius-lg)] bg-white p-3 text-[length:var(--text-sm)] shadow-[var(--shadow-lg)]">
           {van ? (
             <Link href={`/listing/${van.slug}`} className="flex items-center justify-between gap-3">
               <span className="truncate font-semibold text-ink-900">{van.title}</span>

@@ -88,7 +88,7 @@ export function ListingCard({
         ) : (
           <div className="flex size-full flex-col items-center justify-center gap-2.5 bg-surface-2">
             <BodyTypeIcon slug={listing.van_spec.body_style} className="h-16 w-24 text-ink-300" />
-            <p className="font-mono text-[var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
+            <p className="font-mono text-[length:var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
               Photos coming soon
             </p>
           </div>
@@ -103,7 +103,7 @@ export function ListingCard({
 
         {/* Bottom-left: flags a library/placeholder fallback image, not the vehicle's own photo */}
         {isFallbackImage && (
-          <span className="absolute bottom-2.5 left-3 rounded-[var(--radius-pill)] bg-ink-900/70 px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
+          <span className="absolute bottom-2.5 left-3 rounded-[var(--radius-pill)] bg-ink-900/70 px-2.5 py-1 text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
             Stock image
           </span>
         )}
@@ -121,7 +121,7 @@ export function ListingCard({
           {listing.hpi_checked && <Badge tone="success">HPI checked</Badge>}
           {listing.status === "reserved" && <StatusBadge status="reserved" />}
           {fuelPill && (
-            <span className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-[var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${fuelPill}`}>
+            <span className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] ${fuelPill}`}>
               {titleCase(listing.fuel)}
             </span>
           )}
@@ -129,7 +129,7 @@ export function ListingCard({
 
         {/* ULEZ badge — top-right */}
         {listing.ulez && (
-          <span className="absolute right-3 top-3 rounded-[var(--radius-pill)] bg-success-500/90 px-2.5 py-1 text-[var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
+          <span className="absolute right-3 top-3 rounded-[var(--radius-pill)] bg-success-500/90 px-2.5 py-1 text-[length:var(--text-2xs)] font-bold uppercase tracking-[var(--tracking-wide)] text-white backdrop-blur-sm">
             ULEZ ✓
           </span>
         )}
@@ -137,7 +137,7 @@ export function ListingCard({
         {/* Sold overlay */}
         {sold && (
           <div className="absolute inset-0 grid place-items-center bg-ink-900/40 backdrop-blur-[2px]">
-            <span className="rotate-[-8deg] rounded-[var(--radius-sm)] border-2 border-white/90 px-5 py-1.5 font-display text-[var(--text-xl)] font-extrabold uppercase tracking-wide text-white shadow-lg">
+            <span className="rotate-[-8deg] rounded-[var(--radius-sm)] border-2 border-white/90 px-5 py-1.5 font-display text-[length:var(--text-xl)] font-extrabold uppercase tracking-wide text-white shadow-lg">
               Sold
             </span>
           </div>
@@ -148,7 +148,7 @@ export function ListingCard({
       <div className="flex flex-1 flex-col p-4 pt-3.5">
 
         {/* Seller + location meta */}
-        <p className="mb-2 flex flex-wrap items-center gap-x-1.5 text-[var(--text-xs)] text-ink-400">
+        <p className="mb-2 flex flex-wrap items-center gap-x-1.5 text-[length:var(--text-xs)] text-ink-400">
           {isPrivate ? (
             <span className="font-semibold text-ink-500">Private seller</span>
           ) : apiDealer ? (
@@ -183,17 +183,17 @@ export function ListingCard({
         </p>
 
         {/* Title */}
-        <h3 className="font-display text-[var(--text-base)] font-bold leading-[1.2] text-ink-900">
+        <h3 className="font-display text-[length:var(--text-base)] font-bold leading-[1.2] text-ink-900">
           <Link href={listingPath(listing)} className="after:absolute after:inset-0">
             <span className="line-clamp-2">{title}</span>
           </Link>
         </h3>
 
         {/* Subtitle: full year · mileage · fuel (replaces the old two-digit plate box) */}
-        {subtitle && <p className="mt-1 truncate text-[var(--text-sm)] font-medium text-ink-500">{subtitle}</p>}
+        {subtitle && <p className="mt-1 truncate text-[length:var(--text-sm)] font-medium text-ink-500">{subtitle}</p>}
 
         {listing.derivative && (
-          <p className="mt-0.5 truncate text-[var(--text-xs)] text-ink-400">{listing.derivative}</p>
+          <p className="mt-0.5 truncate text-[length:var(--text-xs)] text-ink-400">{listing.derivative}</p>
         )}
 
         {/* Price row */}
@@ -202,16 +202,16 @@ export function ListingCard({
             {payMode === "finance" && monthly != null ? (
               <>
                 <p className="flex items-baseline gap-1.5">
-                  <span className="font-mono text-[var(--text-2xl)] font-bold leading-none text-ink-900">£{monthly.toLocaleString("en-GB")}</span>
-                  <span className="text-[var(--text-xs)] font-medium text-ink-500">/month</span>
+                  <span className="font-mono text-[length:var(--text-2xl)] font-bold leading-none text-ink-900">£{monthly.toLocaleString("en-GB")}</span>
+                  <span className="text-[length:var(--text-xs)] font-medium text-ink-500">/month</span>
                 </p>
-                <p className="mt-1 text-[var(--text-xs)] text-ink-400">Cash price {listing.price != null ? `£${listing.price.toLocaleString("en-GB")}` : "POA"}</p>
+                <p className="mt-1 text-[length:var(--text-xs)] text-ink-400">Cash price {listing.price != null ? `£${listing.price.toLocaleString("en-GB")}` : "POA"}</p>
               </>
             ) : (
               <>
                 <Price listing={listing} size="md" />
                 {payMode === "both" && monthly != null && (
-                  <p className="mt-1 text-[var(--text-sm)] font-semibold text-brand-700">or £{monthly.toLocaleString("en-GB")}/month</p>
+                  <p className="mt-1 text-[length:var(--text-sm)] font-semibold text-brand-700">or £{monthly.toLocaleString("en-GB")}/month</p>
                 )}
               </>
             )}
@@ -221,7 +221,7 @@ export function ListingCard({
         {/* Spec strip (year, mileage and fuel are in the subtitle above) */}
         {specItems.length > 0 && <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 border-t border-surface-2 pt-3">
           {specItems.map((s, i) => (
-            <div key={i} className="flex items-center gap-1.5 text-[var(--text-xs)] text-ink-500">
+            <div key={i} className="flex items-center gap-1.5 text-[length:var(--text-xs)] text-ink-500">
               <span className="text-ink-400" aria-hidden>{s.icon}</span>
               {s.value}
             </div>
@@ -233,7 +233,7 @@ export function ListingCard({
           <div className="relative mt-4 z-10 overflow-hidden rounded-[var(--radius-md)]">
             <Link
               href={`${listingPath(listing)}?enquire=1#enquire`}
-              className="relative z-10 flex w-full items-center justify-center gap-2 border border-border bg-surface-1 py-2.5 text-[var(--text-sm)] font-semibold text-ink-600 transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:border-transparent group-hover:text-white rounded-[var(--radius-md)]"
+              className="relative z-10 flex w-full items-center justify-center gap-2 border border-border bg-surface-1 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-600 transition-all duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:border-transparent group-hover:text-white rounded-[var(--radius-md)]"
             >
               Enquire <IconArrow width={14} height={14} className="transition-transform group-hover:translate-x-0.5" />
             </Link>

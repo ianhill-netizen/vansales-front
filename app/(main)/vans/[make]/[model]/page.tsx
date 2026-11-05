@@ -180,7 +180,7 @@ export default async function ModelPage({
       {/* Page header — light hero band */}
       <section className="border-b border-border bg-surface-1">
         <Container className="py-7">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[var(--text-sm)] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span aria-hidden>/</span>
             <Link href={`/vans/${makeSlug}`} className="hover:text-ink-900">{makeName} vans</Link>
@@ -196,11 +196,11 @@ export default async function ModelPage({
               </h1>
               {/* Unique intro written from this model's real stock (page 1 only, so paginated pages stay lean) */}
               {page === 1 && (
-                <div className="mt-3 max-w-2xl space-y-3 text-[var(--text-md)] leading-relaxed text-ink-600">
+                <div className="mt-3 max-w-2xl space-y-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
                   {intro.map((p, i) => <p key={i}>{p}</p>)}
                 </div>
               )}
-              <p className="mt-4 text-[var(--text-sm)] font-semibold text-ink-600">
+              <p className="mt-4 text-[length:var(--text-sm)] font-semibold text-ink-600">
                 <span className="font-mono text-brand-700">{total}</span>{" "}
                 {total === 1 ? "van" : "vans"} available now
               </p>
@@ -243,7 +243,7 @@ export default async function ModelPage({
           {/* Results */}
           <div>
             {total > 0 && (
-              <p className="mb-4 text-[var(--text-sm)] text-ink-500">
+              <p className="mb-4 text-[length:var(--text-sm)] text-ink-500">
                 Showing <span className="font-mono text-ink-800">{firstOnPage}</span>–
                 <span className="font-mono text-ink-800">{lastOnPage}</span> of{" "}
                 <span className="font-mono text-ink-800">{total}</span>
@@ -276,16 +276,16 @@ export default async function ModelPage({
             {/* SEO intro copy — page 1 only (keeps paginated pages lean & non-duplicate) */}
             {page === 1 && content?.intro?.length ? (
               <section className="mt-12 border-t border-border pt-8">
-                <h2 className="font-display text-[var(--text-xl)] font-bold text-ink-900">
+                <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
                   Buying a {makeName} {modelName}
                 </h2>
-                <div className="mt-3 max-w-3xl space-y-4 text-[var(--text-md)] leading-relaxed text-ink-600">
+                <div className="mt-3 max-w-3xl space-y-4 text-[length:var(--text-md)] leading-relaxed text-ink-600">
                   {content.intro.map((p, i) => (
                     <p key={i}>{p}</p>
                   ))}
                 </div>
                 {listings[0] && (
-                  <p className="mt-4 text-[var(--text-sm)] text-ink-500">
+                  <p className="mt-4 text-[length:var(--text-sm)] text-ink-500">
                     Popular pick:{" "}
                     <Link href={listingPath(listings[0])} className="font-semibold text-brand-700 hover:underline">
                       {listingTitle(listings[0])}

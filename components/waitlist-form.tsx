@@ -48,7 +48,7 @@ export function WaitlistForm() {
         </span>
         <div>
           <p className="font-display font-bold text-white">You&apos;re on the list.</p>
-          <p className="mt-1 text-[var(--text-sm)] text-white/65">
+          <p className="mt-1 text-[length:var(--text-sm)] text-white/65">
             We&apos;ll email you when Vansales goes live in August 2026. No spam, ever.
           </p>
         </div>
@@ -73,7 +73,7 @@ export function WaitlistForm() {
         {(["buyer", "dealer"] as const).map((t) => (
           <label
             key={t}
-            className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-sm)] py-2 text-[var(--text-sm)] font-semibold transition-colors ${
+            className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-sm)] py-2 text-[length:var(--text-sm)] font-semibold transition-colors ${
               buyerType === t
                 ? "bg-white text-ink-900 shadow-[var(--shadow-xs)]"
                 : "text-white/65 hover:text-white"
@@ -102,13 +102,13 @@ export function WaitlistForm() {
             required
             autoComplete="email"
             placeholder="you@example.com"
-            className="h-12 w-full rounded-[var(--radius-md)] border border-white/20 bg-white/10 px-4 text-[var(--text-base)] text-white placeholder:text-white/35 outline-none transition-colors focus-visible:border-accent-400 focus-visible:ring-2 focus-visible:ring-accent-400/20"
+            className="h-12 w-full rounded-[var(--radius-md)] border border-white/20 bg-white/10 px-4 text-[length:var(--text-base)] text-white placeholder:text-white/35 outline-none transition-colors focus-visible:border-accent-400 focus-visible:ring-2 focus-visible:ring-accent-400/20"
           />
         </label>
       </div>
 
       {state === "error" && (
-        <p className="rounded-[var(--radius-md)] bg-red-900/40 px-3 py-2.5 text-[var(--text-sm)] text-red-300">
+        <p className="rounded-[var(--radius-md)] bg-red-900/40 px-3 py-2.5 text-[length:var(--text-sm)] text-red-300">
           {errorMsg}
         </p>
       )}
@@ -121,7 +121,7 @@ export function WaitlistForm() {
         {state === "submitting" ? "Registering…" : "Notify me at launch"}
       </button>
 
-      <p className="text-center text-[var(--text-2xs)] text-white/35">
+      <p className="text-center text-[length:var(--text-2xs)] text-white/35">
         One email at launch. No marketing. Unsubscribe any time.
       </p>
     </form>

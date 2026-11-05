@@ -238,7 +238,7 @@ const PRICE_PRESETS = [
 
 /* ── Styling helpers ─────────────────────────────────────────────────────── */
 
-const BASE_PILL = "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border px-3.5 py-2 text-[var(--text-sm)] font-semibold transition-colors whitespace-nowrap shadow-[var(--shadow-xs)] cursor-pointer select-none";
+const BASE_PILL = "inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border px-3.5 py-2 text-[length:var(--text-sm)] font-semibold transition-colors whitespace-nowrap shadow-[var(--shadow-xs)] cursor-pointer select-none";
 
 function pillCls(active: boolean): string {
   return active
@@ -246,7 +246,7 @@ function pillCls(active: boolean): string {
     : `${BASE_PILL} border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700`;
 }
 
-const CHIP_BASE = "rounded-[var(--radius-pill)] border px-2.5 py-1 text-[var(--text-xs)] font-semibold transition-colors";
+const CHIP_BASE = "rounded-[var(--radius-pill)] border px-2.5 py-1 text-[length:var(--text-xs)] font-semibold transition-colors";
 function chipCls(active: boolean): string {
   return `${CHIP_BASE} ${active ? "border-brand-500 bg-brand-600 text-white" : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"}`;
 }
@@ -473,7 +473,7 @@ export function VansFilter({
           <button
             type="button"
             onClick={() => openAt(null)}
-            className={`order-1 flex items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-[var(--text-sm)] font-semibold shadow-[var(--shadow-xs)] transition-colors shrink-0 md:order-none ${
+            className={`order-1 flex items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-[length:var(--text-sm)] font-semibold shadow-[var(--shadow-xs)] transition-colors shrink-0 md:order-none ${
               catchAllCount > 0
                 ? "border-brand-300 bg-brand-50 text-brand-700 hover:bg-brand-100"
                 : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
@@ -493,14 +493,14 @@ export function VansFilter({
         {(chips.length > 0 || hasGeo) && (
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             {hasGeo && (
-              <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 py-0.5 pl-2.5 pr-1 text-[var(--text-xs)] font-semibold text-brand-700">
+              <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 py-0.5 pl-2.5 pr-1 text-[length:var(--text-xs)] font-semibold text-brand-700">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
                 {geoLoc || "Near me"} ·
                 <select
                   value={geoRadius}
                   onChange={(e) => setGeoRadius(e.target.value)}
                   aria-label="Search radius"
-                  className="cursor-pointer bg-transparent py-0.5 text-[var(--text-xs)] font-semibold text-brand-700 outline-none"
+                  className="cursor-pointer bg-transparent py-0.5 text-[length:var(--text-xs)] font-semibold text-brand-700 outline-none"
                 >
                   {["10", "20", "30", "50", "100"].map((r) => <option key={r} value={r}>{r} mi</option>)}
                   <option value="">Nationwide</option>
@@ -513,7 +513,7 @@ export function VansFilter({
                 key={chip.key}
                 type="button"
                 onClick={() => clearChip(chip)}
-                className="flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 px-2.5 py-1 text-[var(--text-xs)] font-semibold text-brand-700 transition-colors hover:bg-brand-100"
+                className="flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 px-2.5 py-1 text-[length:var(--text-xs)] font-semibold text-brand-700 transition-colors hover:bg-brand-100"
               >
                 {chip.label}
                 <span className="text-brand-400" aria-hidden>×</span>
@@ -524,7 +524,7 @@ export function VansFilter({
               <button
                 type="button"
                 onClick={clearAll}
-                className="text-[var(--text-xs)] font-semibold text-ink-400 transition-colors hover:text-brand-600"
+                className="text-[length:var(--text-xs)] font-semibold text-ink-400 transition-colors hover:text-brand-600"
               >
                 Clear all
               </button>
@@ -544,7 +544,7 @@ export function VansFilter({
 
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
-              <h2 className="font-display text-[var(--text-lg)] font-bold text-ink-900">Filter &amp; sort</h2>
+              <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Filter &amp; sort</h2>
               <button
                 type="button"
                 onClick={applyAndClose}
@@ -564,7 +564,7 @@ export function VansFilter({
               <div ref={(el) => { sectionRefs.current["make"] = el; }}>
                 <Section title="Make & model">
                   <ChipSearch value={draft.vehicles} onChange={(vehicles) => set({ vehicles })} />
-                  <p className="mt-3 mb-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">Popular makes</p>
+                  <p className="mt-3 mb-2 text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">Popular makes</p>
                   <div className="flex flex-wrap gap-2">
                     {POPULAR_MAKES.map((m) => {
                       const on = draft.vehicles.some((v) => v.make === m.slug && !v.model);
@@ -586,7 +586,7 @@ export function VansFilter({
                     })}
                   </div>
                   {draft.vehicles.length > 1 && (
-                    <p className="mt-2 text-[var(--text-2xs)] text-ink-400">Showing vans matching <strong>any</strong> of the chosen makes / models</p>
+                    <p className="mt-2 text-[length:var(--text-2xs)] text-ink-400">Showing vans matching <strong>any</strong> of the chosen makes / models</p>
                   )}
                 </Section>
               </div>
@@ -631,10 +631,10 @@ export function VansFilter({
                   {/* Max monthly slider */}
                   <div className="mb-5">
                     <div className="mb-1.5 flex items-center justify-between">
-                      <span className="text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                      <span className="text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
                         Max per month
                       </span>
-                      <span className="font-semibold text-[var(--text-sm)] text-ink-900">
+                      <span className="font-semibold text-[length:var(--text-sm)] text-ink-900">
                         {sliderMonthly >= MONTHLY_MAX_CEILING ? "Any" : `£${sliderMonthly}/mo`}
                       </span>
                     </div>
@@ -647,7 +647,7 @@ export function VansFilter({
                       onChange={(e) => handleMonthlySlider(Number(e.target.value))}
                       className="w-full accent-brand-600"
                     />
-                    <div className="mt-1 flex justify-between text-[var(--text-2xs)] text-ink-400">
+                    <div className="mt-1 flex justify-between text-[length:var(--text-2xs)] text-ink-400">
                       <span>£100/mo</span><span>Any</span>
                     </div>
                   </div>
@@ -655,10 +655,10 @@ export function VansFilter({
                   {/* Deposit slider */}
                   <div>
                     <div className="mb-1.5 flex items-center justify-between">
-                      <span className="text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                      <span className="text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
                         Deposit
                       </span>
-                      <span className="font-semibold text-[var(--text-sm)] text-ink-900">
+                      <span className="font-semibold text-[length:var(--text-sm)] text-ink-900">
                         £{sliderDeposit.toLocaleString("en-GB")}
                       </span>
                     </div>
@@ -671,19 +671,19 @@ export function VansFilter({
                       onChange={(e) => handleDepositSlider(Number(e.target.value))}
                       className="w-full accent-brand-600"
                     />
-                    <div className="mt-1 flex justify-between text-[var(--text-2xs)] text-ink-400">
+                    <div className="mt-1 flex justify-between text-[length:var(--text-2xs)] text-ink-400">
                       <span>£0</span><span>£10,000</span>
                     </div>
                   </div>
 
                   {impliedPrice > 0 && (
-                    <p className="mt-3 text-[var(--text-xs)] text-ink-500">
+                    <p className="mt-3 text-[length:var(--text-xs)] text-ink-500">
                       ≈ vans priced up to{" "}
                       <span className="font-semibold text-ink-700">{fmt(impliedPrice)}</span>
                     </p>
                   )}
 
-                  <p className="mt-3 text-[var(--text-2xs)] text-ink-400">
+                  <p className="mt-3 text-[length:var(--text-2xs)] text-ink-400">
                     HP estimate · {FINANCE_ASSUMPTIONS.termMonths} months · {FINANCE_ASSUMPTIONS.apr}% APR. Indicative only.
                   </p>
                 </Section>
@@ -698,7 +698,7 @@ export function VansFilter({
                     <select
                       value={draft.minYear}
                       onChange={(e) => set({ minYear: e.target.value })}
-                      className="flex-1 rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[var(--text-sm)] font-semibold text-ink-900 focus:border-brand-400 focus:outline-none"
+                      className="flex-1 rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-900 focus:border-brand-400 focus:outline-none"
                     >
                       <option value="">From year</option>
                       {YEAR_OPTIONS.map((y) => <option key={y} value={y}>{y}</option>)}
@@ -707,7 +707,7 @@ export function VansFilter({
                     <select
                       value={draft.maxYear}
                       onChange={(e) => set({ maxYear: e.target.value })}
-                      className="flex-1 rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[var(--text-sm)] font-semibold text-ink-900 focus:border-brand-400 focus:outline-none"
+                      className="flex-1 rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-900 focus:border-brand-400 focus:outline-none"
                     >
                       <option value="">To year</option>
                       {[...YEAR_OPTIONS].reverse().map((y) => <option key={y} value={y}>{y}</option>)}
@@ -724,7 +724,7 @@ export function VansFilter({
                   <select
                     value={draft.maxMileage}
                     onChange={(e) => set({ maxMileage: e.target.value })}
-                    className="w-full rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[var(--text-sm)] font-semibold text-ink-900 focus:border-brand-400 focus:outline-none"
+                    className="w-full rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[length:var(--text-sm)] font-semibold text-ink-900 focus:border-brand-400 focus:outline-none"
                   >
                     {MILEAGE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
@@ -737,7 +737,7 @@ export function VansFilter({
               <div ref={(el) => { sectionRefs.current["distance"] = el; }}>
                 <Section title="Distance from you">
                   <label>
-                    <span className="mb-1.5 block text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                    <span className="mb-1.5 block text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
                       Your postcode
                     </span>
                     <input
@@ -746,12 +746,12 @@ export function VansFilter({
                       onChange={(e) => set({ postcode: e.target.value.toUpperCase() })}
                       placeholder="e.g. CF10 1AA"
                       maxLength={8}
-                      className="w-full rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[var(--text-sm)] font-semibold uppercase text-ink-900 placeholder:font-normal placeholder:lowercase placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
+                      className="w-full rounded-[var(--radius-md)] border border-border px-3 py-2.5 text-[length:var(--text-sm)] font-semibold uppercase text-ink-900 placeholder:font-normal placeholder:lowercase placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
                     />
                   </label>
                   {draft.postcode.trim().length >= 3 && (
                     <div className="mt-3">
-                      <p className="mb-2 text-[var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
+                      <p className="mb-2 text-[length:var(--text-2xs)] font-bold uppercase tracking-wider text-ink-400">
                         Radius
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -785,14 +785,14 @@ export function VansFilter({
                               key={bs.value}
                               type="button"
                               onClick={() => set({ bodyStyle: toggleCsv(draft.bodyStyle, slug) })}
-                              className={`flex items-center justify-between rounded-[var(--radius-md)] border px-3 py-2 text-[var(--text-sm)] font-semibold transition-colors ${
+                              className={`flex items-center justify-between rounded-[var(--radius-md)] border px-3 py-2 text-[length:var(--text-sm)] font-semibold transition-colors ${
                                 csvList(draft.bodyStyle).includes(slug)
                                   ? "border-brand-500 bg-brand-600 text-white"
                                   : "border-border bg-white text-ink-700 hover:border-brand-300"
                               }`}
                             >
                               <span>{bs.value}</span>
-                              <span className={`text-[var(--text-xs)] font-normal ${csvList(draft.bodyStyle).includes(slug) ? "text-white/70" : "text-ink-400"}`}>
+                              <span className={`text-[length:var(--text-xs)] font-normal ${csvList(draft.bodyStyle).includes(slug) ? "text-white/70" : "text-ink-400"}`}>
                                 {bs.count}
                               </span>
                             </button>
@@ -817,14 +817,14 @@ export function VansFilter({
                             key={f.value}
                             type="button"
                             onClick={() => set({ fuel: toggleCsv(draft.fuel, slug) })}
-                            className={`flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
+                            className={`flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[length:var(--text-sm)] font-semibold transition-colors ${
                               csvList(draft.fuel).includes(slug)
                                 ? "border-brand-500 bg-brand-600 text-white"
                                 : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
                             }`}
                           >
                             {f.value}
-                            <span className={`text-[var(--text-xs)] font-normal ${csvList(draft.fuel).includes(slug) ? "text-white/70" : "text-ink-400"}`}>
+                            <span className={`text-[length:var(--text-xs)] font-normal ${csvList(draft.fuel).includes(slug) ? "text-white/70" : "text-ink-400"}`}>
                               {f.count}
                             </span>
                           </button>
@@ -850,7 +850,7 @@ export function VansFilter({
                               key={wb}
                               type="button"
                               onClick={() => set({ wheelbase: draft.wheelbase === wb ? "" : wb })}
-                              className={`flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[var(--text-sm)] font-semibold transition-colors ${
+                              className={`flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1.5 text-[length:var(--text-sm)] font-semibold transition-colors ${
                                 draft.wheelbase === wb
                                   ? "border-brand-500 bg-brand-600 text-white"
                                   : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
@@ -858,7 +858,7 @@ export function VansFilter({
                             >
                               {WHEELBASE_SHORT[wb]}
                               {facet && (
-                                <span className={`text-[var(--text-xs)] font-normal ${draft.wheelbase === wb ? "text-white/70" : "text-ink-400"}`}>
+                                <span className={`text-[length:var(--text-xs)] font-normal ${draft.wheelbase === wb ? "text-white/70" : "text-ink-400"}`}>
                                   {facet.count}
                                 </span>
                               )}
@@ -880,7 +880,7 @@ export function VansFilter({
                       key={g}
                       type="button"
                       onClick={() => set({ gearbox: draft.gearbox === g.toLowerCase() ? "" : g.toLowerCase() })}
-                      className={`flex-1 rounded-[var(--radius-md)] border py-2.5 text-[var(--text-sm)] font-semibold transition-colors ${
+                      className={`flex-1 rounded-[var(--radius-md)] border py-2.5 text-[length:var(--text-sm)] font-semibold transition-colors ${
                         draft.gearbox === g.toLowerCase()
                           ? "border-brand-500 bg-brand-600 text-white"
                           : "border-border bg-white text-ink-700 hover:border-brand-300"
@@ -924,7 +924,7 @@ export function VansFilter({
                         key={s.value}
                         type="button"
                         onClick={() => set({ sort: s.value })}
-                        className={`rounded-[var(--radius-md)] border px-3 py-2.5 text-[var(--text-sm)] font-semibold transition-colors ${
+                        className={`rounded-[var(--radius-md)] border px-3 py-2.5 text-[length:var(--text-sm)] font-semibold transition-colors ${
                           draft.sort === s.value
                             ? "border-brand-500 bg-brand-600 text-white"
                             : "border-border bg-white text-ink-700 hover:border-brand-300"
@@ -944,7 +944,7 @@ export function VansFilter({
               <button
                 type="button"
                 onClick={clearAll}
-                className="text-[var(--text-sm)] font-semibold text-ink-500 transition-colors hover:text-brand-600"
+                className="text-[length:var(--text-sm)] font-semibold text-ink-500 transition-colors hover:text-brand-600"
               >
                 Clear all
               </button>
@@ -952,7 +952,7 @@ export function VansFilter({
                 type="button"
                 onClick={applyAndClose}
                 disabled={isPending}
-                className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-lg)] py-3.5 text-[var(--text-base)] font-bold text-white shadow-[var(--shadow-md)] transition-all active:scale-[0.98] disabled:opacity-70"
+                className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-lg)] py-3.5 text-[length:var(--text-base)] font-bold text-white shadow-[var(--shadow-md)] transition-all active:scale-[0.98] disabled:opacity-70"
                 style={{ background: "linear-gradient(135deg, #1b5aa8 0%, #0d2d5a 100%)" }}
               >
                 <IconSearch width={16} height={16} />
@@ -984,7 +984,7 @@ function Chevron({ active }: { active: boolean }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="px-5 py-5">
-      <h3 className="mb-4 font-display text-[var(--text-base)] font-bold text-ink-900">{title}</h3>
+      <h3 className="mb-4 font-display text-[length:var(--text-base)] font-bold text-ink-900">{title}</h3>
       {children}
     </div>
   );
@@ -1033,7 +1033,7 @@ function SmallChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-[var(--radius-pill)] border px-3 py-1.5 text-[var(--text-xs)] font-semibold transition-colors ${
+      className={`rounded-[var(--radius-pill)] border px-3 py-1.5 text-[length:var(--text-xs)] font-semibold transition-colors ${
         active
           ? "border-brand-500 bg-brand-600 text-white"
           : "border-border bg-white text-ink-700 hover:border-brand-300 hover:text-brand-700"
@@ -1055,7 +1055,7 @@ function PriceInput({
 }) {
   return (
     <div className="relative flex-1">
-      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-sm)] text-ink-400">£</span>
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[length:var(--text-sm)] text-ink-400">£</span>
       <input
         type="number"
         value={value}
@@ -1063,7 +1063,7 @@ function PriceInput({
         placeholder={placeholder}
         min="0"
         step="500"
-        className="w-full rounded-[var(--radius-md)] border border-border py-2.5 pl-7 pr-3 text-[var(--text-sm)] font-semibold text-ink-900 placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
+        className="w-full rounded-[var(--radius-md)] border border-border py-2.5 pl-7 pr-3 text-[length:var(--text-sm)] font-semibold text-ink-900 placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400 focus:outline-none"
       />
     </div>
   );
