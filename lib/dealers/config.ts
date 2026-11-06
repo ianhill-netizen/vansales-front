@@ -76,7 +76,7 @@ export const DEALERS: Record<string, DealerConfig> = {
       sun: null,
     },
     about:
-      "Swiss Vans is a privately owned dealership based in Bridgend with over 20 years of experience in van leasing, sales and custom conversions. Strong manufacturer relationships, high-spec stock, bespoke builds and honest no-pressure advice — whether you need a standard panel van or a fully customised conversion, the team at Gees Yard, Bridgend can help.",
+      "Swiss Vans is one of South Wales' leading van dealers, based in Bridgend and serving customers across Wales and the UK. Specialising in new and used van sales, van leasing, and contract hire, the team at Gees Yard has over 20 years of experience helping businesses and sole traders find the right commercial vehicle. From small car-derived vans to large Luton box vans, Swiss Vans stocks a wide range of makes and models with competitive pricing, flexible finance options, and no-pressure advice. Visit the Bridgend showroom on Coychurch Road, opposite Asda, or browse the current stock online.",
     services: [
       "New & used van sales",
       "Commercial van sales",
