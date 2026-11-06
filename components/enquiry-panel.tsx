@@ -6,7 +6,7 @@ import type { Listing } from "@/lib/listings/types";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
 import { Button } from "./ui";
-import { IconCheck, IconShield, IconArrow } from "./icons";
+import { IconCheck, IconShield, IconArrow, IconStar } from "./icons";
 import { Field, inputCls } from "./enquiry-fields";
 import { PrivateEnquiryForm } from "./private-enquiry-form";
 import { OPEN_ENQUIRY_EVENT } from "./listing-actions";
@@ -156,11 +156,16 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
         {displayLocation}
       </p>
 
-      {/* Reviews placeholder — no fabricated ratings */}
-      <div className="mt-3 rounded-[var(--radius-md)] bg-surface-1 px-4 py-3">
-        <p className="text-[length:var(--text-sm)] font-semibold text-ink-700">Reviews</p>
-        <p className="mt-0.5 text-[length:var(--text-sm)] text-ink-400">No reviews yet.</p>
-      </div>
+      {/* Google rating: only the dealer's stored rating, shown only when they have one (no placeholder, nothing fabricated) */}
+      {apiDealer?.google_rating != null && apiDealer.google_rating > 0 && (apiDealer.google_review_count ?? 0) > 0 && (
+        <div className="mt-3 flex items-center gap-2 text-[length:var(--text-sm)] text-ink-600">
+          <span className="font-display font-bold text-ink-900">{apiDealer.google_rating.toFixed(1)}</span>
+          <span className="inline-flex" role="img" aria-label={`${apiDealer.google_rating} out of 5`}>
+            {Array.from({ length: 5 }, (_, i) => <IconStar key={i} width={14} height={14} aria-hidden className={i < Math.round(apiDealer.google_rating!) ? "text-amber-400" : "text-ink-300"} />)}
+          </span>
+          <span>{apiDealer.google_review_count} review{apiDealer.google_review_count === 1 ? "" : "s"} on Google</span>
+        </div>
+      )}
 
       {/* Phone CTA — dealer only; never shown for private listings */}
       {!isPrivate && !apiDealer && dealerConfig && (
