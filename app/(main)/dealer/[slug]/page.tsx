@@ -156,7 +156,13 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
 
   // For API / DB-only dealers, build a config-compatible shape.
   const effectiveDealer: ProfileDealer = dealer
-    ? { ...dealer, financeHref: dealer.dealskiTenant ? financeUrl(dealer.dealskiTenant) : null, logoUrl: configLogo }
+    ? {
+        ...dealer, financeHref: dealer.dealskiTenant ? financeUrl(dealer.dealskiTenant) : null, logoUrl: configLogo,
+        // A configured dealer (Swiss Vans) also has a vansales-API record: its Google rating and latest reviews (connected in the dealer portal / by the ops workflow) show here too.
+        ...(configApi?.kind === "ok" && configApi.dealer.google_rating != null && configApi.dealer.google_review_count != null
+          ? { googleRating: configApi.dealer.google_rating, googleReviewCount: configApi.dealer.google_review_count, reviews: (configApi.dealer.google_reviews ?? []).slice(0, 3) }
+          : {}),
+      }
     : apiDealer
       ? apiToProfile(apiDealer)
       : {
@@ -262,7 +268,6 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   )}`;
   const waUrl = whatsappUrl(effectiveDealer.whatsapp, `Hi, I found you on Vansales and I'd like to enquire about a van.`);
   const isApi = effectiveDealer.isApi === true;
-  const isApiDealer = isApi;
   const directionsHref = effectiveDealer.directionsUrl || mapsUrl;
   const socialUrls = Object.values(effectiveDealer.socials ?? {}).filter((u): u is string => !!u);
 
@@ -408,7 +413,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
             )}
 
             {/* Google reviews: only when the dealer has connected theirs and Google returned data */}
-            {isApiDealer && effectiveDealer.googleRating != null && effectiveDealer.googleReviewCount != null && (
+            {effectiveDealer.googleRating != null && effectiveDealer.googleReviewCount != null && (
               <section aria-label="Google reviews">
                 <SectionHeading>Google reviews</SectionHeading>
                 <p className="mt-3 flex items-center gap-2 text-[length:var(--text-sm)] text-ink-600">
