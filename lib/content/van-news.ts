@@ -1,7 +1,7 @@
 /**
- * Van News: articles written by vansales-backend's Van News agent (Perplexity research, Claude writing), served at /van-news/{slug}.
+ * Van News: articles written by vansales-backend's Van News agent (Gemini with Google Search grounding), served at /van-news/{slug}.
  *   GET {VANSALES_API_URL}/api/public/van-news?make=&page=   {data:[{slug,title,make,model,article_type,meta_description,published_at}], makes:[...], last_page}
- *   GET {VANSALES_API_URL}/api/public/van-news/{slug}        {data:{title,body,meta_title,meta_description,perplexity_sources,published_at,...}}  (404 = not published)
+ *   GET {VANSALES_API_URL}/api/public/van-news/{slug}        {data:{title,body,meta_title,meta_description,sources,published_at,...}}  (404 = not published)
  * Read-only, server-side, cached 5 minutes. An outage never caches a 404: the article page errors instead ("unavailable"); the index, sitemap and make-page links fall back to nothing.
  */
 import { getJson } from "@/lib/content/backend";
@@ -24,7 +24,7 @@ export interface VanNewsArticle extends VanNewsSummary {
   metaTitle: string;
   /** Sanitised body HTML. */
   bodyHtml: string;
-  sources: string[];
+  sources: { title: string; url: string }[];
 }
 
 function summary(r: Record<string, unknown>): VanNewsSummary | null {
@@ -67,6 +67,10 @@ export async function getVanNewsArticle(slug: string): Promise<VanNewsResult> {
   const r = (res.json as { data?: unknown } | null)?.data as Record<string, unknown> | undefined;
   const s = r && typeof r === "object" ? summary({ ...r, slug }) : null;
   if (!r || !s || str(r.body).trim() === "") return { status: "missing" };
-  const sources = (Array.isArray(r.perplexity_sources) ? r.perplexity_sources : []).filter((u): u is string => typeof u === "string" && /^https:\/\//.test(u)).slice(0, 8);
+  const sources = (Array.isArray(r.sources) ? r.sources : [])
+    .map((s) => s as Record<string, unknown>)
+    .filter((s) => typeof s?.url === "string" && /^https:\/\//.test(s.url as string))
+    .map((s) => ({ url: s.url as string, title: str(s.title) || new URL(s.url as string).hostname.replace(/^www\./, "") }))
+    .slice(0, 8);
   return { status: "ok", article: { ...s, metaTitle: str(r.meta_title) || s.title, bodyHtml: sanitizeGuideHtml(str(r.body)), sources } };
 }
