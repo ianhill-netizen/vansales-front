@@ -129,6 +129,40 @@ export const DEALERS: Record<string, DealerConfig> = {
     googleRating: null,
     googleReviewCount: null,
   },
+
+  // TEST dealer: invented stock lives in vansales-backend (VanVikingSeeder). Its adverts come from the vansales API (dealer_contact.slug), not Dealski.
+  "van-viking": {
+    name: "Van Viking",
+    slug: "van-viking",
+    dealskiTenant: "",
+    location: {
+      line1: "",
+      town: "Bristol",
+      county: "Bristol",
+      postcode: "",
+    },
+    coords: { lat: 51.4545, lng: -2.5879 },
+    socials: { facebook: "", instagram: "", linkedin: "", youtube: "" },
+    phone: "01179 000000",
+    whatsapp: null,
+    featured: false,
+    websites: [{ label: "vanviking.com", url: "https://vanviking.com" }],
+    hours: {
+      mon: { open: "08:30", close: "17:30" },
+      tue: { open: "08:30", close: "17:30" },
+      wed: { open: "08:30", close: "17:30" },
+      thu: { open: "08:30", close: "17:30" },
+      fri: { open: "08:30", close: "17:30" },
+      sat: { open: "09:00", close: "14:00" },
+      sun: null,
+    },
+    about:
+      "Van Viking is a Bristol-based commercial van dealer specialising in quality used vans for tradespeople and small businesses. With a hand-picked stock of panel vans, Luton vans and pickups, Van Viking offers straightforward pricing, flexible finance and no-nonsense advice.",
+    services: ["Used van sales", "Flexible finance", "Panel vans, Luton vans & pickups"],
+    sellerNames: ["Van Viking"],
+    googleRating: null,
+    googleReviewCount: null,
+  },
 };
 
 /** True when the seller's dealer is in the featured set. */
