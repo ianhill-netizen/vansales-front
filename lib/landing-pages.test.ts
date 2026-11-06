@@ -2,9 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { LANDING_PAGES, LANDING_BACKEND_SLUGS, findLanding, findRegion } from "./landing-pages.ts";
 
-test("six pages at the six URLs with unique, in-limit copy", () => {
-  assert.deepEqual(LANDING_PAGES.map((p) => p.path), ["/van-lease-deals", "/electric-vans", "/vans-for-sale/london", "/hire-purchase-vans", "/vans-for-sale/wales", "/vans-for-sale/bristol"]);
-  assert.equal(new Set(LANDING_PAGES.map((p) => p.title)).size, 6);
+test("nine pages at the nine URLs with unique, in-limit copy", () => {
+  assert.deepEqual(LANDING_PAGES.map((p) => p.path), ["/van-lease-deals", "/electric-vans", "/vans-for-sale/london", "/hire-purchase-vans", "/vans-for-sale/wales", "/vans-for-sale/bristol", "/vans-for-sale-under-5000", "/vans-for-sale-under-10000", "/vans-for-sale-under-15000"]);
+  assert.equal(new Set(LANDING_PAGES.map((p) => p.title)).size, 9);
   for (const p of LANDING_PAGES) {
     assert.ok(p.description.length <= 160, p.key);
     assert.ok(p.title.length <= 60 && p.title.endsWith("Vansales.com"), p.key);
@@ -33,5 +33,14 @@ test("region route only knows london; backend slugs are the four content_pages s
   assert.equal(findRegion("bristol")?.path, "/vans-for-sale/bristol");
   assert.equal(findRegion("scotland"), undefined);
   assert.equal(findRegion("electric-vans"), undefined);
-  assert.deepEqual([...LANDING_BACKEND_SLUGS].sort(), ["electric-vans", "hire-purchase-vans", "van-lease-deals", "vans-for-sale-bristol", "vans-for-sale-london", "vans-for-sale-wales"]);
+  assert.deepEqual([...LANDING_BACKEND_SLUGS].sort(), ["electric-vans", "hire-purchase-vans", "van-lease-deals", "vans-for-sale-bristol", "vans-for-sale-london", "vans-for-sale-under-10000", "vans-for-sale-under-15000", "vans-for-sale-under-5000", "vans-for-sale-wales"]);
+});
+
+test("budget pages: price caps one pound under the budget, each links to /van-finance and the next tier up", () => {
+  const caps = ["5000", "10000", "15000"].map((k) => findLanding(`vans-for-sale-under-${k}`)!);
+  assert.deepEqual(caps.map((c) => c.maxPrice), [4999, 9999, 14999]);
+  assert.ok(caps[0].related.some((r) => r.href === "/vans-for-sale-under-10000"));
+  assert.ok(caps[1].related.some((r) => r.href === "/vans-for-sale-under-15000"));
+  for (const c of caps) assert.ok(c.related.some((r) => r.href === "/van-finance"));
+  assert.equal(findRegion("vans-for-sale-under-5000"), undefined);
 });

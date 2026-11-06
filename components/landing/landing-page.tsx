@@ -26,8 +26,8 @@ export async function LandingPage({ def }: { def: LandingDef }) {
   const res = await getLandingBody(def);
   if (res.status === "unavailable") throw new Error(`vansales-backend content API unavailable for ${def.backendSlug}`);
   if (res.status !== "ok") notFound();
-  const buying = def.kind === "buying" && def.match;
-  const matching = buying ? (await getListings({ status: "active" })).listings.filter((l) => def.match!(l)) : [];
+  const buying = def.kind === "buying";
+  const matching = buying ? (await getListings({ status: "active", ...(def.maxPrice != null ? { maxPrice: def.maxPrice } : {}) })).listings.filter((l) => (def.match ? def.match(l) : true)) : [];
   const shown = matching.slice(0, 12);
   const url = absUrl(def.path);
   const schema = buying
@@ -63,7 +63,7 @@ export async function LandingPage({ def }: { def: LandingDef }) {
       <Container className="space-y-12 py-10">
         {buying && (
           <section>
-            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{def.kind === "buying" && def.path === "/electric-vans" ? "Used electric vans for sale now" : "Used vans for sale now"}</h2>
+            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{def.path === "/electric-vans" ? "Used electric vans for sale now" : def.maxPrice != null ? `Used vans under £${(def.maxPrice + 1).toLocaleString("en-GB")} for sale now` : "Used vans for sale now"}</h2>
             {shown.length === 0 ? (
               <p className="mt-3 max-w-2xl text-ink-600">There are none listed on Vansales right now. <Link href="/vans" className="font-semibold text-brand-700 hover:underline">Browse all vans for sale</Link>.</p>
             ) : (
