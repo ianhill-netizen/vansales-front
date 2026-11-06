@@ -24,7 +24,7 @@ export function DealerStockMap({
 
   const pins = useMemo<Pin[]>(() => {
     // Vans on the dealer's forecourt share its coordinates; fan them out in rings (a few tens of metres) so every price pin is visible and clickable.
-    const out: Pin[] = [{ id: "dealer", lat, lng, label: name, kind: "dealer" }];
+    const out: Pin[] = [{ id: "dealer", lat, lng, label: name, kind: "dealer", labelMarker: true }];
     const same = stock.filter((s) => Math.abs(s.lat - lat) < 0.002 && Math.abs(s.lng - lng) < 0.002);
     const apart = stock.filter((s) => !same.includes(s));
     same.forEach((s, i) => {
