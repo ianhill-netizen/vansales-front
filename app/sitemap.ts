@@ -16,6 +16,9 @@ import { makeVansPath } from "@/lib/seo/make-url";
 import { getLiveSellSlugs } from "@/lib/content/sell-pages";
 import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
 
+// Rebuilt every 5 minutes from live stock. Without this the sitemap was generated once, at deploy time, and kept whatever stock the API had at that moment (after the make-page change it listed one make page instead of the six that have stock).
+export const revalidate = 300;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
   const [{ listings }, idx, dealers, guides, vanNews] = await Promise.all([
