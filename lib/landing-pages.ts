@@ -20,6 +20,8 @@ export interface LandingDef {
   /** Links UP to money pages (at least two each). */
   related: readonly LandingLink[];
   /** Buying pages only: which live listings belong on the page. */
+  /** Buying pages only: the listings API price cap (GBP, inclusive). */
+  maxPrice?: number;
   match?: (l: { fuel: string; location: { town: string; region: string; postcode_area?: string } }) => boolean;
 }
 
@@ -71,6 +73,27 @@ export const LANDING_PAGES: readonly LandingDef[] = [
     description: "Used vans for sale in Bristol. CAZ-compliant stock, Euro 6 diesel and electric vans. Honest Bristol van buying guide.",
     related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/vauxhall/vivaro-for-sale", label: "Used Vauxhall Vivaro for sale" }, { href: "/vans/ulez", label: "ULEZ-compliant vans" }],
     match: (l) => /bristol/i.test(`${l.location.region} ${l.location.town}`) || (l.location.postcode_area ?? "").toUpperCase() === "BS",
+  },
+  {
+    key: "vans-for-sale-under-5000", backendSlug: "vans-for-sale-under-5000", path: "/vans-for-sale-under-5000", kind: "buying", eyebrow: "Budget", maxPrice: 4999,
+    h1: "Used Vans For Sale Under £5,000",
+    title: "Vans For Sale Under £5000 | Used Vans UK | Vansales.com",
+    description: "Used vans for sale under £5,000. Browse affordable stock and read our honest guide to what your budget actually gets you.",
+    related: [FINANCE, { href: "/vans-for-sale-under-10000", label: "Used vans under £10,000" }, { href: "/used-vans/ford/transit-connect-for-sale", label: "Used Ford Transit Connect for sale" }, { href: "/used-vans/ford/transit-for-sale", label: "Used Ford Transit for sale" }],
+  },
+  {
+    key: "vans-for-sale-under-10000", backendSlug: "vans-for-sale-under-10000", path: "/vans-for-sale-under-10000", kind: "buying", eyebrow: "Budget", maxPrice: 9999,
+    h1: "Used Vans For Sale Under £10,000",
+    title: "Vans For Sale Under £10000 | Used Vans UK | Vansales.com",
+    description: "Used vans for sale under £10,000. Browse stock and read our guide to the best used vans at this budget in 2026.",
+    related: [FINANCE, { href: "/vans-for-sale-under-15000", label: "Used vans under £15,000" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }, { href: "/used-vans/volkswagen/transporter-for-sale", label: "Used VW Transporter for sale" }],
+  },
+  {
+    key: "vans-for-sale-under-15000", backendSlug: "vans-for-sale-under-15000", path: "/vans-for-sale-under-15000", kind: "buying", eyebrow: "Budget", maxPrice: 14999,
+    h1: "Used Vans For Sale Under £15,000",
+    title: "Vans For Sale Under £15000 | Used Vans UK | Vansales.com",
+    description: "Used vans for sale under £15,000. The sweet spot budget. Browse stock and read our guide to the best used van value in 2026.",
+    related: [FINANCE, { href: "/van-lease-deals", label: "Van lease deals" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }, { href: "/used-vans/mercedes-benz/sprinter-for-sale", label: "Used Mercedes Sprinter for sale" }],
   },
 ];
 
