@@ -9,6 +9,7 @@ import { Button } from "./ui";
 import { IconCheck, IconShield, IconArrow, IconStar } from "./icons";
 import { Field, inputCls } from "./enquiry-fields";
 import { PrivateEnquiryForm } from "./private-enquiry-form";
+import { PxFields } from "./px/px-fields";
 import { OPEN_ENQUIRY_EVENT } from "./listing-actions";
 
 type FormState = "idle" | "open" | "submitting" | "success" | "error";
@@ -89,6 +90,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
       }
     } catch { /* non-fatal */ }
 
+    const px = !fd.get("px_reg") || !fd.get("px_mileage") ? {} : { px_reg: String(fd.get("px_reg")).trim().toUpperCase(), px_mileage: Number(fd.get("px_mileage")) };
     try {
       const res = await fetch("/api/enquiry", {
         method: "POST",
@@ -107,6 +109,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
           // Marketplace-specific fields; null for native/dealski listings.
           enquiry_url: listing.enquiry_url ?? undefined,
           vehicle_ref: listing.enquiry_route.ref,
+          ...px,
           ...utms,
         }),
       });
@@ -282,6 +285,8 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
               className={inputCls + " h-auto py-2.5"}
             />
           </Field>
+
+          {!isPrivate && <PxFields />}
 
           {state === "error" && (
             <p className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-sold-600">

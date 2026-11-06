@@ -5,6 +5,7 @@ import type { Listing } from "@/lib/listings/types";
 import { Button } from "./ui";
 import { IconCheck } from "./icons";
 import { Field, inputCls } from "./enquiry-fields";
+import { PxFields } from "./px/px-fields";
 
 /** The vansales API's public host. Public on purpose: the browser posts to it directly, so the API sees the buyer's own address for its rate limit (5 messages an hour). */
 const API = (process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
@@ -32,6 +33,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
     const email = String(fd.get("email") ?? "").trim();
     setState("submitting");
     setError("");
+    const px: { px_reg?: string; px_mileage?: number } = !fd.get("px_reg") || !fd.get("px_mileage") ? {} : { px_reg: String(fd.get("px_reg")).trim().toUpperCase(), px_mileage: Number(fd.get("px_mileage")) };
     try {
       const res = await fetch(`${API}/api/public/listings/${encodeURIComponent(listing.source_id)}/enquire`, {
         method: "POST",
@@ -44,6 +46,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           email,
           message: String(fd.get("message") ?? "").trim(),
           website: fd.get("website"), // honeypot
+          ...px, // optional part exchange: the reg and mileage only; the server looks the figure up itself
         }),
       });
       if (res.status === 201) { const b = (await res.json().catch(() => ({}))) as { ref?: string | null }; setLeadRef(b.ref ?? null); setSentTo(email); setState("success"); return; }
@@ -106,6 +109,9 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
               className={compact + " h-auto py-2"}
             />
           </Field>
+
+          {/* Part exchange is a dealer thing: not offered on a private seller's advert */}
+          {listing.seller_type !== "private" && <PxFields />}
 
           {state === "error" && (
             <p role="alert" className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-sold-600">{error}</p>

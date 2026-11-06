@@ -4,6 +4,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import { Button } from "./ui";
 import { IconCheck } from "./icons";
 import { trackEnquiry } from "./dk-tracker";
+import { PxFields } from "./px/px-fields";
 
 type State = "idle" | "submitting" | "success" | "error";
 
@@ -11,10 +12,15 @@ export function EnquiryModal({
   dealerName,
   dealskiTenant,
   onClose,
+  initialPx,
+  initialMessage,
 }: {
   dealerName: string;
   dealskiTenant: string;
   onClose: () => void;
+  /** Opens with the part-exchange section on and filled (the dealer page's "Get a firm offer"). */
+  initialPx?: { reg: string; mileage: string };
+  initialMessage?: string;
 }) {
   const [state, setState] = useState<State>("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -31,6 +37,7 @@ export function EnquiryModal({
     if (state === "submitting") return;
     setState("submitting");
     const fd = new FormData(e.currentTarget);
+    const px = !fd.get("px_reg") || !fd.get("px_mileage") ? {} : { px_reg: String(fd.get("px_reg")).trim().toUpperCase(), px_mileage: Number(fd.get("px_mileage")) };
     try {
       const res = await fetch("/api/enquiry", {
         method: "POST",
@@ -46,6 +53,7 @@ export function EnquiryModal({
           derivative: "",
           slug: `dealer-${dealskiTenant}`,
           location: dealerName,
+          ...px,
         }),
       });
       const data = (await res.json()) as { ok: boolean; error?: string };
@@ -97,8 +105,9 @@ export function EnquiryModal({
             <ModalField label="Phone"><input type="tel" name="phone" required autoComplete="tel" placeholder="07700 900 000" className={inputCls} /></ModalField>
             <ModalField label="Email"><input type="email" name="email" required autoComplete="email" placeholder="you@example.com" className={inputCls} /></ModalField>
             <ModalField label="Message (optional)">
-              <textarea name="message" rows={3} defaultValue={`Hi, I'd like to find out more about vans at ${dealerName}.`} className={inputCls + " h-auto py-2.5"} />
+              <textarea name="message" rows={3} defaultValue={initialMessage ?? `Hi, I'd like to find out more about vans at ${dealerName}.`} className={inputCls + " h-auto py-2.5"} />
             </ModalField>
+            <PxFields initial={initialPx} />
             {state === "error" && <p className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] text-sold-600">{errorMsg}</p>}
             <Button type="submit" variant="primary" size="lg" className="w-full" disabled={state === "submitting"}>
               {state === "submitting" ? "Sending…" : "Send message"}
