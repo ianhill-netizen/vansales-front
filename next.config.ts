@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import { NEW_VANS_REDIRECTS } from "./lib/redirects/new-vans";
 import { USED_VAN_MODELS, usedVanOldPath, usedVanPath } from "./lib/used-vans/models";
 import { BODY_TYPE_PAGES, bodyTypeOldPath, bodyTypePath } from "./lib/used-vans/body-types";
+import { LANDING_PAGES } from "./lib/landing-pages";
 
 const nextConfig: NextConfig = {
   // /new-vans was retired: every guide has a 301 to its nearest stock page, the index goes to /van-news (statusCode, not permanent, so it is a 301 and not Next's 308).
@@ -24,7 +25,13 @@ const nextConfig: NextConfig = {
       { source: "/tag/:path*", destination: "/blog" },
       { source: "/author/:path*", destination: "/blog" },
     ].map((r) => ({ ...r, statusCode: 301 as const }));
-    return [...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
+    // The landing pages replace two older URLs (/van-contract-hire -> /van-lease-deals, /vans/electric -> /electric-vans), and each one is also a guide row in the backend, so its /blog/{slug} twin goes to the real URL.
+    const landing = [
+      { source: "/van-contract-hire", destination: "/van-lease-deals" },
+      { source: "/vans/electric", destination: "/electric-vans" },
+      ...LANDING_PAGES.map((l) => ({ source: `/blog/${l.backendSlug}`, destination: l.path })),
+    ].map((r) => ({ ...r, statusCode: 301 as const }));
+    return [...landing, ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
   },
   // The share-image routes read fonts and make logos from disk at request time; make sure they ship with the functions.
   outputFileTracingIncludes: {

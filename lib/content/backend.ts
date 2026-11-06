@@ -6,6 +6,7 @@
  * than caching a 404 for a page that exists.
  */
 import { escapeHtml, safeImageUrl, sanitizeGuideHtml } from "@/lib/content/sanitize";
+import { LANDING_BACKEND_SLUGS } from "@/lib/landing-pages";
 
 const BASE = (process.env.VANSALES_API_URL || process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
 const REVALIDATE = 300;
@@ -72,7 +73,7 @@ export async function getBackendGuides(): Promise<BackendGuideSummary[]> {
     for (const row of rows) {
       const s = row && typeof row === "object" ? summary(row as Record<string, unknown>) : null;
       // only articles: make/model and body-type pages in content_pages belong to the /vans/* routes, not to /blog
-      if (s && s.pageType === "guide" && !seen.has(s.slug)) {
+      if (s && s.pageType === "guide" && !LANDING_BACKEND_SLUGS.has(s.slug) && !seen.has(s.slug)) {
         seen.add(s.slug);
         out.push(s);
       }

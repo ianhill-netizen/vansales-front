@@ -165,6 +165,11 @@ export default function VanFinancePage() {
               <Link href="/vans" className="font-semibold text-brand-600 hover:underline">Browse available vans →</Link>{" · "}
               <Link href="/used-vans" className="font-semibold text-brand-600 hover:underline">Used vans by make and model →</Link>
             </p>
+            <p className="mt-3 text-[length:var(--text-sm)] text-ink-500">
+              Weighing up your options?{" "}
+              <Link href="/van-lease-deals" className="font-semibold text-brand-600 hover:underline">Van lease deals explained →</Link>{" · "}
+              <Link href="/hire-purchase-vans" className="font-semibold text-brand-600 hover:underline">Hire purchase vans explained →</Link>
+            </p>
           </div>
         </Container>
       </section>
