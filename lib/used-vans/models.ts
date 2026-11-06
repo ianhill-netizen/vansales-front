@@ -23,7 +23,15 @@ const RAW: ReadonlyArray<readonly [string, string]> = [
   ["Mercedes-Benz", "Sprinter"], ["Mercedes-Benz", "Vito"],
 ];
 
-export const USED_VAN_MODELS: readonly UsedVanModel[] = RAW.map(([make, model]) => ({
+// The 31 further models the content agent already has published pages for (make_model rows with no route until 2026-11-06): electric variants and the less common models. Same scheme: page slug {make}-{model}-vans-for-sale.
+const MORE: ReadonlyArray<readonly [string, string]> = [
+  ["BYD", "ET3"], ["Citroen", "E-Dispatch"], ["Citroen", "E-Relay"], ["Fiat", "E-Ducato"], ["Fiat", "E-Scudo"], ["Ford", "E-Transit"], ["Mercedes-Benz", "eSprinter"], ["Mercedes-Benz", "eVito"], ["Peugeot", "E-Boxer"],
+  ["Peugeot", "E-Expert"], ["Renault", "Kangoo E-Tech"], ["Renault", "Master E-Tech"], ["Toyota", "Proace Electric"], ["Vauxhall", "Movano Electric"], ["Vauxhall", "Vivaro Electric"], ["Volkswagen", "IDBuzz Cargo"], ["Maxus", "Deliver 9"], ["Maxus", "eDeliver 9"],
+  ["Fiat", "Scudo"], ["Ford", "Transit Courier"], ["Ford", "Transit Trail"], ["Isuzu", "D-Max"], ["LDV", "Convoy"], ["LDV", "V80"], ["MAN", "TGE"], ["Mercedes-Benz", "Citan"], ["Nissan", "NV300"],
+  ["Nissan", "NV400"], ["Nissan", "Townstar"], ["Toyota", "Hilux Invincible"], ["Vauxhall", "Combo Cargo"],
+];
+
+export const USED_VAN_MODELS: readonly UsedVanModel[] = [...RAW, ...MORE].map(([make, model]) => ({
   make,
   model,
   makeSlug: slugify(make),

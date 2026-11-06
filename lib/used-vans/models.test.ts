@@ -2,10 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { USED_VAN_MODELS, commonMake, findUsedVanModel, findUsedVanModelByParam, slugify, usedVanDescription, usedVanH1, usedVanMakes, usedVanModelsOfMake, usedVanOldPath, usedVanPath, usedVanTitle, vansPath } from "./models.ts";
 
-test("there are exactly 31 models with unique page slugs and unique URLs", () => {
-  assert.equal(USED_VAN_MODELS.length, 31);
-  assert.equal(new Set(USED_VAN_MODELS.map((m) => m.pageSlug)).size, 31);
-  assert.equal(new Set(USED_VAN_MODELS.map(usedVanPath)).size, 31);
+test("there are exactly 62 models with unique page slugs and unique URLs", () => {
+  assert.equal(USED_VAN_MODELS.length, 62);
+  assert.equal(new Set(USED_VAN_MODELS.map((m) => m.pageSlug)).size, 62);
+  assert.equal(new Set(USED_VAN_MODELS.map(usedVanPath)).size, 62);
 });
 
 test("page slugs follow the content agent's scheme {make}-{model}-vans-for-sale", () => {
@@ -14,7 +14,7 @@ test("page slugs follow the content agent's scheme {make}-{model}-vans-for-sale"
   assert.equal(slugify("Mercedes-Benz  Sprinter"), "mercedes-benz-sprinter");
 });
 
-test("only the 31 are routable; anything else is undefined", () => {
+test("only the 62 are routable; anything else is undefined", () => {
   assert.equal(findUsedVanModel("ford", "transit")?.model, "Transit");
   assert.equal(findUsedVanModel("ford", "fiesta"), undefined);
   assert.equal(findUsedVanModel("mercedes-benz", "sprinter")?.pageSlug, "mercedes-benz-sprinter-vans-for-sale");
@@ -23,8 +23,8 @@ test("only the 31 are routable; anything else is undefined", () => {
 });
 
 test("makes group their models and URLs mirror the /vans sibling", () => {
-  assert.equal(usedVanModelsOfMake("ford").length, 4);
-  assert.equal(usedVanModelsOfMake("fiat").length, 2);
+  assert.equal(usedVanModelsOfMake("ford").length, 7);
+  assert.equal(usedVanModelsOfMake("fiat").length, 5);
   assert.ok(usedVanMakes().every((m) => m.models.length > 0));
   const m = findUsedVanModel("volkswagen", "caddy")!;
   assert.equal(usedVanPath(m), "/used-vans/volkswagen/caddy-for-sale");
@@ -49,4 +49,16 @@ test("H1, title and description use the common names (VW, Merc) and the exact pa
   assert.equal(usedVanTitle(caddy), "Used VW Caddy For Sale | Vansales.com");
   assert.equal(usedVanDescription(caddy), "Browse used VW Caddy vans for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense, straight-talking marketplace.");
   for (const m of USED_VAN_MODELS) assert.ok(usedVanDescription(m).length <= 160, m.pageSlug);
+});
+
+test("the 31 added models: slugs the content agent already published, URLs as briefed", () => {
+  const url = (make: string, model: string) => usedVanPath(findUsedVanModel(make, model)!);
+  assert.equal(url("ford", "e-transit"), "/used-vans/ford/e-transit-for-sale");
+  assert.equal(url("volkswagen", "idbuzz-cargo"), "/used-vans/volkswagen/idbuzz-cargo-for-sale");
+  assert.equal(url("maxus", "deliver-9"), "/used-vans/maxus/deliver-9-for-sale");
+  assert.equal(url("vauxhall", "vivaro-electric"), "/used-vans/vauxhall/vivaro-electric-for-sale");
+  assert.equal(url("ldv", "convoy"), "/used-vans/ldv/convoy-for-sale");
+  assert.equal(findUsedVanModel("mercedes-benz", "esprinter")?.pageSlug, "mercedes-benz-esprinter-vans-for-sale");
+  assert.equal(findUsedVanModel("byd", "et3")?.pageSlug, "byd-et3-vans-for-sale");
+  assert.equal(USED_VAN_MODELS.slice(31).length, 31);
 });
