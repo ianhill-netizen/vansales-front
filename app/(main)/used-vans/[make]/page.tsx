@@ -8,7 +8,7 @@ import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
 import { getListings } from "@/lib/listings/client";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle } from "@/lib/listings/format";
-import { usedVanMakes, usedVanModelsOfMake, usedVanPath, vansPath } from "@/lib/used-vans/models";
+import { usedVanMakes, usedVanModelsOfMake, usedVanName, usedVanPath, vansPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
 
 // Self-referencing canonical, ISR, and a model/make that is not one of the allowlisted pages is a 404. The stock-driven /vans/{make} page is a different page (filters, facets): linked, not duplicated.
@@ -79,7 +79,7 @@ export default async function UsedVansMake({ params }: { params: Promise<Params>
             {models.map((m) => (
               <li key={m.pageSlug}>
                 {live.has(m.pageSlug) ? (
-                  <Link href={usedVanPath(m)} className="text-[length:var(--text-md)] text-brand-700 hover:underline">Used {m.make} {m.model} for sale</Link>
+                  <Link href={usedVanPath(m)} className="text-[length:var(--text-md)] text-brand-700 hover:underline">Used {usedVanName(m)} for sale</Link>
                 ) : (
                   <span className="text-ink-500">Used {m.make} {m.model}: guide coming soon</span>
                 )}{" "}

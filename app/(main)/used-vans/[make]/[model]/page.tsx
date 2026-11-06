@@ -9,7 +9,7 @@ import { getModelPage } from "@/lib/content/model-pages";
 import { getListings } from "@/lib/listings/client";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle } from "@/lib/listings/format";
-import { findUsedVanModel, usedVanModelsOfMake, usedVanPath, vansPath } from "@/lib/used-vans/models";
+import { findUsedVanModelByParam, usedVanDescription, usedVanH1, usedVanModelsOfMake, usedVanName, usedVanPath, usedVanTitle, vansPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
 
 // /used-vans/{make}/{model}: the editorial buying guide (vansales-backend content_pages, page_type make_model) with the live listings for that model and an enquiry form.
@@ -26,7 +26,7 @@ type Params = { make: string; model: string };
 
 async function load(params: Promise<Params>) {
   const { make, model } = await params;
-  const m = findUsedVanModel(make, model);
+  const m = findUsedVanModelByParam(make, model);   // only /{model}-for-sale is a page; the old URL is a 301 in next.config.ts
   if (!m) return null;
   const res = await getModelPage(m.pageSlug);
   if (res.status === "unavailable") throw new Error(`vansales-backend content API unavailable for ${m.pageSlug}`);
@@ -39,13 +39,13 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!found) return {};
   const { m, page } = found;
   const path = usedVanPath(m);
-  const title = page.metaTitle || `Used ${m.make} ${m.model} For Sale | ${SITE.name}`;
-  const description = page.metaDescription || `Used ${m.make} ${m.model} vans for sale in the UK: buying guide and live listings.`;
+  const title = usedVanTitle(m);   // "Used VW Caddy For Sale | Vansales.com": the pattern, not whatever the content agent wrote
+  const description = usedVanDescription(m);
   return {
     title: { absolute: title },
     description,
     alternates: { canonical: path },
-    openGraph: { title, description, url: path, type: "website", ...(page.heroUrl ? { images: [{ url: page.heroUrl, alt: page.heroAlt || `Used ${m.make} ${m.model}` }] } : {}) },
+    openGraph: { title, description, url: path, type: "website", ...(page.heroUrl ? { images: [{ url: page.heroUrl, alt: page.heroAlt || `Used ${usedVanName(m)}` }] } : {}) },
     twitter: { card: "summary_large_image", title, description, ...(page.heroUrl ? { images: [page.heroUrl] } : {}) },
   };
 }
@@ -56,10 +56,12 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
   const { m, page } = found;
   const stock = await getListings({ make: m.makeSlug, model: m.modelSlug, pageSize: 12 });
   const vehicle = `used ${m.make} ${m.model}`;
-  const itemList = stock.listings.length > 0 && {
+  const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `Used ${m.make} ${m.model} for sale`,
+    name: usedVanH1(m),
+    description: usedVanDescription(m),
+    url: absUrl(usedVanPath(m)),
     numberOfItems: stock.total,
     itemListElement: stock.listings.map((l, i) => ({ "@type": "ListItem", position: i + 1, url: absUrl(listingPath(l)), name: listingTitle(l) })),
   };
@@ -70,13 +72,13 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
       { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
       { "@type": "ListItem", position: 2, name: "Used vans", item: absUrl("/used-vans") },
       { "@type": "ListItem", position: 3, name: `Used ${m.make} vans`, item: absUrl(`/used-vans/${m.makeSlug}`) },
-      { "@type": "ListItem", position: 4, name: `Used ${m.make} ${m.model}`, item: absUrl(usedVanPath(m)) },
+      { "@type": "ListItem", position: 4, name: usedVanH1(m), item: absUrl(usedVanPath(m)) },
     ],
   };
   const siblings = usedVanModelsOfMake(m.makeSlug).filter((x) => x.pageSlug !== m.pageSlug);
   return (
     <>
-      <JsonLd data={[...(itemList ? [itemList] : []), breadcrumb]} />
+      <JsonLd data={[itemList, breadcrumb]} />
       <section className="border-b border-border bg-surface-1">
         <Container className="py-8">
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
@@ -88,7 +90,7 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
           <div className="grid items-center gap-6 lg:grid-cols-[1fr_minmax(0,440px)]">
             <div>
               <Eyebrow>{m.make}</Eyebrow>
-              <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">Used {m.make} {m.model} For Sale</h1>
+              <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">{usedVanH1(m)}</h1>
               <p className="mt-4 text-[length:var(--text-sm)] font-semibold text-ink-600">
                 <span className="font-mono text-brand-700">{stock.total}</span> {stock.total === 1 ? "van" : "vans"} listed now ·{" "}
                 <Link href={vansPath(m)} className="text-brand-700 hover:underline">search and filter all {m.make} {m.model} stock</Link>
@@ -98,7 +100,7 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
             {page.heroUrl && (
               <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-border">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={page.heroUrl} alt={page.heroAlt || `Used ${m.make} ${m.model}`} className="size-full object-cover" fetchPriority="high" />
+                <img src={page.heroUrl} alt={page.heroAlt || `Used ${usedVanName(m)}`} className="size-full object-cover" fetchPriority="high" />
               </div>
             )}
           </div>

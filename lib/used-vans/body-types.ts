@@ -9,6 +9,7 @@ export interface BodyTypeListing {
   derivative: string;
   features?: string[];
   van_spec: { body_style: string; wheelbase: string | null; roof_height: string | null };
+  mileage?: number | null;
 }
 
 export interface BodyTypeDef {
@@ -37,6 +38,8 @@ export const BODY_TYPE_PAGES: readonly BodyTypeDef[] = [
   { slug: "high-roof", label: "high roof vans", singular: "high roof van", models: [["ford", "transit"], ["mercedes-benz", "sprinter"], ["volkswagen", "crafter"], ["renault", "master"], ["fiat", "ducato"], ["peugeot", "boxer"]], match: (l) => l.van_spec.roof_height === "high" || /high\s?roof/.test(hay(l)) },
   { slug: "long-wheelbase", label: "long wheelbase vans", singular: "long wheelbase van", models: [["ford", "transit"], ["mercedes-benz", "sprinter"], ["volkswagen", "crafter"], ["renault", "master"], ["vauxhall", "movano"], ["iveco", "daily"]], match: (l) => l.van_spec.wheelbase === "lwb" || l.van_spec.wheelbase === "xlwb" || /\blwb\b|long\s?wheel\s?base/.test(hay(l)) },
   { slug: "4x4", label: "4x4 vans", singular: "4x4 van", models: [["land-rover", "defender"], ["toyota", "hilux"], ["nissan", "navara"], ["mitsubishi", "l200"], ["ford", "ranger"], ["volkswagen", "amarok"]], match: (l) => /4x4|4wd|awd|four[\s-]?wheel/.test(hay(l)) || (/land rover/.test(l.make.toLowerCase()) && /defender/.test(l.model.toLowerCase())) },
+  { slug: "tail-lift", label: "tail lift vans", singular: "tail lift van", models: [["ford", "transit"], ["iveco", "daily"], ["renault", "master"], ["peugeot", "boxer"], ["mercedes-benz", "sprinter"], ["fiat", "ducato"]], match: rx(/tail\s?-?lift|taillift/) },
+  { slug: "low-mileage", label: "low mileage vans", singular: "low mileage van", models: [["ford", "transit-custom"], ["ford", "transit"], ["volkswagen", "transporter"], ["vauxhall", "vivaro"], ["renault", "trafic"], ["ford", "ranger"]], match: (l) => l.mileage != null && l.mileage > 0 && l.mileage < 30000 },
   { slug: "wheelchair-accessible", label: "wheelchair accessible vans", singular: "wheelchair accessible van", models: [["volkswagen", "caddy"], ["ford", "transit-connect"], ["peugeot", "partner"], ["citroen", "berlingo"], ["fiat", "doblo"], ["renault", "kangoo"]], match: rx(/wheelchair|\bwav\b|accessible/) },
 ];
 
@@ -44,4 +47,16 @@ export function findBodyType(slug: string): BodyTypeDef | undefined {
   return BODY_TYPE_PAGES.find((b) => b.slug === slug);
 }
 
-export const bodyTypePath = (b: Pick<BodyTypeDef, "slug">) => `/used-vans/body-type/${b.slug}`;
+/** /used-vans/body-type/{slug}-for-sale (the old /used-vans/body-type/{slug} is a 301 to it, see next.config.ts). */
+export const bodyTypePath = (b: Pick<BodyTypeDef, "slug">) => `/used-vans/body-type/${b.slug}-for-sale`;
+export const bodyTypeOldPath = (b: Pick<BodyTypeDef, "slug">) => `/used-vans/body-type/${b.slug}`;
+
+/** The route's [slug] parameter ("luton-for-sale") to the body type; no -for-sale suffix = not a page. */
+export function findBodyTypeByParam(param: string): BodyTypeDef | undefined {
+  return param.endsWith("-for-sale") ? findBodyType(param.slice(0, -"-for-sale".length)) : undefined;
+}
+
+const titleCase = (s: string) => s.replace(/\b([a-z])/g, (c) => c.toUpperCase());
+export const bodyTypeH1 = (b: Pick<BodyTypeDef, "label">) => `Used ${titleCase(b.label)} For Sale`;
+export const bodyTypeTitle = (b: Pick<BodyTypeDef, "label">) => `${bodyTypeH1(b)} | Vansales.com`;
+export const bodyTypeDescription = (b: Pick<BodyTypeDef, "label">) => `Browse used ${b.label} for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense, straight-talking marketplace.`;

@@ -1,5 +1,5 @@
 /**
- * The copy behind /used-vans/body-type/{slug}: vansales-backend body_type_pages rows (H1, meta, a ~150-word Gemini blurb, a hero and one in-context picture).
+ * The copy behind /used-vans/body-type/{slug}: vansales-backend body_type_pages rows (H1, meta, a ~600-word Gemini buying guide, a hero and one in-context picture).
  *   GET {VANSALES_API_URL}/api/public/body-type-pages          the published pages (slug list, for the sitemap and the index links)
  *   GET {VANSALES_API_URL}/api/public/body-type-pages/{slug}   one published page: {data:{h1,meta_title,meta_description,blurb_html,hero_image_url,images:[{key,role,url,alt}],...}}  (404 = not published)
  * Read-only, server-side, cached 5 minutes. Same rule as the model pages: an API outage must never cache a 404, so a page that cannot be fetched is "unavailable" and the render errors (ISR keeps the last good page).
