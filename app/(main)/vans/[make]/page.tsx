@@ -50,7 +50,7 @@ export async function generateMetadata({
   const idx = await loadCatalogue();
   const stat = makeStat(idx, make);
   const title = `${makeName} Vans For Sale | Vansales.com`;
-  const description = `Browse used ${makeName} vans for sale from verified UK dealers. All models, all body types.`;
+  const description = `Browse used ${makeName} vans for sale from verified UK dealers. All models, body types, payload specs.`;
   return {
     title: { absolute: title },
     description,
