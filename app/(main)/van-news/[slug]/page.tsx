@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { autoLink } from "@/lib/content/auto-link";
+import { makeVansPath } from "@/lib/seo/make-url";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui";
@@ -42,7 +44,7 @@ export default async function VanNewsArticlePage({ params }: Props) {
   const { slug } = await params;
   const a = await load(slug);
   if (!a) notFound();
-  const stock = a.make ? `/vans/${slugify(a.make)}` : "/vans";
+  const stock = a.make ? makeVansPath(slugify(a.make)) : "/vans";
   return (
     <>
       <JsonLd data={[
@@ -70,7 +72,7 @@ export default async function VanNewsArticlePage({ params }: Props) {
       <Container className="py-10">
         <div className="mx-auto max-w-[var(--content-max)]">
           {/* body is sanitised on the server (allow-listed tags, no attributes) before it reaches this page */}
-          <article className="prose-vs space-y-4 text-[length:var(--text-md)] leading-relaxed text-ink-600 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-[length:var(--text-xl)] [&_h2]:font-bold [&_h2]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: a.bodyHtml }} />
+          <article className="prose-vs space-y-4 text-[length:var(--text-md)] leading-relaxed text-ink-600 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-[length:var(--text-xl)] [&_h2]:font-bold [&_h2]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: autoLink(a.bodyHtml) }} />
           {a.sources.length > 0 && (
             <aside className="mt-8 border-t border-border pt-4 text-[length:var(--text-sm)] text-ink-500">
               <p className="font-semibold text-ink-700">Sources</p>

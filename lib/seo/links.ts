@@ -1,3 +1,4 @@
+import { makeVansPath } from "./make-url";
 import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
 import { CATEGORIES } from "./categories";
 import { getCompetitors } from "./competitors";
@@ -7,7 +8,7 @@ import type { ModelStat } from "./catalogue";
 /* Builders for the link blocks used on every make / model / category page. Anchor text is descriptive ("Ford Transit Custom vans for sale"), never "click here". */
 
 export function makeLinks(excludeSlug?: string): InternalLink[] {
-  return ALL_MAKES.filter((m) => m.slug !== excludeSlug).map((m) => ({ href: `/vans/${m.slug}`, label: `${m.name} vans for sale` }));
+  return ALL_MAKES.filter((m) => m.slug !== excludeSlug).map((m) => ({ href: makeVansPath(m.slug), label: `${m.name} vans for sale` }));
 }
 
 export function categoryLinks(excludeSlug?: string): InternalLink[] {

@@ -1,4 +1,5 @@
 import { EmptyState } from "@/components/empty/empty-state";
+import { makeVansPath } from "@/lib/seo/make-url";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
@@ -165,7 +166,7 @@ export default async function ModelPage({
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
-      { "@type": "ListItem", position: 2, name: `${makeName} vans`, item: absUrl(`/vans/${makeSlug}`) },
+      { "@type": "ListItem", position: 2, name: `${makeName} vans`, item: absUrl(makeVansPath(makeSlug)) },
       { "@type": "ListItem", position: 3, name: `${makeName} ${modelName}`, item: absUrl(`/vans/${makeSlug}/${modelSlug}`) },
     ],
   };
@@ -183,7 +184,7 @@ export default async function ModelPage({
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
             <span aria-hidden>/</span>
-            <Link href={`/vans/${makeSlug}`} className="hover:text-ink-900">{makeName} vans</Link>
+            <Link href={makeVansPath(makeSlug)} className="hover:text-ink-900">{makeName} vans</Link>
             <span aria-hidden>/</span>
             <span className="font-medium text-ink-700">{makeName} {modelName}</span>
           </nav>
@@ -302,7 +303,7 @@ export default async function ModelPage({
       {/* ── Internal link network ───────────────────────────────────────── */}
       <section className="border-t border-border bg-surface-1 py-10">
         <Container className="space-y-9">
-          <InternalLinks title={`Other ${makeName} vans`} links={[{ href: `/vans/${makeSlug}`, label: `All ${makeName} vans for sale` }, ...modelLinksOfMake(makeSlug, modelSlug)]} columns={3} />
+          <InternalLinks title={`Other ${makeName} vans`} links={[{ href: makeVansPath(makeSlug), label: `All ${makeName} vans for sale` }, ...modelLinksOfMake(makeSlug, modelSlug)]} columns={3} />
           <InternalLinks title="Similar vans for sale" links={competitorLinks(makeSlug, modelSlug)} columns={3} />
           <InternalLinks title="Browse by body type" links={categoryLinks()} columns={3} />
           <InternalLinks title="Browse by make" links={makeLinks()} columns={4} />

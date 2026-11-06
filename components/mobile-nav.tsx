@@ -1,5 +1,6 @@
 "use client";
 
+import { makeVansPath } from "@/lib/seo/make-url";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createPortal } from "react-dom";
@@ -20,7 +21,7 @@ const BODY_TYPE_LINKS = [
 ];
 
 const MAKE_LINKS = POPULAR_MAKES.map((m) => ({
-  href: `/vans/${m.slug}`,
+  href: makeVansPath(m.slug),
   label: `${m.name} vans for sale`,
 }));
 

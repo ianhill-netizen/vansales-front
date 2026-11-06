@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { makeVansPath } from "@/lib/seo/make-url";
 import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
@@ -155,7 +156,7 @@ export default async function VanReviewsPage() {
             {topMakes.map((make) => (
               <Link
                 key={make}
-                href={`/vans/${slugify(make)}`}
+                href={makeVansPath(slugify(make))}
                 className="rounded-[var(--radius-pill)] border border-border bg-white px-4 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 shadow-[var(--shadow-xs)] transition-colors hover:border-brand-500 hover:text-brand-600"
               >
                 {make}

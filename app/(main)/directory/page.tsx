@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { makeVansPath } from "@/lib/seo/make-url";
 import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
@@ -73,7 +74,7 @@ export default async function DirectoryPage() {
                     className="rounded-[var(--radius-lg)] border border-border bg-white p-4 shadow-[var(--shadow-xs)]"
                   >
                     <Link
-                      href={`/vans/${slugify(makeEntry.make)}`}
+                      href={makeVansPath(slugify(makeEntry.make))}
                       className="block font-display text-[length:var(--text-base)] font-extrabold text-ink-900 hover:text-brand-600"
                     >
                       {makeEntry.make}
@@ -94,7 +95,7 @@ export default async function DirectoryPage() {
                       ))}
                     </ul>
                     <Link
-                      href={`/vans/${slugify(makeEntry.make)}`}
+                      href={makeVansPath(slugify(makeEntry.make))}
                       className="mt-3 block text-[length:var(--text-xs)] font-semibold text-brand-600 hover:underline"
                     >
                       All {makeEntry.make} vans →
