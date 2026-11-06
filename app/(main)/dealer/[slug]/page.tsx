@@ -226,8 +226,11 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   let mapLat: number | null = null;
   let mapLng: number | null = null;
   if (dealer) {
-    // The configured address pin wins (the stock feed's coordinates can be a different site); then the feed; then a postcode geocode.
-    if (dealer.coords) {
+    // The pin set on the vansales API's dealer record wins (admin-editable); then the configured address pin (the stock feed's coordinates can be a different site); then the feed; then a postcode geocode.
+    if (configApi?.kind === "ok" && configApi.dealer.latitude != null && configApi.dealer.longitude != null) {
+      mapLat = configApi.dealer.latitude;
+      mapLng = configApi.dealer.longitude;
+    } else if (dealer.coords) {
       mapLat = dealer.coords.lat;
       mapLng = dealer.coords.lng;
     }
