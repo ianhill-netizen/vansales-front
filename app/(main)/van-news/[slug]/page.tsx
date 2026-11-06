@@ -75,7 +75,7 @@ export default async function VanNewsArticlePage({ params }: Props) {
             <aside className="mt-8 border-t border-border pt-4 text-[length:var(--text-sm)] text-ink-500">
               <p className="font-semibold text-ink-700">Sources</p>
               <ul className="mt-1 list-disc space-y-0.5 pl-5">
-                {a.sources.map((u) => <li key={u}><a href={u} rel="nofollow noopener noreferrer" target="_blank" className="break-all hover:text-brand-700 hover:underline">{new URL(u).hostname.replace(/^www\./, "")}</a></li>)}
+                {a.sources.map((s) => <li key={s.url}><a href={s.url} rel="nofollow noopener noreferrer" target="_blank" className="break-all hover:text-brand-700 hover:underline">{s.title}</a></li>)}
               </ul>
             </aside>
           )}
