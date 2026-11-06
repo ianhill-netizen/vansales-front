@@ -20,7 +20,7 @@ export interface LandingDef {
   /** Links UP to money pages (at least two each). */
   related: readonly LandingLink[];
   /** Buying pages only: which live listings belong on the page. */
-  match?: (l: { fuel: string; location: { town: string; region: string } }) => boolean;
+  match?: (l: { fuel: string; location: { town: string; region: string; postcode_area?: string } }) => boolean;
 }
 
 const FINANCE: LandingLink = { href: "/van-finance", label: "Van finance" };
@@ -56,12 +56,28 @@ export const LANDING_PAGES: readonly LandingDef[] = [
     description: "Hire purchase vans explained. Fixed monthly payments, you own it at the end. How HP van finance works and what to expect.",
     related: [FINANCE, { href: "/van-lease-deals", label: "Van lease deals" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }],
   },
+  {
+    key: "wales", backendSlug: "vans-for-sale-wales", path: "/vans-for-sale/wales", kind: "buying", eyebrow: "Vans by region",
+    h1: "Used Vans For Sale in Wales",
+    title: "Vans For Sale Wales | Used Commercial Vans | Vansales.com",
+    description: "Used vans for sale in Wales. Browse stock from verified dealers. Local buying guide covering Cardiff, Swansea, Newport and beyond.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }, { href: "/used-vans/body-type/4x4-for-sale", label: "Used 4x4 vans for sale" }],
+    match: (l) => /wales|cardiff|swansea|newport|wrexham/i.test(`${l.location.region} ${l.location.town}`) || ["CF", "SA", "NP", "LL"].includes((l.location.postcode_area ?? "").toUpperCase()),
+  },
+  {
+    key: "bristol", backendSlug: "vans-for-sale-bristol", path: "/vans-for-sale/bristol", kind: "buying", eyebrow: "Vans by region",
+    h1: "Used Vans For Sale in Bristol",
+    title: "Vans For Sale Bristol | Used Commercial Vans | Vansales.com",
+    description: "Used vans for sale in Bristol. CAZ-compliant stock, Euro 6 diesel and electric vans. Honest Bristol van buying guide.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/vauxhall/vivaro-for-sale", label: "Used Vauxhall Vivaro for sale" }, { href: "/vans/ulez", label: "ULEZ-compliant vans" }],
+    match: (l) => /bristol/i.test(`${l.location.region} ${l.location.town}`) || (l.location.postcode_area ?? "").toUpperCase() === "BS",
+  },
 ];
 
 export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set(LANDING_PAGES.map((p) => p.backendSlug));
 
 /** /vans-for-sale/{region}: the regions that have a page. */
-export const REGION_KEYS: readonly string[] = ["london"];
+export const REGION_KEYS: readonly string[] = ["london", "wales", "bristol"];
 
 export const findLanding = (key: string) => LANDING_PAGES.find((p) => p.key === key);
 export const findRegion = (region: string) => (REGION_KEYS.includes(region) ? findLanding(region) : undefined);
