@@ -1,5 +1,6 @@
 "use client";
 
+import { makeVansPath } from "@/lib/seo/make-url";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Container } from "./ui";
@@ -146,7 +147,7 @@ function VansForSaleDropdown({
               By make
             </p>
             {POPULAR_MAKES.map((m) => (
-              <Link key={m.slug} href={`/vans/${m.slug}`} className={DROP_ITEM_CLS} onClick={onClose}>
+              <Link key={m.slug} href={makeVansPath(m.slug)} className={DROP_ITEM_CLS} onClick={onClose}>
                 {m.name} vans for sale
               </Link>
             ))}

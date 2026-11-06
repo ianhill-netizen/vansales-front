@@ -12,6 +12,7 @@ import { listingPath } from "@/lib/listings/slug";
 import { CATEGORIES } from "@/lib/seo/categories";
 import { categoryListings, loadCatalogue, makeStat, modelStat, statOf } from "@/lib/seo/catalogue";
 import { siteUrl } from "@/lib/site";
+import { makeVansPath } from "@/lib/seo/make-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
@@ -63,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const makeRoutes: MetadataRoute.Sitemap = [...idx.byMake.keys()]
     .filter((slug) => makeStat(idx, slug).count > 0)
     .map((slug) => ({
-      url: `${base}/vans/${slug}`,
+      url: `${base}${makeVansPath(slug)}`,
       lastModified: makeStat(idx, slug).lastModified ?? siteLast,
       changeFrequency: "daily" as const,
       priority: 0.75,

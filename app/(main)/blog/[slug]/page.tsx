@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { autoLink } from "@/lib/content/auto-link";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -86,18 +87,18 @@ export default async function BlogPostPage({ params }: Props) {
 
   // Category pages inferred from keywords
   const categoryMap: Record<string, { href: string; label: string }> = {
-    ford: { href: "/vans/ford", label: "Ford vans" },
-    volkswagen: { href: "/vans/volkswagen", label: "Volkswagen vans" },
-    vw: { href: "/vans/volkswagen", label: "Volkswagen vans" },
-    mercedes: { href: "/vans/mercedes-benz", label: "Mercedes-Benz vans" },
-    vauxhall: { href: "/vans/vauxhall", label: "Vauxhall vans" },
-    renault: { href: "/vans/renault", label: "Renault vans" },
-    citro: { href: "/vans/citroen", label: "Citroën vans" },
-    peugeot: { href: "/vans/peugeot", label: "Peugeot vans" },
-    fiat: { href: "/vans/fiat", label: "Fiat vans" },
-    nissan: { href: "/vans/nissan", label: "Nissan vans" },
-    toyota: { href: "/vans/toyota", label: "Toyota vans" },
-    iveco: { href: "/vans/iveco", label: "Iveco vans" },
+    ford: { href: "/vans/ford-vans-for-sale", label: "Ford vans" },
+    volkswagen: { href: "/vans/volkswagen-vans-for-sale", label: "Volkswagen vans" },
+    vw: { href: "/vans/volkswagen-vans-for-sale", label: "Volkswagen vans" },
+    mercedes: { href: "/vans/mercedes-benz-vans-for-sale", label: "Mercedes-Benz vans" },
+    vauxhall: { href: "/vans/vauxhall-vans-for-sale", label: "Vauxhall vans" },
+    renault: { href: "/vans/renault-vans-for-sale", label: "Renault vans" },
+    citro: { href: "/vans/citroen-vans-for-sale", label: "Citroën vans" },
+    peugeot: { href: "/vans/peugeot-vans-for-sale", label: "Peugeot vans" },
+    fiat: { href: "/vans/fiat-vans-for-sale", label: "Fiat vans" },
+    nissan: { href: "/vans/nissan-vans-for-sale", label: "Nissan vans" },
+    toyota: { href: "/vans/toyota-vans-for-sale", label: "Toyota vans" },
+    iveco: { href: "/vans/iveco-vans-for-sale", label: "Iveco vans" },
     tipper: { href: "/vans/tipper", label: "Tipper vans" },
     luton: { href: "/vans/luton", label: "Luton vans" },
     crew: { href: "/vans/crew-van", label: "Crew vans" },
@@ -181,7 +182,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <Container className="py-10">
         <div className="mx-auto max-w-[var(--content-max)]">
-          <article dangerouslySetInnerHTML={{ __html: post.html }} />
+          <article dangerouslySetInnerHTML={{ __html: autoLink(post.html) }} />
 
           {/* Related cross-links */}
           {(relatedPosts.length > 0 || relatedCategories.length > 0) && (

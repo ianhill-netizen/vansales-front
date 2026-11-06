@@ -18,11 +18,13 @@ import { InternalLinks } from "@/components/seo/internal-links";
 import { loadCatalogue, makeStat, modelsOfMake, topModels } from "@/lib/seo/catalogue";
 import { makeIntro, priceRange } from "@/lib/seo/intro";
 import { categoryLinks, makeLinks, popularModelLinks } from "@/lib/seo/links";
+import { makeSlugFromParam, makeVansPath } from "@/lib/seo/make-url";
+import { USED_VAN_MODELS, usedVanPath } from "@/lib/used-vans/models";
 
 export const revalidate = 300; // 5 min: counts come from the vansales API (60 s data cache), so an hour showed stale "0 vans"
 
 export async function generateStaticParams() {
-  return ALL_MAKES.map((m) => ({ make: m.slug }));
+  return ALL_MAKES.map((m) => ({ make: `${m.slug}-vans-for-sale` }));
 }
 
 // Static category slugs handled by their own pages — prevent them falling through to here
@@ -40,23 +42,20 @@ export async function generateMetadata({
 }: {
   params: Promise<{ make: string }>;
 }): Promise<Metadata> {
-  const { make } = await params;
-  if (CATEGORY_SLUGS.has(make)) return {};
+  const { make: param } = await params;
+  const make = makeSlugFromParam(param);
+  if (!make || CATEGORY_SLUGS.has(param)) return {};
   const makeName = slugToMake(make);
   // Unique per make: real stock count, price range and the models actually in stock.
   const idx = await loadCatalogue();
   const stat = makeStat(idx, make);
-  const stocked = modelsOfMake(idx, make).filter((m) => m.count > 0);
-  const title = `${makeName} Vans for Sale UK | ${SITE.name}`;
-  const pr = priceRange(stat);
-  const description = stat.count > 0
-    ? `Browse ${stat.count.toLocaleString("en-GB")} ${makeName} van${stat.count === 1 ? "" : "s"} for sale across the UK${pr ? `, priced ${pr}` : ""}${stocked.length ? `, including ${stocked.slice(0, 3).map((m) => m.name).join(", ")}` : ""}. New and used ${makeName} vans from dealers and private sellers on ${SITE.name}.`
-    : `Browse ${makeName} vans for sale across the UK. New and used ${makeName} panel vans, crew vans and more on ${SITE.name}.`;
+  const title = `${makeName} Vans For Sale | Vansales.com`;
+  const description = `Browse used ${makeName} vans for sale from verified UK dealers. All models, all body types.`;
   return {
     title: { absolute: title },
     description,
-    alternates: { canonical: absUrl(`/vans/${make}`) },
-    openGraph: { title, description, url: absUrl(`/vans/${make}`), type: "website" },
+    alternates: { canonical: absUrl(makeVansPath(make)) },
+    openGraph: { title, description, url: absUrl(makeVansPath(make)), type: "website" },
     twitter: { card: "summary_large_image", title, description },
     // A make nobody has stock for would be a thin page: keep it out of the index (it stays crawlable so its links still pass on).
     ...(stat.count === 0 ? { robots: { index: false, follow: true } } : {}),
@@ -68,12 +67,16 @@ export default async function MakePage({
 }: {
   params: Promise<{ make: string }>;
 }) {
-  const { make } = await params;
+  const { make: param } = await params;
+  const make = makeSlugFromParam(param);
+  if (!make) notFound();   // only /{make}-vans-for-sale is a page; the old /vans/{make} is a 301 in next.config.ts
 
   // Redirect category slugs — should never reach here due to static routes, but safety net
   if (CATEGORY_SLUGS.has(make)) notFound();
 
   const makeName = slugToMake(make);
+  // Model cards go to the model's buying-guide page (/used-vans/{make}/{model}-for-sale) where there is one, else to the stock page.
+  const guideByModel = new Map(USED_VAN_MODELS.map((u) => [`${u.makeSlug}/${u.modelSlug}`, usedVanPath(u)]));
   const result = await getListings({ make: makeName, pageSize: 24 });
   const idx = await loadCatalogue();
   const stat = makeStat(idx, make);
@@ -91,7 +94,7 @@ export default async function MakePage({
 
   const breadcrumbs = [
     { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
-    { "@type": "ListItem", position: 2, name: `${makeName} vans`, item: absUrl(`/vans/${make}`) },
+    { "@type": "ListItem", position: 2, name: `Used ${makeName} Vans For Sale`, item: absUrl(makeVansPath(make)) },
   ];
 
   return (
@@ -100,7 +103,7 @@ export default async function MakePage({
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         name: `${makeName} Vans for Sale`,
-        url: absUrl(`/vans/${make}`),
+        url: absUrl(makeVansPath(make)),
         description: `${makeName} vans for sale in the UK.`,
         breadcrumb: { "@type": "BreadcrumbList", itemListElement: breadcrumbs },
         mainEntity: {
@@ -121,7 +124,7 @@ export default async function MakePage({
           <div className="group mt-2 flex items-center gap-3">
             <MakeLogo make={make} name={makeName} size={56} colour />
             <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
-              {makeName} vans for sale
+              Used {makeName} Vans For Sale
             </h1>
           </div>
           <p className="mt-2 text-[length:var(--text-md)] text-ink-600">
@@ -150,7 +153,7 @@ export default async function MakePage({
                   {modelStats.map((m) => (
                     <li key={m.modelSlug}>
                       <Link
-                        href={`/vans/${make}/${m.modelSlug}`}
+                        href={guideByModel.get(`${make}/${m.modelSlug}`) ?? `/vans/${make}/${m.modelSlug}`}
                         className={`block rounded-[var(--radius-lg)] border p-4 transition-colors hover:border-brand-300 ${m.count > 0 ? "border-border bg-white" : "border-border/70 bg-surface-1"}`}
                       >
                         <span className="block font-display text-[length:var(--text-base)] font-bold text-ink-900">{makeName} {m.name}</span>

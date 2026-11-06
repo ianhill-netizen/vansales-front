@@ -80,12 +80,12 @@ export function Footer() {
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { href: "/vans/ford",          label: "Ford" },
-              { href: "/vans/volkswagen",    label: "Volkswagen" },
-              { href: "/vans/mercedes-benz", label: "Mercedes" },
-              { href: "/vans/vauxhall",      label: "Vauxhall" },
-              { href: "/vans/renault",       label: "Renault" },
-              { href: "/vans/citroen",       label: "Citroën" },
+              { href: "/vans/ford-vans-for-sale",          label: "Ford" },
+              { href: "/vans/volkswagen-vans-for-sale",    label: "Volkswagen" },
+              { href: "/vans/mercedes-benz-vans-for-sale", label: "Mercedes" },
+              { href: "/vans/vauxhall-vans-for-sale",      label: "Vauxhall" },
+              { href: "/vans/renault-vans-for-sale",       label: "Renault" },
+              { href: "/vans/citroen-vans-for-sale",       label: "Citroën" },
             ].map((m) => (
               <Link
                 key={m.href}
