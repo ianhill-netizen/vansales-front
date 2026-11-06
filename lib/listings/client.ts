@@ -15,6 +15,7 @@ import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
 import { fetchPrivateSellerListings, fetchPrivateSellerListingBySlug, fetchDealerPortalListings, fetchDealerPortalListingBySlug, PRIVATE_SLUG_PREFIX, DEALER_SLUG_PREFIX } from "./sources/vansales";
 import { sourceIdFromSlug, slugify } from "./slug";
 import { resolveModelSlug } from "@/lib/models/image";
+import { getDealerConfig } from "@/lib/dealers/config";
 import { WHEELBASE_LABEL, titleCase } from "./format";
 
 /* =============================================================================
@@ -128,6 +129,11 @@ const csv = (v: string) => v.split(",").map((s) => s.trim()).filter(Boolean);
 function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
   let out = listings.filter((l) => l.status !== "removed");
 
+  if (f.dealer) {
+    // Same match the dealer page uses: the API dealer slug, or (configured dealers) the seller names.
+    const names = new Set((getDealerConfig(f.dealer)?.sellerNames ?? []).map((n) => n.toLowerCase()));
+    out = out.filter((l) => l.dealer_contact?.slug === f.dealer || names.has(l.seller.name.toLowerCase()));
+  }
   if (f.condition) out = out.filter((l) => l.condition === f.condition);
   if (f.make) out = out.filter((l) => slugify(l.make) === slugify(f.make!));
   if (f.models && f.models.length > 0) {

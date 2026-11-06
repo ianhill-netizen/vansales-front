@@ -505,7 +505,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   <SectionHeading>Current stock</SectionHeading>
                   {!isApi && (
                     <Link
-                      href="/vans"
+                      href={`/vans?dealer=${encodeURIComponent(slug)}`}
                       className="text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline"
                     >
                       View all

@@ -69,6 +69,9 @@ export interface DealerContact {
   has_whatsapp?: boolean;
   has_phone?: boolean;
   finance_url?: string | null;
+  /** The dealer's stored Google rating (from the API's dealers table). Absent until the dealer has one. */
+  google_rating?: number | null;
+  google_review_count?: number | null;
   /** True when the advert takes call-back requests (POST /api/public/listings/{id}/book-call). */
   has_call_booking: boolean;
 }
@@ -166,6 +169,8 @@ export interface Listing {
    result set in-memory so any source (even a dumb one) supports filtering.
    -------------------------------------------------------------------------*/
 export interface ListingFilters {
+  /** A dealer's slug: only that dealer's stock (API dealer slug, or a configured dealer's seller names). */
+  dealer?: string;
   make?: string;
   model?: string;
   models?: string[]; // multi-model OR filter; overrides model when set

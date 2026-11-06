@@ -92,6 +92,7 @@ function parseFilters(sp: Search, buyerLat?: number, buyerLng?: number): Listing
   const nearIsPostcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d?[A-Za-z]{0,2}$/.test(near);
   return {
     vehicles:  vehicles.length ? vehicles : undefined,
+    dealer:    one(sp.dealer)    || undefined,
     condition: (one(sp.condition) as Condition) || undefined,
     bodyStyle: one(sp.bodyStyle) || undefined,
     fuel:      one(sp.fuel)      || undefined,
