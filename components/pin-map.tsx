@@ -10,13 +10,19 @@ import type { Map as LeafletMap, Marker, LayerGroup } from "leaflet";
    `selectedId`; `onBounds` reports which pins are inside the current view.
    ============================================================================= */
 
-export type Pin = { id: string; lat: number; lng: number; label: string; kind: "price" | "dealer" };
+export type Pin = { id: string; lat: number; lng: number; label: string; kind: "price" | "dealer"; /** Render a dealer pin as a flat dark name label with a caret (dealer page only; the directory keeps the orange pin). */ labelMarker?: boolean };
 
 const priceHtml = (label: string, active: boolean) =>
   `<div style="transform:translate(-50%,-100%);white-space:nowrap;display:inline-block;padding:4px 9px;border-radius:999px;font:700 12px/1.2 var(--font-geist,system-ui);background:${active ? "#f47c1e" : "#0d2d5a"};color:#fff;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer">${label}</div>`;
 
 const dealerHtml = (active: boolean) =>
   `<div style="transform:translate(-50%,-100%);cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))"><svg xmlns="http://www.w3.org/2000/svg" width="${active ? 36 : 30}" height="${active ? 50 : 42}" viewBox="0 0 28 40" aria-hidden="true"><path d="M14 0C6.268 0 0 6.268 0 14c0 10.73 14 26 14 26S28 24.73 28 14C28 6.268 21.732 0 14 0z" fill="${active ? "#d96410" : "#f47c1e"}"/><circle cx="14" cy="14" r="5.5" fill="white"/></svg></div>`;
+
+const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
+/** Flat dark pill with the dealer's name and a downward caret. The element's bottom edge (the caret tip) sits on the coordinate. The name is escaped: it is dealer-supplied. */
+const labelMarkerHtml = (label: string) =>
+  `<div style="transform:translate(-50%,-100%);display:inline-block;cursor:pointer"><div style="background:#1a1a1a;color:#fff;font:500 12px/1.2 var(--font-geist,system-ui);padding:6px 12px;border-radius:6px;white-space:nowrap;text-align:center">${escapeHtml(label)}</div><div style="width:0;height:0;margin:0 auto;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #1a1a1a"></div></div>`;
 
 export function PinMap({
   pins,
@@ -52,7 +58,7 @@ export function PinMap({
   useEffect(() => { pinsRef.current = pins; cb.current = { onSelect, onBounds }; selRef.current = selectedId; });
 
   const iconFor = (p: Pin, active: boolean) =>
-    LRef.current!.divIcon({ className: "", html: p.kind === "dealer" ? dealerHtml(active) : priceHtml(p.label, active), iconSize: [0, 0] });
+    LRef.current!.divIcon({ className: "", html: p.kind === "dealer" ? (p.labelMarker ? labelMarkerHtml(p.label) : dealerHtml(active)) : priceHtml(p.label, active), iconSize: [0, 0] });
 
   // Create the map once.
   useEffect(() => {
