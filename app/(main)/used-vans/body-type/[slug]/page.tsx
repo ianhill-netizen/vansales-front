@@ -10,12 +10,12 @@ import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
 import { getListings } from "@/lib/listings/client";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle } from "@/lib/listings/format";
-import { BODY_TYPE_PAGES, bodyTypePath, findBodyType } from "@/lib/used-vans/body-types";
+import { BODY_TYPE_PAGES, bodyTypeDescription, bodyTypeH1, bodyTypePath, bodyTypeTitle, findBodyType, findBodyTypeByParam } from "@/lib/used-vans/body-types";
 import { findUsedVanModel, usedVanPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
 
 // /used-vans/body-type/{slug}: one of ten body/equipment types (luton, dropside, tipper, curtain side, refrigerated, crew van, high roof, long wheelbase, 4x4, wheelchair accessible).
-// The copy (H1, meta, 150-word blurb, two pictures) is vansales-backend's body_type_pages; the listings are the live stock that matches the type (lib/used-vans/body-types.ts).
+// The copy (H1, meta, 600-word buying guide, two pictures) is vansales-backend's body_type_pages; the listings are the live stock that matches the type (lib/used-vans/body-types.ts).
 // A slug that is not one of the ten, or is not published, is a 404; an unreachable API errors the render instead of caching a 404. Self-referencing canonical. ISR 5 minutes.
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -28,9 +28,10 @@ type Params = { slug: string };
 
 async function load(params: Promise<Params>) {
   const { slug } = await params;
-  const def = findBodyType(slug);
+  const def = findBodyTypeByParam(slug);   // only /{slug}-for-sale is a page; the old URL is a 301 in next.config.ts
+  const api = def ? def.slug : slug;
   if (!def) return null;
-  const res = await getBodyTypePage(slug);
+  const res = await getBodyTypePage(api);
   if (res.status === "unavailable") throw new Error(`vansales-backend body-type API unavailable for ${slug}`);
   if (res.status !== "ok") return null;
   return { def, page: res.page };
@@ -41,8 +42,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!found) return {};
   const { def, page } = found;
   const path = bodyTypePath(def);
-  const title = page.metaTitle || `Used ${def.label} For Sale | ${SITE.name}`;
-  const description = page.metaDescription || `Used ${def.label} for sale in the UK: buying guide and live listings.`;
+  const title = bodyTypeTitle(def);
+  const description = bodyTypeDescription(def);
   return {
     title: { absolute: title },
     description,
@@ -60,16 +61,18 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
   const matching = all.listings.filter((l) => def.match(l));
   const shown = matching.slice(0, 12);
   const path = bodyTypePath(def);
-  const h1 = page.h1 || `Used ${def.label[0].toUpperCase()}${def.label.slice(1)} For Sale`;
+  const h1 = bodyTypeH1(def);
   const models = def.models.flatMap(([make, model]) => {
     const m = findUsedVanModel(make, model);
     return m && liveModels.has(m.pageSlug) ? [m] : [];
   });
   const otherTypes = BODY_TYPE_PAGES.filter((b) => b.slug !== def.slug && liveTypes.has(b.slug));
-  const itemList = shown.length > 0 && {
+  const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `Used ${def.label} for sale`,
+    name: h1,
+    description: bodyTypeDescription(def),
+    url: absUrl(path),
     numberOfItems: matching.length,
     itemListElement: shown.map((l, i) => ({ "@type": "ListItem", position: i + 1, url: absUrl(listingPath(l)), name: listingTitle(l) })),
   };
@@ -84,7 +87,7 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
   };
   return (
     <>
-      <JsonLd data={[...(itemList ? [itemList] : []), breadcrumb]} />
+      <JsonLd data={[itemList, breadcrumb]} />
       <section className="border-b border-border bg-surface-1">
         <Container className="py-8">
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">

@@ -61,16 +61,14 @@ export default function VanFinancePage() {
   };
   return (
     <>
-      <JsonLd data={[breadcrumb]} />
+      <JsonLd data={[breadcrumb, { "@context": "https://schema.org", "@type": "Service", name: "Used Van Finance", description: DESCRIPTION, url: absUrl("/van-finance"), provider: { "@type": "Organization", name: "Vansales", url: absUrl("/") }, areaServed: { "@type": "Country", name: "GB" } }]} />
       {/* Hero */}
       <section className="border-b border-border bg-surface-1">
         <Container className="py-14">
           <div className="max-w-2xl">
             <Eyebrow>Van finance</Eyebrow>
-            <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
-              Used van finance.<br />
-              <span className="text-brand-500">Keep cash in the business.</span>
-            </h1>
+            <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">Used Van Finance UK</h1>
+            <p className="mt-2 font-display text-[length:var(--text-xl)] font-bold text-brand-500">Keep cash in the business.</p>
             <p className="mt-4 text-[length:var(--text-md)] leading-relaxed text-ink-600">
               Van finance lets you buy a used van without tying up working capital. This guide explains the
               main options — van hire purchase (HP), PCP and finance lease — so you can choose the right

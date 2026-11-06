@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
 import { getLiveBodyTypeSlugs } from "@/lib/content/body-type-pages";
 import { BODY_TYPE_PAGES, bodyTypePath } from "@/lib/used-vans/body-types";
-import { usedVanMakes, usedVanPath } from "@/lib/used-vans/models";
+import { usedVanMakes, usedVanName, usedVanPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
 
 export const revalidate = 300;
@@ -61,7 +61,7 @@ export default async function UsedVansIndex() {
                 <ul className="mt-3 space-y-1.5">
                   {m.models.map((x) => (
                     <li key={x.pageSlug}>
-                      <Link href={usedVanPath(x)} className="text-[length:var(--text-md)] text-brand-700 hover:underline">Used {x.make} {x.model} for sale</Link>
+                      <Link href={usedVanPath(x)} className="text-[length:var(--text-md)] text-brand-700 hover:underline">Used {usedVanName(x)} for sale</Link>
                     </li>
                   ))}
                 </ul>

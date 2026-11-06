@@ -55,6 +55,25 @@ export function usedVanMakes(): UsedVanMake[] {
   return [...out.values()].sort((a, b) => a.make.localeCompare(b.make));
 }
 
-export const usedVanPath = (m: UsedVanModel) => `/used-vans/${m.makeSlug}/${m.modelSlug}`;
+/** The URL the model page lives at: /used-vans/{make}/{model}-for-sale (the old /used-vans/{make}/{model} is a 301 to it, see next.config.ts). */
+export const usedVanPath = (m: UsedVanModel) => `/used-vans/${m.makeSlug}/${m.modelSlug}-for-sale`;
+/** The retired URL, kept only to build the 301s. */
+export const usedVanOldPath = (m: UsedVanModel) => `/used-vans/${m.makeSlug}/${m.modelSlug}`;
+
+/** The route's [model] parameter ("transporter-for-sale") to the model; anything without the -for-sale suffix is not a page (the 301 handles the old URL before it gets here). */
+export function findUsedVanModelByParam(makeSlug: string, modelParam: string): UsedVanModel | undefined {
+  return modelParam.endsWith(FOR_SALE) ? findUsedVanModel(makeSlug, modelParam.slice(0, -FOR_SALE.length)) : undefined;
+}
+
+const FOR_SALE = "-for-sale";
+
+/** What people type: VW, Merc. Every other make is itself. */
+export function commonMake(make: string): string {
+  return make === "Volkswagen" ? "VW" : make === "Mercedes-Benz" ? "Merc" : make;
+}
+export const usedVanName = (m: UsedVanModel) => `${commonMake(m.make)} ${m.model}`;
+export const usedVanH1 = (m: UsedVanModel) => `Used ${usedVanName(m)} For Sale`;
+export const usedVanTitle = (m: UsedVanModel) => `${usedVanH1(m)} | Vansales.com`;
+export const usedVanDescription = (m: UsedVanModel) => `Browse used ${usedVanName(m)} vans for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense, straight-talking marketplace.`;
 /** The stock-driven sibling page that already exists (listing pages, filters): cross-linked from every /used-vans page. */
 export const vansPath = (m: UsedVanModel) => `/vans/${m.makeSlug}/${m.modelSlug}`;
