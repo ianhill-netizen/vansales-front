@@ -40,6 +40,14 @@ export interface ApiDealer {
   google_reviews_url: string | null;
   opening_hours: OpeningHours | null;
   stock_count: number;
+  /** Optional extras (dealer portal profile additions); absent on an older API. */
+  what3words?: string | null;
+  google_maps_url?: string | null;
+  specialisms?: string[];
+  photos?: { url: string }[];
+  google_rating?: number | null;
+  google_review_count?: number | null;
+  google_reviews?: { author: string; rating: number; text: string; time: string | null }[];
 }
 
 export interface ApiDealerSummary {

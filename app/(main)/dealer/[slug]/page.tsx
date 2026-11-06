@@ -77,7 +77,26 @@ type ProfileDealer = Omit<DealerConfig, "hours" | "coverUrl"> & {
   /** A direct finance link (vansales-API dealers); config dealers use their Dealski tenant's. */
   financeHref?: string | null;
   isApi?: boolean;
+  /** vansales-API dealers' profile extras. */
+  photos?: string[];
+  specialisms?: string[];
+  what3words?: string | null;
+  directionsUrl?: string | null;
+  reviews?: { author: string; rating: number; text: string; time: string | null }[];
 };
+
+const SPECIALISM_LABELS: Record<string, string> = {
+  panel_van: "Panel vans", crew_cab: "Crew cabs", luton: "Lutons", tipper: "Tippers", dropside: "Dropsides", chassis_cab: "Chassis cabs", pickup: "Pickups", pickups: "Pickups",
+  minibus: "Minibuses", campervan: "Campervans", other: "Other", electric: "Electric", conversions: "Conversions",
+};
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <span className="inline-flex" role="img" aria-label={`${rating} out of 5`}>
+      {Array.from({ length: 5 }, (_, i) => <IconStar key={i} width={14} height={14} aria-hidden className={i < Math.round(rating) ? "text-amber-400" : "text-ink-300"} />)}
+    </span>
+  );
+}
 
 function apiToProfile(d: ApiDealer): ProfileDealer {
   const hours = Object.fromEntries(DAYS.map((k) => [k, d.opening_hours?.[k] ?? null])) as Hours;
@@ -96,8 +115,8 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     about: d.about?.trim() || `${d.name} is a van dealer${d.town ? ` in ${d.town}` : ""}. Browse their stock below.`,
     services: [],
     sellerNames: [d.name],
-    googleRating: null,
-    googleReviewCount: null,
+    googleRating: d.google_rating ?? null,
+    googleReviewCount: d.google_review_count ?? null,
     socials: {
       facebook: d.social?.facebook ?? undefined, instagram: d.social?.instagram ?? undefined, linkedin: d.social?.linkedin ?? undefined,
       youtube: d.social?.youtube ?? undefined, twitter: d.social?.twitter ?? undefined,
@@ -107,6 +126,11 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     coverUrl: d.cover_url ?? null,
     financeHref: d.finance_url,
     isApi: true,
+    photos: (d.photos ?? []).map((p) => p.url).filter(Boolean),
+    specialisms: (d.specialisms ?? []).filter((k) => SPECIALISM_LABELS[k]),
+    what3words: d.what3words ?? null,
+    directionsUrl: d.google_maps_url ?? null,
+    reviews: (d.google_reviews ?? []).slice(0, 3),
   };
 }
 
@@ -238,6 +262,8 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   )}`;
   const waUrl = whatsappUrl(effectiveDealer.whatsapp, `Hi, I found you on Vansales and I'd like to enquire about a van.`);
   const isApi = effectiveDealer.isApi === true;
+  const isApiDealer = isApi;
+  const directionsHref = effectiveDealer.directionsUrl || mapsUrl;
   const socialUrls = Object.values(effectiveDealer.socials ?? {}).filter((u): u is string => !!u);
 
   const dealerLd = {
@@ -276,7 +302,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
         opens: h!.open,
         closes: h!.close,
       })),
-    ...(effectiveDealer.googleRating
+    ...(effectiveDealer.googleRating && effectiveDealer.googleReviewCount
       ? {
           aggregateRating: {
             "@type": "AggregateRating",
@@ -360,7 +386,49 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               <p className="mt-4 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 {effectiveDealer.about}
               </p>
+              {effectiveDealer.specialisms && effectiveDealer.specialisms.length > 0 && (
+                <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Specialisms">
+                  {effectiveDealer.specialisms.map((k) => <li key={k} className="rounded-full border border-border bg-surface-1 px-2.5 py-0.5 text-[length:var(--text-xs)] font-medium text-ink-700">{SPECIALISM_LABELS[k]}</li>)}
+                </ul>
+              )}
             </section>
+
+            {/* Photos of the premises (vansales-API dealers) */}
+            {effectiveDealer.photos && effectiveDealer.photos.length > 0 && (
+              <section aria-label="Dealer photos">
+                <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:thin] md:mx-0 md:px-0">
+                  {effectiveDealer.photos.map((u, i) => (
+                    <li key={u} className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-[32%]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={u} alt={`${effectiveDealer.name} photo ${i + 1}`} loading="lazy" className="aspect-[4/3] w-full rounded-[var(--radius-lg)] border border-border object-cover" />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Google reviews: only when the dealer has connected theirs and Google returned data */}
+            {isApiDealer && effectiveDealer.googleRating != null && effectiveDealer.googleReviewCount != null && (
+              <section aria-label="Google reviews">
+                <SectionHeading>Google reviews</SectionHeading>
+                <p className="mt-3 flex items-center gap-2 text-[length:var(--text-sm)] text-ink-600">
+                  <span className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{effectiveDealer.googleRating.toFixed(1)}</span>
+                  <Stars rating={effectiveDealer.googleRating} />
+                  <span>{effectiveDealer.googleReviewCount} review{effectiveDealer.googleReviewCount === 1 ? "" : "s"} on Google</span>
+                </p>
+                {effectiveDealer.reviews && effectiveDealer.reviews.length > 0 && (
+                  <ul className="mt-4 grid gap-3 md:grid-cols-3">
+                    {effectiveDealer.reviews.map((r, i) => (
+                      <li key={i} className="rounded-[var(--radius-lg)] border border-border bg-card p-4 text-[length:var(--text-sm)]">
+                        <p className="font-semibold text-ink-900">{r.author || "Google user"}</p>
+                        <Stars rating={r.rating} />
+                        {r.text && <p className="mt-2 line-clamp-6 text-ink-600">{r.text}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
 
             {/* ── 5. SERVICES ───────────────────────────────────────── */}
             {effectiveDealer.services.length > 0 && (
@@ -402,14 +470,22 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   {mapAddress}
                   {" · "}
                   <a
-                    href={mapsUrl}
+                    href={directionsHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-brand-700 hover:underline"
                   >
-                    Open in Google Maps
+                    {effectiveDealer.directionsUrl ? "Get directions" : "Open in Google Maps"}
                     <IconExternalLink width={12} height={12} className="ml-1 inline-block align-middle" />
                   </a>
+                  {effectiveDealer.what3words && (
+                    <>
+                      {" · "}
+                      <a href={`https://what3words.com/${effectiveDealer.what3words.replace(/^\/+/, "")}`} target="_blank" rel="noopener noreferrer" className="text-brand-700 hover:underline">
+                        {effectiveDealer.what3words}
+                      </a>
+                    </>
+                  )}
                 </span>
               </div>
             </section>
