@@ -4,6 +4,8 @@ import { getNewVanSlugs } from "@/lib/content/new-vans";
 import { getBlogSlugs } from "@/lib/content/blog";
 import { getBackendGuides } from "@/lib/content/backend";
 import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
+import { getLiveBodyTypeSlugs } from "@/lib/content/body-type-pages";
+import { BODY_TYPE_PAGES, bodyTypePath } from "@/lib/used-vans/body-types";
 import { USED_VAN_MODELS, usedVanPath } from "@/lib/used-vans/models";
 import { getDealerDirectory } from "@/lib/dealers/directory";
 import { listingPath } from "@/lib/listings/slug";
@@ -22,6 +24,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // /used-vans: only the allowlisted models that have a published editorial page (empty set when the API is down), and the makes/index that have at least one.
   const liveModelPages = await getLiveModelPageSlugs().catch(() => new Set<string>());
   const usedVanModels = USED_VAN_MODELS.filter((m) => liveModelPages.has(m.pageSlug));
+  // /used-vans/body-type/{slug}: only the published ones (empty when the API is down).
+  const liveBodyTypes = await getLiveBodyTypeSlugs().catch(() => new Set<string>());
+  const usedVanBodyTypeRoutes: MetadataRoute.Sitemap = BODY_TYPE_PAGES.filter((b) => liveBodyTypes.has(b.slug)).map((b) => ({ url: `${base}${bodyTypePath(b)}`, changeFrequency: "weekly" as const, priority: 0.65 }));
   const usedVanRoutes: MetadataRoute.Sitemap = usedVanModels.length === 0 ? [] : [
     { url: `${base}/used-vans`, changeFrequency: "weekly", priority: 0.7 },
     ...[...new Set(usedVanModels.map((m) => m.makeSlug))].map((slug) => ({ url: `${base}/used-vans/${slug}`, changeFrequency: "weekly" as const, priority: 0.6 })),
@@ -122,6 +127,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogRoutes,
     ...guideRoutes,
     ...usedVanRoutes,
+    ...usedVanBodyTypeRoutes,
     ...listingRoutes,
   ];
 }

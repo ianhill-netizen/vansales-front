@@ -3,17 +3,24 @@ import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconArrow, IconCheck } from "@/components/icons";
-import { SITE } from "@/lib/site";
+import { JsonLd } from "@/components/json-ld";
+import { FinanceEnquiryForm } from "@/components/finance/finance-enquiry-form";
+import { absUrl } from "@/lib/site";
 
-export const metadata: Metadata = pageMeta({
-  title: "Van Finance | HP, PCP & Finance Lease",
-  description: `Spread the cost of your next van with HP, PCP or finance lease. Compare van finance options before you apply.`,
-  path: "/van-finance",
-});
+// Targets "van finance", "used van finance" and "van hire purchase". Meta title is exact (absolute: no site suffix is added on top).
+const TITLE = "Used Van Finance | Vansales.com";
+const DESCRIPTION = "Used van finance explained: van hire purchase (HP), PCP and finance lease compared. Tell us your budget and we will get back to you.";
+const base = pageMeta({ title: "Used Van Finance", description: DESCRIPTION, path: "/van-finance" });
+export const metadata: Metadata = {
+  ...base,
+  title: { absolute: TITLE },
+  openGraph: { ...base.openGraph, title: TITLE },
+  twitter: { ...base.twitter, title: TITLE },
+};
 
 const PRODUCTS = [
   {
-    name: "Hire Purchase (HP)",
+    name: "Van hire purchase (HP)",
     tag: "Own at the end",
     description: "Pay a deposit, then fixed monthly instalments. Own the van outright once the final payment is made. Simple, predictable, and you build equity from day one.",
     pros: ["You own the van at the end", "No annual mileage limit", "Fixed rate, fixed term", "Easy to budget for"],
@@ -44,26 +51,36 @@ const TIPS = [
 ];
 
 export default function VanFinancePage() {
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Used van finance", item: absUrl("/van-finance") },
+    ],
+  };
   return (
     <>
+      <JsonLd data={[breadcrumb]} />
       {/* Hero */}
       <section className="border-b border-border bg-surface-1">
         <Container className="py-14">
           <div className="max-w-2xl">
-            <Eyebrow>Van Finance</Eyebrow>
+            <Eyebrow>Van finance</Eyebrow>
             <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">
-              Spread the cost.<br />
+              Used van finance.<br />
               <span className="text-brand-500">Keep cash in the business.</span>
             </h1>
             <p className="mt-4 text-[length:var(--text-md)] leading-relaxed text-ink-600">
-              Van finance lets you get on the road without tying up working capital. This guide explains the
-              main options — HP, PCP and finance lease — so you can choose the right structure for your
-              business before you apply.
+              Van finance lets you buy a used van without tying up working capital. This guide explains the
+              main options — van hire purchase (HP), PCP and finance lease — so you can choose the right
+              structure for your business, then tell us your budget and we will get back to you.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Button href="#products" variant="primary" size="lg">
-                Compare products <IconArrow width={18} height={18} />
+              <Button href="#enquire" variant="primary" size="lg">
+                Tell us your budget <IconArrow width={18} height={18} />
               </Button>
+              <Button href="#products" variant="outline" size="lg">Compare products</Button>
             </div>
           </div>
         </Container>
@@ -99,6 +116,18 @@ export default function VanFinancePage() {
         </Container>
       </section>
 
+      {/* Enquiry */}
+      <section id="enquire" className="scroll-mt-20 py-14">
+        <Container>
+          <div className="mx-auto max-w-2xl">
+            <Eyebrow>Used van finance enquiry</Eyebrow>
+            <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">Tell us your budget</h2>
+            <p className="mt-2 text-[length:var(--text-sm)] text-ink-600">Leave your details and a van budget and we will get back to you about used van finance.</p>
+            <div className="mt-5"><FinanceEnquiryForm /></div>
+          </div>
+        </Container>
+      </section>
+
       {/* Tips */}
       <section className="bg-surface-1 py-14">
         <Container>
@@ -124,18 +153,19 @@ export default function VanFinancePage() {
         <Container>
           <div className="mx-auto max-w-2xl">
             <Eyebrow>Important</Eyebrow>
-            <h2 className="mt-2 font-display text-[length:var(--text-xl)] font-bold text-ink-900">We&apos;re not a lender or broker</h2>
+            <h2 className="mt-2 font-display text-[length:var(--text-xl)] font-bold text-ink-900">We&apos;re not a lender</h2>
             <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
-              Vansales provides this guide for information only. We do not offer finance directly, nor are
-              we authorised to give financial advice. For a personalised quote, speak to a finance broker
-              or your bank. Always read the full credit agreement before signing.
+              Vansales provides this guide for information only. We do not lend money, nor are we authorised
+              to give financial advice. For a personalised quote, speak to an authorised finance broker or
+              your bank. Always read the full credit agreement before signing.
             </p>
             <div className="mt-5 rounded-[var(--radius-lg)] border border-amber-200 bg-amber-50 p-5">
               <p className="text-[length:var(--text-sm)] font-semibold text-amber-800">Finance is credit. Think carefully before using any loan to buy a vehicle. Your van may be repossessed if you do not keep up repayments.</p>
             </div>
             <p className="mt-6 text-[length:var(--text-sm)] text-ink-500">
               Looking at specific stock?{" "}
-              <Link href="/vans" className="font-semibold text-brand-600 hover:underline">Browse available vans →</Link>
+              <Link href="/vans" className="font-semibold text-brand-600 hover:underline">Browse available vans →</Link>{" · "}
+              <Link href="/used-vans" className="font-semibold text-brand-600 hover:underline">Used vans by make and model →</Link>
             </p>
           </div>
         </Container>

@@ -52,6 +52,9 @@ export async function POST(req: Request) {
   const name = String(body.name ?? "").trim();
   const email = String(body.email ?? "").trim();
   const message = String(body.message ?? "").trim();
+  // Optional, used by the /van-finance form: a UK-style mobile (at least 10 digits) and a budget band.
+  const mobile = String(body.mobile ?? "").replace(/[^\d+\s()-]/g, "").trim().slice(0, 20);
+  const budget = String(body.budget ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, 40);
   const rawType = body.enquiry_type;
   const enquiryType: "retail" | "trade" | null =
     rawType === "retail" || rawType === "trade" ? rawType : null;
@@ -67,6 +70,9 @@ export async function POST(req: Request) {
       { ok: false, error: "Please enter a valid email address." },
       { status: 400 },
     );
+  }
+  if (mobile && mobile.replace(/\D/g, "").length < 10) {
+    return NextResponse.json({ ok: false, error: "Please enter a valid mobile number." }, { status: 400 });
   }
   if (!enquiryType) {
     return NextResponse.json(
@@ -84,6 +90,8 @@ export async function POST(req: Request) {
   const notes = [
     `Enquiry type: ${enquiryLabel}`,
     ...(context ? [`Page: ${context}${pagePath ? ` (${pagePath})` : ""}`] : []),
+    ...(mobile ? [`Mobile: ${mobile}`] : []),
+    ...(budget ? [`Budget: ${budget}`] : []),
     message || (context ? "No message left." : "Registered interest via vansales.com opening banner."),
   ].join("\n");
 
@@ -92,12 +100,13 @@ export async function POST(req: Request) {
     last_name,
     name,
     email,
+    mobile: mobile || undefined,
     source: "vansales-register-interest",
     enquiry_type: enquiryType,
     notes,
     // Optional context from a page that reuses this endpoint (e.g. /used-vans/{make}/{model}): a short label and a same-site path. Without them the original banner values stand.
     page_url: pagePath ? `https://vansales.com${pagePath}` : "https://vansales.com",
-    page_name: context ? `Wanted: ${context}` : "Register Interest — Opening August 2026",
+    page_name: context ? (context.startsWith("Van finance") ? context : `Wanted: ${context}`) : "Register Interest — Opening August 2026",
   };
 
   try {
