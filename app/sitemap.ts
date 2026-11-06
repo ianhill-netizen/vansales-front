@@ -15,6 +15,8 @@ import { siteUrl } from "@/lib/site";
 import { makeVansPath } from "@/lib/seo/make-url";
 import { getLiveSellSlugs } from "@/lib/content/sell-pages";
 import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
+import { LANDING_PAGES } from "@/lib/landing-pages";
+import { getLiveLandingSlugs } from "@/lib/content/landing-pages";
 
 // Rebuilt every 5 minutes from live stock. Without this the sitemap was generated once, at deploy time, and kept whatever stock the API had at that moment (after the make-page change it listed one make page instead of the six that have stock).
 export const revalidate = 300;
@@ -34,6 +36,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // The sell-my-van pages: only the published ones (empty when the API is down).
   const liveSell = await getLiveSellSlugs().catch(() => new Set<string>());
   const sellRoutes: MetadataRoute.Sitemap = SELL_PAGES.filter((p) => liveSell.has(p.slug)).map((p) => ({ url: `${base}${sellPagePath(p)}`, changeFrequency: "monthly" as const, priority: 0.7 }));
+  // The landing pages (/van-lease-deals, /electric-vans, /vans-for-sale/london, /hire-purchase-vans): only the published ones (empty when the API is down).
+  const liveLanding = await getLiveLandingSlugs().catch(() => new Set<string>());
+  const landingRoutes: MetadataRoute.Sitemap = LANDING_PAGES.filter((p) => liveLanding.has(p.backendSlug)).map((p) => ({ url: `${base}${p.path}`, changeFrequency: "weekly" as const, priority: 0.7 }));
   // /used-vans/body-type/{slug}: only the published ones (empty when the API is down).
   const liveBodyTypes = await getLiveBodyTypeSlugs().catch(() => new Set<string>());
   const usedVanBodyTypeRoutes: MetadataRoute.Sitemap = BODY_TYPE_PAGES.filter((b) => liveBodyTypes.has(b.slug)).map((b) => ({ url: `${base}${bodyTypePath(b)}`, changeFrequency: "weekly" as const, priority: 0.65 }));
@@ -52,7 +57,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/van-news`, changeFrequency: "daily", priority: 0.7 },
     { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/van-reviews`, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${base}/van-contract-hire`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/van-finance`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/van-insurance`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/advertise`, changeFrequency: "monthly", priority: 0.5 },
@@ -61,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Category pages (body types, electric, ULEZ): always indexable.
-  const bodyTypeRoutes: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({
+  const bodyTypeRoutes: MetadataRoute.Sitemap = CATEGORIES.filter((c) => c.slug !== "electric").map((c) => ({
     url: `${base}/vans/${c.slug}`,
     lastModified: statOf(categoryListings(idx, c)).lastModified ?? siteLast,
     changeFrequency: "daily",
@@ -140,6 +144,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...usedVanRoutes,
     ...usedVanBodyTypeRoutes,
     ...sellRoutes,
+    ...landingRoutes,
     ...listingRoutes,
   ];
 }

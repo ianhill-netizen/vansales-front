@@ -1,0 +1,67 @@
+/**
+ * The four standalone landing pages. Pure data, no I/O. H1, meta title, meta description and canonical are fixed here; the body is vansales-backend's content_pages row (page_type guide), written by Gemini.
+ * Keep the backend slugs in step with vansales-backend App\Support\LandingPageDefs.
+ * `kind: "buying"` pages carry an ItemList of live stock; `kind: "guide"` pages carry an Article.
+ * A landing page is a guide row in content_pages, so the blog would list it too: LANDING_BACKEND_SLUGS keeps it out of /blog and its sitemap, and /blog/{slug} is a 301 to the real URL (next.config.ts).
+ */
+export interface LandingLink { href: string; label: string }
+
+export interface LandingDef {
+  /** URL-safe key used by the route. */
+  key: string;
+  /** content_pages.slug in vansales-backend. */
+  backendSlug: string;
+  path: string;
+  h1: string;
+  title: string;
+  description: string;
+  kind: "buying" | "guide";
+  eyebrow: string;
+  /** Links UP to money pages (at least two each). */
+  related: readonly LandingLink[];
+  /** Buying pages only: which live listings belong on the page. */
+  match?: (l: { fuel: string; location: { town: string; region: string } }) => boolean;
+}
+
+const FINANCE: LandingLink = { href: "/van-finance", label: "Van finance" };
+
+export const LANDING_PAGES: readonly LandingDef[] = [
+  {
+    key: "van-lease-deals", backendSlug: "van-lease-deals", path: "/van-lease-deals", kind: "guide", eyebrow: "Van leasing",
+    h1: "Van Lease Deals: What You're Actually Getting",
+    title: "Van Lease Deals UK | Vansales.com",
+    description: "Straight talk on van lease deals in the UK — what to look for, what to avoid, and whether leasing beats buying for your business.",
+    related: [FINANCE, { href: "/hire-purchase-vans", label: "Hire purchase vans" }, { href: "/used-vans/ford/transit-for-sale", label: "Used Ford Transit for sale" }, { href: "/used-vans/volkswagen/transporter-for-sale", label: "Used VW Transporter for sale" }],
+  },
+  {
+    key: "electric-vans", backendSlug: "electric-vans", path: "/electric-vans", kind: "buying", eyebrow: "Electric vans",
+    h1: "Electric Vans For Sale UK",
+    title: "Used Electric Vans For Sale UK | Vansales.com",
+    description: "Browse used electric vans for sale in the UK. Honest guide to range, charging, costs and which models are worth buying.",
+    related: [FINANCE, { href: "/used-vans/vauxhall/vivaro-for-sale", label: "Used Vauxhall Vivaro for sale" }, { href: "/used-vans/mercedes-benz/sprinter-for-sale", label: "Used Mercedes Sprinter for sale" }, { href: "/vans/ulez", label: "ULEZ-compliant vans" }],
+    match: (l) => /electric/i.test(l.fuel),
+  },
+  {
+    key: "london", backendSlug: "vans-for-sale-london", path: "/vans-for-sale/london", kind: "buying", eyebrow: "Vans by region",
+    h1: "Used Vans For Sale in London",
+    title: "Vans For Sale London | Used Commercial Vans | Vansales.com",
+    description: "Used vans for sale in London. ULEZ-compliant stock, Euro 6 diesel and electric vans from verified dealers. Honest London van buying guide.",
+    related: [FINANCE, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }, { href: "/used-vans/vauxhall/vivaro-for-sale", label: "Used Vauxhall Vivaro for sale" }, { href: "/vans/ulez", label: "ULEZ-compliant vans" }],
+    match: (l) => /london/i.test(`${l.location.region} ${l.location.town}`),
+  },
+  {
+    key: "hire-purchase-vans", backendSlug: "hire-purchase-vans", path: "/hire-purchase-vans", kind: "guide", eyebrow: "Van finance",
+    h1: "Hire Purchase Vans UK",
+    title: "Hire Purchase Vans | Van Finance | Vansales.com",
+    description: "Hire purchase vans explained. Fixed monthly payments, you own it at the end. How HP van finance works and what to expect.",
+    related: [FINANCE, { href: "/van-lease-deals", label: "Van lease deals" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }],
+  },
+];
+
+export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set(LANDING_PAGES.map((p) => p.backendSlug));
+
+/** /vans-for-sale/{region}: the regions that have a page. */
+export const REGION_KEYS: readonly string[] = ["london"];
+
+export const findLanding = (key: string) => LANDING_PAGES.find((p) => p.key === key);
+export const findRegion = (region: string) => (REGION_KEYS.includes(region) ? findLanding(region) : undefined);
