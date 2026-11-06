@@ -46,7 +46,7 @@ const SECTIONS = [
   {
     heading: "More",
     links: [
-      { href: "/new-vans",          label: "New van models" },
+      { href: "/van-news",          label: "Van news" },
       { href: "/van-reviews", label: "Van reviews" },
       { href: "/blog",        label: "Guides & news" },
       { href: "/van-contract-hire", label: "Van leasing" },

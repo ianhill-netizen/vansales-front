@@ -42,7 +42,7 @@ const DROP_ITEM_CLS =
 const GUIDES_ITEMS = [
   { href: "/blog",        label: "Guides & news" },
   { href: "/van-reviews", label: "Van reviews" },
-  { href: "/new-vans",    label: "New van models" },
+  { href: "/van-news",    label: "Van news" },
 ];
 
 const FINANCE_ITEMS = [

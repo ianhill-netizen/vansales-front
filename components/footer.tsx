@@ -23,7 +23,7 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/vans/ford/transit",           label: "Ford Transit" },
       { href: "/vans/mercedes-benz/sprinter", label: "Mercedes Sprinter" },
       { href: "/vans/vauxhall/vivaro",        label: "Vauxhall Vivaro" },
-      { href: "/new-vans",                     label: "New van model guides" },
+      { href: "/van-news",                     label: "Van news" },
       { href: "/directory",                   label: "All makes A–Z" },
       { href: "/dealers",                     label: "Find a dealer" },
     ],

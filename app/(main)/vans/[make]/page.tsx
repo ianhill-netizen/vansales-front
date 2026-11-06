@@ -5,7 +5,7 @@ import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { getListings } from "@/lib/listings/client";
-import { getNewVanIndex } from "@/lib/content/new-vans";
+import { getVanNewsArticles } from "@/lib/content/van-news";
 import { getBlogIndex } from "@/lib/content/blog";
 import { matchBlogPosts } from "@/lib/content/cross-links";
 import { RelatedLinks } from "@/components/related-links";
@@ -86,10 +86,8 @@ export default async function MakePage({
   // Blog posts mentioning this make
   const relatedBlog = matchBlogPosts(getBlogIndex(), [make, makeName.toLowerCase()], undefined, 3);
 
-  // New-van model guide entries for this make
-  const makeNewVans = getNewVanIndex().filter(
-    (e) => slugify(e.make) === make || slugify(e.make) === slugify(makeName)
-  ).slice(0, 8);
+  // Van News articles for this make (empty when the API is down)
+  const makeNews = (await getVanNewsArticles().catch(() => [])).filter((a) => slugify(a.make) === make).slice(0, 5);
 
   const breadcrumbs = [
     { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
@@ -191,16 +189,16 @@ export default async function MakePage({
             )}
           </div>
 
-          {(makeNewVans.length > 0 || relatedBlog.length > 0) && (
+          {(makeNews.length > 0 || relatedBlog.length > 0) && (
             <div className="space-y-5">
-              {makeNewVans.length > 0 && (
+              {makeNews.length > 0 && (
                 <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
                   <RelatedLinks
-                    title={`${makeName} model guide`}
-                    links={makeNewVans.map((e) => ({ href: `/new-vans/${e.slug}`, label: e.title }))}
+                    title={`${makeName} van news`}
+                    links={makeNews.map((a) => ({ href: `/van-news/${a.slug}`, label: a.title }))}
                   />
-                  <Link href="/new-vans" className="mt-4 block text-[length:var(--text-sm)] font-semibold text-ink-500 hover:text-ink-900">
-                    All new van models →
+                  <Link href="/van-news" className="mt-4 block text-[length:var(--text-sm)] font-semibold text-ink-500 hover:text-ink-900">
+                    All van news →
                   </Link>
                 </div>
               )}

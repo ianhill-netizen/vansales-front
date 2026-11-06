@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getListings } from "@/lib/listings/client";
-import { getNewVanSlugs } from "@/lib/content/new-vans";
+import { getVanNewsArticles } from "@/lib/content/van-news";
 import { getBlogSlugs } from "@/lib/content/blog";
 import { getBackendGuides } from "@/lib/content/backend";
 import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
@@ -15,11 +15,12 @@ import { siteUrl } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
-  const [{ listings }, idx, dealers, guides] = await Promise.all([
+  const [{ listings }, idx, dealers, guides, vanNews] = await Promise.all([
     getListings({}),
     loadCatalogue(),
     getDealerDirectory().catch(() => []),
     getBackendGuides().catch(() => []), // guides Mason publishes through vansales-backend; [] when the API is down
+    getVanNewsArticles().catch(() => []), // Van News agent articles; [] when the API is down
   ]);
   // /used-vans: only the allowlisted models that have a published editorial page (empty set when the API is down), and the makes/index that have at least one.
   const liveModelPages = await getLiveModelPageSlugs().catch(() => new Set<string>());
@@ -39,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/`, lastModified: siteLast, changeFrequency: "daily", priority: 1 },
     { url: `${base}/vans`, lastModified: siteLast, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/dealers`, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/new-vans`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/van-news`, changeFrequency: "daily", priority: 0.7 },
     { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/van-reviews`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/van-contract-hire`, changeFrequency: "weekly", priority: 0.6 },
@@ -85,10 +86,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const newVanRoutes: MetadataRoute.Sitemap = getNewVanSlugs().map((slug) => ({
-    url: `${base}/new-vans/${slug}`,
-    changeFrequency: "weekly",
-    priority: 0.7,
+  const vanNewsRoutes: MetadataRoute.Sitemap = vanNews.map((a) => ({
+    url: `${base}/van-news/${a.slug}`,
+    lastModified: Number.isNaN(Date.parse(a.publishedAt)) ? undefined : new Date(a.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
   }));
 
   const blogRoutes: MetadataRoute.Sitemap = getBlogSlugs().map((slug) => ({
@@ -123,7 +125,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...makeRoutes,
     ...modelRoutes,
     ...dealerRoutes,
-    ...newVanRoutes,
+    ...vanNewsRoutes,
     ...blogRoutes,
     ...guideRoutes,
     ...usedVanRoutes,

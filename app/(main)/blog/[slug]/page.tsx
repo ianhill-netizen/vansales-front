@@ -6,8 +6,7 @@ import { Container } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
 import { getBlogPost, getBlogIndex, getBlogSlugs, formatDate } from "@/lib/content/blog";
-import { getNewVanIndex } from "@/lib/content/new-vans";
-import { blogKeywords, matchBlogPosts, matchRelatedVans } from "@/lib/content/cross-links";
+import { blogKeywords, matchBlogPosts } from "@/lib/content/cross-links";
 import { mdToHtml } from "@/lib/content/markdown";
 import { bodyWithImages, getBackendGuide } from "@/lib/content/backend";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
@@ -80,16 +79,10 @@ export default async function BlogPostPage({ params }: Props) {
 
   // Cross-link data
   const allBlog = getBlogIndex();
-  const allVans = getNewVanIndex();
   const kws = blogKeywords(post.title, post.description);
 
   // Related blog posts sharing keywords
   const relatedPosts = matchBlogPosts(allBlog, kws.length ? kws : [post.title.split(" ")[0]], slug, 3);
-
-  // New-van model pages relevant to this post
-  const relatedModels = kws.length
-    ? matchRelatedVans(allVans, kws, "", 3)
-    : [];
 
   // Category pages inferred from keywords
   const categoryMap: Record<string, { href: string; label: string }> = {
@@ -191,19 +184,11 @@ export default async function BlogPostPage({ params }: Props) {
           <article dangerouslySetInnerHTML={{ __html: post.html }} />
 
           {/* Related cross-links */}
-          {(relatedPosts.length > 0 || relatedModels.length > 0 || relatedCategories.length > 0) && (
+          {(relatedPosts.length > 0 || relatedCategories.length > 0) && (
             <div className="mt-12 border-t border-border pt-8">
               <div className="grid gap-6 md:grid-cols-2">
-                {(relatedModels.length > 0 || relatedCategories.length > 0) && (
+                {relatedCategories.length > 0 && (
                   <div className="space-y-5">
-                    {relatedModels.length > 0 && (
-                      <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
-                        <RelatedLinks
-                          title="New van guides"
-                          links={relatedModels.map((e) => ({ href: `/new-vans/${e.slug}`, label: e.title }))}
-                        />
-                      </div>
-                    )}
                     {relatedCategories.length > 0 && (
                       <div className="rounded-[var(--radius-xl)] border border-border bg-white p-5">
                         <RelatedLinks
