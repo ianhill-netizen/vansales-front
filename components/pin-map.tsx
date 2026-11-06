@@ -10,7 +10,7 @@ import type { Map as LeafletMap, Marker, LayerGroup } from "leaflet";
    `selectedId`; `onBounds` reports which pins are inside the current view.
    ============================================================================= */
 
-export type Pin = { id: string; lat: number; lng: number; label: string; kind: "price" | "dealer" };
+export type Pin = { id: string; lat: number; lng: number; label: string; kind: "price" | "dealer"; /** Show `label` as a permanent tooltip above the pin (dealer page only; off elsewhere so directory maps stay uncluttered). */ permanentLabel?: boolean };
 
 const priceHtml = (label: string, active: boolean) =>
   `<div style="transform:translate(-50%,-100%);white-space:nowrap;display:inline-block;padding:4px 9px;border-radius:999px;font:700 12px/1.2 var(--font-geist,system-ui);background:${active ? "#f47c1e" : "#0d2d5a"};color:#fff;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer">${label}</div>`;
@@ -97,6 +97,13 @@ export function PinMap({
     for (const p of pinsRef.current) {
       const m = L.marker([p.lat, p.lng], { icon: iconFor(p, p.id === selRef.current), riseOnHover: true, zIndexOffset: p.kind === "dealer" ? 500 : 0 });
       m.on("click", (e) => { L.DomEvent.stopPropagation(e); cb.current.onSelect?.(p.id === selRef.current ? null : p.id); });
+      if (p.permanentLabel) {
+        // A DOM node, not an HTML string: the label is a dealer-supplied name and must never be parsed as markup.
+        const tip = document.createElement("span");
+        tip.textContent = p.label;
+        tip.style.cssText = "font:700 13px/1.2 var(--font-geist,system-ui);color:#0d2d5a;white-space:nowrap";
+        m.bindTooltip(tip, { permanent: true, direction: "top", offset: [0, -50] });
+      }
       m.addTo(layer);
       markers.current.set(p.id, m);
     }
