@@ -1,5 +1,5 @@
 /**
- * The /used-vans model pages: the 20 highest-priority used-van models (vansales-seo-research.xlsx, Model Pages sheet, top 20 by priority score, 2026-11-05). Pure data and slug rules, no I/O.
+ * The /used-vans model pages: the 31 used-van models of vansales-seo-research.xlsx (Model Pages sheet: the top 20 by priority score, 2026-11-05, plus the other 11 rows added 2026-11-06). Pure data and slug rules, no I/O.
  * Each model's editorial page lives in vansales-backend's content_pages as page_type make_model under the content agent's slug `{make}-{model}-vans-for-sale`.
  */
 export interface UsedVanModel {
@@ -19,6 +19,8 @@ const RAW: ReadonlyArray<readonly [string, string]> = [
   ["Ford", "Ranger"], ["Ford", "Transit"], ["Land Rover", "Defender"], ["Volkswagen", "Caddy"], ["Toyota", "Hilux"], ["Ford", "Transit Custom"], ["Renault", "Trafic"], ["Nissan", "Navara"], ["Ford", "Transit Connect"],
   ["Vauxhall", "Vivaro"], ["Volkswagen", "Amarok"], ["Peugeot", "Partner"], ["Mitsubishi", "L200"], ["Citroen", "Dispatch"], ["Peugeot", "Expert"], ["Citroen", "Berlingo"], ["Vauxhall", "Combo"], ["Toyota", "Proace"],
   ["Renault", "Kangoo"], ["Iveco", "Daily"],
+  ["Volkswagen", "Transporter"], ["Fiat", "Ducato"], ["Fiat", "Doblo"], ["Citroen", "Relay"], ["Renault", "Master"], ["Peugeot", "Boxer"], ["Nissan", "NV200"], ["Volkswagen", "Crafter"], ["Vauxhall", "Movano"],
+  ["Mercedes-Benz", "Sprinter"], ["Mercedes-Benz", "Vito"],
 ];
 
 export const USED_VAN_MODELS: readonly UsedVanModel[] = RAW.map(([make, model]) => ({

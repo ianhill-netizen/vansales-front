@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
 import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
+import { getLiveBodyTypeSlugs } from "@/lib/content/body-type-pages";
+import { BODY_TYPE_PAGES, bodyTypePath } from "@/lib/used-vans/body-types";
 import { usedVanMakes, usedVanPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
 
@@ -20,7 +22,8 @@ export const metadata: Metadata = {
 };
 
 export default async function UsedVansIndex() {
-  const live = await getLiveModelPageSlugs();
+  const [live, liveTypes] = await Promise.all([getLiveModelPageSlugs(), getLiveBodyTypeSlugs()]);
+  const bodyTypes = BODY_TYPE_PAGES.filter((b) => liveTypes.has(b.slug));
   const makes = usedVanMakes()
     .map((m) => ({ ...m, models: m.models.filter((x) => live.has(x.pageSlug)) }))
     .filter((m) => m.models.length > 0);
@@ -65,6 +68,16 @@ export default async function UsedVansIndex() {
               </section>
             ))}
           </div>
+        )}
+        {bodyTypes.length > 0 && (
+          <section className="mt-10">
+            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Used vans by body type</h2>
+            <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
+              {bodyTypes.map((b) => (
+                <li key={b.slug}><Link href={bodyTypePath(b)} className="text-[length:var(--text-md)] text-brand-700 hover:underline">Used {b.label} for sale</Link></li>
+              ))}
+            </ul>
+          </section>
         )}
       </Container>
     </>
