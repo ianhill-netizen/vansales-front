@@ -184,6 +184,12 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="mx-auto max-w-[var(--content-max)]">
           <article dangerouslySetInnerHTML={{ __html: autoLink(post.html) }} />
 
+          <aside className="mt-10 rounded-[var(--radius-xl)] border border-border bg-surface-1 p-5">
+            <p className="font-display text-[length:var(--text-base)] font-bold text-ink-900">Selling a van instead?</p>
+            <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">How to price it, what paperwork you need and where to list it.</p>
+            <Link href="/sell-my-van" className="mt-3 inline-block text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">Sell my van →</Link>
+          </aside>
+
           {/* Related cross-links */}
           {(relatedPosts.length > 0 || relatedCategories.length > 0) && (
             <div className="mt-12 border-t border-border pt-8">

@@ -13,6 +13,8 @@ import { CATEGORIES } from "@/lib/seo/categories";
 import { categoryListings, loadCatalogue, makeStat, modelStat, statOf } from "@/lib/seo/catalogue";
 import { siteUrl } from "@/lib/site";
 import { makeVansPath } from "@/lib/seo/make-url";
+import { getLiveSellSlugs } from "@/lib/content/sell-pages";
+import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
@@ -26,6 +28,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // /used-vans: only the allowlisted models that have a published editorial page (empty set when the API is down), and the makes/index that have at least one.
   const liveModelPages = await getLiveModelPageSlugs().catch(() => new Set<string>());
   const usedVanModels = USED_VAN_MODELS.filter((m) => liveModelPages.has(m.pageSlug));
+  // The sell-my-van pages: only the published ones (empty when the API is down).
+  const liveSell = await getLiveSellSlugs().catch(() => new Set<string>());
+  const sellRoutes: MetadataRoute.Sitemap = SELL_PAGES.filter((p) => liveSell.has(p.slug)).map((p) => ({ url: `${base}${sellPagePath(p)}`, changeFrequency: "monthly" as const, priority: 0.7 }));
   // /used-vans/body-type/{slug}: only the published ones (empty when the API is down).
   const liveBodyTypes = await getLiveBodyTypeSlugs().catch(() => new Set<string>());
   const usedVanBodyTypeRoutes: MetadataRoute.Sitemap = BODY_TYPE_PAGES.filter((b) => liveBodyTypes.has(b.slug)).map((b) => ({ url: `${base}${bodyTypePath(b)}`, changeFrequency: "weekly" as const, priority: 0.65 }));
@@ -131,6 +136,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...guideRoutes,
     ...usedVanRoutes,
     ...usedVanBodyTypeRoutes,
+    ...sellRoutes,
     ...listingRoutes,
   ];
 }
