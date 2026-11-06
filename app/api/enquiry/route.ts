@@ -96,6 +96,11 @@ export async function POST(req: Request) {
     if (typeof v === "string" && v) utms[key] = v;
   }
 
+  // Optional part exchange (the form's toggle): a reg and mileage only. No valuation figure is taken from the browser.
+  const pxReg = String(body.px_reg ?? "").replace(/\s+/g, "").toUpperCase();
+  const pxMileage = Number(body.px_mileage);
+  const pxLine = /^[A-Z0-9]{2,8}$/.test(pxReg) && Number.isInteger(pxMileage) && pxMileage > 0 && pxMileage < 2_000_000 ? `Part exchange: ${pxReg}, ${pxMileage.toLocaleString("en-GB")} miles` : "";
+
   const vehicleLabel = [make, model, derivative].filter(Boolean).join(" ");
   const notes = [
     message || `Hi, I'm interested in the ${vehicleLabel || "van"}. Is it still available?`,
@@ -103,6 +108,7 @@ export async function POST(req: Request) {
     vehicleLabel ? `Vehicle: ${vehicleLabel}` : "",
     vehicleRef && vehicleRef !== vehicleLabel ? `Ref: ${vehicleRef}` : "",
     location ? `Location: ${location}` : "",
+    pxLine,
     slug ? `Listing: https://vansales.com/listing/${slug}` : "",
   ]
     .filter(Boolean)

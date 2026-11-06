@@ -48,6 +48,8 @@ export interface ApiDealer {
   google_rating?: number | null;
   google_review_count?: number | null;
   google_reviews?: { author: string; rating: number; text: string; time: string | null }[];
+  /** Whether the dealer shows the "Value your van" part-exchange card (default false; true for Swiss Vans). Absent on an older API. */
+  px_enabled?: boolean;
 }
 
 export interface ApiDealerSummary {

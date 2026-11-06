@@ -3,10 +3,12 @@ import { EmptyState } from "@/components/empty/empty-state";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ValueYourVan } from "@/components/px/value-your-van";
 import { getDealerConfig, whatsappUrl, financeUrl, type DealerConfig } from "@/lib/dealers/config";
 import { fetchApiDealerProfile, type ApiDealer } from "@/lib/dealers/api";
 import { SocialLinks, hasSocials } from "@/components/social-links";
 import { getListings } from "@/lib/listings/client";
+import { listingPath } from "@/lib/listings/slug";
 import { fetchNativeDbListings } from "@/lib/listings/sources/db";
 import { prisma } from "@/lib/prisma";
 import { geocodeTown } from "@/lib/geocoding";
@@ -187,6 +189,8 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
           googleReviewCount: null,
         };
   const hasHours = Object.values(effectiveDealer.hours).some(Boolean);
+  // "Value your van": only for a dealer whose API record says px_enabled (a configured dealer such as Swiss Vans has one too). Off on an older API.
+  const pxEnabled = (apiDealer ?? (configApi?.kind === "ok" ? configApi.dealer : null))?.px_enabled === true;
 
   // Fetch stock for this specific dealer, filtered by their seller names.
   let listings: import("@/lib/listings/types").Listing[] = [];
@@ -667,6 +671,9 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               </div>
               )}
             </div>
+            {pxEnabled && (
+              <ValueYourVan dealerName={effectiveDealer.name} dealskiTenant={effectiveDealer.dealskiTenant} listingHref={listings[0] ? listingPath(listings[0]) : null} />
+            )}
           </aside>
         </div>
       </Container>
