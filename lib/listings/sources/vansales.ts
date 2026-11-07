@@ -173,6 +173,24 @@ export async function fetchPrivateSellerListings(): Promise<Listing[]> {
   return out;
 }
 
+export type ListingState = { state: "active" | "hidden" | "unknown" } | { state: "gone"; make: string | null; model: string | null };
+
+/** What became of /listing/{slug} (backend GET /listings/{slug}/status). `null` = the backend could not be asked (outage, rate limit): the caller must NOT turn that into a redirect or a 404, both of which are cached. */
+export async function fetchListingState(slug: string): Promise<ListingState | null> {
+  const backend = slug.replace(/^(?:dealer|private)-/, "");
+  if (!/^[a-z0-9-]{1,200}$/.test(backend)) return { state: "unknown" };
+  try {
+    const res = await fetch(`${BASE}/api/public/listings/${backend}/status`, { headers: { Accept: "application/json" }, next: { revalidate: 60, tags: ["vansales-private", "vansales-dealer"] }, signal: AbortSignal.timeout(6_000) });
+    if (!res.ok) return null;
+    const j = (await res.json()) as { state?: unknown; make?: unknown; model?: unknown };
+    if (j.state === "gone") return { state: "gone", make: typeof j.make === "string" ? j.make : null, model: typeof j.model === "string" ? j.model : null };
+    if (j.state === "active" || j.state === "hidden" || j.state === "unknown") return { state: j.state };
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 /** One private advert by its front-end slug ("private-<backend slug>"), with all its photos, video and description. Null if it is not (or no longer) active. */
 export async function fetchPrivateSellerListingBySlug(slug: string): Promise<Listing | null> {
   if (!slug.startsWith(PRIVATE_SLUG_PREFIX)) return null;

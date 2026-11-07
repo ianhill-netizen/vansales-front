@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Container, Eyebrow, Price, PlateBadge, StatusBadge, Badge } from "@/components/ui";
 import { Gallery } from "@/components/gallery";
 import { SpecTable } from "@/components/spec-table";
@@ -14,6 +14,8 @@ import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } fr
 import { ListingActions } from "@/components/listing-actions";
 import { listingActionLinks } from "@/lib/dealers/actions";
 import { getListingBySlug } from "@/lib/listings/client";
+import { fetchListingState } from "@/lib/listings/sources/vansales";
+import { goneTarget, isListingSlug } from "@/lib/listings/gone";
 import { getDealerConfigBySeller } from "@/lib/dealers/config";
 import type { Listing } from "@/lib/listings/types";
 import {
@@ -75,7 +77,15 @@ export default async function ListingPage({
 }) {
   const { slug } = await params;
   const { listing } = await getListingBySlug(slug);
-  if (!listing) notFound();
+  if (!listing) {
+    // A sold / removed van's URL is a permanent redirect (308) to its model page, never a 404. Only a DEFINITIVE answer from the backend redirects: getListingBySlug is also null when the API blinked, and a 308 is cached for good.
+    if (!isListingSlug(slug)) notFound();
+    const state = await fetchListingState(slug);
+    if (state === null) throw new Error(`vansales API unavailable while resolving /listing/${slug}`);
+    if (state.state === "active") throw new Error(`/listing/${slug} is active but could not be loaded`);
+    if (state.state === "hidden") notFound(); // a draft or a suspended dealer's van: may come back, so a 404, not a permanent move
+    permanentRedirect(goneTarget(slug, state.state === "gone" ? state : null));
+  }
 
   const dealerConfig = listing.dealer_contact ? null : getDealerConfigBySeller(listing.seller.name);
   const actionLinks = listingActionLinks(listing, dealerConfig);
