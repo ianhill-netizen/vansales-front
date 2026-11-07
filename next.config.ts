@@ -32,7 +32,12 @@ const nextConfig: NextConfig = {
       ...LANDING_PAGES.map((l) => ({ source: `/blog/${l.backendSlug}`, destination: l.path })),
     ].map((r) => ({ ...r, statusCode: 301 as const }));
     // /inspection-guide never existed on this site (a dead link found by the SE Ranking audit of 2026-11-06, 404): it goes to the used-van inspection checklist, the guide it was meant for.
-    const retired = [{ source: "/inspection-guide", destination: "/blog/used-van-inspection-checklist", statusCode: 301 as const }];
+    const retired = [
+      { source: "/inspection-guide", destination: "/blog/used-van-inspection-checklist", statusCode: 301 as const },
+      // The previous vansales.com's listing URLs, /detail/{number}: 502 of the 503 URLs Google reports as 404 (Agent 19's seo_404_feed, 2026-11-07). The numbers are not stored anywhere now, so there is no make or model
+      // to send them to: they go to /used-vans, permanently (308). A removed listing of THIS site is handled by /listing/{slug} (it redirects to its model page).
+      { source: "/detail/:id(\\d+)", destination: "/used-vans", statusCode: 308 as const },
+    ];
     return [...landing, ...retired, ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
   },
   // The share-image routes read fonts and make logos from disk at request time; make sure they ship with the functions.

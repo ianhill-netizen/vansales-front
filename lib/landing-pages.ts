@@ -109,12 +109,44 @@ export const LANDING_PAGES: readonly LandingDef[] = [
     description: "How a van finance calculator works, what to put in it and how to read the result. A plain guide for tradespeople and small businesses.",
     related: [FINANCE, { href: "/hire-purchase-vans", label: "Hire purchase vans" }, { href: "/bad-credit-van-finance", label: "Bad credit van finance" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }],
   },
+  {
+    key: "manchester", backendSlug: "vans-for-sale-manchester", path: "/vans-for-sale/manchester", kind: "buying", eyebrow: "Vans by region",
+    h1: "Used Vans For Sale in Manchester",
+    title: "Vans For Sale Manchester | Used Vans | Vansales.com",
+    description: "Used vans for sale in Manchester. Browse stock from verified dealers. Local buying guide covering Manchester, Salford, Stockport and Bolton.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }, { href: "/vans-for-sale/leeds", label: "Used vans for sale in Leeds" }],
+    match: (l) => /\b(manchester|salford|stockport|oldham|bolton|rochdale|wigan|trafford|tameside|greater manchester)\b/i.test(`${l.location.region} ${l.location.town}`) || ["M", "SK", "OL", "BL", "WN"].includes((l.location.postcode_area ?? "").toUpperCase()),
+  },
+  {
+    key: "birmingham", backendSlug: "vans-for-sale-birmingham", path: "/vans-for-sale/birmingham", kind: "buying", eyebrow: "Vans by region",
+    h1: "Used Vans For Sale in Birmingham",
+    title: "Vans For Sale Birmingham | Used Vans | Vansales.com",
+    description: "Used vans for sale in Birmingham. Browse stock from verified dealers. Local buying guide covering Birmingham, Wolverhampton, Solihull and the Black Country.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/ford/transit-for-sale", label: "Used Ford Transit for sale" }, { href: "/vans-for-sale/manchester", label: "Used vans for sale in Manchester" }],
+    match: (l) => /\b(birmingham|solihull|wolverhampton|walsall|dudley|west bromwich|sandwell|west midlands)\b/i.test(`${l.location.region} ${l.location.town}`) || ["B", "WV", "DY", "WS"].includes((l.location.postcode_area ?? "").toUpperCase()),
+  },
+  {
+    key: "leeds", backendSlug: "vans-for-sale-leeds", path: "/vans-for-sale/leeds", kind: "buying", eyebrow: "Vans by region",
+    h1: "Used Vans For Sale in Leeds",
+    title: "Vans For Sale Leeds | Used Commercial Vans | Vansales.com",
+    description: "Used vans for sale in Leeds. Browse stock from verified dealers. Local buying guide covering Leeds, Bradford, Wakefield and Huddersfield.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/vauxhall/vivaro-for-sale", label: "Used Vauxhall Vivaro for sale" }, { href: "/vans-for-sale/manchester", label: "Used vans for sale in Manchester" }],
+    match: (l) => /\b(leeds|bradford|wakefield|huddersfield|halifax|west yorkshire)\b/i.test(`${l.location.region} ${l.location.town}`) || ["LS", "BD", "WF", "HX", "HD"].includes((l.location.postcode_area ?? "").toUpperCase()),
+  },
+  {
+    key: "scotland", backendSlug: "vans-for-sale-scotland", path: "/vans-for-sale/scotland", kind: "buying", eyebrow: "Vans by region",
+    h1: "Used Vans For Sale in Scotland",
+    title: "Vans For Sale Scotland | Used Commercial Vans | Vansales.com",
+    description: "Used vans for sale in Scotland. Browse stock from verified dealers. Local buying guide covering Glasgow, Edinburgh, Aberdeen and Dundee.",
+    related: [FINANCE, { href: "/used-vans/body-type/4x4-for-sale", label: "Used 4x4 vans for sale" }, { href: "/used-vans/toyota/hilux-for-sale", label: "Used Toyota Hilux for sale" }, { href: "/electric-vans", label: "Used electric vans for sale" }],
+    match: (l) => /\b(scotland|glasgow|edinburgh|aberdeen|dundee|inverness|stirling|perth|fife|lanarkshire|ayrshire)\b/i.test(`${l.location.region} ${l.location.town}`) || ["AB", "DD", "DG", "EH", "FK", "G", "HS", "IV", "KA", "KW", "KY", "ML", "PA", "PH", "TD", "ZE"].includes((l.location.postcode_area ?? "").toUpperCase()),
+  },
 ];
 
 export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set(LANDING_PAGES.map((p) => p.backendSlug));
 
 /** /vans-for-sale/{region}: the regions that have a page. */
-export const REGION_KEYS: readonly string[] = ["london", "wales", "bristol"];
+export const REGION_KEYS: readonly string[] = ["london", "wales", "bristol", "manchester", "birmingham", "leeds", "scotland"];
 
 export const findLanding = (key: string) => LANDING_PAGES.find((p) => p.key === key);
 export const findRegion = (region: string) => (REGION_KEYS.includes(region) ? findLanding(region) : undefined);

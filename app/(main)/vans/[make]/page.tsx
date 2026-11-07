@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
-import { getListings } from "@/lib/listings/client";
+import { getListings, isCatalogueDegraded } from "@/lib/listings/client";
+import { shouldNoindexEmpty } from "@/lib/listings/extras-guard";
 import { getVanNewsArticles } from "@/lib/content/van-news";
 import { getBlogIndex } from "@/lib/content/blog";
 import { matchBlogPosts } from "@/lib/content/cross-links";
@@ -57,8 +58,8 @@ export async function generateMetadata({
     alternates: { canonical: absUrl(makeVansPath(make)) },
     openGraph: { title, description, url: absUrl(makeVansPath(make)), type: "website" },
     twitter: { card: "summary_large_image", title, description },
-    // A make nobody has stock for would be a thin page: keep it out of the index (it stays crawlable so its links still pass on).
-    ...(stat.count === 0 ? { robots: { index: false, follow: true } } : {}),
+    // A make nobody has stock for would be a thin page: keep it out of the index (it stays crawlable so its links still pass on). Only a REAL zero counts: while a stock feed is failing the count proves nothing.
+    ...(shouldNoindexEmpty(stat.count, await isCatalogueDegraded()) ? { robots: { index: false, follow: true } } : {}),
   };
 }
 

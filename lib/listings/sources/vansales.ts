@@ -155,16 +155,40 @@ async function getJson<T>(path: string, tags: string[] = ["vansales-private"]): 
   return res.ok ? ((await res.json()) as T) : null;
 }
 
-/** Every active private advert (the catalogue is merged in memory, like the other sources). Failure is the caller's to swallow: the rest of the site must keep serving. */
+/** Like getJson, but a failed page (429 rate limit, 5xx, timeout) THROWS instead of reading as "nothing there": a list fetch that silently came back empty looked like "no stock" and was cached. */
+async function getListJson<T>(path: string, tags: string[]): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, { headers: { Accept: "application/json" }, next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8_000) });
+  if (!res.ok) throw new Error(`vansales API ${res.status} for ${path}`);
+  return (await res.json()) as T;
+}
+
+/** Every active private advert (the catalogue is merged in memory, like the other sources). A failed page throws: the loader (client.ts) marks the catalogue degraded and keeps serving the last good one. */
 export async function fetchPrivateSellerListings(): Promise<Listing[]> {
   const out: Listing[] = [];
   for (let page = 1; page <= MAX_PAGES; page++) {
-    const body = await getJson<{ data: ApiCard[]; last_page: number }>(`/api/public/listings?seller_type=private&page=${page}`);
-    if (!body) break;
+    const body = await getListJson<{ data: ApiCard[]; last_page: number }>(`/api/public/listings?seller_type=private&page=${page}`, ["vansales-private"]);
     out.push(...body.data.map(toListing));
     if (page >= body.last_page) break;
   }
   return out;
+}
+
+export type ListingState = { state: "active" | "hidden" | "unknown" } | { state: "gone"; make: string | null; model: string | null };
+
+/** What became of /listing/{slug} (backend GET /listings/{slug}/status). `null` = the backend could not be asked (outage, rate limit): the caller must NOT turn that into a redirect or a 404, both of which are cached. */
+export async function fetchListingState(slug: string): Promise<ListingState | null> {
+  const backend = slug.replace(/^(?:dealer|private)-/, "");
+  if (!/^[a-z0-9-]{1,200}$/.test(backend)) return { state: "unknown" };
+  try {
+    const res = await fetch(`${BASE}/api/public/listings/${backend}/status`, { headers: { Accept: "application/json" }, next: { revalidate: 60, tags: ["vansales-private", "vansales-dealer"] }, signal: AbortSignal.timeout(6_000) });
+    if (!res.ok) return null;
+    const j = (await res.json()) as { state?: unknown; make?: unknown; model?: unknown };
+    if (j.state === "gone") return { state: "gone", make: typeof j.make === "string" ? j.make : null, model: typeof j.model === "string" ? j.model : null };
+    if (j.state === "active" || j.state === "hidden" || j.state === "unknown") return { state: j.state };
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 /** One private advert by its front-end slug ("private-<backend slug>"), with all its photos, video and description. Null if it is not (or no longer) active. */
@@ -188,12 +212,11 @@ export function dealerAdvertCardToListing(card: unknown): Listing | null {
   return c && typeof c === "object" && isDealerAdvert(c) ? toListing(c) : null;
 }
 
-/** Every active dealer portal advert (leftover legacy rows in the same feed are skipped). Failure is the caller's to swallow. */
+/** Every active dealer portal advert (leftover legacy rows in the same feed are skipped). A failed page throws, as for the private feed. */
 export async function fetchDealerPortalListings(): Promise<Listing[]> {
   const out: Listing[] = [];
   for (let page = 1; page <= MAX_PAGES; page++) {
-    const body = await getJson<{ data: ApiCard[]; last_page: number }>(`/api/public/listings?seller_type=dealer&page=${page}`, ["vansales-dealer"]);
-    if (!body) break;
+    const body = await getListJson<{ data: ApiCard[]; last_page: number }>(`/api/public/listings?seller_type=dealer&page=${page}`, ["vansales-dealer"]);
     for (const c of body.data) if (isDealerAdvert(c)) out.push(toListing(c));
     if (page >= body.last_page) break;
   }

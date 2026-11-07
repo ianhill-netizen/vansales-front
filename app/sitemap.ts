@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getListings } from "@/lib/listings/client";
+import { getListings, isCatalogueDegraded } from "@/lib/listings/client";
 import { getVanNewsArticles } from "@/lib/content/van-news";
 import { getBlogSlugs } from "@/lib/content/blog";
 import { getBackendGuides } from "@/lib/content/backend";
@@ -22,8 +22,21 @@ import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
 // Rebuilt every 5 minutes from live stock. Without this the sitemap was generated once, at deploy time, and kept whatever stock the API had at that moment (after the make-page change it listed one make page instead of the six that have stock).
 export const revalidate = 300;
 
+// The last sitemap built from a healthy stock feed. While a feed is failing (rate limit, outage) the stock-driven URLs would be missing or wrong, so this one is served instead of a thin sitemap that drops real make, model and listing pages.
+let lastGoodSitemap: MetadataRoute.Sitemap | null = null;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const built = await buildSitemap();
+  if (!built.degraded) {
+    lastGoodSitemap = built.entries;
+    return built.entries;
+  }
+  return lastGoodSitemap ?? built.entries;
+}
+
+async function buildSitemap(): Promise<{ entries: MetadataRoute.Sitemap; degraded: boolean }> {
   const base = siteUrl();
+  const degraded = await isCatalogueDegraded().catch(() => true);
   const [{ listings }, idx, dealers, guides, vanNews] = await Promise.all([
     getListings({}),
     loadCatalogue(),
@@ -137,7 +150,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }));
 
-  return [
+  const entries: MetadataRoute.Sitemap = [
     ...staticRoutes,
     ...bodyTypeRoutes,
     ...makeRoutes,
@@ -153,4 +166,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...landingRoutes,
     ...listingRoutes,
   ];
+  return { entries, degraded };
 }

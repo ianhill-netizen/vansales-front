@@ -8,7 +8,8 @@ import { FilterRail } from "@/components/filter-rail";
 import { Pagination } from "@/components/pagination";
 import { JsonLd } from "@/components/json-ld";
 import { SpecCard } from "@/components/spec-card";
-import { getListings, getFacets } from "@/lib/listings/client";
+import { getListings, getFacets, isCatalogueDegraded } from "@/lib/listings/client";
+import { shouldNoindexEmpty } from "@/lib/listings/extras-guard";
 import { InternalLinks } from "@/components/seo/internal-links";
 import { loadCatalogue, modelStat } from "@/lib/seo/catalogue";
 import { modelIntro, priceRange } from "@/lib/seo/intro";
@@ -126,8 +127,8 @@ export async function generateMetadata({
     alternates: { canonical: cleanPageUrl(makeSlug, modelSlug, result.page) },
     openGraph: { title, description, url: cleanPageUrl(makeSlug, modelSlug, result.page), type: "website" },
     twitter: { card: "summary_large_image", title, description },
-    // No stock = a thin page: out of the index, links still followed.
-    ...(stat.count === 0 ? { robots: { index: false, follow: true } } : {}),
+    // No stock = a thin page: out of the index, links still followed. Only a REAL zero counts: while a stock feed is failing the count proves nothing.
+    ...(shouldNoindexEmpty(stat.count, await isCatalogueDegraded()) ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
