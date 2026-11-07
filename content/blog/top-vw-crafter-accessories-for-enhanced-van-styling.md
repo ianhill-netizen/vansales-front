@@ -13,8 +13,6 @@ This article zeroes in on the top accessories that elevate the VW Crafter, cover
 
 ## [Roof Racks and Bars](https://vwaccessoriesshop.com/volkswagen-roof-racks-and-attachments.html)
 
-![Roof Racks and Bars](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/0076b72d-5673-4ecc-a0e5-641e2c9616d7.jpeg?st=2024-07-13T20%3A22%3A28Z&se=2024-07-20T20%3A22%3A28Z&sp=r&sv=2024-05-04&sr=b&sig=9NdodjooVVPa4DmuwSOjdLgwNp68vznlXQRK6EuFg/s%3D)
-
 ### Roof Racks and Bars Features
 
 The Rhino Modular Rack, renowned for its combination of strength, usability, and style, stands out as a leading choice for VW Crafter roof racks in the UK and Europe. Key features include:
@@ -43,8 +41,6 @@ This section of roof racks and bars not only provides practical solutions for ca
 
 ## Side Steps and Bars
 
-![Side Steps and Bars](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/a38dcf32-ff2f-4598-905a-7b4d6ea33da2.jpeg?st=2024-07-13T20%3A22%3A28Z&se=2024-07-20T20%3A22%3A28Z&sp=r&sv=2024-05-04&sr=b&sig=%2BgcCnYkZyCG7DPoYLhN3HGYVK4JT6ZDjZIMxIxkwBvI%3D)
-
 ### Side Steps and Bars Styles
 
 VW Crafter side steps are available in various styles, including polished, black side bars, and stainless steel with checker plate steps. Each style is designed not only to enhance the visual appeal of the vehicle but also to ensure durability and functionality. They are crafted from high-quality aluminium, ensuring that they are lightweight yet robust enough to withstand daily use.
@@ -58,8 +54,6 @@ Installing side steps on a VW Crafter can be a straightforward process, although
 The primary advantage of installing side steps on the VW Crafter is the ease of access they provide, making it significantly easier to enter and exit the vehicle. This is particularly beneficial for models with a higher ground clearance. Moreover, side steps protect the sill of the vehicle from scratches and dents. They also add an element of safety, as most are equipped with plastic strips or studs that provide grip and prevent slipping. Many of the available models are TÜV/ABE approved, indicating they meet high safety and quality standards.
 
 ## [LED Lighting Upgrades](https://www.ledperf.eu/high-power-led-bulbs-for-volkswagen-crafter-ii-headlights-p-38782.html)
-
-![LED Lighting Upgrades](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/f5b90379-3e8d-425a-b7b7-23f5ba9a45b0.jpeg?st=2024-07-13T20%3A22%3A29Z&se=2024-07-20T20%3A22%3A29Z&sp=r&sv=2024-05-04&sr=b&sig=wpRyZi5i8yZ7sRJWmbFA9BwWIvARldxNbUS7NJ/XpIc%3D)
 
 ### LED Lighting Upgrades Options
 
@@ -93,8 +87,6 @@ These upgrades provide a combination of style, efficiency, and enhanced visibili
 
 ## Alloy Wheels
 
-![Alloy Wheels](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/32abad9b-64f7-46ac-a332-ffd6e4aba2e5.jpeg?st=2024-07-13T20%3A22%3A28Z&se=2024-07-20T20%3A22%3A28Z&sp=r&sv=2024-05-04&sr=b&sig=UH6mTbW7Cd2rBDV5WD7WsAMNgU03su7bwsjHnfgm0sc%3D)
-
 ### Alloy Wheels Designs
 
 Volkswagen Crafter owners have a variety of alloy wheel designs to choose from, enhancing the aesthetic appeal of their vehicles. Popular designs include the classic 5-spoke, multi-spoke, and innovative turbine styles. These designs not only offer visual enhancement but also ensure even weight distribution across the wheel. Colour options range from silver and black to more unique shades like anthracite, chrome, and bronze, allowing for further personalisation.
@@ -108,8 +100,6 @@ Selecting the right alloy wheels involves considering several key fitment parame
 Alloy wheels offer significant advantages over traditional steel wheels. They are lighter, which reduces the unsprung weight of the vehicle, leading to improved acceleration, braking, and fuel efficiency. The enhanced heat dissipation properties of alloy wheels also benefit the braking system by reducing brake fade and extending the life of brake components. Additionally, the strength and durability of alloy wheels make them a cost-effective choice, withstanding harsh conditions while maintaining their aesthetic appeal. This upgrade not only boosts the vehicle’s performance but also its resale value, making alloy wheels a worthwhile investment for VW Crafter owners.
 
 ## [Front Grille Enhancements](https://www.ebay.com/b/Grilles-for-Volkswagen-Crafter/33645/bn_19398450)
-
-![Front Grille Enhancements](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/2e7eaacb-981d-4990-9982-b6457c62d1ea.jpeg?st=2024-07-13T20%3A22%3A28Z&se=2024-07-20T20%3A22%3A28Z&sp=r&sv=2024-05-04&sr=b&sig=enlSQUONJbGwTa990eOgc3bngVotadML2jCNc39SZmc%3D)
 
 ### Front Grille Enhancements Styles
 

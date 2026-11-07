@@ -10,6 +10,7 @@ import { listingPath } from "@/lib/listings/slug";
 import { listingTitle } from "@/lib/listings/format";
 import { usedVanMakes, usedVanModelsOfMake, usedVanName, usedVanPath, vansPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
+import { makeVansPath } from "@/lib/seo/make-url";
 
 // Self-referencing canonical, ISR, and a model/make that is not one of the allowlisted pages is a 404. The stock-driven /vans/{make} page is a different page (filters, facets): linked, not duplicated.
 export const revalidate = 300;
@@ -68,7 +69,7 @@ export default async function UsedVansMake({ params }: { params: Promise<Params>
           <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">Used {make} Vans For Sale</h1>
           <p className="mt-3 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">
             Pick a model for the buying guide and the {make} vans listed now, or filter all {make} stock on the{" "}
-            <Link href={`/vans/${makeSlug}`} className="font-semibold text-brand-700 hover:underline">{make} vans search</Link>.
+            <Link href={makeVansPath(makeSlug)} className="font-semibold text-brand-700 hover:underline">{make} vans search</Link>.
           </p>
         </Container>
       </section>
@@ -92,7 +93,7 @@ export default async function UsedVansMake({ params }: { params: Promise<Params>
         <section>
           <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{make} vans for sale now</h2>
           {stock.listings.length === 0 ? (
-            <p className="mt-3 text-ink-600">There is no {make} on Vansales right now. <Link href={`/vans/${makeSlug}`} className="font-semibold text-brand-700 hover:underline">See similar vans</Link> or check back soon.</p>
+            <p className="mt-3 text-ink-600">There is no {make} on Vansales right now. <Link href={makeVansPath(makeSlug)} className="font-semibold text-brand-700 hover:underline">See similar vans</Link> or check back soon.</p>
           ) : (
             <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {stock.listings.map((l, i) => <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />)}

@@ -195,7 +195,7 @@ The starting price for the new Defender 90 Hard Top is approximately £35,820, w
 **How comfortable is the Land Rover Defender?**  
 While the Defender may not match the comfort levels of the most luxurious SUVs, it is the most comfortable among the dedicated, off-road-capable SUVs. It offers a smoother ride in urban settings and on highways compared to the Jeep Wrangler. Its ability to provide a comfortable and quiet ride, despite its exceptional off-road capabilities, is quite impressive.
 
-![Image](https://app.writesonic.com/_next/static/media/document-checkmark.66a97757.svg)2984 words
+2984 words
 
 Back
 

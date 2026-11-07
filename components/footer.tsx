@@ -12,7 +12,7 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/vans/tipper",    label: "Tippers & dropsides" },
       { href: "/vans/crew-van",  label: "Crew vans" },
       { href: "/vans/pickup",    label: "Pickup trucks" },
-      { href: "/vans/electric",  label: "Electric vans" },
+      { href: "/electric-vans",  label: "Electric vans" },
     ],
   },
   {
@@ -35,7 +35,7 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/sell-my-van",       label: "Sell my van" },
       { href: "/van-finance",       label: "Van finance" },
       { href: "/van-insurance",     label: "Van insurance" },
-      { href: "/van-contract-hire", label: "Van leasing" },
+      { href: "/van-lease-deals", label: "Van leasing" },
       { href: "/van-reviews",       label: "Van reviews" },
       { href: "/blog",              label: "Guides & news" },
       { href: "https://dealer.vansales.com/login",       label: "Dealer login" },

@@ -48,7 +48,7 @@ const GUIDES_ITEMS = [
 
 const FINANCE_ITEMS = [
   { href: "/van-finance",       label: "Van finance" },
-  { href: "/van-contract-hire", label: "Van leasing" },
+  { href: "/van-lease-deals", label: "Van leasing" },
   { href: "/van-insurance",     label: "Insurance" },
 ];
 

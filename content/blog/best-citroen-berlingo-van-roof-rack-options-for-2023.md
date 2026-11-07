@@ -13,8 +13,6 @@ This article explores the best Citroen Berlingo van roof rack options available 
 
 ## [Van Guard ULTIbar Roof Rack](https://van-guard.co.uk/citroen-berlingo-2008-on-roof-bars-2x-ulti-bars-l1-l2h1/)
 
-![Best Citroen Berlingo Van Roof Rack Options for 2023](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/b865fb6a-c108-455c-9d12-58e06f97f1b8.jpeg?st=2024-07-15T15%3A34%3A20Z&se=2024-07-22T15%3A34%3A20Z&sp=r&sv=2024-05-04&sr=b&sig=qbhIQDw64%2BG8LwiZlusAf9MU5Q8C3SiNls8U8UrIe3w%3D)
-
 Best Citroen Berlingo Van Roof Rack Options for 2023
 
 The Van Guard ULTIbar Roof Rack stands out as a tailor-made solution for the Citroen Berlingo 2008 – 2018 models, ensuring a perfect fit and easy installation. Designed and manufactured in Britain, these roof bars are constructed from anodised aluminium, preventing corrosion and offering a lightweight yet extremely strong structure.
@@ -40,8 +38,6 @@ This roof rack is ideal for professionals who require a reliable and efficient w
 
 ## [Rhino KammBar Roof Bars](https://www.rhinoroofracks.com/rhino-kammbar-3-bar-system-citroen-berlingo-2008-on-swb-twin-doors.html)
 
-![Best Citroen Berlingo Van Roof Rack Options for 2023](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/d9ab5914-a449-4d15-aedd-df9d04b8dff6.jpeg?st=2024-07-15T15%3A34%3A18Z&se=2024-07-22T15%3A34%3A18Z&sp=r&sv=2024-05-04&sr=b&sig=nW5OJKN6ayhV5R3pMgtKpQEu7SVUsxeM7mqukh%2BVu4k%3D)
-
 Best Citroen Berlingo Van Roof Rack Options for 2023
 
 The Rhino KammBar Roof Bars are designed to enhance the functionality of the Citroen Berlingo, particularly for models from 2008 onwards. These bars integrate seamlessly with the van’s existing mounting points, covered by white plastic caps, which are M8 threaded holes. The unique curve adaptation at the front fixing point ensures the rack remains level, providing a stable platform for transporting goods.
@@ -65,8 +61,6 @@ The Rhino KammBar Roof Bars are priced competitively, with costs varying dependi
 These roof bars are ideal for professionals needing to transport ladders, pipe tubes, or other long materials, offering a combination of strength, aerodynamics, and ease of use that sets them apart in the market.
 
 ## [Van Demon Aluminium Roof Rack](https://www.vandemon.co.uk/products/citroen-berlingo-roof-racks/)
-
-![Best Citroen Berlingo Van Roof Rack Options for 2023](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/b577b196-0976-4237-9112-003122dc4965.jpeg?st=2024-07-15T15%3A34%3A19Z&se=2024-07-22T15%3A34%3A19Z&sp=r&sv=2024-05-04&sr=b&sig=6cEX3pgG%2BndUW2WPzNsqFw3tCdHqFH/10S5gT8s46NI%3D)
 
 Best Citroen Berlingo Van Roof Rack Options for 2023
 
@@ -93,8 +87,6 @@ The Van Demon Aluminium Roof Rack is competitively priced, reflecting its high q
 This rack is particularly suited for professionals who need a reliable and efficient way to transport large materials such as ladders and pipes, enhancing the utility of the Citroen Berlingo without compromising safety or performance.
 
 ## [Rhino Delta Bar Roof Rack](https://www.rhinoroofracks.com/rhino-roof-bars)
-
-![Best Citroen Berlingo Van Roof Rack Options for 2023](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/9683ddf7-c16d-43ee-80a4-ee0342fc046b.jpeg?st=2024-07-15T15%3A34%3A18Z&se=2024-07-22T15%3A34%3A18Z&sp=r&sv=2024-05-04&sr=b&sig=HTgGhOrFMND2hThmxyypXb7apFt0aMbprkeNxtJnr1w%3D)
 
 Best Citroen Berlingo Van Roof Rack Options for 2023
 
