@@ -1,5 +1,5 @@
 /**
- * The four standalone landing pages. Pure data, no I/O. H1, meta title, meta description and canonical are fixed here; the body is vansales-backend's content_pages row (page_type guide), written by Gemini.
+ * The standalone landing pages (including the two finance_sub guides). Pure data, no I/O. H1, meta title, meta description and canonical are fixed here; the body is vansales-backend's content_pages row (page_type guide), written by Gemini.
  * Keep the backend slugs in step with vansales-backend App\Support\LandingPageDefs.
  * `kind: "buying"` pages carry an ItemList of live stock; `kind: "guide"` pages carry an Article.
  * A landing page is a guide row in content_pages, so the blog would list it too: LANDING_BACKEND_SLUGS keeps it out of /blog and its sitemap, and /blog/{slug} is a 301 to the real URL (next.config.ts).
@@ -94,6 +94,20 @@ export const LANDING_PAGES: readonly LandingDef[] = [
     title: "Vans For Sale Under £15000 | Used Vans UK | Vansales.com",
     description: "Used vans for sale under £15,000. The sweet spot budget. Browse stock and read our guide to the best used van value in 2026.",
     related: [FINANCE, { href: "/van-lease-deals", label: "Van lease deals" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }, { href: "/used-vans/mercedes-benz/sprinter-for-sale", label: "Used Mercedes Sprinter for sale" }],
+  },
+  {
+    key: "bad-credit-van-finance", backendSlug: "bad-credit-van-finance", path: "/bad-credit-van-finance", kind: "guide", eyebrow: "Van finance",
+    h1: "Bad Credit Van Finance",
+    title: "Bad Credit Van Finance UK | Vansales.com",
+    description: "Van finance with a poor credit history: how it works, who can apply, what to watch for and how to apply. A plain guide for tradespeople.",
+    related: [FINANCE, { href: "/hire-purchase-vans", label: "Hire purchase vans" }, { href: "/van-lease-deals", label: "Van lease deals" }, { href: "/van-finance-calculator", label: "Van finance calculator" }],
+  },
+  {
+    key: "van-finance-calculator", backendSlug: "van-finance-calculator", path: "/van-finance-calculator", kind: "guide", eyebrow: "Van finance",
+    h1: "Van Finance Calculator",
+    title: "Van Finance Calculator UK | Vansales.com",
+    description: "How a van finance calculator works, what to put in it and how to read the result. A plain guide for tradespeople and small businesses.",
+    related: [FINANCE, { href: "/hire-purchase-vans", label: "Hire purchase vans" }, { href: "/bad-credit-van-finance", label: "Bad credit van finance" }, { href: "/used-vans/ford/transit-custom-for-sale", label: "Used Ford Transit Custom for sale" }],
   },
 ];
 

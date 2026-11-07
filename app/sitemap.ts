@@ -17,6 +17,7 @@ import { getLiveSellSlugs } from "@/lib/content/sell-pages";
 import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
 import { LANDING_PAGES } from "@/lib/landing-pages";
 import { getLiveLandingSlugs } from "@/lib/content/landing-pages";
+import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
 
 // Rebuilt every 5 minutes from live stock. Without this the sitemap was generated once, at deploy time, and kept whatever stock the API had at that moment (after the make-page change it listed one make page instead of the six that have stock).
 export const revalidate = 300;
@@ -47,6 +48,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...[...new Set(usedVanModels.map((m) => m.makeSlug))].map((slug) => ({ url: `${base}/used-vans/${slug}`, changeFrequency: "weekly" as const, priority: 0.6 })),
     ...usedVanModels.map((m) => ({ url: `${base}${usedVanPath(m)}`, changeFrequency: "weekly" as const, priority: 0.65 })),
   ];
+  // /used-vans/{make}: the make hub pages (page_type make_hub). A make the allowlist already lists above is not listed twice. Empty when the API is down.
+  const liveHubs = await getLiveMakeHubSlugs().catch(() => new Set<string>());
+  const alreadyListed = new Set(usedVanRoutes.map((r) => r.url));
+  const makeHubRoutes: MetadataRoute.Sitemap = [...liveHubs].map((slug) => ({ url: `${base}/used-vans/${slug}`, changeFrequency: "weekly" as const, priority: 0.6 })).filter((r) => !alreadyListed.has(r.url));
   // lastmod = the newest listing update behind the page (never an invented date); a page with no data of its own falls back to the newest update site-wide.
   const siteLast = idx.site.lastModified ?? undefined;
 
@@ -142,6 +147,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogRoutes,
     ...guideRoutes,
     ...usedVanRoutes,
+    ...makeHubRoutes,
     ...usedVanBodyTypeRoutes,
     ...sellRoutes,
     ...landingRoutes,
