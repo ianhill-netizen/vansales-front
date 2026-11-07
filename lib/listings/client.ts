@@ -14,6 +14,7 @@ import { getAcmeDemoListings } from "./sources/acme-demo";
 import { fetchNativeDbListings, fetchNativeDbListingById } from "./sources/db";
 import { fetchPrivateSellerListings, fetchPrivateSellerListingBySlug, fetchDealerPortalListings, fetchDealerPortalListingBySlug, PRIVATE_SLUG_PREFIX, DEALER_SLUG_PREFIX } from "./sources/vansales";
 import { sourceIdFromSlug, slugify } from "./slug";
+import { chooseExtras, shouldSkipRetry, type Extras } from "./extras-guard";
 import { resolveModelSlug } from "@/lib/models/image";
 import { getDealerConfig } from "@/lib/dealers/config";
 import { WHEELBASE_LABEL, titleCase } from "./format";
@@ -51,29 +52,54 @@ function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   return Promise.race([p, timeout]).finally(() => clearTimeout(timer));
 }
 
-/** Native (portal-added) listings + private sellers' adverts + vansales dealer portal adverts. Never throws; an upstream that fails or is slow contributes nothing for the next 60 s. */
-const loadExtras = unstable_cache(
+/** Native (portal-added) listings + private sellers' adverts + vansales dealer portal adverts. Never throws.
+ *  `degraded` is true when one of the two vansales-backend feeds failed (the legacy native database is optional and does not count): the listings are then partial, stale or empty, never "no stock".
+ *  A degraded load is NOT cached (a cached empty answer was what flipped real makes to noindex and out of the sitemap); the last good catalogue is served instead (stale-on-error), and after a failure the
+ *  API is left alone for RETRY_AFTER_FAILURE_MS so a rate-limited or struggling backend is not hit again by every request. */
+let lastGoodExtras: Listing[] | null = null;
+let lastFailedAt = 0;
+let lastAttempt: Listing[] = [];
+
+const loadExtrasCached = unstable_cache(
   async (): Promise<Listing[]> => {
     const t0 = Date.now();
+    let degraded = false;
     const [native, priv, dealerAdverts] = await Promise.all([
       withTimeout(fetchNativeDbListings(), EXTRAS_BUDGET_MS, "native listings (database)").catch((e: Error) => {
         console.warn(`[listings] native listings skipped after ${Date.now() - t0}ms: ${e.message}`);
         return [] as Listing[];
       }),
       withTimeout(fetchPrivateSellerListings(), EXTRAS_BUDGET_MS * 2, "private sellers feed").catch((e: Error) => {
-        console.warn(`[listings] private sellers' adverts skipped after ${Date.now() - t0}ms: ${e.message}`);
+        degraded = true;
+        console.warn(`[listings] private sellers' adverts failed after ${Date.now() - t0}ms: ${e.message}`);
         return [] as Listing[];
       }),
       withTimeout(fetchDealerPortalListings(), EXTRAS_BUDGET_MS * 2, "dealer portal adverts").catch((e: Error) => {
-        console.warn(`[listings] dealer portal adverts skipped after ${Date.now() - t0}ms: ${e.message}`);
+        degraded = true;
+        console.warn(`[listings] dealer portal adverts failed after ${Date.now() - t0}ms: ${e.message}`);
         return [] as Listing[];
       }),
     ]);
-    return [...native, ...priv, ...dealerAdverts];
+    lastAttempt = [...native, ...priv, ...dealerAdverts];
+    if (degraded) throw new Error("listing feeds degraded"); // a thrown run is not stored by unstable_cache
+    return lastAttempt;
   },
-  ["listing-extras-v2"],
+  ["listing-extras-v3"],
   { revalidate: 60, tags: ["listing-extras"] },
 );
+
+async function loadExtras(): Promise<Extras<Listing>> {
+  if (shouldSkipRetry(lastFailedAt, Date.now()) && lastGoodExtras) return { listings: lastGoodExtras, degraded: true };
+  try {
+    const listings = await loadExtrasCached();
+    lastGoodExtras = listings;
+    lastFailedAt = 0;
+    return { listings, degraded: false };
+  } catch {
+    lastFailedAt = Date.now();
+    return chooseExtras({ listings: lastAttempt, degraded: true }, lastGoodExtras);
+  }
+}
 
 /** The ACME Road Runner fixtures are for previewing the multi-dealer layout only. They never reach public responses unless SHOW_DEMO_LISTINGS=true (the data stays in the repo). */
 function demoListings(): Listing[] {
@@ -93,11 +119,13 @@ async function loadAllUncached(): Promise<{
   servedBy: ListingSource | "mock";
   live: boolean;
   feedTotal: number;
+  /** a vansales-backend feed failed: the catalogue is partial/stale, so a zero must not be read as "no stock" */
+  degraded: boolean;
 }> {
   const source = configuredSource();
 
   // Native listings + private sellers' adverts start NOW, in parallel with the main feed below, and are awaited only when merging.
-  const extrasP = loadExtras().catch(() => [] as Listing[]);
+  const extrasP = loadExtras().catch((): Extras<Listing> => ({ listings: [], degraded: true }));
 
   // Demo dealer listings are opt-in (SHOW_DEMO_LISTINGS) and off in production.
   const demo = demoListings();
@@ -105,24 +133,31 @@ async function loadAllUncached(): Promise<{
   if (source === "live") {
     // Real stock only: an empty catalogue is an honest answer, never a reason to show fixture vans.
     const extras = await extrasP;
-    const merged = [...extras, ...demo];
-    return { listings: merged, servedBy: "vansales", live: true, feedTotal: merged.length };
+    const merged = [...extras.listings, ...demo];
+    return { listings: merged, servedBy: "vansales", live: true, feedTotal: merged.length, degraded: extras.degraded };
   }
 
   // 'native' and 'mock' modes.
   const mock = getMockListings();
-  const merged = [...mock, ...(await extrasP), ...demo];
+  const extras = await extrasP;
+  const merged = [...mock, ...extras.listings, ...demo];
   return {
     listings: merged,
     servedBy: source === "native" ? "native" : "mock",
     live: false,
     feedTotal: merged.length,
+    degraded: extras.degraded,
   };
 }
 
 
 /** One catalogue load per request: getListings() and getFacets() on the same page share it. */
 const loadAll = cache(loadAllUncached);
+
+/** True when a live feed failed for this request's catalogue (shares the per-request load with getListings): pages must not treat an empty make/model as "no stock" then. */
+export async function isCatalogueDegraded(): Promise<boolean> {
+  return (await loadAll()).degraded;
+}
 
 const csv = (v: string) => v.split(",").map((s) => s.trim()).filter(Boolean);
 
