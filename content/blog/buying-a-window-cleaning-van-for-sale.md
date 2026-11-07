@@ -42,7 +42,7 @@ This is one of the distinct qualities of a window cleaning van for sale.
 It should be remembered, however, that different types of vans can be made into window cleaning vans. For example, it’s possible for a large low-loading van to be equipped as a cleaning van. The same goes for one that doesn’t have such a low frame and is higher up on the chassis. See Ford Transit For Sale  
 Typical Vans Used  
 Renault Trafic  
-Ford Transit [](https://www.vansales.com/van/ford-transit-van/) 
+Ford Transit  
 
 ### **2.  Water tanks**
 

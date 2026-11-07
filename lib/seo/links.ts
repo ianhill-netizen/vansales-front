@@ -12,7 +12,7 @@ export function makeLinks(excludeSlug?: string): InternalLink[] {
 }
 
 export function categoryLinks(excludeSlug?: string): InternalLink[] {
-  return CATEGORIES.filter((c) => c.slug !== excludeSlug).map((c) => ({ href: `/vans/${c.slug}`, label: `${c.label} for sale` }));
+  return CATEGORIES.filter((c) => c.slug !== excludeSlug).map((c) => ({ href: c.slug === "electric" ? "/electric-vans" : `/vans/${c.slug}`, label: `${c.label} for sale` }));
 }
 
 export function modelLinksOfMake(makeSlug: string, excludeModel?: string): InternalLink[] {

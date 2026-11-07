@@ -31,7 +31,9 @@ const nextConfig: NextConfig = {
       { source: "/vans/electric", destination: "/electric-vans" },
       ...LANDING_PAGES.map((l) => ({ source: `/blog/${l.backendSlug}`, destination: l.path })),
     ].map((r) => ({ ...r, statusCode: 301 as const }));
-    return [...landing, ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
+    // /inspection-guide never existed on this site (a dead link found by the SE Ranking audit of 2026-11-06, 404): it goes to the used-van inspection checklist, the guide it was meant for.
+    const retired = [{ source: "/inspection-guide", destination: "/blog/used-van-inspection-checklist", statusCode: 301 as const }];
+    return [...landing, ...retired, ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
   },
   // The share-image routes read fonts and make logos from disk at request time; make sure they ship with the functions.
   outputFileTracingIncludes: {

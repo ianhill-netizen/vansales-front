@@ -11,8 +11,6 @@ As we explore the top business van lease deals for 2024, this article will cover
 
 ## [Ford Transit Custom](https://www.ford.com/trucks/transit-passenger-van-wagon/)
 
-![Ford Transit Custom](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/61e82fea-b376-45aa-bb55-ab314a9d1113.png?st=2024-07-15T14%3A31%3A17Z&se=2024-07-22T14%3A31%3A17Z&sp=r&sv=2024-05-04&sr=b&sig=vC5WLKsWI6eRltp6kdFwSdDURXOHF865t/Dndom1gPw%3D)
-
 The Ford Transit Custom continues to dominate the UK market as a top choice for businesses requiring a reliable, versatile van. Known for its practicality and robust performance, the Transit Custom offers a range of models including the eco-friendly hybrid, the durable diesel, and the fully-electric versions, ensuring there is a fit for every business need.
 
 ### Ford Transit Custom Features
@@ -30,8 +28,6 @@ The Ford Transit Custom isn’t just about carrying capacity and comfort; it’s
 Ford’s commitment to versatility and sustainability makes the Transit Custom a leading option for businesses looking to lease a medium-sized van. Its array of features, combined with flexible leasing terms and advanced powertrain options, ensure it meets a wide range of business needs while maintaining cost-effectiveness and environmental responsibility.
 
 ## Volkswagen Transporter
-
-![Volkswagen Transporter](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/08c9561f-ba21-48bc-911d-6a4cca7e27c4.jpeg?st=2024-07-15T14%3A31%3A17Z&se=2024-07-22T14%3A31%3A17Z&sp=r&sv=2024-05-04&sr=b&sig=IwMzOoY5tWPOL/RRoZ3tPUpKFqqtluxaS5h9Nf40SB0%3D)
 
 The Volkswagen Transporter continues to be a stalwart in the UK commercial van market, with its latest iteration, the Transporter 6.1, offering enhanced comfort, practicality, and technology. Renowned for its smooth driving dynamics and robust build quality, the Transporter is an excellent choice for businesses requiring a reliable and versatile vehicle.
 
@@ -51,8 +47,6 @@ The Transporter’s blend of car-like handling, advanced technology, and robust 
 
 ## [Mercedes-Benz Sprinter](https://www.mbvans.com/en/special-offers)
 
-![Mercedes-Benz Sprinter](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/cdf1a0c4-f509-44bd-b57f-ce63f0ea76dd.png?st=2024-07-15T14%3A31%3A16Z&se=2024-07-22T14%3A31%3A16Z&sp=r&sv=2024-05-04&sr=b&sig=MOJ16dmSDUfpRXMEyyVfwdn5DKEq9rgIv6NS6jT434I%3D)
-
 The Mercedes-Benz Sprinter sets a high standard for cargo vans, combining robust safety features, expansive cargo capacity, and flexible lease options to meet the diverse needs of business users.
 
 ### Mercedes-Benz Sprinter Cargo Capacity
@@ -71,8 +65,6 @@ The Mercedes-Benz Sprinter, with its extensive cargo capacity, advanced safety f
 
 ## Renault Trafic
 
-![Renault Trafic](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/9e457770-3621-4ac3-8b41-d44988f7bf37.jpeg?st=2024-07-15T14%3A31%3A16Z&se=2024-07-22T14%3A31%3A16Z&sp=r&sv=2024-05-04&sr=b&sig=SZzfhzym9KCyoBHL/bFAFrwqTrkkQduibjYhZge%2BNz0%3D)
-
 Renowned for its versatility and robust performance, the Renault Trafic stands out in the medium-sized van sector. With a variety of models tailored to different needs, this van is ideal for tradespeople and businesses looking for a reliable leasing option.
 
 ### Renault Trafic Performance
@@ -90,8 +82,6 @@ Leasing a Renault Trafic can be highly beneficial for businesses looking to mana
 The Renault Trafic, with its comprehensive range of models, performance capabilities, and comfortable interiors, coupled with attractive lease deals, makes it a top choice for businesses seeking a dependable and efficient van leasing solution. Its adaptability to different business needs and cost-effective leasing options make it particularly appealing in the competitive commercial vehicle market.
 
 ## [Vauxhall Vivaro](https://www.vauxhall.co.uk/vans/vivaro/offers-finance/diesel/finance-lease.html)
-
-![Vauxhall Vivaro](https://wsstgprdphotosonic01.blob.core.windows.net/photosonic/ca1caeb8-3a5a-44b1-8168-ce0f3840b79d.jpeg?st=2024-07-15T14%3A31%3A17Z&se=2024-07-22T14%3A31%3A17Z&sp=r&sv=2024-05-04&sr=b&sig=QGLyLsPtXM58CF2NxKcLvdMMYpLIgkjenfcPees6Yjk%3D)
 
 The Vauxhall Vivaro stands out in the commercial vehicle market for its blend of practicality, efficiency, and innovative features. It is celebrated for its class-leading fuel economy, making it the ultimate all-rounder for various business needs.
 

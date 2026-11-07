@@ -108,8 +108,8 @@ export default async function BlogPostPage({ params }: Props) {
     ranger: { href: "/vans/pickup", label: "Pickup trucks" },
     hilux: { href: "/vans/pickup", label: "Pickup trucks" },
     amarok: { href: "/vans/pickup", label: "Pickup trucks" },
-    electric: { href: "/vans/electric", label: "Electric vans" },
-    ev: { href: "/vans/electric", label: "Electric vans" },
+    electric: { href: "/electric-vans", label: "Electric vans" },
+    ev: { href: "/electric-vans", label: "Electric vans" },
   };
 
   const seenHrefs = new Set<string>();
