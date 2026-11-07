@@ -11,7 +11,7 @@
     "db:seed": "npx tsx prisma/seed.ts",
     "db:migrate": "prisma migrate deploy",
     "check:links": "node scripts/check-redirect-links.mjs",
-    "test": "node --test lib/content/sanitize.test.ts lib/used-vans/models.test.ts lib/used-vans/body-types.test.ts lib/content/auto-link.test.ts lib/sell-pages.test.ts lib/landing-pages.test.ts"
+    "test": "node --test lib/content/sanitize.test.ts lib/used-vans/models.test.ts lib/used-vans/body-types.test.ts lib/content/auto-link.test.ts lib/sell-pages.test.ts lib/landing-pages.test.ts lib/listings/extras-guard.test.ts"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
