@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LocationInput, type LocationInputHandle } from "./location-input";
 import { RADII, locationParams, radiusLabel, saveLoc, type Place, type Radius } from "@/lib/location";
@@ -10,7 +10,7 @@ import { RADII, locationParams, radiusLabel, saveLoc, type Place, type Radius } 
  * The top of the results: the active location and radius as a pill, "Change" (opens the same postcode + Near me box right here, not a modal), and radius pills that widen the search without a new search
  * (each is a link with the radius swapped). `hrefs` are built by the page (current filters kept, page reset); `base` is the page's query without the location, used when the location is changed.
  */
-export function LocationBar({ postcode, town, radius, hrefs, base }: { postcode: string; town: string; radius: string; hrefs: Record<string, string>; base: Record<string, string> }) {
+export function LocationBar({ postcode, town, radius, lat, lng, hrefs, base }: { postcode: string; town: string; radius: string; lat?: number; lng?: number; hrefs: Record<string, string>; base: Record<string, string> }) {
   const router = useRouter();
   const [open, setOpen] = useState(!postcode);
   const [pc, setPc] = useState(postcode);
@@ -18,6 +18,8 @@ export function LocationBar({ postcode, town, radius, hrefs, base }: { postcode:
   const [error, setError] = useState("");
   const loc = useRef<LocationInputHandle>(null);
   const r = (RADII as readonly string[]).includes(radius) ? radius : "25";
+  // Whatever location and radius the results are showing is the one remembered for the next visit (so widening here is remembered too)
+  useEffect(() => { if (postcode) saveLoc({ postcode, town, lat, lng, radius: r as Radius }); }, [postcode, town, lat, lng, r]);
 
   async function apply(e: React.FormEvent) {
     e.preventDefault();

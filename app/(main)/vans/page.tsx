@@ -200,6 +200,8 @@ export default async function VansPage({
           postcode={directCoords || rawPostcode ? (one(sp.postcode) || rawPostcode).toUpperCase() : ""}
           town={one(sp.loc) || ""}
           radius={one(sp.radius) || "25"}
+          lat={buyerCoords?.lat}
+          lng={buyerCoords?.lng}
           hrefs={Object.fromEntries(["10", "25", "50", "100", "national"].map((r) => [r, hrefFor(sp, 1, { radius: r })]))}
           base={Object.fromEntries(Object.entries(sp).filter(([k]) => !["postcode", "lat", "lng", "loc", "near", "radius", "page"].includes(k)).map(([k, v]) => [k, one(v) ?? ""]).filter(([, v]) => v))}
         />
