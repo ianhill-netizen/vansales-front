@@ -169,6 +169,20 @@ export const LANDING_PAGES: readonly LandingDef[] = [
     description: "Changan vans in the UK: the range, who buys them, how they compare with established rivals, warranty and parts, and finance options.",
     related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans", label: "Used vans for sale" }],
   },
+  {
+    key: "sell-van-quickly", backendSlug: "sell-van-quickly", path: "/sell-van-quickly", kind: "guide", eyebrow: "Selling your van",
+    h1: "Sell My Van Quickly",
+    title: "Sell My Van Quickly UK | Vansales.com",
+    description: "Need to sell your van fast? The quickest routes in the UK, realistic timelines, what speed costs you and the red flags to avoid.",
+    related: [FINANCE, { href: "/sell-my-van", label: "Sell my van" }, { href: "/van-valuation", label: "Van valuation" }, { href: "/part-exchange-van", label: "Part exchange van" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
+  {
+    key: "part-exchange-van", backendSlug: "part-exchange-van", path: "/part-exchange-van", kind: "guide", eyebrow: "Selling your van",
+    h1: "Part Exchange Van",
+    title: "Part Exchange Van UK | Vansales.com",
+    description: "Part exchange a van: how it works, how dealers value it, when it makes sense, how to negotiate and what happens to finance.",
+    related: [FINANCE, { href: "/sell-my-van", label: "Sell my van" }, { href: "/van-valuation", label: "Van valuation" }, { href: "/sell-van-quickly", label: "Sell my van quickly" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
 ];
 
 export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set(LANDING_PAGES.map((p) => p.backendSlug));
