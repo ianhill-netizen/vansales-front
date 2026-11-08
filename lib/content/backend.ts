@@ -7,6 +7,7 @@
  */
 import { escapeHtml, safeImageUrl, sanitizeGuideHtml } from "@/lib/content/sanitize";
 import { LANDING_BACKEND_SLUGS } from "@/lib/landing-pages";
+import { apiHeaders } from "@/lib/api-headers";
 
 const BASE = (process.env.VANSALES_API_URL || process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
 const REVALIDATE = 300;
@@ -43,7 +44,7 @@ const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export async function getJson(path: string): Promise<{ status: number; json: unknown } | null> {
   try {
-    const res = await fetch(`${BASE}${path}`, { headers: { Accept: "application/json" }, next: { revalidate: REVALIDATE }, signal: AbortSignal.timeout(TIMEOUT_MS) });
+    const res = await fetch(`${BASE}${path}`, { headers: apiHeaders(), next: { revalidate: REVALIDATE }, signal: AbortSignal.timeout(TIMEOUT_MS) });
     if (res.status === 404) return { status: 404, json: null };
     if (!res.ok) return null;
     return { status: res.status, json: await res.json() };

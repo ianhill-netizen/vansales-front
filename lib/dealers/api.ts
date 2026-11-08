@@ -1,5 +1,6 @@
 import type { Listing } from "@/lib/listings/types";
 import { dealerAdvertCardToListing } from "@/lib/listings/sources/vansales";
+import { apiHeaders } from "@/lib/api-headers";
 
 /* =============================================================================
    DEALERS FROM THE VANSALES API (dealer portal)
@@ -69,7 +70,7 @@ export type DealerProfileResult =
 const SLUG = /^[a-z0-9][a-z0-9-]{0,120}$/;
 
 async function get(path: string): Promise<Response> {
-  return fetch(`${BASE}${path}`, { headers: { Accept: "application/json" }, next: { revalidate: REVALIDATE, tags: ["vansales-dealers"] }, signal: AbortSignal.timeout(TIMEOUT_MS) });
+  return fetch(`${BASE}${path}`, { headers: apiHeaders(), next: { revalidate: REVALIDATE, tags: ["vansales-dealers"] }, signal: AbortSignal.timeout(TIMEOUT_MS) });
 }
 
 export async function fetchApiDealerProfile(slug: string): Promise<DealerProfileResult> {

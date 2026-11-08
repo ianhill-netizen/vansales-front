@@ -1,6 +1,7 @@
 import type { VanDetails } from "@/lib/listings/vanDetails";
 import type { DealerContact, HpiCheckPublic, Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
+import { apiHeaders } from "@/lib/api-headers";
 
 /* =============================================================================
    PRIVATE SELLERS' ADVERTS — vansales-backend public feed
@@ -151,13 +152,13 @@ function toListing(c: ApiCard | ApiDetail): Listing {
 }
 
 async function getJson<T>(path: string, tags: string[] = ["vansales-private"]): Promise<T | null> {
-  const res = await fetch(`${BASE}${path}`, { headers: { Accept: "application/json" }, next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8_000) });
+  const res = await fetch(`${BASE}${path}`, { headers: apiHeaders(), next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8_000) });
   return res.ok ? ((await res.json()) as T) : null;
 }
 
 /** Like getJson, but a failed page (429 rate limit, 5xx, timeout) THROWS instead of reading as "nothing there": a list fetch that silently came back empty looked like "no stock" and was cached. */
 async function getListJson<T>(path: string, tags: string[]): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { headers: { Accept: "application/json" }, next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8_000) });
+  const res = await fetch(`${BASE}${path}`, { headers: apiHeaders(), next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8_000) });
   if (!res.ok) throw new Error(`vansales API ${res.status} for ${path}`);
   return (await res.json()) as T;
 }
@@ -180,7 +181,7 @@ export async function fetchListingState(slug: string): Promise<ListingState | nu
   const backend = slug.replace(/^(?:dealer|private)-/, "");
   if (!/^[a-z0-9-]{1,200}$/.test(backend)) return { state: "unknown" };
   try {
-    const res = await fetch(`${BASE}/api/public/listings/${backend}/status`, { headers: { Accept: "application/json" }, next: { revalidate: 60, tags: ["vansales-private", "vansales-dealer"] }, signal: AbortSignal.timeout(6_000) });
+    const res = await fetch(`${BASE}/api/public/listings/${backend}/status`, { headers: apiHeaders(), next: { revalidate: 60, tags: ["vansales-private", "vansales-dealer"] }, signal: AbortSignal.timeout(6_000) });
     if (!res.ok) return null;
     const j = (await res.json()) as { state?: unknown; make?: unknown; model?: unknown };
     if (j.state === "gone") return { state: "gone", make: typeof j.make === "string" ? j.make : null, model: typeof j.model === "string" ? j.model : null };
