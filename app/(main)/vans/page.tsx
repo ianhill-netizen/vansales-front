@@ -4,6 +4,7 @@ import { Container } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import { VansFilter } from "@/components/search/vans-filter";
 import { QuickFilters } from "@/components/quick-filters";
+import { LocationBar } from "@/components/location/location-bar";
 import { Pagination } from "@/components/pagination";
 import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
@@ -194,6 +195,15 @@ export default async function VansPage({
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <Container className="py-8">
+        {/* The active location and radius: Change opens the postcode box inline; radius pills widen without a new search */}
+        <LocationBar
+          postcode={directCoords || rawPostcode ? (one(sp.postcode) || rawPostcode).toUpperCase() : ""}
+          town={one(sp.loc) || ""}
+          radius={one(sp.radius) || "25"}
+          hrefs={Object.fromEntries(["10", "25", "50", "100", "national"].map((r) => [r, hrefFor(sp, 1, { radius: r })]))}
+          base={Object.fromEntries(Object.entries(sp).filter(([k]) => !["postcode", "lat", "lng", "loc", "near", "radius", "page"].includes(k)).map(([k, v]) => [k, one(v) ?? ""]).filter(([, v]) => v))}
+        />
+
         {/* Filter pill row + modal */}
         <VansFilter total={total} facets={facets} picker={await getPickerData()} searchParams={sp} quickFilters={<QuickFilters sp={sp} />} />
 

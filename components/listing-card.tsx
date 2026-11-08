@@ -177,13 +177,13 @@ export function ListingCard({
             <span className="font-mono text-ink-400">{listing.stock_ref}</span>
           )}
           <span aria-hidden>·</span>
-          <span>{displayTown}</span>
           {distanceMiles != null && (
             <>
+              <span className="font-semibold text-brand-700">{Math.round(distanceMiles) === 1 ? "1 mile" : `${Math.round(distanceMiles)} miles`}</span>
               <span aria-hidden>·</span>
-              <span className="font-semibold text-brand-700">{Math.round(distanceMiles)} mi</span>
             </>
           )}
+          <span>{displayTown}</span>
         </p>
 
         {/* Title */}
