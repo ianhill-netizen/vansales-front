@@ -1,16 +1,12 @@
 import Link from "next/link";
 
+/** The vansales.com hub logo (public/logo.svg: navy plate, white "vansales", amber ".com" pill), 36px high everywhere it appears. */
 export function Logo({ tone = "dark" }: { tone?: "light" | "dark" }) {
-  const word = tone === "light" ? "text-white" : "text-ink-900";
+  void tone;   // one logo for every background: it carries its own navy plate
   return (
-    <Link href="/" className="inline-flex items-center gap-2.5" aria-label="Vansales home">
-      <span className="grid h-8 w-11 place-items-center rounded-[var(--radius-sm)] bg-plate font-mono text-[length:var(--text-base)] font-bold tracking-[var(--tracking-plate)] text-plate-ink ring-2 ring-ink-900/85">
-        VS
-      </span>
-      <span className={`font-display text-[length:var(--text-xl)] font-extrabold leading-none tracking-[var(--tracking-display)] ${word}`}>
-        vansales
-        <span className="text-accent-500">.</span>
-      </span>
+    <Link href="/" className="inline-flex items-center" aria-label="Vansales home">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo.svg" alt="vansales.com" height={36} width={189} style={{ height: 36, width: "auto" }} />
     </Link>
   );
 }
