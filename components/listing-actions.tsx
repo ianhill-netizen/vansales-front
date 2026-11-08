@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ListingActionLinks } from "@/lib/dealers/actions";
 import { BookCallModal } from "./book-call-modal";
+import { TestDriveModal } from "./test-drive-modal";
 import { ContactModal, type ContactChannel } from "./contact-modal";
 import { IconWhatsApp, IconMessage, IconPhone, IconExternalLink, IconHeart } from "./icons";
 import { ListingPxModal } from "./px/listing-px-modal";
@@ -64,6 +65,7 @@ function SaveRowButton({ id }: { id: string }) {
 export function ListingActions({ links, sold = false, showEnquire = true, buyer }: { links: ListingActionLinks; sold?: boolean; showEnquire?: boolean; buyer?: BuyerActions }) {
   const [callOpen, setCallOpen] = useState(false);
   const [pxOpen, setPxOpen] = useState(false);
+  const [tdOpen, setTdOpen] = useState(false);
   const [contact, setContact] = useState<ContactChannel | null>(null);
   if (buyer) {
     // The stacked, full-width buttons of a vansales advert: Enquire, WhatsApp and Text me (vansales' own number, quoting the reference), Call and Book a call (the dealer's, when offered), Part exchange, Share, Save.
@@ -96,6 +98,11 @@ export function ListingActions({ links, sold = false, showEnquire = true, buyer 
               Book a call
             </button>
           )}
+          {links.bookCall && (
+            <button type="button" disabled={sold} onClick={() => setTdOpen(true)} className={`${btn} ${secondary} disabled:opacity-50`}>
+              Book a test drive
+            </button>
+          )}
           {buyer.partExchange && (
             <button type="button" disabled={sold} onClick={() => setPxOpen(true)} className={`${btn} ${secondary} disabled:opacity-50`}>
               Part exchange
@@ -106,6 +113,7 @@ export function ListingActions({ links, sold = false, showEnquire = true, buyer 
         </div>
         {links.call && <ContactModal listingId={links.call.listingId} dealerName={links.call.dealerName} label={links.call.label} channel="call" callIntent open={contact !== null} onClose={() => setContact(null)} />}
         {links.bookCall && <BookCallModal listingId={links.bookCall.listingId} dealerName={links.bookCall.dealerName} open={callOpen} onClose={() => setCallOpen(false)} />}
+        {links.bookCall && <TestDriveModal listingId={links.bookCall.listingId} dealerName={links.bookCall.dealerName} open={tdOpen} onClose={() => setTdOpen(false)} />}
         {buyer.partExchange && <ListingPxModal listingId={buyer.listingId} open={pxOpen} onClose={() => setPxOpen(false)} />}
       </>
     );
