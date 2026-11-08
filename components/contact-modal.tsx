@@ -17,12 +17,19 @@ const KEY = "vansales:buyer";
  * {API}/api/public/listings/{id}/lead, which logs a lead FIRST and returns {ref, whatsapp_url} or {ref, phone_number}. Only then is a number shown or opened: WhatsApp opens wa.me with the message already typed
  * (it quotes the ref), Call reveals a tap-to-call link and "Quote ref VS-4821". Built on the native <dialog> (focus trap, Esc, inert page behind). `website` is a honeypot.
  */
-export function ContactModal({ listingId, dealerName, label, channel, open, onClose }: { listingId: string; dealerName: string; label: string; channel: ContactChannel; open: boolean; onClose: () => void }) {
+/** UK numbers in any spelling to E.164 (07700 900123 -> +447700900123); a number already starting + is kept. Null when it is not a phone number the API will take. */
+function toE164(raw: string): string | null {
+  const d = raw.replace(/[\s\-().]/g, "");
+  const n = d.startsWith("+") ? d : d.startsWith("00") ? `+${d.slice(2)}` : d.startsWith("0") ? `+44${d.slice(1)}` : d;
+  return /^\+[1-9]\d{7,14}$/.test(n) ? n.replace(/^\+440/, "+44") : null;
+}
+
+export function ContactModal({ listingId, dealerName, label, channel, open, onClose, callIntent = false }: { listingId: string; dealerName: string; label: string; channel: ContactChannel; open: boolean; onClose: () => void; /** Call: ring the vansales number instead of being given the dealer's: POST /api/public/call-intent/{id} (the lead is logged by the API). */ callIntent?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
-  const [result, setResult] = useState<{ ref: string; whatsapp_url?: string; phone_number?: string } | null>(null);
+  const [result, setResult] = useState<{ ref: string; whatsapp_url?: string; phone_number?: string; dial_number?: string; dealer_name?: string } | null>(null);
   const [saved, setSaved] = useState<{ first_name?: string; last_name?: string; mobile?: string }>({});
 
   useEffect(() => {
@@ -45,6 +52,32 @@ export function ContactModal({ listingId, dealerName, label, channel, open, onCl
     const fd = new FormData(e.currentTarget);
     const mine = { first_name: String(fd.get("first_name") ?? "").trim(), last_name: String(fd.get("last_name") ?? "").trim(), mobile: String(fd.get("mobile") ?? "").trim() };
     setState("submitting"); setError("");
+    if (channel === "call" && callIntent) {
+      // Masked call: the API makes a call intent for this mobile and hands back the vansales number to ring; the call is then forwarded to the dealer's team. The dealer's own number is never sent.
+      const e164 = toE164(mine.mobile);
+      if (!e164) { setError("Please enter a phone number we can call you back on, e.g. 07700 900 000."); setState("error"); return; }
+      try {
+        const res = await fetch(`${API}/api/public/call-intent/${encodeURIComponent(listingId)}`, {
+          method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ buyer_mobile: e164, first_name: mine.first_name, last_name: mine.last_name, website: fd.get("website") }),
+        });
+        const body = (await res.json().catch(() => ({}))) as { dial_number?: string; dealer_name?: string; ref?: string; message?: string; error?: string };
+        if (res.status === 201 && body.dial_number) {
+          try { localStorage.setItem(KEY, JSON.stringify(mine)); } catch {}
+          setResult({ ref: body.ref ?? "", dial_number: body.dial_number, dealer_name: body.dealer_name ?? dealerName }); setState("done");
+          // on a phone, dial straight away (the link below is the fallback)
+          if (window.matchMedia("(pointer: coarse)").matches) window.location.href = `tel:${body.dial_number.replace(/[^\d+]/g, "")}`;
+          return;
+        }
+        setError(res.status === 402 ? "This dealer is not taking calls through vansales right now. Please send a message instead."
+          : res.status === 429 ? "You have asked for a few calls already. Please try again in an hour."
+          : res.status === 404 ? "Sorry, this advert is no longer available." : (body.message ?? "Something went wrong. Please try again."));
+      } catch {
+        setError("We could not reach the server. Please check your connection and try again.");
+      }
+      setState("error");
+      return;
+    }
     try {
       const res = await fetch(`${API}/api/public/listings/${encodeURIComponent(listingId)}/lead`, {
         method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -91,12 +124,18 @@ export function ContactModal({ listingId, dealerName, label, channel, open, onCl
             <div className="flex items-start gap-3 rounded-[var(--radius-md)] bg-success-tint p-4">
               <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
               <div>
-                <p className="font-semibold text-success-600">{channel === "whatsapp" ? "Opening WhatsApp…" : "Here is the number."}</p>
-                <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">Your reference is <span className="font-semibold text-ink-900" data-testid="lead-ref">{result.ref}</span>.{channel === "call" ? " Quote it when you call." : ""}</p>
+                <p className="font-semibold text-success-600">{channel === "whatsapp" ? "Opening WhatsApp…" : result.dial_number ? "You're all set." : "Here is the number."}</p>
+                {result.ref && <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">Your reference is <span className="font-semibold text-ink-900" data-testid="lead-ref">{result.ref}</span>.{channel === "call" && !result.dial_number ? " Quote it when you call." : ""}</p>}
               </div>
             </div>
             {channel === "whatsapp" && result.whatsapp_url && (
               <a href={result.whatsapp_url} target="_blank" rel="noopener noreferrer" className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[#25D366] font-semibold text-white hover:bg-[#1ebe5d]"><IconWhatsApp width={18} height={18} aria-hidden />Open WhatsApp</a>
+            )}
+            {channel === "call" && result.dial_number && (
+              <>
+                <p className="text-[length:var(--text-sm)] text-ink-700" data-testid="call-now">Call <span className="font-semibold">{result.dial_number}</span> now — you&apos;ll be connected to {result.dealer_name}. Calls are recorded.</p>
+                <a href={`tel:${result.dial_number.replace(/[^\d+]/g, "")}`} className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-brand-600 text-[length:var(--text-lg)] font-bold text-white hover:bg-brand-700" data-testid="phone-link"><IconPhone width={18} height={18} aria-hidden />Call {result.dial_number}</a>
+              </>
             )}
             {channel === "call" && result.phone_number && (
               <a href={`tel:${result.phone_number.replace(/[^\d+]/g, "")}`} className="flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-brand-600 text-[length:var(--text-lg)] font-bold text-white hover:bg-brand-700" data-testid="phone-link"><IconPhone width={18} height={18} aria-hidden />{result.phone_number}</a>
@@ -113,7 +152,7 @@ export function ContactModal({ listingId, dealerName, label, channel, open, onCl
             <Field compact label="Mobile" required><input type="tel" name="mobile" required inputMode="tel" maxLength={30} pattern="[0-9+()\s.\-]{6,30}" title="A mobile number, e.g. 07700 900 000" autoComplete="tel" placeholder="07700 900 000" defaultValue={saved.mobile ?? ""} className={inputCls} /></Field>
             {state === "error" && <p role="alert" className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-sold-600">{error}</p>}
             <Button type="submit" variant="primary" size="lg" className="w-full" disabled={state === "submitting"}>
-              <Icon width={16} height={16} aria-hidden />{state === "submitting" ? "One moment…" : channel === "whatsapp" ? "Continue to WhatsApp" : "Show the number"}
+              <Icon width={16} height={16} aria-hidden />{state === "submitting" ? "One moment…" : channel === "whatsapp" ? "Continue to WhatsApp" : callIntent ? "Get the number to call" : "Show the number"}
             </Button>
             <p className="text-center text-[length:var(--text-xs)] text-ink-400">We log every contact so a dealer can trace it. Your details go only to {dealerName}.</p>
           </form>
