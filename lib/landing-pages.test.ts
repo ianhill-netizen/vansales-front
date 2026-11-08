@@ -2,9 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { LANDING_PAGES, LANDING_BACKEND_SLUGS, findLanding, findRegion } from "./landing-pages.ts";
 
-test("fifteen pages at the fifteen URLs with unique, in-limit copy", () => {
+test("nineteen pages at the nineteen URLs with unique, in-limit copy", () => {
   assert.deepEqual(LANDING_PAGES.map((p) => p.path), ["/van-lease-deals", "/electric-vans", "/vans-for-sale/london", "/hire-purchase-vans", "/vans-for-sale/wales", "/vans-for-sale/bristol", "/vans-for-sale-under-5000", "/vans-for-sale-under-10000", "/vans-for-sale-under-15000", "/bad-credit-van-finance", "/van-finance-calculator", "/vans-for-sale/manchester", "/vans-for-sale/birmingham", "/vans-for-sale/leeds", "/vans-for-sale/scotland", "/byd-vans-uk", "/maxus-vans-uk", "/leapmotor-vans-uk", "/changan-vans-uk"]);
-  assert.equal(new Set(LANDING_PAGES.map((p) => p.title)).size, 15);
+  assert.equal(new Set(LANDING_PAGES.map((p) => p.title)).size, 19);
   for (const p of LANDING_PAGES) {
     assert.ok(p.description.length <= 160, p.key);
     assert.ok(p.title.length <= 60 && p.title.endsWith("Vansales.com"), p.key);
