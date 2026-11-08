@@ -81,7 +81,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           <IconCheck width={20} height={20} className="mt-0.5 shrink-0 text-success-600" />
           <div>
             <p className="font-semibold text-success-600">Sent — {dealer ? dealer.name : "the seller"} will get back to you.</p>
-            <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">They will reply to <span className="font-semibold text-ink-800">{sentTo}</span>, so keep an eye on your inbox (and spam).{leadRef ? <> Your reference is <span className="font-semibold text-ink-800">{leadRef}</span>.</> : null}</p>
+            <p className="mt-1 text-[length:var(--text-sm)] text-ink-600">{sentTo ? <>They will reply to <span className="font-semibold text-ink-800">{sentTo}</span>, so keep an eye on your inbox (and spam).</> : <>They will reply to the email on your account, so keep an eye on your inbox (and spam).</>}{leadRef ? <> Your reference is <span className="font-semibold text-ink-800">{leadRef}</span>.</> : null}</p>
           </div>
         </div>
       ) : (
