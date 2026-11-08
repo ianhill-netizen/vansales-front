@@ -1,12 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { stringifyVehicles } from "@/lib/vehicle-chips";
 import type { PayMode } from "@/lib/finance";
 import type { PickerData } from "@/lib/listings/picker";
 import { VehiclePicker, EMPTY_SELECTION, countMatches, type PickerSelection } from "./picker/vehicle-picker";
 import { IconSearch } from "./icons";
+import { LocationInput, type LocationInputHandle } from "./location/location-input";
+import { RadiusPills } from "./location/radius-pills";
+import { DEFAULT_RADIUS, locationParams, readLoc, saveLoc, type Place, type Radius } from "@/lib/location";
 
 /* =============================================================================
    HOME SEARCH — the hero. Chip search (make / model), a location (typed town or
@@ -15,54 +18,34 @@ import { IconSearch } from "./icons";
    Submitting goes to /vans with everything in the URL.
    ============================================================================= */
 
-type Geo = { lat: number; lng: number; town: string; postcode: string };
-
-const RADII = ["10", "20", "30", "50", "100"];
-
-async function reverseGeocode(lat: number, lng: number): Promise<Geo> {
-  const res = await fetch(`https://api.postcodes.io/postcodes?lon=${lng}&lat=${lat}&limit=1`);
-  const body = (await res.json()) as { result?: { postcode: string; admin_district?: string | null; parish?: string | null }[] | null };
-  const r = body.result?.[0];
-  const town = (r?.admin_district || r?.parish || "").replace(/,?\s*City of$/i, "").trim();
-  return { lat, lng, town: town || "Near me", postcode: r?.postcode ?? "" };
-}
-
 export function HomeSearch({ total, picker }: { total: number; picker: PickerData }) {
   const router = useRouter();
   const [sel, setSel] = useState<PickerSelection>(EMPTY_SELECTION);
-  const [where, setWhere] = useState("");
-  const [geo, setGeo] = useState<Geo | null>(null);
-  const [radius, setRadius] = useState("30");
+  const [postcode, setPostcode] = useState("");
+  const [place, setPlace] = useState<Place | null>(null);
+  const [radius, setRadius] = useState<Radius>(DEFAULT_RADIUS);
   const [pay, setPay] = useState<PayMode>("cash");
   const [under10k, setUnder10k] = useState(false);
   const [ulez, setUlez] = useState(false);
-  const [locating, setLocating] = useState(false);
-  const [geoError, setGeoError] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const loc = useRef<LocationInputHandle>(null);
 
-  function nearMe() {
-    setGeoError("");
-    if (!navigator.geolocation) { setGeoError("Your browser can't share its location. Type a postcode instead."); return; }
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          setGeo(await reverseGeocode(pos.coords.latitude, pos.coords.longitude));
-        } catch {
-          setGeo({ lat: pos.coords.latitude, lng: pos.coords.longitude, town: "Near me", postcode: "" });
-        } finally {
-          setLocating(false);
-        }
-      },
-      (err) => {
-        setLocating(false);
-        setGeoError(err.code === err.PERMISSION_DENIED ? "Location permission was denied. Type a town or postcode instead." : "Couldn't get your location. Type a town or postcode instead.");
-      },
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
-    );
-  }
+  // The last postcode and radius used are remembered on this device: pre-fill them on return
+  useEffect(() => {
+    const s = readLoc();
+    if (!s) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading localStorage, which does not exist on the server
+    setPostcode(s.postcode); setRadius(s.radius);
+    if (s.lat != null && s.lng != null) setPlace({ postcode: s.postcode, town: s.town ?? "", lat: s.lat, lng: s.lng });
+  }, []);
 
-  function submit(e?: React.FormEvent) {
+  async function submit(e?: React.FormEvent) {
     e?.preventDefault();
+    if (busy) return;
+    setError(""); setBusy(true);
+    let resolved: Place | null = null;
+    try { resolved = await loc.current!.resolve(); } catch (err) { setError((err as Error).message); setBusy(false); return; }
     const p = new URLSearchParams();
     if (sel.vehicles.length > 0) p.set("v", stringifyVehicles(sel.vehicles));
     if (sel.body.length > 0) p.set("bodyStyle", sel.body.join(","));
@@ -70,14 +53,9 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
     if (pay !== "cash") p.set("pay", pay);
     if (under10k) p.set("maxPrice", "10000");
     if (ulez) p.set("ulez", "1");
-    if (geo) {
-      p.set("lat", geo.lat.toFixed(4));
-      p.set("lng", geo.lng.toFixed(4));
-      p.set("loc", geo.town);
-      p.set("radius", radius);
-    } else if (where.trim()) {
-      p.set("near", where.trim());
-      p.set("radius", radius);
+    if (resolved) {
+      for (const [k, v] of Object.entries(locationParams(resolved, radius))) p.set(k, v);
+      saveLoc({ postcode: resolved.postcode, town: resolved.town, lat: resolved.lat, lng: resolved.lng, radius });
     }
     const qs = p.toString();
     router.push(`/vans${qs ? `?${qs}` : ""}`);
@@ -88,44 +66,19 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
 
   return (
     <form onSubmit={submit} className="rounded-[var(--radius-2xl)] border border-border bg-white p-3 shadow-[var(--shadow-lg)] sm:p-4">
-      <VehiclePicker data={picker} value={sel} onChange={setSel} variant="popover" onSubmit={() => submit()} />
+      {/* Row 1: where you are */}
+      <LocationInput ref={loc} postcode={postcode} place={place} onChange={(pc, pl) => { setPostcode(pc); setPlace(pl); }} />
+
+      {/* Row 2: what you want, and how far you will go */}
+      <div className="mt-3">
+        <VehiclePicker data={picker} value={sel} onChange={setSel} variant="popover" onSubmit={() => void submit()} />
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="text-[length:var(--text-sm)] font-semibold text-ink-600">Within (miles)</span>
+        <RadiusPills value={radius} onChange={setRadius} />
+      </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2.5">
-        {/* Location */}
-        {geo ? (
-          <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 py-1 pl-3 pr-1.5 text-[length:var(--text-sm)] font-semibold text-brand-700">
-            {geo.town} ·
-            <select value={radius} onChange={(e) => setRadius(e.target.value)} aria-label="Search radius" className="cursor-pointer bg-transparent py-0.5 font-semibold text-brand-700 outline-none">
-              {RADII.map((r) => <option key={r} value={r}>{r} mi</option>)}
-            </select>
-            <button type="button" onClick={() => setGeo(null)} aria-label="Clear location" className="grid size-6 place-items-center rounded-full text-brand-400 hover:bg-brand-100 hover:text-brand-700">×</button>
-          </span>
-        ) : (
-          <>
-            <input
-              value={where}
-              onChange={(e) => setWhere(e.target.value)}
-              placeholder="Town or postcode"
-              aria-label="Town or postcode"
-              className="h-10 w-full rounded-[var(--radius-pill)] md:w-44 border border-border bg-white px-4 text-[length:var(--text-sm)] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:text-ink-400 focus:border-brand-400"
-            />
-            {where.trim() && (
-              <select value={radius} onChange={(e) => setRadius(e.target.value)} aria-label="Search radius" className="h-10 rounded-[var(--radius-pill)] border border-border bg-white px-3 text-[length:var(--text-sm)] font-medium text-ink-800 outline-none">
-                {RADII.map((r) => <option key={r} value={r}>{r} mi</option>)}
-              </select>
-            )}
-            <button
-              type="button"
-              onClick={nearMe}
-              disabled={locating}
-              className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-border bg-white px-4 md:w-auto text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 disabled:opacity-60"
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /><circle cx="12" cy="12" r="8" /></svg>
-              {locating ? "Locating…" : "Near me"}
-            </button>
-          </>
-        )}
-
         {/* Cash / Finance / Both */}
         <div className="inline-flex rounded-[var(--radius-lg)] border border-border bg-surface-1 p-0.5" role="group" aria-label="Show prices as">
           {(["cash", "finance", "both"] as const).map((m) => (
@@ -149,7 +102,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
         ))}
 
         <button
-          type="submit"
+          type="submit" disabled={busy}
           className="ml-auto inline-flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-xl)] px-7 text-[length:var(--text-base)] font-bold text-white shadow-[var(--shadow-md)] transition-all active:scale-[0.98] sm:w-auto"
           style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
         >
@@ -157,7 +110,7 @@ export function HomeSearch({ total, picker }: { total: number; picker: PickerDat
           {(() => { const n = sel.vehicles.length || sel.body.length || sel.fuel.length ? countMatches(picker, sel) : total; return n >= 20 ? `Search ${n.toLocaleString("en-GB")} vans` : "Search vans"; })()}
         </button>
       </div>
-      {geoError && <p role="alert" className="mt-2 text-[length:var(--text-xs)] text-red-600">{geoError}</p>}
+      {error && <p role="alert" className="mt-2 text-[length:var(--text-xs)] text-red-600">{error}</p>}
     </form>
   );
 }
