@@ -14,7 +14,9 @@ export const OPEN_ENQUIRY_EVENT = "vansales:open-enquiry";
 const btn = "flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
 /** Vansales' own WhatsApp / SMS number: buyers on a vansales advert message this one (quoting VS-{id}) instead of the dealer. */
-export const VANSALES_CONTACT_NUMBER = "+447463580222";
+export const VANSALES_CONTACT_NUMBER = "+447463580222";   // WhatsApp (Meta Cloud API number)
+/** Vansales' Twilio number: calls are forwarded to the dealer through it, and texts to it land on the lead. */
+export const VANSALES_SMS_NUMBER = "+447366906777";
 
 /** What the stacked buyer buttons need: the advert id (the "VS-" reference), its plain-English label ("AB12CDE Ford Transit"), its page URL, and whether a part-exchange valuation is on offer (dealer adverts). */
 export interface BuyerActions { listingId: string; label: string; shareUrl: string; shareTitle: string; partExchange: boolean }
@@ -78,7 +80,7 @@ export function ListingActions({ links, sold = false, showEnquire = true, buyer 
             <IconWhatsApp width={16} height={16} aria-hidden />
             WhatsApp
           </a>
-          <a href={`sms:${number}?&body=${encodeURIComponent(message)}`} aria-disabled={sold} className={`${btn} bg-[#0a84ff] text-white hover:brightness-110 focus-visible:ring-[#0a84ff] ${sold ? "pointer-events-none opacity-50" : ""}`}>
+          <a href={`sms:${VANSALES_SMS_NUMBER}?&body=${encodeURIComponent(message)}`} aria-disabled={sold} className={`${btn} bg-[#0a84ff] text-white hover:brightness-110 focus-visible:ring-[#0a84ff] ${sold ? "pointer-events-none opacity-50" : ""}`}>
             <IconMessage width={16} height={16} aria-hidden />
             Text me
           </a>
@@ -102,7 +104,7 @@ export function ListingActions({ links, sold = false, showEnquire = true, buyer 
           <ShareButton url={buyer.shareUrl} title={buyer.shareTitle} />
           <SaveRowButton id={buyer.listingId} />
         </div>
-        {links.call && <ContactModal listingId={links.call.listingId} dealerName={links.call.dealerName} label={links.call.label} channel="call" open={contact !== null} onClose={() => setContact(null)} />}
+        {links.call && <ContactModal listingId={links.call.listingId} dealerName={links.call.dealerName} label={links.call.label} channel="call" callIntent open={contact !== null} onClose={() => setContact(null)} />}
         {links.bookCall && <BookCallModal listingId={links.bookCall.listingId} dealerName={links.bookCall.dealerName} open={callOpen} onClose={() => setCallOpen(false)} />}
         {buyer.partExchange && <ListingPxModal listingId={buyer.listingId} open={pxOpen} onClose={() => setPxOpen(false)} />}
       </>
