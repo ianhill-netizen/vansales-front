@@ -7,6 +7,7 @@ import { IconArrow, IconCheck, IconStar } from "@/components/icons";
 import { getModelIndex } from "@/lib/listings/client";
 import { slugify } from "@/lib/listings/slug";
 import { SITE } from "@/lib/site";
+import { getGuideBodyHtml } from "@/lib/content/landing-pages";
 
 export const revalidate = 3600;
 
@@ -77,6 +78,8 @@ const FEATURED: {
 export default async function VanReviewsPage() {
   const index = await getModelIndex();
   const topMakes = [...new Set(index.map((e) => e.make))].slice(0, 12);
+  // The hub guide (backend content_pages `van-reviews`, sanitised on the server): shown below the model reviews once published; nothing extra renders until then or while the API is down.
+  const guideHtml = await getGuideBodyHtml("van-reviews").catch(() => null);
 
   return (
     <>
@@ -170,6 +173,14 @@ export default async function VanReviewsPage() {
           </p>
         </Container>
       </section>
+
+      {guideHtml && (
+        <section className="py-10" data-testid="van-reviews-guide">
+          <Container>
+            <article className="prose-vs max-w-3xl space-y-4 text-[length:var(--text-md)] leading-relaxed text-ink-600 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-[length:var(--text-xl)] [&_h2]:font-bold [&_h2]:text-ink-900 [&_h3]:mt-6 [&_h3]:font-semibold [&_h3]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-6 [&_a]:font-semibold [&_a]:text-brand-700 [&_a]:underline" dangerouslySetInnerHTML={{ __html: guideHtml }} />
+          </Container>
+        </section>
+      )}
 
       {/* Honest note */}
       <section className="py-10">

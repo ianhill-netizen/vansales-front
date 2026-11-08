@@ -7,6 +7,15 @@ import { getJson } from "@/lib/content/backend";
 import { sanitizeGuideHtml } from "@/lib/content/sanitize";
 import { LANDING_PAGES, type LandingDef } from "@/lib/landing-pages";
 
+/** The body of ONE backend guide row by slug, for a hand-built route that shows it under its own content (HAND_BUILT_GUIDE_SLUGS). Null when unpublished or the API is down: the route then renders as it did before. */
+export async function getGuideBodyHtml(slug: string): Promise<string | null> {
+  const res = await getJson(`/api/public/content/pages/${encodeURIComponent(slug)}`);
+  if (!res || res.status !== 200) return null;
+  const r = (res.json as { data?: unknown } | null)?.data as Record<string, unknown> | undefined;
+  if (!r || typeof r !== "object" || str(r.body_html).trim() === "") return null;
+  return sanitizeGuideHtml(str(r.body_html));
+}
+
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
 
 export type LandingResult = { status: "ok"; bodyHtml: string; published: string; modified: string } | { status: "missing" } | { status: "unavailable" };

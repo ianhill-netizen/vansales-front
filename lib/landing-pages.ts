@@ -183,9 +183,29 @@ export const LANDING_PAGES: readonly LandingDef[] = [
     description: "Part exchange a van: how it works, how dealers value it, when it makes sense, how to negotiate and what happens to finance.",
     related: [FINANCE, { href: "/sell-my-van", label: "Sell my van" }, { href: "/van-valuation", label: "Van valuation" }, { href: "/sell-van-quickly", label: "Sell my van quickly" }, { href: "/used-vans", label: "Used vans for sale" }],
   },
+  {
+    key: "van-news-uk", backendSlug: "van-news-uk", path: "/van-news-uk", kind: "guide", eyebrow: "Van news",
+    h1: "Van News",
+    title: "Van News UK: Latest Commercial Van News | Vansales.com",
+    description: "UK van news hub: new launches, electric van rules, ULEZ and clean air zones, fuel costs, van theft and DVLA changes, and what they mean for buying and selling.",
+    related: [FINANCE, { href: "/van-news", label: "Latest van news articles" }, { href: "/van-reviews", label: "Van reviews" }, { href: "/new-vans-2026", label: "New vans 2026" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
+  {
+    key: "new-vans-2026", backendSlug: "new-vans-2026", path: "/new-vans-2026", kind: "guide", eyebrow: "New vans",
+    h1: "New Vans 2026",
+    title: "New Vans 2026: Launches, Electric and Value | Vansales.com",
+    description: "New vans in 2026: the big launches, who is investing in their ranges, the shift to electric, new safety rules, best value and whether to buy new or used.",
+    related: [FINANCE, { href: "/van-reviews", label: "Van reviews" }, { href: "/van-news-uk", label: "Van news" }, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
 ];
 
-export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set(LANDING_PAGES.map((p) => p.backendSlug));
+/**
+ * Guide rows whose real page is a hand-built route that is NOT a landing page: /van-reviews (app/(main)/van-reviews/page.tsx, in the nav and the sitemap already) shows the backend `van-reviews` body under its own
+ * content. They stay out of /blog and /blog/{slug} is a 301 to the real URL (next.config.ts), exactly like the landing pages.
+ */
+export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = { "van-reviews": "/van-reviews" };
+
+export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set([...LANDING_PAGES.map((p) => p.backendSlug), ...Object.keys(HAND_BUILT_GUIDE_SLUGS)]);
 
 /** /vans-for-sale/{region}: the regions that have a page. */
 export const REGION_KEYS: readonly string[] = ["london", "wales", "bristol", "manchester", "birmingham", "leeds", "scotland"];

@@ -2,9 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { LANDING_PAGES, LANDING_BACKEND_SLUGS, findLanding, findRegion } from "./landing-pages.ts";
 
-test("twenty-one pages at the twenty-one URLs with unique, in-limit copy", () => {
-  assert.deepEqual(LANDING_PAGES.map((p) => p.path), ["/van-lease-deals", "/electric-vans", "/vans-for-sale/london", "/hire-purchase-vans", "/vans-for-sale/wales", "/vans-for-sale/bristol", "/vans-for-sale-under-5000", "/vans-for-sale-under-10000", "/vans-for-sale-under-15000", "/bad-credit-van-finance", "/van-finance-calculator", "/vans-for-sale/manchester", "/vans-for-sale/birmingham", "/vans-for-sale/leeds", "/vans-for-sale/scotland", "/byd-vans-uk", "/maxus-vans-uk", "/leapmotor-vans-uk", "/changan-vans-uk", "/sell-van-quickly", "/part-exchange-van"]);
-  assert.equal(new Set(LANDING_PAGES.map((p) => p.title)).size, 21);
+test("twenty-three pages at the twenty-three URLs with unique, in-limit copy", () => {
+  assert.deepEqual(LANDING_PAGES.map((p) => p.path), ["/van-lease-deals", "/electric-vans", "/vans-for-sale/london", "/hire-purchase-vans", "/vans-for-sale/wales", "/vans-for-sale/bristol", "/vans-for-sale-under-5000", "/vans-for-sale-under-10000", "/vans-for-sale-under-15000", "/bad-credit-van-finance", "/van-finance-calculator", "/vans-for-sale/manchester", "/vans-for-sale/birmingham", "/vans-for-sale/leeds", "/vans-for-sale/scotland", "/byd-vans-uk", "/maxus-vans-uk", "/leapmotor-vans-uk", "/changan-vans-uk", "/sell-van-quickly", "/part-exchange-van", "/van-news-uk", "/new-vans-2026"]);
+  assert.equal(new Set(LANDING_PAGES.map((p) => p.title)).size, 23);
   for (const p of LANDING_PAGES) {
     assert.ok(p.description.length <= 160, p.key);
     assert.ok(p.title.length <= 60 && p.title.endsWith("Vansales.com"), p.key);
@@ -34,7 +34,7 @@ test("the region route knows the seven regions; backend slugs are the content_pa
   assert.equal(findRegion("scotland")?.path, "/vans-for-sale/scotland");
   assert.equal(findRegion("northern-ireland"), undefined);
   assert.equal(findRegion("electric-vans"), undefined);
-  assert.deepEqual([...LANDING_BACKEND_SLUGS].sort(), ["bad-credit-van-finance", "byd-vans-uk", "changan-vans-uk", "electric-vans", "hire-purchase-vans", "leapmotor-vans-uk", "maxus-vans-uk", "part-exchange-van", "sell-van-quickly", "van-finance-calculator", "van-lease-deals", "vans-for-sale-birmingham", "vans-for-sale-bristol", "vans-for-sale-leeds", "vans-for-sale-london", "vans-for-sale-manchester", "vans-for-sale-scotland", "vans-for-sale-under-10000", "vans-for-sale-under-15000", "vans-for-sale-under-5000", "vans-for-sale-wales"]);
+  assert.deepEqual([...LANDING_BACKEND_SLUGS].sort(), ["bad-credit-van-finance", "byd-vans-uk", "changan-vans-uk", "electric-vans", "hire-purchase-vans", "leapmotor-vans-uk", "maxus-vans-uk", "new-vans-2026", "part-exchange-van", "sell-van-quickly", "van-finance-calculator", "van-lease-deals", "van-news-uk", "van-reviews", "vans-for-sale-birmingham", "vans-for-sale-bristol", "vans-for-sale-leeds", "vans-for-sale-london", "vans-for-sale-manchester", "vans-for-sale-scotland", "vans-for-sale-under-10000", "vans-for-sale-under-15000", "vans-for-sale-under-5000", "vans-for-sale-wales"]);
 });
 
 test("budget pages: price caps one pound under the budget, each links to /van-finance and the next tier up", () => {
