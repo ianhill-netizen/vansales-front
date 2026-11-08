@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Listing } from "@/lib/listings/types";
 import { Button } from "./ui";
 import { IconCheck } from "./icons";
 import { Field, inputCls } from "./enquiry-fields";
+import { authHeaders, getSession, keepSession } from "@/lib/person";
 import { PxFields } from "./px/px-fields";
 
 /** The vansales API's public host. Public on purpose: the browser posts to it directly, so the API sees the buyer's own address for its rate limit (5 messages an hour). */
@@ -25,6 +26,9 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
   const [error, setError] = useState("");
   const [sentTo, setSentTo] = useState("");
   const [leadRef, setLeadRef] = useState<string | null>(null);
+  const [signedIn, setSignedIn] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- the session lives in localStorage, which does not exist on the server
+  useEffect(() => { setSignedIn(getSession() !== null); }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,7 +41,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
     try {
       const res = await fetch(`${API}/api/public/listings/${encodeURIComponent(listing.source_id)}/enquire`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: { "Content-Type": "application/json", Accept: "application/json", ...authHeaders() },
         body: JSON.stringify({
           first_name: String(fd.get("first_name") ?? "").trim(),
           last_name: String(fd.get("last_name") ?? "").trim(),
@@ -49,7 +53,7 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           ...px, // optional part exchange: the reg and mileage only; the server looks the figure up itself
         }),
       });
-      if (res.status === 201) { const b = (await res.json().catch(() => ({}))) as { ref?: string | null }; setLeadRef(b.ref ?? null); setSentTo(email); setState("success"); return; }
+      if (res.status === 201) { const b = (await res.json().catch(() => ({}))) as { ref?: string | null; session?: unknown }; keepSession(b.session); setLeadRef(b.ref ?? null); setSentTo(email); setState("success"); return; }
       const body = (await res.json().catch(() => ({}))) as { message?: string; errors?: Record<string, string[]> };
       setError(
         res.status === 422 ? (Object.values(body.errors ?? {})[0]?.[0] ?? "Please check your details and try again.")
@@ -85,23 +89,26 @@ export function PrivateEnquiryForm({ listing }: { listing: Listing }) {
           {/* Honeypot: invisible to real users */}
           <input type="text" name="website" tabIndex={-1} aria-hidden="true" autoComplete="off" className="sr-only" />
 
-          <div className="grid grid-cols-2 gap-4">
+          {signedIn && <p className="text-[length:var(--text-sm)] text-ink-600">You are signed in, so the seller will get your details with your message.</p>}
+          <div className={signedIn ? "hidden" : "grid grid-cols-2 gap-4"}>
             <Field compact label="First name" required>
-              <input type="text" name="first_name" required maxLength={60} autoComplete="given-name" className={compact} />
+              <input type="text" name="first_name" required={!signedIn} maxLength={60} autoComplete="given-name" className={compact} />
             </Field>
             <Field compact label="Last name" required>
-              <input type="text" name="last_name" required maxLength={60} autoComplete="family-name" className={compact} />
+              <input type="text" name="last_name" required={!signedIn} maxLength={60} autoComplete="family-name" className={compact} />
             </Field>
           </div>
+          <div className={signedIn ? "hidden" : "space-y-4"}>
           <Field compact label="Company (optional)">
             <input type="text" name="company" maxLength={120} autoComplete="organization" className={compact} />
           </Field>
           <Field compact label="Mobile" required>
-            <input type="tel" name="mobile" required inputMode="tel" autoComplete="tel" placeholder="07700 900000" maxLength={30} className={compact} />
+            <input type="tel" name="mobile" required={!signedIn} inputMode="tel" autoComplete="tel" placeholder="07700 900000" maxLength={30} className={compact} />
           </Field>
           <Field compact label="Email" required>
-            <input type="email" name="email" required autoComplete="email" placeholder="you@example.com" className={compact} />
+            <input type="email" name="email" required={!signedIn} autoComplete="email" placeholder="you@example.com" className={compact} />
           </Field>
+          </div>
           <Field compact label="Message" required>
             <textarea
               name="message" rows={3} required minLength={5} maxLength={2000}

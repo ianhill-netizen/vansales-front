@@ -8,6 +8,7 @@ import { Logo } from "./brand";
 import { MobileNav } from "./mobile-nav";
 import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
 import { SELL_URL } from "@/lib/site";
+import { SellLink } from "./sell-link";
 
 const VAN_BODY_TYPES = [
   { href: "/vans/panel-van",    label: "Panel vans" },
@@ -215,18 +216,18 @@ export function Header() {
             Saved
           </Link>
           <a
-            href="https://sell.vansales.com/login"
+            href="/signin"
             className="hidden px-2 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:text-ink-900 md:inline-flex"
           >
             Sign in
           </a>
-          <a
+          <SellLink
             href={SELL_URL}
             className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
             style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
           >
             Sell your van →
-          </a>
+          </SellLink>
           <MobileNav />
         </div>
       </Container>
