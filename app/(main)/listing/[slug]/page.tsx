@@ -12,6 +12,7 @@ import { JsonLd } from "@/components/json-ld";
 import { CONDITION_LABEL, detailRows, VAT_BADGE, warrantyText } from "@/lib/listings/vanDetails";
 import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } from "@/components/icons";
 import { ListingActions } from "@/components/listing-actions";
+import { FinanceCalculator } from "@/components/finance-calculator";
 import { listingActionLinks } from "@/lib/dealers/actions";
 import { getListingBySlug } from "@/lib/listings/client";
 import { fetchListingState } from "@/lib/listings/sources/vansales";
@@ -89,6 +90,7 @@ export default async function ListingPage({
 
   const dealerConfig = listing.dealer_contact ? null : getDealerConfigBySeller(listing.seller.name);
   const actionLinks = listingActionLinks(listing, dealerConfig);
+  const isVansalesAdvert = listing.source === "vansales" && /^\d+$/.test(listing.source_id);   // the new stacked buttons need the advert's numeric id (the VS- reference)
   const hasExtraActions = !!(actionLinks.whatsapp || actionLinks.call || actionLinks.financeHref || actionLinks.bookCall);
   const displayTown = dealerConfig?.location.town ?? listing.location.town;
   const title = listingTitle(listing);
@@ -302,8 +304,20 @@ export default async function ListingPage({
           {/* Right: sticky enquiry */}
           <aside className="lg:sticky lg:top-20 lg:self-start space-y-3">
             {/* Button row: Enquire + whatever this dealer offers (WhatsApp, finance, book a call). Private sellers have the form below and nothing else. */}
-            {hasExtraActions && <ListingActions links={actionLinks} sold={listing.status === "sold"} />}
+            {isVansalesAdvert ? (
+              <ListingActions
+                links={actionLinks}
+                sold={listing.status === "sold"}
+                buyer={{ listingId: listing.source_id, label: [listing.vrm, listing.make, listing.model].filter(Boolean).join(" "), shareUrl: absUrl(`/listing/${slug}`), shareTitle: title, partExchange: listing.seller_type === "dealer" }}
+              />
+            ) : (
+              hasExtraActions && <ListingActions links={actionLinks} sold={listing.status === "sold"} />
+            )}
             <EnquiryPanel listing={listing} />
+            {/* Finance calculator under the dealer card: dealer adverts with a price */}
+            {isVansalesAdvert && listing.seller_type === "dealer" && listing.price != null && listing.price > 0 && (
+              <FinanceCalculator price={listing.price} applyHref={actionLinks.financeHref ?? "/hire-purchase-vans"} />
+            )}
           </aside>
         </div>
       </Container>
