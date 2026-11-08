@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import { NEW_VANS_REDIRECTS } from "./lib/redirects/new-vans";
 import { USED_VAN_MODELS, usedVanOldPath, usedVanPath } from "./lib/used-vans/models";
 import { BODY_TYPE_PAGES, bodyTypeOldPath, bodyTypePath } from "./lib/used-vans/body-types";
-import { LANDING_PAGES } from "./lib/landing-pages";
+import { HAND_BUILT_GUIDE_SLUGS, LANDING_PAGES } from "./lib/landing-pages";
 
 const nextConfig: NextConfig = {
   // /new-vans was retired: every guide has a 301 to its nearest stock page, the index goes to /van-news (statusCode, not permanent, so it is a 301 and not Next's 308).
@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       { source: "/van-contract-hire", destination: "/van-lease-deals" },
       { source: "/vans/electric", destination: "/electric-vans" },
       ...LANDING_PAGES.map((l) => ({ source: `/blog/${l.backendSlug}`, destination: l.path })),
+      ...Object.entries(HAND_BUILT_GUIDE_SLUGS).map(([slug, path]) => ({ source: `/blog/${slug}`, destination: path })),
     ].map((r) => ({ ...r, statusCode: 301 as const }));
     // /inspection-guide never existed on this site (a dead link found by the SE Ranking audit of 2026-11-06, 404): it goes to the used-van inspection checklist, the guide it was meant for.
     const retired = [
