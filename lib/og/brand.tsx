@@ -14,22 +14,14 @@ export async function ogFonts() {
   return [{ name: "Geist", data, weight: 700 as const, style: "normal" as const }];
 }
 
-/** The yellow "VS" number plate and the "vansales." wordmark. */
+/** The vansales.com hub logo (same as public/logo.svg): navy plate, "vansales", amber ".com" pill. `light` = navy plate; false = white plate with navy text. */
 export function Wordmark({ scale = 1, light = true }: { scale?: number; light?: boolean }) {
+  const k = scale * 0.8;   // 420 x 80 units at scale 1 = 336 x 64 px
+  const ink = "#0d1b2a";
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <div
-        style={{
-          display: "flex", alignItems: "center", justifyContent: "center",
-          width: 92 * scale, height: 64 * scale, borderRadius: 10 * scale, background: C.plate, color: C.ink,
-          fontSize: 38 * scale, fontWeight: 700, letterSpacing: 2, border: `${3 * scale}px solid ${C.ink}`,
-        }}
-      >
-        VS
-      </div>
-      <div style={{ display: "flex", marginLeft: 20 * scale, fontSize: 56 * scale, fontWeight: 700, color: light ? "#fff" : C.ink, letterSpacing: -1.5 }}>
-        vansales<span style={{ color: C.accent }}>.</span>
-      </div>
+    <div style={{ display: "flex", alignItems: "center", position: "relative", width: 420 * k, height: 80 * k, borderRadius: 12 * k, background: light ? ink : "#fff" }}>
+      <div style={{ display: "flex", marginLeft: 20 * k, fontSize: 52 * k, fontWeight: 700, color: light ? "#fff" : ink, letterSpacing: -1 * k }}>vansales</div>
+      <div style={{ display: "flex", position: "absolute", left: 274 * k, top: 10 * k, width: 132 * k, height: 60 * k, borderRadius: 10 * k, background: "#F5A623", alignItems: "center", justifyContent: "center", fontSize: 40 * k, fontWeight: 700, color: ink }}>.com</div>
     </div>
   );
 }
