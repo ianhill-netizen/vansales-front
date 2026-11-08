@@ -141,6 +141,34 @@ export const LANDING_PAGES: readonly LandingDef[] = [
     related: [FINANCE, { href: "/used-vans/body-type/4x4-for-sale", label: "Used 4x4 vans for sale" }, { href: "/used-vans/toyota/hilux-for-sale", label: "Used Toyota Hilux for sale" }, { href: "/electric-vans", label: "Used electric vans for sale" }],
     match: (l) => /\b(scotland|glasgow|edinburgh|aberdeen|dundee|inverness|stirling|perth|fife|lanarkshire|ayrshire)\b/i.test(`${l.location.region} ${l.location.town}`) || ["AB", "DD", "DG", "EH", "FK", "G", "HS", "IV", "KA", "KW", "KY", "ML", "PA", "PH", "TD", "ZE"].includes((l.location.postcode_area ?? "").toUpperCase()),
   },
+  {
+    key: "byd-vans-uk", backendSlug: "byd-vans-uk", path: "/byd-vans-uk", kind: "guide", eyebrow: "Van brands",
+    h1: "BYD Vans UK",
+    title: "BYD Vans UK | Vansales.com",
+    description: "BYD vans in the UK: the range, who buys them, how they compare with established rivals, warranty and parts, and finance options.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/byd", label: "Used BYD vans for sale" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
+  {
+    key: "maxus-vans-uk", backendSlug: "maxus-vans-uk", path: "/maxus-vans-uk", kind: "guide", eyebrow: "Van brands",
+    h1: "Maxus Vans UK",
+    title: "Maxus Vans UK | Vansales.com",
+    description: "Maxus vans in the UK: the range, who buys them, how they compare with established rivals, warranty and parts, and finance options.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans/maxus", label: "Used Maxus vans for sale" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
+  {
+    key: "leapmotor-vans-uk", backendSlug: "leapmotor-vans-uk", path: "/leapmotor-vans-uk", kind: "guide", eyebrow: "Van brands",
+    h1: "Leapmotor Vans UK",
+    title: "Leapmotor Vans UK | Vansales.com",
+    description: "Leapmotor vans in the UK: the range, who buys them, how they compare with established rivals, warranty and parts, and finance options.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
+  {
+    key: "changan-vans-uk", backendSlug: "changan-vans-uk", path: "/changan-vans-uk", kind: "guide", eyebrow: "Van brands",
+    h1: "Changan Vans UK",
+    title: "Changan Vans UK | Vansales.com",
+    description: "Changan vans in the UK: the range, who buys them, how they compare with established rivals, warranty and parts, and finance options.",
+    related: [FINANCE, { href: "/electric-vans", label: "Used electric vans for sale" }, { href: "/used-vans", label: "Used vans for sale" }],
+  },
 ];
 
 export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set(LANDING_PAGES.map((p) => p.backendSlug));
