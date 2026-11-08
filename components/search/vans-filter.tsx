@@ -158,14 +158,7 @@ function getChips(d: FilterDraft): Chip[] {
   if (d.gearbox)   out.push({ key: "gearbox",   label: ucFirst(d.gearbox),   clear: { gearbox: "" } });
   if (d.colour)    out.push({ key: "colour",    label: ucFirst(d.colour),    clear: { colour: "" } });
 
-  if (d.postcode.trim()) {
-    const radLabel = d.radius ? `${d.radius} mi` : "Nationwide";
-    out.push({
-      key: "distance",
-      label: `${radLabel} · ${d.postcode.trim().toUpperCase()}`,
-      clear: { postcode: "", radius: "" },
-    });
-  }
+  // (the location and radius are shown by the location bar above the filters, not as a chip here)
 
   if (d.sort && d.sort !== "newest" && d.sort !== "nearest") {
     const SORT_LABELS: Record<string, string> = { price_asc: "Price ↑", price_desc: "Price ↓", mileage_asc: "Mileage ↑" };
@@ -275,8 +268,6 @@ export function VansFilter({
 
   // "Near me" location (lat / lng / loc / radius) and the price view (pay, dep, term, apr, view, ulez) live outside the filter draft: carry them across every apply.
   const geoLat = one(searchParams.lat);
-  const geoLoc = one(searchParams.loc);
-  const hasGeo = !!(geoLat && one(searchParams.lng));
   const geoRadius = one(searchParams.radius);
   function keep(url: string, d: FilterDraft, opts: { geo?: boolean } = { geo: true }): string {
     const [path, qs = ""] = url.split("?");
@@ -289,17 +280,6 @@ export function VansFilter({
     if (one(searchParams.ulez) && opts.geo !== false && !p.has("ulez")) p.set("ulez", one(searchParams.ulez));
     const out = p.toString();
     return `${path}${out ? `?${out}` : ""}`;
-  }
-  function setGeoRadius(r: string) {
-    const p = new URLSearchParams(Object.entries(searchParams).flatMap(([k, v]) => (one(v) ? [[k, one(v)]] : [])));
-    p.delete("page");
-    if (r) p.set("radius", r); else p.delete("radius");
-    startTransition(() => router.push(`/vans?${p.toString()}`, { scroll: false }));
-  }
-  function clearGeo() {
-    const p = new URLSearchParams(Object.entries(searchParams).flatMap(([k, v]) => (one(v) ? [[k, one(v)]] : [])));
-    for (const k of ["lat", "lng", "loc", "radius", "page"]) p.delete(k);
-    startTransition(() => router.push(`/vans${p.toString() ? `?${p}` : ""}`, { scroll: false }));
   }
   const [draft, setDraft] = useState<FilterDraft>(() => parseSearchParams(searchParams));
   const [modalOpen, setModalOpen] = useState(false);
@@ -490,24 +470,8 @@ export function VansFilter({
         </div>
 
         {/* Active filter chips (vehicles live in the chip search bar above) */}
-        {(chips.length > 0 || hasGeo) && (
+        {chips.length > 0 && (
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
-            {hasGeo && (
-              <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] border border-brand-200 bg-brand-50 py-0.5 pl-2.5 pr-1 text-[length:var(--text-xs)] font-semibold text-brand-700">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
-                {geoLoc || "Near me"} ·
-                <select
-                  value={geoRadius}
-                  onChange={(e) => setGeoRadius(e.target.value)}
-                  aria-label="Search radius"
-                  className="cursor-pointer bg-transparent py-0.5 text-[length:var(--text-xs)] font-semibold text-brand-700 outline-none"
-                >
-                  {["10", "20", "30", "50", "100"].map((r) => <option key={r} value={r}>{r} mi</option>)}
-                  <option value="">Nationwide</option>
-                </select>
-                <button type="button" onClick={clearGeo} aria-label="Clear location" className="grid size-5 place-items-center rounded-full text-brand-400 hover:bg-brand-100 hover:text-brand-700">×</button>
-              </span>
-            )}
             {chips.map((chip) => (
               <button
                 key={chip.key}
