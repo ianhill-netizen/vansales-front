@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "../ui";
 import { IconX } from "../icons";
 import { Field, inputCls } from "../enquiry-fields";
+import { authHeaders, getSession, keepSession } from "@/lib/person";
 
 const API = (process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
 
@@ -78,14 +79,15 @@ export function ListingPxModal({ listingId, open, onClose }: { listingId: string
     const fd = new FormData(e.currentTarget);
     const mine = { first_name: String(fd.get("first_name") ?? buyer.first_name ?? "").trim(), last_name: String(fd.get("last_name") ?? buyer.last_name ?? "").trim(), mobile: String(fd.get("mobile") ?? buyer.mobile ?? "").trim() };
     const mobile = toE164(mine.mobile);
-    if (!mine.first_name || !mobile) { setError("Please enter your first name and a mobile number we can reach you on."); return; }
+    if (getSession() === null && (!mine.first_name || !mobile)) { setError("Please enter your first name and a mobile number we can reach you on."); return; }
     setSending(true); setError("");
     try {
       const res = await fetch(`${API}/api/public/px-submit/${encodeURIComponent(listingId)}`, {
-        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", ...authHeaders() },
         body: JSON.stringify({ reg: reg.trim(), first_name: mine.first_name, last_name: mine.last_name || null, mobile, website: "" }),
       });
-      const body = (await res.json().catch(() => ({}))) as { data?: { photos_requested?: boolean }; message?: string };
+      const body = (await res.json().catch(() => ({}))) as { data?: { photos_requested?: boolean }; message?: string; session?: unknown };
+      keepSession(body.session);
       if (res.ok) {
         setPhotos(!!body.data?.photos_requested); setStep("sent");
         try {
@@ -129,7 +131,7 @@ export function ListingPxModal({ listingId, open, onClose }: { listingId: string
             {step === "send" && (
               <form onSubmit={send} className="space-y-3">
                 <p className="text-[length:var(--text-sm)] text-ink-600">The dealer will see your part exchange and contact you about this van.</p>
-                {!(buyer.first_name && buyer.mobile) && <>
+                {!(buyer.first_name && buyer.mobile) && getSession() === null && <>
                   <Field compact label="First name"><input name="first_name" required maxLength={60} autoComplete="given-name" defaultValue={buyer.first_name} className={inputCls} /></Field>
                   <Field compact label="Mobile"><input name="mobile" type="tel" required maxLength={30} autoComplete="tel" defaultValue={buyer.mobile} placeholder="07700 900 000" className={inputCls} /></Field>
                 </>}

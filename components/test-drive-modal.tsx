@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Button } from "./ui";
 import { IconCheck, IconX } from "./icons";
 import { Field, inputCls } from "./enquiry-fields";
+import { authHeaders, getSession, keepSession } from "@/lib/person";
 
 const API = (process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
 const KEY = "vansales:buyer";
@@ -51,7 +52,7 @@ export function TestDriveModal({ listingId, dealerName, open, onClose }: { listi
   const [slot, setSlot] = useState<string | null>(null);
   const [saved, setSaved] = useState<Buyer>({});
   const [reference, setReference] = useState<string | null>(null);
-  const known = !!(saved.first_name && saved.mobile);
+  const known = !!(saved.first_name && saved.mobile) || (typeof window !== "undefined" && getSession() !== null);
 
   useEffect(() => {
     const d = ref.current;
@@ -74,15 +75,16 @@ export function TestDriveModal({ listingId, dealerName, open, onClose }: { listi
   async function send(buyer: Buyer) {
     if (!slot || !day) return;
     const mobile = toE164(buyer.mobile ?? "");
-    if (!mobile) { setError("Please enter a mobile number we can reach you on, e.g. 07700 900 000."); setState("details"); return; }
+    if (!mobile && getSession() === null) { setError("Please enter a mobile number we can reach you on, e.g. 07700 900 000."); setState("details"); return; }
     setState("submitting"); setError("");
     try {
       const res = await fetch(`${API}/api/public/test-drive/${encodeURIComponent(listingId)}`, {
-        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ requested_at: fullIso(day, slot), first_name: buyer.first_name, last_name: buyer.last_name || null, mobile, email: buyer.email || null }),
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", ...authHeaders() },
+        body: JSON.stringify({ requested_at: fullIso(day, slot), first_name: buyer.first_name ?? "Buyer", last_name: buyer.last_name || null, mobile: mobile ?? "", email: buyer.email || null }),
       });
       if (res.ok) {
-        const b = (await res.json().catch(() => ({}))) as { ref?: string | null; data?: { ref?: string } };
+        const b = (await res.json().catch(() => ({}))) as { ref?: string | null; data?: { ref?: string }; session?: unknown };
+        keepSession(b.session);
         setReference(b.ref ?? b.data?.ref ?? null); setState("done");
         try { localStorage.setItem(KEY, JSON.stringify({ ...saved, first_name: buyer.first_name, last_name: buyer.last_name, mobile: buyer.mobile })); } catch {}
         return;
