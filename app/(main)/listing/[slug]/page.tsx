@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Container, Eyebrow, Price, PlateBadge, StatusBadge, Badge } from "@/components/ui";
+import { Container, Price, StatusBadge, Badge } from "@/components/ui";
 import { Gallery } from "@/components/gallery";
 import { SpecTable } from "@/components/spec-table";
 import { EnquiryPanel } from "@/components/enquiry-panel";
 import { SaveButton } from "@/components/save-button";
-import { SpecReadout } from "@/components/spec-readout";
 import { HpiCard } from "@/components/hpi-card";
 import { JsonLd } from "@/components/json-ld";
 import { CONDITION_LABEL, detailRows, VAT_BADGE, warrantyText } from "@/lib/listings/vanDetails";
-import { IconGauge, IconFuel, IconGearbox, IconRuler, IconCheck, IconShield } from "@/components/icons";
+import { IconGauge, IconFuel, IconGearbox, IconCheck, IconShield } from "@/components/icons";
+import { ListingTabs, type ListingTab } from "@/components/listing-tabs";
 import { ListingActions } from "@/components/listing-actions";
 import { FinanceCalculator } from "@/components/finance-calculator";
 import { listingActionLinks } from "@/lib/dealers/actions";
@@ -25,7 +25,6 @@ import {
   formatMileage,
   formatMileageDisplay,
   titleCase,
-  WHEELBASE_SHORT,
 } from "@/lib/listings/format";
 import { modelPath } from "@/lib/listings/slug";
 import { SITE, absUrl } from "@/lib/site";
@@ -91,20 +90,91 @@ export default async function ListingPage({
   const dealerConfig = listing.dealer_contact ? null : getDealerConfigBySeller(listing.seller.name);
   const actionLinks = listingActionLinks(listing, dealerConfig);
   const isVansalesAdvert = listing.source === "vansales" && /^\d+$/.test(listing.source_id);   // the new stacked buttons need the advert's numeric id (the VS- reference)
-  const hasExtraActions = !!(actionLinks.whatsapp || actionLinks.call || actionLinks.financeHref || actionLinks.bookCall);
   const displayTown = dealerConfig?.location.town ?? listing.location.town;
   const title = listingTitle(listing);
   const ogImage = listingImageUrl(listing);
   const specRows = detailRows(listing.details);
-  const readouts = [
-    { icon: <IconGauge />, label: "Mileage", value: formatMileageDisplay(listing.mileage, listing.condition) },
-    { icon: <IconGearbox />, label: "Gearbox", value: titleCase(listing.transmission) },
-    { icon: <IconFuel />, label: "Fuel", value: titleCase(listing.fuel) },
+
+  const engine = listing.engine_cc ? `${(listing.engine_cc / 1000).toFixed(1)}L` : "—";
+  const stats = [
+    { icon: <IconGauge width={14} height={14} />, label: "Mileage", value: formatMileageDisplay(listing.mileage, listing.condition) },
+    { icon: <IconFuel width={14} height={14} />, label: "Fuel", value: titleCase(listing.fuel) || "—" },
+    { icon: <IconGearbox width={14} height={14} />, label: "Engine", value: engine },
+    { icon: <IconShield width={14} height={14} />, label: "MOT expiry", value: listing.mot_expiry ? formatMotDate(listing.mot_expiry) : "—" },
+  ];
+  const overview = (listing.description ?? "").trim();
+  const short = overview.length > 320 ? `${overview.slice(0, 320).replace(/\s+\S*$/, "")}…` : overview;
+  const featureTiles = [...(listing.extras ?? []).map((f) => f.label), ...listing.features];
+  const hasHistory = !!(listing.mot_expiry || listing.last_mot_mileage != null || listing.hpi_check || listing.hpi_checked);
+  const tabs: ListingTab[] = [
     {
-      icon: <IconRuler />,
-      label: "Wheelbase",
-      value: listing.van_spec.wheelbase ? WHEELBASE_SHORT[listing.van_spec.wheelbase] : "—",
+      id: "overview", label: "Overview", content: (
+        <div className="space-y-6">
+          {short && <p className="max-w-2xl whitespace-pre-line text-[length:var(--text-md)] leading-relaxed text-ink-600">{short}</p>}
+          {featureTiles.length > 0 && (
+            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3" aria-label="Features">
+              {featureTiles.map((f) => (
+                <li key={f} className="flex items-center gap-2 rounded-[var(--radius-md)] border border-border bg-card px-3 py-2 text-[length:var(--text-sm)] text-ink-800"><IconCheck width={14} height={14} className="shrink-0 text-success-500" aria-hidden />{f}</li>
+              ))}
+            </ul>
+          )}
+          {warrantyText(listing.warranty_type, listing.warranty_expiry) && (
+            <p className="rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3 text-[length:var(--text-md)] font-medium text-ink-800">{warrantyText(listing.warranty_type, listing.warranty_expiry)}</p>
+          )}
+        </div>
+      ),
     },
+    {
+      id: "spec", label: "Spec", content: (
+        <div className="space-y-6">
+          {specRows.length > 0 && (
+            <dl className="divide-y divide-border rounded-[var(--radius-lg)] border border-border bg-card" aria-label="Specification">
+              {specRows.map((r) => (
+                <div key={r.label} className="flex items-baseline justify-between gap-4 px-4 py-2.5">
+                  <dt className="text-[length:var(--text-sm)] text-ink-500">{r.label}</dt>
+                  <dd className="text-right font-medium text-ink-900">{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+          <SpecTable listing={listing} />
+        </div>
+      ),
+    },
+    {
+      id: "description", label: "Description", content: (
+        <p className="max-w-2xl whitespace-pre-line text-[length:var(--text-md)] leading-relaxed text-ink-600">{listing.description}</p>
+      ),
+    },
+    ...(hasHistory ? [{
+      id: "history", label: "History", content: (
+        <div className="space-y-6">
+          {(listing.mot_expiry || listing.last_mot_mileage != null) && (
+            <section className="rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3" aria-label="MOT">
+              <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                {listing.mot_expiry && (
+                  <div>
+                    <dt className="text-[length:var(--text-sm)] text-ink-500">MOT expiry</dt>
+                    <dd className="font-medium text-ink-900">{formatMotDate(listing.mot_expiry)}</dd>
+                  </div>
+                )}
+                {listing.last_mot_mileage != null && (
+                  <div>
+                    <dt className="text-[length:var(--text-sm)] text-ink-500">Last MOT mileage</dt>
+                    <dd className="font-medium text-ink-900">
+                      {listing.last_mot_mileage.toLocaleString("en-GB")} miles
+                      {listing.last_mot_date ? <span className="font-normal text-ink-500"> · {formatMotDate(listing.last_mot_date)}</span> : null}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              <p className="mt-2 text-[length:var(--text-xs,12px)] text-ink-500">From DVLA and DVSA records.</p>
+            </section>
+          )}
+          {listing.hpi_check && <HpiCard result={listing.hpi_check} />}
+        </div>
+      ),
+    }] : []),
   ];
 
   const vehicleLd = {
@@ -173,137 +243,15 @@ export default async function ListingPage({
           <span className="truncate font-medium text-ink-700">{title}</span>
         </nav>
 
-        {/* Single page header band (one H1 for the page) */}
-        <div className="mt-5">
-          <ListingHeader listing={listing} title={title} displayTown={displayTown} />
-        </div>
-
-        <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_380px]">
-          {/* Left: gallery + spec */}
-          <div className="min-w-0">
+        {/* Mobile order: gallery, header + price, buttons, stats, calculator, tabs, dealer card + form. Desktop: gallery + tabs + form on the left, the sticky column (header, buttons, stats, calculator) on the right. */}
+        <div className="mt-5 grid gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="min-w-0 lg:col-start-1 lg:row-start-1">
             <Gallery listing={listing} />
-
-            {/* Video: the seller's own walk-around takes priority over the generated Showroom Cut (made from their photos, no AI); the 9:16 cut belongs to the generated one */}
-            {(listing.seller_video_url ?? listing.video_url) && (
-              <section className="mt-6" aria-label={listing.seller_video_url ? "Walk-around video from the seller" : "Video of this van"}>
-                <video src={(listing.seller_video_url ?? listing.video_url) as string} controls playsInline preload="metadata" className="w-full rounded-[var(--radius-lg)] bg-black" />
-                {!listing.seller_video_url && listing.video_vertical_url && (
-                  <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">
-                    <a href={listing.video_vertical_url} download className="underline hover:text-ink-800">Download the vertical version</a> for stories and reels.
-                  </p>
-                )}
-              </section>
-            )}
-
-            {/* The seller's YouTube video, after their own upload (privacy-friendly embed, lazy loaded) */}
-            {listing.youtube_embed_url && (
-              <section className="mt-6" aria-label="Video on YouTube">
-                <iframe src={listing.youtube_embed_url.replace("www.youtube.com", "www.youtube-nocookie.com")} title={`${title} on YouTube`} loading="lazy" allow="encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" className="aspect-video w-full rounded-[var(--radius-lg)] bg-black" />
-              </section>
-            )}
-
-            {readouts.some((r) => r.value && r.value !== "—") && (
-              <div className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card">
-                <SpecReadout items={readouts} className="px-2" />
-              </div>
-            )}
-
-            {/* Specification the seller filled in (private adverts): only the rows they gave */}
-            {specRows.length > 0 && (
-              <section className="mt-6" aria-label="Specification">
-                <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Specification</h2>
-                <dl className="mt-3 divide-y divide-border rounded-[var(--radius-lg)] border border-border bg-card">
-                  {specRows.map((r) => (
-                    <div key={r.label} className="flex items-baseline justify-between gap-4 px-4 py-2.5">
-                      <dt className="text-[length:var(--text-sm)] text-ink-500">{r.label}</dt>
-                      <dd className="text-right font-medium text-ink-900">{r.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-            )}
-
-            {/* Warranty, as the seller described it */}
-            {warrantyText(listing.warranty_type, listing.warranty_expiry) && (
-              <p className="mt-4 rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3 text-[length:var(--text-md)] text-ink-800">
-                <span className="font-medium">{warrantyText(listing.warranty_type, listing.warranty_expiry)}</span>
-              </p>
-            )}
-
-            {/* Features & extras the seller ticked */}
-            {listing.extras && listing.extras.length > 0 && (
-              <section className="mt-6" aria-label="Features and extras">
-                <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Features &amp; extras</h2>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {listing.extras.map((f) => (
-                    <li key={f.slug}><Badge tone="neutral"><IconCheck width={12} height={12} aria-hidden />{f.label}</Badge></li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {/* MOT facts from the DVLA / DVSA records (private adverts) */}
-            {(listing.mot_expiry || listing.last_mot_mileage != null) && (
-              <section className="mt-6 rounded-[var(--radius-lg)] border border-border bg-card px-4 py-3" aria-label="MOT">
-                <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
-                  {listing.mot_expiry && (
-                    <div>
-                      <dt className="text-[length:var(--text-sm)] text-ink-500">MOT expiry</dt>
-                      <dd className="font-medium text-ink-900">{formatMotDate(listing.mot_expiry)}</dd>
-                    </div>
-                  )}
-                  {listing.last_mot_mileage != null && (
-                    <div>
-                      <dt className="text-[length:var(--text-sm)] text-ink-500">Last MOT mileage</dt>
-                      <dd className="font-medium text-ink-900">
-                        {listing.last_mot_mileage.toLocaleString("en-GB")} miles
-                        {listing.last_mot_date ? <span className="font-normal text-ink-500"> · {formatMotDate(listing.last_mot_date)}</span> : null}
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-                <p className="mt-2 text-[length:var(--text-xs,12px)] text-ink-500">From DVLA and DVSA records.</p>
-              </section>
-            )}
-
-            {/* Vehicle history check: the full findings when the API publishes them (replaces the plain badge); otherwise the header badge stays. */}
-            {listing.hpi_check && <HpiCard result={listing.hpi_check} />}
-
-            {/* Description */}
-            <section className="mt-8">
-              <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Description</h2>
-              <p className="mt-3 max-w-2xl whitespace-pre-line text-[length:var(--text-md)] leading-relaxed text-ink-600">
-                {listing.description}
-              </p>
-            </section>
-
-            {/* Features */}
-            {listing.features.length > 0 && (
-              <section className="mt-8">
-                <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">
-                  Specification &amp; features
-                </h2>
-                <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
-                  {listing.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-[length:var(--text-md)] text-ink-700">
-                      <IconCheck width={16} height={16} className="shrink-0 text-success-500" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {/* Full spec table */}
-            <section className="mt-10">
-              <h2 className="mb-4 font-display text-[length:var(--text-xl)] font-bold text-ink-900">Full specification</h2>
-              <SpecTable listing={listing} />
-            </section>
           </div>
 
-          {/* Right: sticky enquiry */}
-          <aside className="lg:sticky lg:top-20 lg:self-start space-y-3">
-            {/* Button row: Enquire + whatever this dealer offers (WhatsApp, finance, book a call). Private sellers have the form below and nothing else. */}
+          <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto">
+            <ListingHeader listing={listing} title={title} displayTown={displayTown} dealskiManaged={listing.source === "dealski" || !!(dealerConfig ?? getDealerConfigBySeller(listing.dealer_contact?.name ?? listing.seller.name))?.dealskiTenant} />
+            {/* Enquire + WhatsApp, then small pills (Call, Text me, Test drive, Finance, Part exchange). Private sellers get what vansales offers on their advert. */}
             {isVansalesAdvert ? (
               <ListingActions
                 links={actionLinks}
@@ -311,40 +259,45 @@ export default async function ListingPage({
                 buyer={{ listingId: listing.source_id, label: [listing.vrm, listing.make, listing.model].filter(Boolean).join(" "), shareUrl: absUrl(`/listing/${slug}`), shareTitle: title, partExchange: listing.seller_type === "dealer" }}
               />
             ) : (
-              hasExtraActions && <ListingActions links={actionLinks} sold={listing.status === "sold"} />
+              <ListingActions links={actionLinks} sold={listing.status === "sold"} />
             )}
-            <EnquiryPanel listing={listing} />
-            {/* Finance calculator under the dealer card: dealer adverts with a price */}
+            <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2" data-testid="key-stats">
+              {stats.map((t) => (
+                <div key={t.label} className="rounded-[var(--radius-lg)] border border-border bg-card px-3 py-2.5">
+                  <dt className="flex items-center gap-1.5 text-[length:var(--text-xs)] text-ink-500"><span aria-hidden className="text-ink-400">{t.icon}</span>{t.label}</dt>
+                  <dd className="mt-0.5 font-semibold text-ink-900">{t.value}</dd>
+                </div>
+              ))}
+            </dl>
             {isVansalesAdvert && listing.seller_type === "dealer" && listing.price != null && listing.price > 0 && (
               <FinanceCalculator price={listing.price} applyHref={actionLinks.financeHref ?? "/hire-purchase-vans"} />
             )}
           </aside>
+
+          <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+            <ListingTabs tabs={tabs} />
+          </div>
+
+          <div className="min-w-0 lg:col-start-1 lg:row-start-3">
+            <EnquiryPanel listing={listing} />
+          </div>
         </div>
       </Container>
     </>
   );
 }
 
-function ListingHeader({ listing, title, displayTown }: { listing: Listing; title: string; displayTown: string }) {
+function ListingHeader({ listing, title, displayTown, dealskiManaged }: { listing: Listing; title: string; displayTown: string; dealskiManaged: boolean }) {
   return (
     <div>
-      <Eyebrow>{listing.van_spec.body_style}</Eyebrow>
-      <div className="mt-2 flex items-start justify-between gap-3">
-        <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">{title}</h1>
-        <div className="flex shrink-0 items-center gap-2">
-          {listing.source === "vansales" && <SaveButton id={listing.source_id} label />}
-          {listing.year > 0 && <PlateBadge text={listing.plate || String(listing.year)} size="md" />}
-        </div>
-      </div>
-      <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
-        {listing.year > 0 ? `${listing.year} · ` : ""}
-        {displayTown}
-        {listing.colour !== "—" ? ` · ${listing.colour}` : ""}
-      </p>
-      <div className="mt-4 flex flex-wrap items-center gap-3">
-        <Price listing={listing} size="lg" />
+      {/* Badges first */}
+      <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={listing.status} />
+        <Badge tone="neutral">{listing.condition === "new" ? "New" : "Used"}</Badge>
+        {listing.vehicle_condition && <Badge tone="neutral">{CONDITION_LABEL[listing.vehicle_condition]}</Badge>}
         {(listing.vat_status === "vat_qualifying" || listing.vat_status === "ex_vat") && <Badge tone="neutral">{VAT_BADGE[listing.vat_status]}</Badge>}
+        {listing.seller_type === "private" && <Badge tone="neutral">Private seller</Badge>}
+        {dealskiManaged && <Badge tone="brand">Dealski-managed</Badge>}
         {listing.hpi_checked && !listing.hpi_check && (
           <span title={listing.hpi_checked_at ? `Vehicle history checked on ${formatMotDate(listing.hpi_checked_at)}: clear` : "Vehicle history checked"}>
             <Badge tone="success"><IconShield width={12} height={12} aria-hidden />HPI checked</Badge>
@@ -353,10 +306,17 @@ function ListingHeader({ listing, title, displayTown }: { listing: Listing; titl
         {listing.ulez_compliant === true && <Badge tone="brand">ULEZ compliant</Badge>}
         {listing.ulez_compliant === false && <Badge tone="warning">Not ULEZ compliant</Badge>}
         {listing.ulez_compliant == null && listing.ulez && <Badge tone="brand">ULEZ ready</Badge>}
-        {listing.vehicle_condition && <Badge tone="neutral">{CONDITION_LABEL[listing.vehicle_condition]}</Badge>}
         {listing.v5_present === true && <Badge tone="success">V5 present</Badge>}
         {listing.price_type === "no_vat" && <Badge tone="neutral">No VAT</Badge>}
       </div>
+      <div className="mt-3 flex items-start justify-between gap-3">
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold leading-tight text-ink-900">{title}</h1>
+        {listing.source === "vansales" && <SaveButton id={listing.source_id} label />}
+      </div>
+      <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
+        {[listing.year > 0 ? String(listing.year) : null, displayTown, listing.colour !== "—" ? listing.colour : null, /^\d{2}$/.test(listing.plate ?? "") ? `${listing.plate} plate` : null].filter(Boolean).join(" · ")}
+      </p>
+      <div className="mt-3"><Price listing={listing} size="lg" /></div>
     </div>
   );
 }

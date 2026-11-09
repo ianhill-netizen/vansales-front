@@ -19,7 +19,13 @@ export function FinanceCalculator({ price, applyHref }: { price: number; applyHr
     <section aria-labelledby={`${id}-t`} className="rounded-[var(--radius-xl)] border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
       <h2 id={`${id}-t`} className="m-0">
         <button type="button" aria-expanded={open} aria-controls={`${id}-b`} onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between gap-3 text-left font-display text-[length:var(--text-lg)] font-bold text-ink-900">
-          Finance calculator
+          <span className="flex min-w-0 flex-col">
+            <span>Finance calculator</span>
+            <span className="mt-0.5 flex flex-wrap items-baseline gap-x-2">
+              <span className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900" data-testid="fin-headline">{gbp0(q.monthly)}/mo</span>
+              <span className="text-[length:var(--text-xs)] font-normal text-ink-500">Representative {q.apr.toFixed(1)}% APR</span>
+            </span>
+          </span>
           <IconChevron width={18} height={18} aria-hidden className={`shrink-0 transition-transform ${open ? "rotate-90" : "-rotate-90"}`} />
         </button>
       </h2>

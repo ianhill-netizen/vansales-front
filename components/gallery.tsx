@@ -8,6 +8,13 @@ type Shot = { url: string; alt: string };
 
 const ARROW = "hidden size-10 items-center justify-center rounded-full bg-white/90 text-ink-800 shadow-[var(--shadow-sm)] hover:bg-white md:flex";
 
+/** No number-plate detection exists yet (follow-up issue), so every photo gets a blur over the lower-centre band where the plate usually sits. */
+function PlateBlur() {
+  return <span aria-hidden className="pointer-events-none absolute bottom-[7%] left-1/2 h-[20%] w-[34%] -translate-x-1/2 rounded-md backdrop-blur-lg" data-testid="plate-blur" />;
+}
+
+type Tab = "photos" | "video";
+
 /** Scroll a snap row to slide `i` (smooth). */
 function jump(el: HTMLElement | null, i: number) {
   if (el) el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
@@ -22,6 +29,11 @@ export function Gallery({ listing }: { listing: Listing }) {
   const shots: Shot[] = listing.images.filter((i) => i.url.startsWith("http")).map((i) => ({ url: i.url, alt: i.alt }));
   const [active, setActive] = useState(0);
   const [zoom, setZoom] = useState(false);
+  const [tab, setTab] = useState<Tab>("photos");
+  // The listing's own video (the seller's walk-around, else the generated Showroom Cut) and/or its YouTube video. There is no 360 asset on a listing yet, so no 360° tab.
+  const videoSrc = listing.seller_video_url ?? listing.video_url ?? null;
+  const youtube = listing.youtube_embed_url ? listing.youtube_embed_url.replace("www.youtube.com", "www.youtube-nocookie.com") : null;
+  const hasVideo = !!(videoSrc || youtube);
   const rail = useRef<HTMLDivElement>(null);
   const strip = useRef<HTMLUListElement>(null);
   const big = useRef<HTMLDivElement>(null);
@@ -71,14 +83,30 @@ export function Gallery({ listing }: { listing: Listing }) {
   const isFallbackImage = !!listing.image_source && listing.image_source !== "photo";
   const go = (d: number) => jump(rail.current, Math.min(n - 1, Math.max(0, active + d)));
 
+  const tabBtn = (t: Tab, label: string) => (
+    <button key={t} role="tab" type="button" aria-selected={tab === t} onClick={() => setTab(t)}
+      className={`h-9 rounded-[var(--radius-pill)] px-4 text-[length:var(--text-sm)] font-semibold transition-colors ${tab === t ? "bg-ink-900 text-white" : "border border-border bg-card text-ink-700 hover:border-ink-400"}`}>{label}</button>
+  );
+
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-2">
+      {hasVideo && <div role="tablist" aria-label="Media" className="flex gap-2">{tabBtn("photos", "Photos")}{tabBtn("video", "Video")}</div>}
+      {tab === "video" && hasVideo && (
+        <div className="space-y-3">
+          {videoSrc && <video src={videoSrc} controls playsInline preload="metadata" className="w-full rounded-[var(--radius-xl)] bg-black" />}
+          {!listing.seller_video_url && listing.video_vertical_url && videoSrc && (
+            <p className="text-[length:var(--text-sm)] text-ink-500"><a href={listing.video_vertical_url} download className="underline hover:text-ink-800">Download the vertical version</a> for stories and reels.</p>
+          )}
+          {youtube && <iframe src={youtube} title="Video on YouTube" loading="lazy" allow="encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" className="aspect-video w-full rounded-[var(--radius-xl)] bg-black" />}
+        </div>
+      )}
+      <div className={`relative overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-2 ${tab === "video" && hasVideo ? "hidden" : ""}`}>
         <div ref={rail} onScroll={onScroll} className="flex aspect-[16/10] snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-testid="gallery-rail" aria-label="Vehicle photos" role="region">
           {shots.map((shot, i) => (
             <button key={i} type="button" onClick={() => setZoom(true)} aria-label={`Open photo ${i + 1} of ${n} full screen`} className="relative block size-full shrink-0 basis-full snap-center cursor-zoom-in">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={shot.url} alt={shot.alt} className="size-full object-cover" loading={i === 0 ? "eager" : "lazy"} draggable={false} />
+              <img src={shot.url} alt={shot.alt} className="size-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} draggable={false} />
+              <PlateBlur />
             </button>
           ))}
         </div>
@@ -97,7 +125,7 @@ export function Gallery({ listing }: { listing: Listing }) {
       </div>
 
       {n > 1 && (
-        <ul ref={strip} className="flex snap-x gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist" aria-label="Photo thumbnails">
+        <ul ref={strip} className={`hidden snap-x gap-2 ${tab === "video" && hasVideo ? "" : "md:flex"} overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`} role="tablist" aria-label="Photo thumbnails">
           {shots.map((shot, i) => {
             const selected = i === active;
             return (
@@ -124,7 +152,7 @@ export function Gallery({ listing }: { listing: Listing }) {
             {shots.map((shot, i) => (
               <div key={i} className="grid size-full shrink-0 basis-full snap-center place-items-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {zoom && <img src={shot.url} alt={shot.alt} className="max-h-full max-w-full object-contain" draggable={false} />}
+                {zoom && <span className="relative inline-block max-h-full max-w-full"><img src={shot.url} alt={shot.alt} className="max-h-full max-w-full object-contain" draggable={false} /><PlateBlur /></span>}
               </div>
             ))}
           </div>
