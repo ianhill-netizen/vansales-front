@@ -250,7 +250,7 @@ export default async function ListingPage({
           </div>
 
           <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto">
-            <ListingHeader listing={listing} title={title} displayTown={displayTown} dealskiManaged={listing.source === "dealski" || !!dealerConfig?.dealskiTenant} />
+            <ListingHeader listing={listing} title={title} displayTown={displayTown} dealskiManaged={listing.source === "dealski" || !!(dealerConfig ?? getDealerConfigBySeller(listing.dealer_contact?.name ?? listing.seller.name))?.dealskiTenant} />
             {/* Enquire + WhatsApp, then small pills (Call, Text me, Test drive, Finance, Part exchange). Private sellers get what vansales offers on their advert. */}
             {isVansalesAdvert ? (
               <ListingActions
