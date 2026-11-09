@@ -4,11 +4,8 @@ export const FINANCE_TERMS = [24, 36, 48, 60] as const;
 export const DEPOSIT_MIN_PCT = 10;
 export const DEPOSIT_MAX_PCT = 50;
 export const DEPOSIT_STEP_PCT = 5;
-export const WARRANTY_OPTIONS = [
-  { months: 0, label: "None", price: 0 },
-  { months: 12, label: "12 months", price: 199 },
-  { months: 24, label: "24 months", price: 349 },
-] as const;
+/** One warranty add-on the calculator offers: from the listing API (admin-set; Swiss Vans' AutoProtect 24m / 12m and the included 3-month RTB by default). price = whole pounds, 0 = included. */
+export interface WarrantyAddon { name: string; months: number; price: number }
 
 export interface FinanceQuote {
   /** The deposit in pounds. */

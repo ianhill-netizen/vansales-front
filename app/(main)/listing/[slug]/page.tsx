@@ -270,7 +270,7 @@ export default async function ListingPage({
               ))}
             </dl>
             {isVansalesAdvert && listing.seller_type === "dealer" && listing.price != null && listing.price > 0 && (
-              <FinanceCalculator price={listing.price} applyHref={actionLinks.financeHref ?? "/hire-purchase-vans"} />
+              <FinanceCalculator price={listing.price} applyHref={actionLinks.financeHref ?? "/hire-purchase-vans"} warranties={listing.warranty_addons ?? []} />
             )}
           </aside>
 
