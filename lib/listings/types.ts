@@ -141,6 +141,8 @@ export interface Listing {
   /** The seller's own rating of the van (excellent / good / fair / project). Not the new/used `condition`. */
   vehicle_condition?: import("./vanDetails").Condition | null;
   v5_present?: boolean | null;
+  /** The HP calculator's warranty add-on tiers for a dealer advert (vansales-backend: admin Settings > Prices; Swiss Vans' tiers). Absent / empty = no warranty block. Price in whole pounds, 0 = included. */
+  warranty_addons?: { name: string; months: number; price: number }[];
   warranty_type?: import("./vanDetails").WarrantyType | null;
   warranty_expiry?: string | null;
   /** The seller's VAT status (private adverts); null/absent = not given. */

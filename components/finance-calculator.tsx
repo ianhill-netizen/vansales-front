@@ -2,17 +2,19 @@
 
 import { useId, useState } from "react";
 import { IconChevron } from "./icons";
-import { DEPOSIT_MAX_PCT, DEPOSIT_MIN_PCT, DEPOSIT_STEP_PCT, FINANCE_TERMS, WARRANTY_OPTIONS, financeQuote } from "@/lib/hp-example";
+import { DEPOSIT_MAX_PCT, DEPOSIT_MIN_PCT, DEPOSIT_STEP_PCT, FINANCE_TERMS, financeQuote, type WarrantyAddon } from "@/lib/hp-example";
 
 const gbp = (n: number) => `£${n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const gbp0 = (n: number) => `£${Math.round(n).toLocaleString("en-GB")}`;
 
 /** The HP "Finance calculator" under the dealer card: collapsible (open by default), 9.9% APR representative, UK CCA compound method (lib/hp-example.ts). An illustration, not an offer. */
-export function FinanceCalculator({ price, applyHref }: { price: number; applyHref: string }) {
+export function FinanceCalculator({ price, applyHref, warranties = [] }: { price: number; applyHref: string; warranties?: WarrantyAddon[] }) {
   const [open, setOpen] = useState(true);
   const [pct, setPct] = useState(10);
   const [term, setTerm] = useState<number>(48);
-  const [warranty, setWarranty] = useState(0);
+  // The included tier (price 0, e.g. the 3-month RTB) is the starting choice, else the first one; the block is hidden when the listing offers none (private sellers).
+  const [wIdx, setWIdx] = useState(() => Math.max(0, warranties.findIndex((w) => w.price === 0)));
+  const warranty = warranties[wIdx]?.price ?? 0;
   const id = useId();
   const q = financeQuote(price, pct, term, warranty);
   return (
@@ -52,17 +54,19 @@ export function FinanceCalculator({ price, applyHref }: { price: number; applyHr
             <p className="mt-1 text-[length:var(--text-xs)] text-ink-400">months</p>
           </fieldset>
 
-          <fieldset>
-            <legend className="text-[length:var(--text-sm)] font-semibold text-ink-700">Warranty add-on</legend>
-            <div className="mt-2 space-y-1.5">
-              {WARRANTY_OPTIONS.map((w) => (
-                <label key={w.months} className="flex cursor-pointer items-center gap-2 text-[length:var(--text-sm)] text-ink-800">
-                  <input type="radio" name={`${id}-w`} checked={warranty === w.price} onChange={() => setWarranty(w.price)} className="accent-[var(--color-brand-600,#13427f)]" />
-                  {w.label}{w.price > 0 && <span className="text-ink-500"> (+£{w.price})</span>}
-                </label>
-              ))}
-            </div>
-          </fieldset>
+          {warranties.length > 0 && (
+            <fieldset data-testid="fin-warranty">
+              <legend className="text-[length:var(--text-sm)] font-semibold text-ink-700">Warranty add-on</legend>
+              <div className="mt-2 space-y-1.5">
+                {warranties.map((w, i) => (
+                  <label key={`${w.name}-${w.months}`} className="flex cursor-pointer items-center gap-2 text-[length:var(--text-sm)] text-ink-800">
+                    <input type="radio" name={`${id}-w`} checked={wIdx === i} onChange={() => setWIdx(i)} className="accent-[var(--color-brand-600,#13427f)]" />
+                    {w.months} months {w.name}{w.price > 0 ? <span className="text-ink-500"> (+£{w.price})</span> : <span className="text-ink-500"> (included)</span>}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
 
           <div className="rounded-[var(--radius-lg)] bg-surface-1 p-4" aria-live="polite">
             <p className="text-[length:var(--text-sm)] text-ink-500">Monthly payment</p>
