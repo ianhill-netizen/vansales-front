@@ -105,7 +105,7 @@ export function Gallery({ listing }: { listing: Listing }) {
           {shots.map((shot, i) => (
             <button key={i} type="button" onClick={() => setZoom(true)} aria-label={`Open photo ${i + 1} of ${n} full screen`} className="relative block size-full shrink-0 basis-full snap-center cursor-zoom-in">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={shot.url} alt={shot.alt} className="size-full object-cover" loading={i === 0 ? "eager" : "lazy"} draggable={false} />
+              <img src={shot.url} alt={shot.alt} className="size-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} draggable={false} />
               <PlateBlur />
             </button>
           ))}
