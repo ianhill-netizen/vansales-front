@@ -52,11 +52,11 @@ export function ViewToggle({ view, gridHref, mapHref }: { view: "grid" | "map"; 
   );
 }
 
-export function PayToggle({ mode, terms }: { mode: PayMode; terms: FinanceTerms }) {
+export function PayToggle({ mode, terms, defaults = DEFAULT_TERMS }: { mode: PayMode; terms: FinanceTerms; /** The server's default term and APR (admin finance settings): a slider left on these is not written to the URL. */ defaults?: { termMonths: number; apr: number } }) {
   const update = useUrlUpdater();
   const [adjust, setAdjust] = useState(false);
   // Slider values while the user is dragging, tagged with the URL terms they started from; once the URL catches up (terms change) the tag no longer matches and the URL wins.
-  const termsKey = `${terms.depositPct}|${terms.termMonths}|${terms.apr}`;
+  const termsKey = `${terms.depositPct}|${terms.depositSet}|${terms.termMonths}|${terms.apr}`;
   const [pending, setPending] = useState<{ base: string; value: FinanceTerms } | null>(null);
   const local = pending && pending.base === termsKey ? pending.value : terms;
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -70,9 +70,9 @@ export function PayToggle({ mode, terms }: { mode: PayMode; terms: FinanceTerms 
     timer.current = setTimeout(() => {
       update((p) => {
         const setOrDel = (k: string, v: number, d: number) => (v === d ? p.delete(k) : p.set(k, String(v)));
-        setOrDel("dep", next.depositPct, DEFAULT_TERMS.depositPct);
-        setOrDel("term", next.termMonths, DEFAULT_TERMS.termMonths);
-        setOrDel("apr", next.apr, DEFAULT_TERMS.apr);
+        if (next.depositSet) p.set("dep", String(next.depositPct)); else p.delete("dep");   // a chosen deposit % applies to every card, even 10
+        setOrDel("term", next.termMonths, defaults.termMonths);
+        setOrDel("apr", next.apr, defaults.apr);
       });
     }, 350);
   }
@@ -107,7 +107,7 @@ export function PayToggle({ mode, terms }: { mode: PayMode; terms: FinanceTerms 
             Deposit: <span className="font-mono text-ink-900">{local.depositPct}%</span>
             <input
               type="range" min={0} max={50} step={5} value={local.depositPct}
-              onChange={(e) => commit({ ...local, depositPct: Number(e.target.value) })}
+              onChange={(e) => commit({ ...local, depositPct: Number(e.target.value), depositSet: true })}
               className="mt-2 w-full accent-[var(--color-brand-600)]"
             />
           </label>

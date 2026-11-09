@@ -5,7 +5,7 @@ import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
-import { monthlyForTerms, type FinanceTerms, type PayMode } from "@/lib/finance";
+import { monthlyForListing, type FinanceTerms, type PayMode } from "@/lib/finance";
 import { BodyTypeIcon } from "@/components/icons/body-types";
 import { Price, StatusBadge, Badge } from "./ui";
 import { IconGearbox, IconRuler, IconArrow } from "./icons";
@@ -40,7 +40,7 @@ export function ListingCard({
 }) {
   const monthly =
     payMode !== "cash" && financeTerms && listing.price != null
-      ? Math.round(monthlyForTerms(listing.price, financeTerms))
+      ? Math.round(monthlyForListing(listing, financeTerms))
       : undefined;
   const title = listingTitle(listing);
   const sold = listing.status === "sold";
