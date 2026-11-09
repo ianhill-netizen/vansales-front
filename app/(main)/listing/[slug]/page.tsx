@@ -310,7 +310,7 @@ function ListingHeader({ listing, title, displayTown, dealskiManaged }: { listin
         {listing.price_type === "no_vat" && <Badge tone="neutral">No VAT</Badge>}
       </div>
       <div className="mt-3 flex items-start justify-between gap-3">
-        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold leading-tight text-ink-900 lg:text-[length:var(--text-3xl)]">{title}</h1>
+        <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold leading-tight text-ink-900">{title}</h1>
         {listing.source === "vansales" && <SaveButton id={listing.source_id} label />}
       </div>
       <p className="mt-1.5 text-[length:var(--text-sm)] text-ink-500">
