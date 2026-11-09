@@ -49,7 +49,7 @@ interface ApiCard {
 }
 interface ApiDetail extends ApiCard {
   description: string | null; video_url: string | null; video_vertical_url: string | null;
-  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; vrm?: string | null; hpi_checked?: boolean; hpi_check?: HpiCheckPublic | null; warranty_addons?: { name: string; months: number; price: number }[];
+  mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; vrm?: string | null; hpi_checked?: boolean; hpi_check?: HpiCheckPublic | null; warranty_addons?: { name: string; months: number; price: number }[]; finance?: { apr: number; terms: number[]; default_term: number } | null;
   seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; body_type_key?: string | null;
   wheelbase?: VanDetails["wheelbase"]; roof_height?: VanDetails["roof_height"]; rear_doors?: VanDetails["rear_doors"]; side_loading_door?: VanDetails["side_loading_door"];
   features?: { slug: string; label: string }[]; youtube_embed_url?: string | null; ulez_compliant?: boolean | null; condition?: "excellent" | "good" | "fair" | "project" | null;
@@ -146,6 +146,7 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     hpi_checked: c.hpi_checked === true,
     hpi_check: detail?.hpi_check ?? null,
     warranty_addons: detail?.warranty_addons ?? [],
+    finance: detail?.finance ?? null,
     hpi_checked_at: detail?.hpi_checked_at ?? null,
     published_at: c.created_at,
     updated_at: c.created_at,

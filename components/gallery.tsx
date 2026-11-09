@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Photo } from "@/components/photo";
 import { BodyTypeIcon } from "@/components/icons/body-types";
 import type { Listing } from "@/lib/listings/types";
 
@@ -104,8 +105,7 @@ export function Gallery({ listing }: { listing: Listing }) {
         <div ref={rail} onScroll={onScroll} className="flex aspect-[16/10] snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-testid="gallery-rail" aria-label="Vehicle photos" role="region">
           {shots.map((shot, i) => (
             <button key={i} type="button" onClick={() => setZoom(true)} aria-label={`Open photo ${i + 1} of ${n} full screen`} className="relative block size-full shrink-0 basis-full snap-center cursor-zoom-in">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={shot.url} alt={shot.alt} className="size-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} draggable={false} />
+              <Photo src={shot.url} alt={shot.alt} sizes="(min-width: 1024px) 62vw, 100vw" first={i === 0} className="object-cover" draggable={false} />
               <PlateBlur />
             </button>
           ))}
@@ -131,9 +131,8 @@ export function Gallery({ listing }: { listing: Listing }) {
             return (
               <li key={i} className="shrink-0 snap-start">
                 <button role="tab" aria-selected={selected} aria-label={`Photo ${i + 1}`} onClick={() => jump(rail.current, i)}
-                  className={`block size-14 overflow-hidden rounded-[var(--radius-md)] border-2 bg-surface-2 transition-colors ${selected ? "border-accent-500" : "border-border hover:border-border-strong"}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={shot.url} alt="" className="size-full object-cover" loading="lazy" />
+                  className={`relative block size-14 overflow-hidden rounded-[var(--radius-md)] border-2 bg-surface-2 transition-colors ${selected ? "border-accent-500" : "border-border hover:border-border-strong"}`}>
+                  <Photo src={shot.url} alt="" sizes="56px" className="object-cover" />
                 </button>
               </li>
             );
