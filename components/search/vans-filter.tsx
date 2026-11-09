@@ -249,6 +249,7 @@ function chipCls(active: boolean): string {
    ============================================================================= */
 
 export function VansFilter({
+  finance = FINANCE_ASSUMPTIONS,
   total,
   facets,
   picker,
@@ -260,6 +261,8 @@ export function VansFilter({
   /** Make / model / body type / fuel pills with stock counts for the tap-to-select picker. */
   picker: PickerData;
   searchParams: Search;
+  /** The HP estimate's APR and term (admin finance settings, from the server). */
+  finance?: { apr: number; termMonths: number };
   /** Quick-filter chips (server-rendered links), shown under the sticky search bar. */
   quickFilters?: React.ReactNode;
 }) {
@@ -299,7 +302,7 @@ export function VansFilter({
   const chips = getChips(draft);
   const monthlyNum = Number(draft.monthlyMax) || 0;
   const depositNum = Number(draft.deposit) || Number(DEFAULT_DEPOSIT);
-  const impliedPrice = monthlyNum > 0 ? priceFromMonthly(monthlyNum, depositNum) : 0;
+  const impliedPrice = monthlyNum > 0 ? priceFromMonthly(monthlyNum, depositNum, finance.apr, finance.termMonths) : 0;
   const catchAllCount = [
     draft.fuel, draft.gearbox, draft.colour,
     draft.postcode.trim() ? "x" : "",
@@ -648,7 +651,7 @@ export function VansFilter({
                   )}
 
                   <p className="mt-3 text-[length:var(--text-2xs)] text-ink-400">
-                    HP estimate · {FINANCE_ASSUMPTIONS.termMonths} months · {FINANCE_ASSUMPTIONS.apr}% APR. Indicative only.
+                    HP estimate · {finance.termMonths} months · {finance.apr}% APR. Indicative only.
                   </p>
                 </Section>
               </div>

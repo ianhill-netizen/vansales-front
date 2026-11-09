@@ -13,6 +13,7 @@ import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
 import type { Condition, Listing, ListingFilters, Wheelbase } from "@/lib/listings/types";
 import { priceFromMonthly, parsePay } from "@/lib/finance";
+import { getFinanceConfig, type FinanceConfig } from "@/lib/finance-config";
 import { legacyToVehicles, parseVehicles } from "@/lib/vehicle-chips";
 import { haversineDistanceMiles } from "@/lib/distance";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
@@ -79,10 +80,10 @@ function parseModels(sp: Search): string[] | undefined {
   return legacy ? [legacy] : undefined;
 }
 
-function parseFilters(sp: Search, buyerLat?: number, buyerLng?: number): ListingFilters {
+function parseFilters(sp: Search, fin: FinanceConfig, buyerLat?: number, buyerLng?: number): ListingFilters {
   const monthlyMax = num(sp.monthlyMax);
   const deposit = num(sp.deposit) ?? 3000;
-  const derivedMaxPrice = monthlyMax ? priceFromMonthly(monthlyMax, deposit) : undefined;
+  const derivedMaxPrice = monthlyMax ? priceFromMonthly(monthlyMax, deposit, fin.apr, fin.termMonths) : undefined;
   const rawRadius = num(sp.radius);
   const rawSort = (one(sp.sort) as ListingFilters["sort"]) || undefined;
   const effectiveSort = rawSort ?? (buyerLat != null ? "nearest" : "newest");
@@ -152,8 +153,9 @@ export default async function VansPage({
   const qLat = Number(one(sp.lat)), qLng = Number(one(sp.lng));
   const directCoords = one(sp.lat) && one(sp.lng) && qLat > 49 && qLat < 61.5 && qLng > -9 && qLng < 2.5 ? { lat: qLat, lng: qLng } : null;
   const buyerCoords = directCoords ?? (rawPostcode ? await geocodePostcodeServer(rawPostcode) : null);
-  const filters = parseFilters(sp, buyerCoords?.lat, buyerCoords?.lng);
-  const { mode: payMode, terms: financeTerms } = parsePay(sp);
+  const fin = await getFinanceConfig();   // the admin finance settings, fetched once and passed down (fallback 11.4% / 60 months)
+  const filters = parseFilters(sp, fin, buyerCoords?.lat, buyerCoords?.lng);
+  const { mode: payMode, terms: financeTerms } = parsePay(sp, fin);
   const view: "grid" | "map" = one(sp.view) === "map" ? "map" : "grid";
 
   const [result, facets] = await Promise.all([
@@ -207,7 +209,7 @@ export default async function VansPage({
         />
 
         {/* Filter pill row + modal */}
-        <VansFilter total={total} facets={facets} picker={await getPickerData()} searchParams={sp} quickFilters={<QuickFilters sp={sp} />} />
+        <VansFilter finance={{ apr: fin.apr, termMonths: fin.termMonths }} total={total} facets={facets} picker={await getPickerData()} searchParams={sp} quickFilters={<QuickFilters sp={sp} />} />
 
         {/* Results bar: count · Cash/Finance/Both · Grid/Map */}
         <div className="mb-5 space-y-3">
@@ -227,7 +229,7 @@ export default async function VansPage({
               <ViewToggle view={view} gridHref={hrefFor(sp, 1, { view: null })} mapHref={hrefFor(sp, 1, { view: "map" })} />
             </div>
           </div>
-          <PayToggle mode={payMode} terms={financeTerms} />
+          <PayToggle mode={payMode} terms={financeTerms} defaults={{ termMonths: fin.termMonths, apr: fin.apr }} />
         </div>
 
         {listings.length === 0 ? (
