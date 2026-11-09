@@ -29,6 +29,7 @@ import {
   IconWhatsApp,
 } from "@/components/icons";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
+import { Photo } from "@/components/photo";
 
 // 5 minutes: a dealer portal profile edit (about, hours, logo) shows within minutes; the Dealski-fed dealers are unaffected by the shorter window.
 export const revalidate = 300;
@@ -333,8 +334,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
       <div className="relative isolate overflow-hidden border-b border-border bg-ink-900 text-white">
         {effectiveDealer.coverUrl && (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={effectiveDealer.coverUrl} alt="" className="absolute inset-0 -z-20 size-full object-cover" />
+            <Photo src={effectiveDealer.coverUrl} alt="" sizes="100vw" first className="-z-20 object-cover" />
             <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-ink-900/95 via-ink-900/70 to-ink-900/40" />
           </>
         )}
@@ -411,8 +411,9 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                 <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:thin] md:mx-0 md:px-0">
                   {effectiveDealer.photos.map((u, i) => (
                     <li key={u} className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-[32%]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={u} alt={`${effectiveDealer.name} photo ${i + 1}`} loading="lazy" className="aspect-[4/3] w-full rounded-[var(--radius-lg)] border border-border object-cover" />
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-lg)] border border-border">
+                        <Photo src={u} alt={`${effectiveDealer.name} photo ${i + 1}`} sizes="(min-width: 1024px) 32vw, 78vw" className="object-cover" />
+                      </div>
                     </li>
                   ))}
                 </ul>

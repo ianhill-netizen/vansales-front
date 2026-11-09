@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Photo } from "@/components/photo";
 import type { Listing } from "@/lib/listings/types";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
@@ -79,12 +80,12 @@ export function ListingCard({
       {/* ── Media ────────────────────────────────────────────────────────── */}
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
         {hasRealPhoto ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Photo
             src={listing.images[0].url}
             alt={listing.images[0].alt}
-            className="size-full object-cover transition-transform duration-[var(--dur-slow)] group-hover:scale-[1.03]"
-            loading={priority ? "eager" : "lazy"}
+            sizes="(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 100vw"
+            first={!!priority}
+            className="object-cover transition-transform duration-[var(--dur-slow)] group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex size-full flex-col items-center justify-center gap-2.5 bg-surface-2">

@@ -142,6 +142,8 @@ export interface Listing {
   vehicle_condition?: import("./vanDetails").Condition | null;
   v5_present?: boolean | null;
   /** The HP calculator's warranty add-on tiers for a dealer advert (vansales-backend: admin Settings > Prices; Swiss Vans' tiers). Absent / empty = no warranty block. Price in whole pounds, 0 = included. */
+  /** The calculator's representative APR (%), terms and default term for a dealer advert (admin Settings > Prices). Absent = the built-in Swiss Vans values. */
+  finance?: { apr: number; terms: number[]; default_term: number } | null;
   warranty_addons?: { name: string; months: number; price: number }[];
   warranty_type?: import("./vanDetails").WarrantyType | null;
   warranty_expiry?: string | null;

@@ -5,6 +5,12 @@ import { BODY_TYPE_PAGES, bodyTypeOldPath, bodyTypePath } from "./lib/used-vans/
 import { HAND_BUILT_GUIDE_SLUGS, LANDING_PAGES } from "./lib/landing-pages";
 
 const nextConfig: NextConfig = {
+  // Advert photos and dealer images are in one S3 bucket: next/image resizes them to what the screen needs and serves AVIF / WebP (components/photo.tsx).
+  images: {
+    formats: ["image/avif", "image/webp"],
+    qualities: [70],
+    remotePatterns: [{ protocol: "https", hostname: "vansales-images-781856667851-eu-west-2.s3.eu-west-2.amazonaws.com" }],
+  },
   // /new-vans was retired: every guide has a 301 to its nearest stock page, the index goes to /van-news (statusCode, not permanent, so it is a 301 and not Next's 308).
   async redirects() {
     // /used-vans/{make}/{model} -> /used-vans/{make}/{model}-for-sale and /used-vans/body-type/{slug} -> .../{slug}-for-sale (the money pages carry the keyword in the URL).

@@ -1,9 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { financeQuote } from "./hp-example.ts";
+import { financeQuote, financeQuoteVat } from "./hp-example.ts";
 
 test("£20,000, 20% deposit, 48 months, no warranty: borrows £16,000 at 9.9% APR", () => {
-  const q = financeQuote(20000, 20, 48, 0);
+  const q = financeQuote(20000, 20, 48, 0, 9.9);
   assert.equal(q.deposit, 4000);
   assert.equal(q.credit, 16000);
   assert.ok(Math.abs(q.monthly - 401.8) < 0.5, `monthly ${q.monthly}`);   // 9.9% APR over 4 years
@@ -24,4 +24,19 @@ test("a longer term costs less a month and more in total", () => {
   const long = financeQuote(15000, 10, 60, 0);
   assert.ok(long.monthly < short.monthly);
   assert.ok(long.charge > short.charge);
+});
+
+test("VAT-qualifying: VAT is the locked deposit, the extra deposit and the warranty change the amount financed", () => {
+  const q = financeQuoteVat(20000, 0, 60, 699);
+  assert.equal(q.vat, 4000);
+  assert.equal(q.deposit, 4000);
+  assert.equal(q.credit, 20699);
+  assert.equal(q.apr, 11.4);
+  const e = financeQuoteVat(20000, 3000, 60, 699);
+  assert.equal(e.deposit, 7000);
+  assert.equal(e.credit, 17699);
+  assert.ok(e.monthly < q.monthly);
+  // Swiss Vans' flat basis (6% flat over 60 months is a representative 11.4%): the two agree to within a few pence a month.
+  const flat = (20699 + 20699 * 0.06 * 5) / 60;
+  assert.ok(Math.abs(q.monthly - flat) < 0.5, `annuity ${q.monthly} vs flat ${flat}`);
 });
