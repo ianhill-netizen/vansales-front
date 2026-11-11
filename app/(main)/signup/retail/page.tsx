@@ -4,7 +4,7 @@ import { IconCheck, IconSearch, IconBolt, IconShield } from "@/components/icons"
 import { RetailSignupForm } from "./form";
 
 export const metadata: Metadata = {
-  title: "Get Van Alerts | Sign Up as a Van Buyer | Vansales",
+  title: "Get Van Alerts | Sign Up as a Van Buyer",
   description:
     "Tell us what you're looking for and we'll alert you the moment matching stock lands from verified UK dealers. Spec-first search, instant alerts, free.",
 };

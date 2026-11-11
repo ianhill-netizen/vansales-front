@@ -7,8 +7,16 @@ export const TITLE_TOTAL_MAX = 70;
 
 const TRAIL = /[\s:;,\-\u2013\u2014|&/(]+$/;
 
+// The layout adds the brand, so a title that already names it ("... | vansales.com", "... | Vansales.com UK Guide") renders it twice. Only a brand that follows a separator is removed.
+export function stripBrand(title: string): string {
+  return title
+    .replace(/\s*[|\u2013\u2014-]\s*vansales(?:\.com?)?\.?\s*$/i, "")
+    .replace(/([|\u2013\u2014-]\s*)vansales(?:\.com?)?\.?\s+/i, "$1")
+    .trim();
+}
+
 export function fitTitle(title: string, suffix = "", total = TITLE_TOTAL_MAX): string {
-  const t = title.replace(/\s+/g, " ").trim();
+  const t = stripBrand(title.replace(/\s+/g, " ").trim());
   const budget = Math.max(10, total - suffix.length);
   if (t.length <= budget) return t;
   let out = "";

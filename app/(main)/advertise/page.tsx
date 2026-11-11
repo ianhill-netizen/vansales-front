@@ -5,7 +5,7 @@ import { IconArrow, IconMessage, IconFilter, IconSync, IconWhatsApp } from "@/co
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Advertise your vans | Vansales",
+  title: "Advertise your vans",   // the root layout appends " · Vansales"
   description: "Van-specialist buyers. Enquiries straight to WhatsApp. No long contract.",
   alternates: { canonical: absUrl("/advertise") },
   openGraph: {

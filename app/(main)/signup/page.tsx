@@ -4,7 +4,7 @@ import { Container, Eyebrow } from "@/components/ui";
 import { IconSearch, IconTruck, IconBarChart } from "@/components/icons";
 
 export const metadata: Metadata = {
-  title: "Sign Up | Vansales — Van Buyers, Dealers & Advertisers",
+  title: "Sign Up | Van Buyers, Dealers & Advertisers",
   description:
     "Join Vansales as a van buyer, dealer, or advertiser. Get stock alerts, list your vans free, or reach thousands of active UK van buyers.",
 };

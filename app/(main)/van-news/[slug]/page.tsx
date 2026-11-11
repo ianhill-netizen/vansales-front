@@ -9,6 +9,7 @@ import { getVanNewsArticle } from "@/lib/content/van-news";
 import { formatDate } from "@/lib/content/blog";
 import { slugify } from "@/lib/used-vans/models";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
+import { fitTitle } from "@/lib/seo/title";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const a = await load(slug);
   if (!a) return {};
-  const title = a.metaTitle.slice(0, 60);
+  const title = fitTitle(a.metaTitle, ` · ${SITE.name}`);   // word boundary, suffix counted (a 60-char slice cut words: "workhors")
   const description = a.description.slice(0, 155);
   return {
     title,

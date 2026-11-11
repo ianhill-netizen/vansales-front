@@ -84,7 +84,7 @@ export const NEW_VANS_REDIRECTS: ReadonlyArray<{ source: string; destination: st
   { source: "/new-vans/vw-crafter-lease", destination: "/vans/volkswagen/crafter", statusCode: 301 },
   { source: "/new-vans/vw-crafter-luton", destination: "/vans/volkswagen/crafter", statusCode: 301 },
   { source: "/new-vans/vw-crafter-tipper", destination: "/vans/volkswagen/crafter", statusCode: 301 },
-  { source: "/new-vans/vw-t7-camper-for-sale", destination: "/vans/volkswagen", statusCode: 301 },
+  { source: "/new-vans/vw-t7-camper-for-sale", destination: "/vans/volkswagen-vans-for-sale", statusCode: 301 },
   { source: "/new-vans/vw-transporter-kombi-lease", destination: "/vans/volkswagen/transporter", statusCode: 301 },
   { source: "/new-vans/vw-transporter-lease", destination: "/vans/volkswagen/transporter", statusCode: 301 },
   { source: "/new-vans/:path*", destination: "/vans", statusCode: 301 },
