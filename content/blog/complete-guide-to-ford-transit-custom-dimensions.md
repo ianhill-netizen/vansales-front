@@ -7,6 +7,19 @@ excerpt: "Understanding the Ford Transit Custom dimensions is crucial for both b
 
 Understanding the Ford Transit Custom dimensions is crucial for both business and individual users who rely on this versatile vehicle for a range of transportation needs. Whether it’s navigating urban streets, fitting into tight parking spaces, or ensuring that cargo fits perfectly, the measurements of the Ford Transit Custom play a pivotal role. Besides its practicality, understanding the dimensions also aids in making an informed decision about vehicle purchase or customization, highlighting its importance in logistics, fleet management, and personal use.
 
+## Ford Transit Custom dimensions at a glance
+
+| Version | Overall length | Overall height | Wheelbase | Load length (floor) | Rear door aperture height | Load volume |
+|---|---|---|---|---|---|---|
+| **L1H1** | 5,050mm | 1,968mm | 3,100mm | 2,602mm | 1,314mm | 5.8 m³ |
+| **L1H2** | 5,050mm | 2,471mm | 3,100mm | 2,602mm | 1,814mm | 7.7 m³ |
+| **L2H1** | 5,450mm | 1,966mm | 3,500mm | 3,002mm | 1,314mm | 6.8 m³ |
+| **L2H2** | 5,450mm | 2,464mm | 3,500mm | 3,002mm | 1,814mm | 8.3 m³ or 9.0 m³ (see note) |
+
+All versions: exterior width 2,275mm with mirrors and 2,032mm without; interior width 1,777mm (1,392mm between the wheel arches); rear door aperture width 1,400mm. The guide quotes the L2H2 load volume as 8.3 m³ in the Overall Dimensions and Load Capacity sections and as 9.0 m³ in the Interior Dimensions section.
+
+Looking for one? Browse [Ford Transit Custom vans for sale](/vans/ford/transit-custom).
+
 The article intricately explores the vehicle’s overall dimensions, including the specific Ford Transit Custom measurement interior dimensions, which are crucial for businesses and individuals planning their space requirements. Additionally, it reviews the door dimensions and access options that significantly impact loading and unloading efficiency. Load capacity and payload specifications are also covered, providing a comprehensive understanding of how much the Ford Transit Custom can carry. The insights offered guide users in maximising the vehicle’s utility while ensuring compliance with legal load regulations, making this guide an essential read for prospective buyers and current owners alike.
 
 ## Overall Dimensions

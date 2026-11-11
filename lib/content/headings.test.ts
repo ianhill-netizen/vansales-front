@@ -19,3 +19,13 @@ test("html without an h1 is untouched", () => {
   const h = "<p>no heading</p><h2>a</h2><h3>b</h3>";
   assert.equal(demoteH1(h), h);
 });
+
+test("a pipe table renders as a table and the text around it is untouched", () => {
+  const html = mdToHtml("Intro.\n\n| Size | Length |\n|---|---|\n| L1 | **5,050mm** |\n| L2 | 5,450mm |\n\nAfter.");
+  assert.equal((html.match(/<table/g) ?? []).length, 1);
+  assert.equal((html.match(/<th /g) ?? []).length, 2);
+  assert.equal((html.match(/<tr>/g) ?? []).length, 3);
+  assert.ok(html.includes("<strong>5,050mm</strong>"));
+  assert.ok(html.includes(">After.</p>") && html.includes(">Intro.</p>"));
+  assert.equal(countH1(html), 0);
+});

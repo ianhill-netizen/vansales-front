@@ -32,6 +32,22 @@ export function mdToHtml(md: string): string {
     if (line.startsWith("## ")) { closeList(); isFirstParagraph = false; out.push(`<h2 class="mt-10 mb-3 font-display text-[length:var(--text-xl)] font-bold text-ink-900 tracking-[var(--tracking-tight)]">${inline(line.slice(3))}</h2>`); continue; }
     if (line.startsWith("# ")) { closeList(); isFirstParagraph = false; out.push(`<h1 class="mt-4 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">${inline(line.slice(2))}</h1>`); continue; }
 
+    // Pipe table: a header row, a |---|---| separator row, then body rows (cells may use **bold** and links like any text)
+    if (line.startsWith("|") && i + 1 < lines.length && /^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?$/.test(lines[i + 1].trim())) {
+      closeList();
+      isFirstParagraph = false;
+      const cells = (l: string) => l.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+      const head = cells(line);
+      const rows: string[][] = [];
+      i += 2;
+      while (i < lines.length && lines[i].trim().startsWith("|")) { rows.push(cells(lines[i])); i++; }
+      i--;
+      out.push(
+        `<div class="my-6 overflow-x-auto"><table class="w-full border-collapse text-left text-[length:var(--text-sm)]"><thead><tr>${head.map((c) => `<th class="border-b border-border bg-surface-1 px-3 py-2 font-semibold text-ink-900">${inline(c)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td class="border-b border-border px-3 py-2 text-ink-700">${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`,
+      );
+      continue;
+    }
+
     // Horizontal rule
     if (/^[-*]{3,}$/.test(line)) { closeList(); out.push('<hr class="my-8 border-border" />'); continue; }
 
