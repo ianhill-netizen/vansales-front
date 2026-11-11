@@ -10,6 +10,8 @@ import { formatDate } from "@/lib/content/blog";
 import { slugify } from "@/lib/used-vans/models";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 import { fitTitle } from "@/lib/seo/title";
+import { isCatalogueDegraded } from "@/lib/listings/client";
+import { loadCatalogue, makeStat } from "@/lib/seo/catalogue";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -45,7 +47,10 @@ export default async function VanNewsArticlePage({ params }: Props) {
   const { slug } = await params;
   const a = await load(slug);
   if (!a) notFound();
-  const stock = a.make ? makeVansPath(slugify(a.make)) : "/vans";
+  // The make link is only worth rendering when its page exists and has at least one live listing; a make nobody stocks (or a feed that is down, where a zero proves nothing) gets the generic link instead.
+  const makeSlug = a.make ? slugify(a.make) : "";
+  const makeHasStock = makeSlug !== "" && !(await isCatalogueDegraded()) && makeStat(await loadCatalogue(), makeSlug).count > 0;
+  const stock = makeHasStock ? makeVansPath(makeSlug) : "/vans";
   return (
     <>
       <JsonLd data={[
@@ -83,7 +88,7 @@ export default async function VanNewsArticlePage({ params }: Props) {
             </aside>
           )}
           <div className="mt-10 flex flex-wrap gap-4 text-[length:var(--text-sm)] font-semibold">
-            <Link href={stock} className="text-brand-700 hover:underline">{a.make ? `${a.make} vans for sale →` : "Browse vans for sale →"}</Link>
+            <Link href={stock} className="text-brand-700 hover:underline">{makeHasStock ? `${a.make} vans for sale →` : "Browse vans for sale →"}</Link>
             <Link href="/van-news" className="text-brand-700 hover:underline">More van news →</Link>
           </div>
         </div>
