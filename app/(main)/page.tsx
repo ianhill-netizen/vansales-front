@@ -12,10 +12,10 @@ import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
 import { getMakeByName } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
-import { SITE, absUrl, siteUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
+import { SITE, absUrl, siteUrl, DEFAULT_OG_IMAGES, ORGANIZATION_SCHEMA } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Vans for Sale UK | Used & New Vans | Vansales",
+  title: "Vans for Sale UK | Used & New Vans",   // the root layout's title template appends " · Vansales": do not add the brand here too
   description:
     "Used and new vans for sale across the UK, from dealers and private sellers. Panel vans, crew cabs, Lutons, dropsides and pickups. Search by payload, wheelbase and ULEZ, not just price.",
   alternates: { canonical: absUrl("/") },
@@ -53,13 +53,7 @@ export default async function HomePage() {
     .slice(0, 16);
   const base = siteUrl();
 
-  const orgSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE.name,
-    url: base,
-    logo: `${base}/favicon.ico`,
-  };
+  const orgSchema = { "@context": "https://schema.org", ...ORGANIZATION_SCHEMA };
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
