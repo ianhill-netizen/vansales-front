@@ -33,6 +33,9 @@ export async function generateStaticParams() {
 
 const PAGE_SIZE = 24;
 
+/** Model pages that stay in the index with no stock right now: they carry authored model copy and still earn impressions through the retired /new-vans guides (make/model slugs). */
+const INDEXABLE_WITHOUT_STOCK = new Set(["mercedes-benz/citan"]);
+
 type Params = { make: string; model: string };
 type Search = { [k: string]: string | string[] | undefined };
 
@@ -128,7 +131,7 @@ export async function generateMetadata({
     openGraph: { title, description, url: cleanPageUrl(makeSlug, modelSlug, result.page), type: "website" },
     twitter: { card: "summary_large_image", title, description },
     // No stock = a thin page: out of the index, links still followed. Only a REAL zero counts: while a stock feed is failing the count proves nothing.
-    ...(shouldNoindexEmpty(stat.count, await isCatalogueDegraded()) ? { robots: { index: false, follow: true } } : {}),
+    ...(shouldNoindexEmpty(stat.count, await isCatalogueDegraded()) && !INDEXABLE_WITHOUT_STOCK.has(`${makeSlug}/${modelSlug}`) ? { robots: { index: false, follow: true } } : {}),
   };
 }
 

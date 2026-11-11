@@ -10,7 +10,9 @@ import { getBlogPost, getBlogIndex, getBlogSlugs, formatDate } from "@/lib/conte
 import { blogKeywords, matchBlogPosts } from "@/lib/content/cross-links";
 import { mdToHtml } from "@/lib/content/markdown";
 import { bodyWithImages, getBackendGuide } from "@/lib/content/backend";
-import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
+import { SITE, absUrl, DEFAULT_OG_IMAGES, ORGANIZATION_SCHEMA } from "@/lib/site";
+import { demoteH1 } from "@/lib/content/headings";
+import { fitTitle } from "@/lib/seo/title";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -57,13 +59,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const heroUrl = post.heroImage
     ? (post.heroImage.startsWith("http") ? post.heroImage : absUrl(post.heroImage))
     : undefined;
+  // The root layout appends " · Vansales" to `title`: fit the title to the budget that leaves room for it, at a word boundary (a hard slice(0, 60) used to cut words in half).
+  const fitted = fitTitle(post.metaTitle, ` · ${SITE.name}`);
   return {
-    title: post.metaTitle.slice(0, 60),
+    title: fitted,
     description: post.description.slice(0, 155),
     alternates: { canonical: absUrl(`/blog/${slug}`) },
     openGraph: {
     images: DEFAULT_OG_IMAGES,
-      title: `${post.metaTitle.slice(0, 60)} · ${SITE.name}`,
+      title: `${fitted} · ${SITE.name}`,
       description: post.description.slice(0, 155),
       url: absUrl(`/blog/${slug}`),
       type: "article",
@@ -77,6 +81,7 @@ export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
   const post = await loadPost(slug);
   if (!post) notFound();
+  const heroAbs = post.heroImage ? (post.heroImage.startsWith("http") ? post.heroImage : absUrl(post.heroImage)) : undefined;
 
   // Cross-link data
   const allBlog = getBlogIndex();
@@ -136,8 +141,9 @@ export default async function BlogPostPage({ params }: Props) {
           "@type": "Article",
           headline: post.title,
           datePublished: post.date,
-          author: { "@type": "Organization", name: SITE.name, url: absUrl("/") },
-          publisher: { "@type": "Organization", name: SITE.name, url: absUrl("/"), logo: { "@type": "ImageObject", url: absUrl("/icons/icon-192.png") } },
+          ...(heroAbs && { image: [heroAbs] }),   // only a real hero image: never a placeholder
+          author: ORGANIZATION_SCHEMA,
+          publisher: ORGANIZATION_SCHEMA,
           url: absUrl(`/blog/${slug}`),
           description: post.description,
         },
@@ -182,7 +188,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <Container className="py-10">
         <div className="mx-auto max-w-[var(--content-max)]">
-          <article dangerouslySetInnerHTML={{ __html: autoLink(post.html) }} />
+          <article dangerouslySetInnerHTML={{ __html: demoteH1(autoLink(post.html)) }} />
 
           <aside className="mt-10 rounded-[var(--radius-xl)] border border-border bg-surface-1 p-5">
             <p className="font-display text-[length:var(--text-base)] font-bold text-ink-900">Selling a van instead?</p>

@@ -44,6 +44,10 @@ const nextConfig: NextConfig = {
       // The previous vansales.com's listing URLs, /detail/{number}: 502 of the 503 URLs Google reports as 404 (Agent 19's seo_404_feed, 2026-11-07). The numbers are not stored anywhere now, so there is no make or model
       // to send them to: they go to /used-vans, permanently (308). A removed listing of THIS site is handled by /listing/{slug} (it redirects to its model page).
       { source: "/detail/:id(\\d+)", destination: "/used-vans", statusCode: 308 as const },
+      // "Citroën" used to slugify to "citro-n" (accent dropped as a separator): Google has /vans/citro-n/* indexed. Listed before the generic /vans/:make rule, which would otherwise send /vans/citro-n to /vans/citro-n-vans-for-sale.
+      { source: "/vans/citro-n/:model", destination: "/vans/citroen/:model", statusCode: 301 as const },
+      { source: "/vans/citro-n", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
+      { source: "/vans/citro-n-vans-for-sale", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
     ];
     return [...landing, ...retired, ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
   },

@@ -3,6 +3,8 @@ import type { Listing } from "./types";
 /** Lowercase, hyphenate, strip anything that isn't a-z 0-9 or hyphen. */
 export function slugify(input: string): string {
   return input
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")   // ë -> e, é -> e: without this "Citroën" became "citro-n"
     .toLowerCase()
     .trim()
     .replace(/['"]/g, "")

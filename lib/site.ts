@@ -27,6 +27,17 @@ export function absUrl(path: string): string {
   return `${siteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/** The Vansales logo as an absolute, crawlable URL (public/logo.svg: the same file the site header renders). One source for every Organization in JSON-LD. */
+export const ORG_LOGO_URL = absUrl("/logo.svg");
+
+/** The shared schema.org Organization object: name, url and logo. Spread it where a page needs the Vansales organisation (Article author and publisher, the home page). */
+export const ORGANIZATION_SCHEMA = {
+  "@type": "Organization",
+  name: SITE.name,
+  url: absUrl("/"),
+  logo: { "@type": "ImageObject", url: ORG_LOGO_URL },
+} as const;
+
 /** Default share image for pages that set their own openGraph/twitter metadata (a page-level openGraph replaces the root layout's, so the file-based image has to be named again). */
 export const DEFAULT_OG_IMAGES = [{ url: absUrl("/opengraph-image"), width: 1200, height: 630, alt: `${SITE.name}: ${SITE.tagline}` }];
 export const DEFAULT_TWITTER_IMAGES = [{ url: absUrl("/twitter-image"), width: 1200, height: 630, alt: `${SITE.name}: ${SITE.tagline}` }];
