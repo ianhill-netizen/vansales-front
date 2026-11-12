@@ -1,22 +1,26 @@
-import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 
-export const geist = Geist({
-  subsets: ["latin"],
+// Self-hosted variable fonts (SIL OFL 1.1, see app/fonts/LICENSE-*.txt), latin subset, from the @fontsource-variable packages.
+// No network request at build or run time. Never reintroduce the Google font loader (guarded by lib/fonts-selfhosted.test.ts).
+export const geist = localFont({
+  src: "./fonts/geist-latin-wght-normal.woff2",
+  weight: "100 900",
   variable: "--font-geist",
   display: "swap",
 });
 
-export const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+export const geistMono = localFont({
+  src: "./fonts/geist-mono-latin-wght-normal.woff2",
+  weight: "100 900",
   variable: "--font-geist-mono",
   display: "swap",
+  preload: false,
 });
 
-// Display face for headings: tokens.css / globals.css reference --font-jakarta. Self-hosted by next/font (no render-blocking Google Fonts <link>).
-export const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+// Display face for headings: tokens.css / globals.css reference --font-jakarta.
+export const jakarta = localFont({
+  src: "./fonts/plus-jakarta-sans-latin-wght-normal.woff2",
+  weight: "200 800",
   variable: "--font-jakarta",
   display: "swap",
 });
