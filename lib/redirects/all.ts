@@ -1,5 +1,6 @@
 import { NEW_VANS_REDIRECTS } from "./new-vans.ts";
 import { BACKLINK_REDIRECTS } from "./backlinks.ts";
+import { RETIRED_TEST_DEALER_REDIRECTS } from "./retired-test-dealer.ts";
 import { USED_VAN_MODELS, usedVanOldPath, usedVanPath } from "../used-vans/models.ts";
 import { BODY_TYPE_PAGES, bodyTypeOldPath, bodyTypePath } from "../used-vans/body-types.ts";
 import { HAND_BUILT_GUIDE_SLUGS, LANDING_PAGES } from "../landing-pages.ts";
@@ -44,5 +45,5 @@ export function buildRedirects(): RedirectRule[] {
       { source: "/vans/citro-n", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
       { source: "/vans/citro-n-vans-for-sale", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
     ];
-    return [...landing, ...retired, ...BACKLINK_REDIRECTS.map((r) => ({ ...r })), ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
+    return [...landing, ...retired, ...RETIRED_TEST_DEALER_REDIRECTS.map((r) => ({ ...r })), ...BACKLINK_REDIRECTS.map((r) => ({ ...r })), ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
 }

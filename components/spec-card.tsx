@@ -95,13 +95,8 @@ export function SpecCard({
       className={`relative flex flex-col justify-end p-5 text-white ${className}`}
       style={{ background: `linear-gradient(${gradient(make)})` }}
       role="img"
-      aria-label={`${make} ${model} — photos coming soon`}
+      aria-label={`${make} ${model}`}
     >
-      {/* Tag */}
-      <span className="absolute right-3 top-3 rounded-[var(--radius-pill)] bg-white/10 px-2.5 py-0.5 text-[length:var(--text-2xs)] font-semibold uppercase tracking-[var(--tracking-wide)] text-white/60 backdrop-blur-sm">
-        Photos coming soon
-      </span>
-
       {/* Body icon */}
       <div className="mb-4 text-white/30">
         <BodyIcon bodyStyle={van_spec.body_style} />
