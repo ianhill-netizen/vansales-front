@@ -21,3 +21,10 @@ test("they are part of the site's redirect list", () => {
   const all = new Set(buildRedirects().map((r) => r.source));
   for (const r of RETIRED_TEST_DEALER_REDIRECTS) assert.ok(all.has(r.source), r.source);
 });
+
+test("the retired dogfood NV200 advert is a single-hop 301 to its model guide page", () => {
+  const r = RETIRED_TEST_DEALER_REDIRECTS.find((x) => x.source === "/listing/private-nissan-nv200-2011-1");
+  assert.ok(r);
+  assert.equal(r.destination, "/used-vans/nissan/nv200-for-sale");
+  assert.equal(r.statusCode, 301);
+});
