@@ -199,7 +199,3 @@ export function whatsappUrl(number: string | null, prefill: string): string | nu
   if (!number) return null;
   return `https://wa.me/${number}?text=${encodeURIComponent(prefill)}`;
 }
-
-/** Dealer records that are test fixtures, not real businesses: left out of the sitemap and served noindex. Reversible (delete the slug). Only slugs shown to be tests belong here; a real dealer never does. */
-export const TEST_DEALER_SLUGS: ReadonlySet<string> = new Set(["test-dealer"]);
-export const isTestDealer = (slug: string): boolean => TEST_DEALER_SLUGS.has(slug);

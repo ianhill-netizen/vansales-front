@@ -8,7 +8,6 @@ import { getLiveBodyTypeSlugs } from "@/lib/content/body-type-pages";
 import { BODY_TYPE_PAGES, bodyTypePath } from "@/lib/used-vans/body-types";
 import { USED_VAN_MODELS, usedVanPath } from "@/lib/used-vans/models";
 import { getDealerDirectory } from "@/lib/dealers/directory";
-import { isTestDealer } from "@/lib/dealers/config";
 import { listingPath } from "@/lib/listings/slug";
 import { CATEGORIES } from "@/lib/seo/categories";
 import { categoryListings, loadCatalogue, makeStat, modelStat, statOf } from "@/lib/seo/catalogue";
@@ -112,7 +111,7 @@ async function buildSitemap(): Promise<{ entries: MetadataRoute.Sitemap; degrade
     };
   });
 
-  const dealerRoutes: MetadataRoute.Sitemap = dealers.filter((d) => !isTestDealer(d.slug)).map((d) => ({
+  const dealerRoutes: MetadataRoute.Sitemap = dealers.map((d) => ({
     url: `${base}/dealer/${d.slug}`,
     changeFrequency: "daily",
     priority: 0.6,
