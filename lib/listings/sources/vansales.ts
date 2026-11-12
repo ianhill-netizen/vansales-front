@@ -1,7 +1,7 @@
 import type { VanDetails } from "@/lib/listings/vanDetails";
 import type { DealerContact, HpiCheckPublic, Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
-import { priceFieldsFor } from "../vat";
+import { priceFieldsFor, isVatUnconfirmedDealerAdvert } from "../vat";
 import { withoutPlaceholderImages } from "../photo";
 import { apiHeaders } from "@/lib/api-headers";
 
@@ -208,13 +208,17 @@ export async function fetchPrivateSellerListingBySlug(slug: string): Promise<Lis
 /** Any advert card from the vansales API (private or dealer portal) as a Listing: for the saved-vans page, which asks for cards by id. */
 export function advertCardToListing(card: unknown): Listing | null {
   const c = card as ApiCard | null;
-  return c && typeof c === "object" && typeof c.id === "number" ? toListing(c) : null;
+  if (!c || typeof c !== "object" || typeof c.id !== "number") return null;
+  const l = toListing(c);
+  return isVatUnconfirmedDealerAdvert(l) ? null : l;
 }
 
 /** A dealer portal advert card from a dealer profile or list response, as a Listing; null for anything else (leftover legacy rows, private adverts). */
 export function dealerAdvertCardToListing(card: unknown): Listing | null {
   const c = card as ApiCard | null;
-  return c && typeof c === "object" && isDealerAdvert(c) ? toListing(c) : null;
+  if (!c || typeof c !== "object" || !isDealerAdvert(c)) return null;
+  const l = toListing(c);
+  return isVatUnconfirmedDealerAdvert(l) ? null : l;
 }
 
 /** Every active dealer portal advert (leftover legacy rows in the same feed are skipped). A failed page throws, as for the private feed. */
@@ -222,7 +226,7 @@ export async function fetchDealerPortalListings(): Promise<Listing[]> {
   const out: Listing[] = [];
   for (let page = 1; page <= MAX_PAGES; page++) {
     const body = await getListJson<{ data: ApiCard[]; last_page: number }>(`/api/public/listings?seller_type=dealer&page=${page}`, ["vansales-dealer"]);
-    for (const c of body.data) if (isDealerAdvert(c)) out.push(toListing(c));
+    for (const c of body.data) if (isDealerAdvert(c)) { const l = toListing(c); if (!isVatUnconfirmedDealerAdvert(l)) out.push(l); }
     if (page >= body.last_page) break;
   }
   return out;

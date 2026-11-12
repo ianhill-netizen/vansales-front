@@ -57,3 +57,12 @@ export function offerPriceLd(price: number | null, status: string | null | undef
     ...(vat === undefined ? {} : { priceSpecification: { "@type": "PriceSpecification", price, priceCurrency: "GBP", valueAddedTaxIncluded: vat } }),
   };
 }
+
+/**
+ * A dealer advert whose VAT status is not recorded is a data fault, and a bare price beside it reads as the price the buyer pays. So it is never shown as a card anywhere
+ * (grids, search, maps, dealer pages, saved vans, sitemap): it reappears as soon as the record says ex_vat / inc_vat / no_vat. Private adverts are unaffected (a private price is final).
+ * Its direct URL still renders, with an explicit "VAT status to be confirmed" warning (see the listing page).
+ */
+export function isVatUnconfirmedDealerAdvert(l: { seller_type: string; price_type: string; price: number | null }): boolean {
+  return l.seller_type === "dealer" && l.price_type === "unknown" && l.price != null;
+}
