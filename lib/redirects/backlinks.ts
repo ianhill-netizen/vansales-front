@@ -5,16 +5,16 @@
  */
 export const BACKLINK_REDIRECTS: ReadonlyArray<{ source: string; destination: string; statusCode: 301 }> = [
   { source: "/hire_purchase_van.asp", destination: "/hire-purchase-vans" },
-  { source: "/cheap_vans.asp", destination: "/vans-for-sale-under-10000" },
+  { source: "/cheap_vans.asp", destination: "/vans" },
   { source: "/van-rental", destination: "/van-lease-deals" },
-  { source: "/contact-us", destination: "/dealers" },
-  { source: "/new-vans-for-sale", destination: "/new-vans-2026" },
+  { source: "/contact-us", destination: "/" },
+  { source: "/new-vans-for-sale", destination: "/vans" },
   { source: "/sprinter-van-for-sale-under-5000", destination: "/used-vans/mercedes-benz/sprinter-for-sale" },
   { source: "/14-passenger-mercedes-sprinter-for-sale", destination: "/vans/minibus" },
   { source: "/Directory/Van-Insurance-Companies", destination: "/van-insurance" },
   { source: "/van_sales_blog/index.php/van-finance-explained/van-leasing-explained", destination: "/van-lease-deals" },
   { source: "/blog/2014/2015-transporter-concept-real", destination: "/used-vans/volkswagen/transporter-for-sale" },
-  { source: "/themes/swissvehiclecontracts/img/logo.jpeg", destination: "/dealer/swiss-vans" },
+  { source: "/themes/swissvehiclecontracts/img/logo.jpeg", destination: "/" },
   { source: "/uploads/vans/Toyota_hilux_invincible_.jpg", destination: "/used-vans/toyota/hilux-invincible-for-sale" },
   // "VW" was the old make slug.
   { source: "/used-vans/VW", destination: "/used-vans/volkswagen" },
