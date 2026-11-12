@@ -33,9 +33,12 @@ export function vatLabel(priceType: VatPriceType, vatQualifying: boolean): strin
   }
 }
 
-/** The finance calculator treats the VAT as an upfront deposit only when the price is before VAT. Never for inc_vat, no_vat or unknown. */
+/**
+ * The finance calculator's VAT-as-deposit treatment: UNCHANGED from before, it applies to `vat_qualifying` only. Never for ex_vat, inc_vat, no_vat or unknown.
+ * (ex_vat vs vat_qualifying finance treatment is an existing inconsistency, to be decided separately.)
+ */
 export function vatOnTop(status: string | null | undefined): boolean {
-  return vatState(status) === "ex_vat";
+  return status === "vat_qualifying";
 }
 
 /** schema.org PriceSpecification.valueAddedTaxIncluded: true only for inc_vat, false for ex_vat, undefined (omit it) for no_vat and unknown. */

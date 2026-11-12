@@ -75,14 +75,14 @@ test("JSON-LD: valueAddedTaxIncluded is true only for inc_vat, false for ex_vat,
   assert.deepEqual(offerPriceLd(null, "ex_vat"), { priceCurrency: "GBP" });
 });
 
-test("finance: the VAT uplift applies only when the price is ex VAT, never on unknown / inc_vat / no_vat", () => {
-  assert.equal(vatOnTop("ex_vat"), true);
+test("finance: unchanged, the VAT uplift is vat_qualifying only; never on ex_vat / unknown / inc_vat / no_vat", () => {
   assert.equal(vatOnTop("vat_qualifying"), true);
-  for (const s of ["inc_vat", "no_vat", null, undefined]) assert.equal(vatOnTop(s), false);
+  for (const s of ["ex_vat", "inc_vat", "no_vat", null, undefined]) assert.equal(vatOnTop(s), false);
   const T = { depositPct: 10, depositSet: false, termMonths: 60, warranty: 0, apr: 11.4 };
   const dealer = { source: "vansales" as const, source_id: "3", seller_type: "dealer" as const, price: 20000 };
   const unknown = monthlyForListing({ ...dealer, vat_status: null }, T);
   assert.equal(unknown, monthlyForListing({ ...dealer, vat_status: "inc_vat" }, T));
   assert.equal(unknown, monthlyForListing({ ...dealer, vat_status: "no_vat" }, T));
-  assert.ok(monthlyForListing({ ...dealer, vat_status: "ex_vat" }, T) > unknown, "ex VAT: the VAT is financed-as-deposit basis, so it differs from the plain estimate");
+  assert.equal(unknown, monthlyForListing({ ...dealer, vat_status: "ex_vat" }, T), "ex_vat behaves exactly as before: the plain estimate");
+  assert.ok(monthlyForListing({ ...dealer, vat_status: "vat_qualifying" }, T) > unknown, "vat_qualifying keeps its VAT-as-deposit basis");
 });
