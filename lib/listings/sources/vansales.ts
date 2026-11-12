@@ -2,6 +2,7 @@ import type { VanDetails } from "@/lib/listings/vanDetails";
 import type { DealerContact, HpiCheckPublic, Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
 import { priceFieldsFor } from "../vat";
+import { withoutPlaceholderImages } from "../photo";
 import { apiHeaders } from "@/lib/api-headers";
 
 /* =============================================================================
@@ -83,9 +84,10 @@ function toListing(c: ApiCard | ApiDetail): Listing {
       }
     : undefined;
   const detail = "listing_images" in c ? (c as ApiDetail) : null;
-  const images: ListingImage[] = detail?.listing_images?.length
+  // A placeholder-looking picture (a site's "no photo" frame) is never an image of the van: dropped, so the first real photo behind it leads (none left = no card, lib/listings/photo.ts).
+  const images: ListingImage[] = withoutPlaceholderImages(detail?.listing_images?.length
     ? detail.listing_images.map((i, n) => ({ url: i.url, alt: `${c.make} ${c.model} photo ${n + 1}${i.is_cleaned ? " (studio background)" : ""}` }))
-    : c.image ? [{ url: c.image, alt: `${c.make} ${c.model}` }] : [];
+    : c.image ? [{ url: c.image, alt: `${c.make} ${c.model}` }] : []);
   const year = c.year ?? 0;
   return {
     id: `vansales:${c.id}`,

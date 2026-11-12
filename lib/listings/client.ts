@@ -19,6 +19,7 @@ import { resolveModelSlug } from "@/lib/models/image";
 import { getDealerConfig } from "@/lib/dealers/config";
 import { WHEELBASE_LABEL, titleCase } from "./format";
 import { hasCardPhoto } from "./photo";
+import { checkImage, validateLeadImages, type UrlChecker } from "./image-check";
 
 /* =============================================================================
    DATA LAYER  — the only module screens import.
@@ -134,7 +135,8 @@ async function loadAllUncached(): Promise<{
   if (source === "live") {
     // Real stock only: an empty catalogue is an honest answer, never a reason to show fixture vans.
     const extras = await extrasP;
-    const merged = [...extras.listings, ...demo];
+    // Validity, not just "has a URL": a lead image must really resolve to a 200 image that is not a placeholder (a "no photo" frame is a valid 200). Done once here, so every grid, count, facet and the sitemap agree.
+    const merged = await validateLeadImages([...extras.listings, ...demo], leadImageChecker);
     return { listings: merged, servedBy: "vansales", live: true, feedTotal: merged.length, degraded: extras.degraded };
   }
 
@@ -151,6 +153,25 @@ async function loadAllUncached(): Promise<{
   };
 }
 
+
+/** One cached verdict per image URL for an hour (the URL is the cache key). A check that errors or times out throws, so it is NOT cached and the card is kept (fail open). */
+const checkImageCached = unstable_cache(
+  async (url: string): Promise<boolean> => {
+    const v = await checkImage(url);
+    if (v.ok === "unknown") throw new Error(v.reason);
+    return v.ok;
+  },
+  ["lead-image-check-v1"],
+  { revalidate: 3600 },
+);
+
+const leadImageChecker: UrlChecker = async (url) => {
+  try {
+    return await checkImageCached(url);
+  } catch {
+    return true;
+  }
+};
 
 /** One catalogue load per request: getListings() and getFacets() on the same page share it. */
 const loadAll = cache(loadAllUncached);
@@ -400,7 +421,7 @@ async function getListingBySlugUncached(slug: string): Promise<{ listing: Listin
 export async function getModelIndex(): Promise<Array<{ make: string; model: string; count: number }>> {
   const { listings } = await loadAll();
   const map = new Map<string, { make: string; model: string; count: number }>();
-  for (const l of listings) {
+  for (const l of listings.filter((x) => x.status !== "removed" && hasCardPhoto(x))) {   // same predicate as every grid, so nav counts match
     const key = `${slugify(l.make)}/${slugify(l.model)}`;
     const cur = map.get(key);
     if (cur) cur.count += 1;
