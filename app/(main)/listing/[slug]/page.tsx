@@ -308,6 +308,7 @@ function ListingHeader({ listing, title, displayTown, dealskiManaged }: { listin
         {listing.ulez_compliant == null && listing.ulez && <Badge tone="brand">ULEZ ready</Badge>}
         {listing.v5_present === true && <Badge tone="success">V5 present</Badge>}
         {listing.price_type === "no_vat" && <Badge tone="neutral">No VAT</Badge>}
+        {listing.seller_type === "dealer" && listing.price_type === "unknown" && listing.price != null && <Badge tone="warning">VAT status to be confirmed: ask the dealer before relying on this price</Badge>}
       </div>
       <div className="mt-3 flex items-start justify-between gap-3">
         <h1 className="font-display text-[length:var(--text-2xl)] font-extrabold leading-tight text-ink-900">{title}</h1>

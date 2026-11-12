@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { priceFieldsFor, vatLabel, vatState, vatOnTop, valueAddedTaxIncluded, offerPriceLd } from "./vat.ts";
+import { isVatUnconfirmedDealerAdvert, priceFieldsFor, vatLabel, vatState, vatOnTop, valueAddedTaxIncluded, offerPriceLd } from "./vat.ts";
 import { monthlyForListing } from "../finance.ts";
 
 const STATUSES = ["vat_qualifying", "ex_vat", "inc_vat", "no_vat", null, undefined, "", "inc", "ex", "weird"] as const;
@@ -85,4 +85,12 @@ test("finance: unchanged, the VAT uplift is vat_qualifying only; never on ex_vat
   assert.equal(unknown, monthlyForListing({ ...dealer, vat_status: "no_vat" }, T));
   assert.equal(unknown, monthlyForListing({ ...dealer, vat_status: "ex_vat" }, T), "ex_vat behaves exactly as before: the plain estimate");
   assert.ok(monthlyForListing({ ...dealer, vat_status: "vat_qualifying" }, T) > unknown, "vat_qualifying keeps its VAT-as-deposit basis");
+});
+
+test("a dealer advert with no recorded VAT status is never a card; recorded ones and private adverts are", () => {
+  const d = (price_type: string, seller_type = "dealer", price: number | null = 74999) => ({ seller_type, price_type, price });
+  assert.equal(isVatUnconfirmedDealerAdvert(d("unknown")), true);
+  for (const t of ["ex_vat", "inc_vat", "no_vat"]) assert.equal(isVatUnconfirmedDealerAdvert(d(t)), false, t);
+  assert.equal(isVatUnconfirmedDealerAdvert(d("unknown", "private")), false);
+  assert.equal(isVatUnconfirmedDealerAdvert(d("unknown", "dealer", null)), false);
 });
