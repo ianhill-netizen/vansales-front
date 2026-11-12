@@ -1,6 +1,7 @@
 import type { VanDetails } from "@/lib/listings/vanDetails";
 import type { DealerContact, HpiCheckPublic, Listing, ListingImage } from "../types";
 import { titleCase } from "../format";
+import { priceFieldsFor } from "../vat";
 import { apiHeaders } from "@/lib/api-headers";
 
 /* =============================================================================
@@ -45,12 +46,12 @@ interface ApiCard {
   seller_type?: "dealer" | "private";
   /** Present on dealer adverts (and legacy dealer stock); has_call_booking is true only for dealer portal adverts. */
   dealer?: { name: string; slug: string; logo_url?: string | null; town?: string | null; has_whatsapp?: boolean; has_phone?: boolean; finance_url?: string | null; has_call_booking?: boolean; google_rating?: number | null; google_review_count?: number | null } | null;
-  ulez_compliant?: boolean | null; vehicle_condition?: "excellent" | "good" | "fair" | "project" | null; v5_present?: boolean | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; features?: { slug: string; label: string }[]; hpi_checked?: boolean;
+  ulez_compliant?: boolean | null; vehicle_condition?: "excellent" | "good" | "fair" | "project" | null; v5_present?: boolean | null; vat_status?: "vat_qualifying" | "ex_vat" | "inc_vat" | "no_vat" | null; features?: { slug: string; label: string }[]; hpi_checked?: boolean;
 }
 interface ApiDetail extends ApiCard {
   description: string | null; video_url: string | null; video_vertical_url: string | null;
   mot_expiry?: string | null; last_mot_mileage?: number | null; last_mot_date?: string | null; vrm?: string | null; hpi_checked?: boolean; hpi_check?: HpiCheckPublic | null; warranty_addons?: { name: string; months: number; price: number }[]; finance?: { apr: number; terms: number[]; default_term: number } | null;
-  seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null; body_type_key?: string | null;
+  seller_video_url?: string | null; vat_status?: "vat_qualifying" | "ex_vat" | "inc_vat" | "no_vat" | null; body_type_key?: string | null;
   wheelbase?: VanDetails["wheelbase"]; roof_height?: VanDetails["roof_height"]; rear_doors?: VanDetails["rear_doors"]; side_loading_door?: VanDetails["side_loading_door"];
   features?: { slug: string; label: string }[]; youtube_embed_url?: string | null; ulez_compliant?: boolean | null; condition?: "excellent" | "good" | "fair" | "project" | null;
   v5_present?: boolean | null; warranty_type?: "none" | "manufacturer" | "aftermarket" | null; warranty_expiry?: string | null; previous_owners?: number | null;
@@ -101,9 +102,8 @@ function toListing(c: ApiCard | ApiDetail): Listing {
     year,
     plate: year ? String(year).slice(-2) : "",
     price: c.price > 0 ? c.price : null,
-    // The seller's VAT status drives the qualifier beside the price: "+ VAT" for VAT qualifying / ex-VAT, "No VAT" for no VAT. Not given = the old "inc. VAT" default.
-    price_type: c.vat_status === "no_vat" ? "no_vat" : "inc_vat",
-    vat_qualifying: c.vat_status === "vat_qualifying" || c.vat_status === "ex_vat",
+    // The record's VAT status drives the qualifier beside the price: "+ VAT" (ex_vat / vat_qualifying), "inc. VAT" (inc_vat only), "No VAT", and NO qualifier when it is not recorded. Never a default.
+    ...priceFieldsFor(c.vat_status),
     mileage: c.mileage,
     fuel: or(c.fuel_type, "—"),
     transmission: or(c.transmission, "—"),

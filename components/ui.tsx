@@ -294,7 +294,7 @@ export function Price({
       <span className={`font-sans font-bold leading-none tabular-nums text-ink-900 ${text}`}>
         {formatPrice(listing.price)}
       </span>
-      {!poa && (
+      {!poa && vatLabel(listing.price_type, listing.vat_qualifying) !== "" && (
         <span className="text-[length:var(--text-xs)] font-medium text-ink-500">
           {vatLabel(listing.price_type, listing.vat_qualifying)}
         </span>

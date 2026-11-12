@@ -9,6 +9,7 @@ import { SaveButton } from "@/components/save-button";
 import { HpiCard } from "@/components/hpi-card";
 import { JsonLd } from "@/components/json-ld";
 import { CONDITION_LABEL, detailRows, VAT_BADGE, warrantyText } from "@/lib/listings/vanDetails";
+import { offerPriceLd, vatOnTop } from "@/lib/listings/vat";
 import { IconGauge, IconFuel, IconGearbox, IconCheck, IconShield } from "@/components/icons";
 import { ListingTabs, type ListingTab } from "@/components/listing-tabs";
 import { ListingActions } from "@/components/listing-actions";
@@ -208,8 +209,7 @@ export default async function ListingPage({
     offers: {
       "@type": "Offer",
       url: absUrl(`/listing/${slug}`),
-      priceCurrency: "GBP",
-      ...(listing.price != null ? { price: listing.price } : {}),
+      ...offerPriceLd(listing.price, listing.vat_status),
       availability:
         listing.status === "active"
           ? "https://schema.org/InStock"
@@ -270,7 +270,7 @@ export default async function ListingPage({
               ))}
             </dl>
             {isVansalesAdvert && listing.seller_type === "dealer" && listing.price != null && listing.price > 0 && (
-              <FinanceCalculator price={listing.price} applyHref={actionLinks.financeHref ?? "/hire-purchase-vans"} warranties={listing.warranty_addons ?? []} finance={listing.finance ?? null} vatQualifying={listing.vat_status === "vat_qualifying"} />
+              <FinanceCalculator price={listing.price} applyHref={actionLinks.financeHref ?? "/hire-purchase-vans"} warranties={listing.warranty_addons ?? []} finance={listing.finance ?? null} vatQualifying={vatOnTop(listing.vat_status)} />
             )}
           </aside>
 
@@ -295,7 +295,7 @@ function ListingHeader({ listing, title, displayTown, dealskiManaged }: { listin
         <StatusBadge status={listing.status} />
         <Badge tone="neutral">{listing.condition === "new" ? "New" : "Used"}</Badge>
         {listing.vehicle_condition && <Badge tone="neutral">{CONDITION_LABEL[listing.vehicle_condition]}</Badge>}
-        {(listing.vat_status === "vat_qualifying" || listing.vat_status === "ex_vat") && <Badge tone="neutral">{VAT_BADGE[listing.vat_status]}</Badge>}
+        {(listing.vat_status === "vat_qualifying" || listing.vat_status === "ex_vat" || listing.vat_status === "inc_vat") && <Badge tone="neutral">{VAT_BADGE[listing.vat_status]}</Badge>}
         {listing.seller_type === "private" && <Badge tone="neutral">Private seller</Badge>}
         {dealskiManaged && <Badge tone="brand">Dealski-managed</Badge>}
         {listing.hpi_checked && !listing.hpi_check && (
@@ -317,6 +317,7 @@ function ListingHeader({ listing, title, displayTown, dealskiManaged }: { listin
         {[listing.year > 0 ? String(listing.year) : null, displayTown, listing.colour !== "—" ? listing.colour : null, /^\d{2}$/.test(listing.plate ?? "") ? `${listing.plate} plate` : null].filter(Boolean).join(" · ")}
       </p>
       <div className="mt-3"><Price listing={listing} size="lg" /></div>
+      {listing.price != null && listing.price_type === "unknown" && <p className="mt-1 text-[length:var(--text-xs)] text-ink-500" data-testid="vat-unknown">VAT status to be confirmed</p>}
     </div>
   );
 }

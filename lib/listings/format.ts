@@ -1,3 +1,4 @@
+import { vatLabel as vatLabelImpl } from "./vat.ts";
 import type { Listing, PriceType, Wheelbase, RoofHeight } from "./types";
 import { prettyDerivative } from "@/lib/vehicle/derivative";
 
@@ -12,10 +13,9 @@ export function formatPrice(price: number | null): string {
   return price == null ? "Contact for price" : GBP.format(price);
 }
 
-/** Short VAT qualifier shown next to a price. */
+/** Short VAT qualifier shown next to a price ("" = none: VAT status unknown). Logic lives in ./vat.ts. */
 export function vatLabel(priceType: PriceType, vatQualifying: boolean): string {
-  if (priceType === "no_vat") return "No VAT";
-  return vatQualifying ? "+ VAT" : "inc. VAT";
+  return vatLabelImpl(priceType, vatQualifying);
 }
 
 export function formatMileage(mileage: number | null): string {
