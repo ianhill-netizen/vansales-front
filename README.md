@@ -3,7 +3,7 @@
 A modern UK van marketplace (AutoTrader-style), built **design-system-first**. No
 backend lives here: the app consumes a listings API behind a swappable adapter.
 
-**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · `next/font`.
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · `next/font/local` (self-hosted woff2 in app/fonts, OFL).
 
 ---
 
