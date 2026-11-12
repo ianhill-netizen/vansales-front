@@ -65,6 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: fitted,
     description: post.description.slice(0, 155),
     alternates: { canonical: absUrl(`/blog/${slug}`) },
+    twitter: { card: "summary_large_image", title: `${fitted} · ${SITE.name}`, description: post.description.slice(0, 155) },
     openGraph: {
     images: DEFAULT_OG_IMAGES,
       title: `${fitted} · ${SITE.name}`,
