@@ -5,8 +5,6 @@ date: 2024-07-24T20:46:41
 excerpt: "The Land Rover Defender Commercial has become a popular choice for businesses and individuals seeking a versatile and rugged vehicle. However, owning this "
 ---
 
-# Land Rover Defender Commercial Tax
-
 **Is a Land Rover Defender Commercial a commercial vehicle for tax?** It can be, but it is not automatic. HMRC classifies a vehicle by how it is designed and constructed, not by how it is used, and takes the manufacturer's classification on the DVLA registration into account. The Defender Commercial's load area in place of rear seats, lack of rear passenger seating and solid or tinted rear windows all support van classification, and a payload of one ton or more is often a key indicator. Its status can still be subject to interpretation, so check the specification against HMRC guidelines and take professional advice.
 
 ### Tax at a glance

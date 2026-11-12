@@ -5,8 +5,6 @@ date: 2024-07-15T15:26:20
 excerpt: "Maintaining the proper function of your vehicle’s headlights is paramount, not only for your safety but also to ensure that you comply with road…"
 ---
 
-# How to Change Headlight Bulb on Citroen Berlingo Van
-
 This guide covers replacing the headlight bulb on a Citroen Berlingo van, which typically uses an H4 bulb for both low and high beam (two filaments and a three-pronged plug at the base).
 
 ### Tools needed
