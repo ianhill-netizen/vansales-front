@@ -41,6 +41,7 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/sitemap",           label: "Site map" },
       { href: "https://dealer.vansales.com/login",       label: "Dealer login" },
       { href: "/advertise",                              label: "Advertise with us" },
+      { href: "/stock-feeds",                            label: "Stock feeds" },
       { href: "https://sell.vansales.com/signup/private", label: "List my van free" },
     ],
   },

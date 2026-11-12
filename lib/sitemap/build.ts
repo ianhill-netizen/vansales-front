@@ -14,6 +14,7 @@ import { siteUrl } from "@/lib/site";
 import { makeVansPath } from "@/lib/seo/make-url";
 import { getLiveSellSlugs } from "@/lib/content/sell-pages";
 import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
+import { STOCK_FEEDS_LASTMOD, STOCK_FEEDS_PATH } from "@/lib/stock-feeds";
 import { LANDING_PAGES } from "@/lib/landing-pages";
 import { getLiveLandingSlugs } from "@/lib/content/landing-pages";
 import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
@@ -81,6 +82,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
     e("/van-finance"),
     e("/van-insurance"),
     e("/advertise"),
+    e(STOCK_FEEDS_PATH, STOCK_FEEDS_LASTMOD),   // a real date from the page's data module, updated when its copy changes
     e("/sell"),
     e("/directory"),
   ];
