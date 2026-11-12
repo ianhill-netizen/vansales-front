@@ -18,6 +18,7 @@ import { chooseExtras, shouldSkipRetry, type Extras } from "./extras-guard";
 import { resolveModelSlug } from "@/lib/models/image";
 import { getDealerConfig } from "@/lib/dealers/config";
 import { WHEELBASE_LABEL, titleCase } from "./format";
+import { hasCardPhoto } from "./photo";
 
 /* =============================================================================
    DATA LAYER  — the only module screens import.
@@ -162,7 +163,8 @@ export async function isCatalogueDegraded(): Promise<boolean> {
 const csv = (v: string) => v.split(",").map((s) => s.trim()).filter(Boolean);
 
 function applyFilters(listings: Listing[], f: ListingFilters): Listing[] {
-  let out = listings.filter((l) => l.status !== "removed");
+  // "No photo, no card": every grid, strip, carousel, facet and count is built from this list, so a listing with no photo appears in none of them (its own page still renders, it is looked up by slug).
+  let out = listings.filter((l) => l.status !== "removed" && hasCardPhoto(l));
 
   if (f.dealer) {
     // Same match the dealer page uses: the API dealer slug, or (configured dealers) the seller names.

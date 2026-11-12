@@ -18,6 +18,7 @@ import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
 import { LANDING_PAGES } from "@/lib/landing-pages";
 import { getLiveLandingSlugs } from "@/lib/content/landing-pages";
 import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
+import { buildRedirects } from "@/lib/redirects/all";
 
 // Rebuilt every 5 minutes from live stock. Without this the sitemap was generated once, at deploy time, and kept whatever stock the API had at that moment (after the make-page change it listed one make page instead of the six that have stock).
 export const revalidate = 300;
@@ -166,5 +167,7 @@ async function buildSitemap(): Promise<{ entries: MetadataRoute.Sitemap; degrade
     ...landingRoutes,
     ...listingRoutes,
   ];
-  return { entries, degraded };
+  // A URL that redirects is never listed (retired pages such as /dealer/van-viking and its listings must not stay in the sitemap while the API catches up).
+  const redirected = new Set(buildRedirects().filter((r) => !r.source.includes(":")).map((r) => r.source.toLowerCase()));
+  return { entries: entries.filter((e) => !redirected.has(new URL(e.url).pathname.toLowerCase())), degraded };
 }

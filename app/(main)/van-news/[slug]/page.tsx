@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: absUrl(`/van-news/${slug}`) },
+    twitter: { card: "summary_large_image", title: `${title} · ${SITE.name}`, description },
     openGraph: { images: DEFAULT_OG_IMAGES, title: `${title} · ${SITE.name}`, description, url: absUrl(`/van-news/${slug}`), type: "article", publishedTime: a.publishedAt },
   };
 }

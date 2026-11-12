@@ -6,7 +6,7 @@ import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
 import { monthlyForListing, type FinanceTerms, type PayMode } from "@/lib/finance";
-import { BodyTypeIcon } from "@/components/icons/body-types";
+import { hasCardPhoto } from "@/lib/listings/photo";
 import { Price, StatusBadge, Badge } from "./ui";
 import { IconGearbox, IconRuler, IconArrow } from "./icons";
 import { SaveButton } from "./save-button";
@@ -38,6 +38,8 @@ export function ListingCard({
   /** Ring the card (map view: the matching pin is selected). */
   highlighted?: boolean;
 }) {
+  // No photo, no card (lib/listings/photo.ts): the data layer already drops these, this keeps a stray one (e.g. a saved van) from ever rendering a placeholder.
+  if (!hasCardPhoto(listing)) return null;
   const monthly =
     payMode !== "cash" && financeTerms && listing.price != null
       ? Math.round(monthlyForListing(listing, financeTerms))
@@ -48,11 +50,10 @@ export function ListingCard({
   const featured = isFeaturedSeller(listing.seller.name);
   const apiDealer = listing.dealer_contact; // a vansales-API dealer: the name links to its profile page
   const dealerConfig = apiDealer ? null : getDealerConfigBySeller(listing.seller.name);
-  const hasRealPhoto = listing.images[0]?.url?.startsWith("http");
   // Only dealski-sourced listings carry image_source (dealski-backend PR
   // #3173); it's undefined for every other source, which is equivalent to
   // "photo" here — no badge on a listing whose own image is a real photo.
-  const isFallbackImage = hasRealPhoto && !!listing.image_source && listing.image_source !== "photo";
+  const isFallbackImage = !!listing.image_source && listing.image_source !== "photo";
   const fuelLower = listing.fuel.toLowerCase();
   const fuelPill = !["diesel", "—"].includes(fuelLower) ? (FUEL_PILL[fuelLower] ?? "bg-ink-600 text-white") : null;
 
@@ -79,22 +80,13 @@ export function ListingCard({
 
       {/* ── Media ────────────────────────────────────────────────────────── */}
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
-        {hasRealPhoto ? (
-          <Photo
-            src={listing.images[0].url}
-            alt={listing.images[0].alt}
-            sizes="(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 100vw"
-            first={!!priority}
-            className="object-cover transition-transform duration-[var(--dur-slow)] group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div className="flex size-full flex-col items-center justify-center gap-2.5 bg-surface-2">
-            <BodyTypeIcon slug={listing.van_spec.body_style} className="h-16 w-24 text-ink-300" />
-            <p className="font-mono text-[length:var(--text-2xs)] uppercase tracking-[var(--tracking-eyebrow)] text-ink-400">
-              Photos coming soon
-            </p>
-          </div>
-        )}
+        <Photo
+          src={listing.images[0].url}
+          alt={listing.images[0].alt}
+          sizes="(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 100vw"
+          first={!!priority}
+          className="object-cover transition-transform duration-[var(--dur-slow)] group-hover:scale-[1.03]"
+        />
 
         {/* Bottom gradient for badge legibility */}
         <div
