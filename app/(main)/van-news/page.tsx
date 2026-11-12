@@ -18,12 +18,12 @@ export const metadata: Metadata = {
   openGraph: { images: DEFAULT_OG_IMAGES, title: `${TITLE} · ${SITE.name}`, description: DESCRIPTION, url: absUrl("/van-news"), type: "website" },
 };
 
-// /van-news: the latest 20 articles, optionally one make (?make=BYD). The filter is a plain link (no client JS), the filtered view is noindex so only /van-news itself is in search.
+// /van-news: every published article, newest first, optionally one make (?make=BYD). The filter is a plain link (no client JS), the filtered view is noindex so only /van-news itself is in search.
 export default async function VanNewsIndex({ searchParams }: { searchParams: Promise<{ make?: string }> }) {
   const { make: rawMake } = await searchParams;
   const makes = await getVanNewsMakes();
   const make = makes.find((m) => m === rawMake);
-  const posts = (await getVanNewsArticles(make)).slice(0, 20);
+  const posts = await getVanNewsArticles(make); // every article (up to the helper's 10-page cap), not the first 20: an article past 20 had no link from the index at all
   const chip = (active: boolean) => `rounded-full border px-3 py-1 text-[length:var(--text-sm)] font-medium transition-colors ${active ? "border-brand-700 bg-brand-700 text-white" : "border-border bg-white text-ink-700 hover:border-brand-700 hover:text-brand-700"}`;
   return (
     <>

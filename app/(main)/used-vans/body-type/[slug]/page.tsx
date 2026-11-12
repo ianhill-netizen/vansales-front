@@ -57,7 +57,12 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
   const found = await load(params);
   if (!found) notFound();
   const { def, page } = found;
-  const [all, liveModels, liveTypes] = await Promise.all([getListings({ status: "active" }), getLiveModelPageSlugs(), getLiveBodyTypeSlugs()]);
+  // The guide itself is what this page is for: if the stock feed or a sibling-page list is throttled or down, render the page with an empty stock section / fewer links instead of a 500 to the crawler.
+  const [all, liveModels, liveTypes] = await Promise.all([
+    getListings({ status: "active" }).catch(() => ({ listings: [] as Awaited<ReturnType<typeof getListings>>["listings"] })),
+    getLiveModelPageSlugs().catch(() => new Set<string>()),
+    getLiveBodyTypeSlugs().catch(() => new Set<string>()),
+  ]);
   const matching = all.listings.filter((l) => def.match(l));
   const shown = matching.slice(0, 12);
   const path = bodyTypePath(def);

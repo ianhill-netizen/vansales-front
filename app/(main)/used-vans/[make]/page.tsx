@@ -6,6 +6,8 @@ import { JsonLd } from "@/components/json-ld";
 import { ListingCard } from "@/components/listing-card";
 import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
 import { getMakeHub } from "@/lib/content/make-hubs";
+import { ContentLinks } from "@/components/content-links";
+import { getMakeContentLinks } from "@/lib/content/make-related";
 import { getListings } from "@/lib/listings/client";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle } from "@/lib/listings/format";
@@ -46,6 +48,7 @@ export default async function UsedVansMake({ params }: { params: Promise<Params>
   const make = models[0]?.make ?? hub!.make;
   const [live, stock] = await Promise.all([getLiveModelPageSlugs(), getListings({ make: makeSlug, pageSize: 12 })]);
   const guides = models.filter((m) => live.has(m.pageSlug));
+  const related = await getMakeContentLinks(make);
   const itemList = stock.listings.length > 0 && {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -117,6 +120,8 @@ export default async function UsedVansMake({ params }: { params: Promise<Params>
             </div>
           )}
         </section>
+        <ContentLinks title={`${make} buying guides`} links={related.guides} />
+        <ContentLinks title={`Latest ${make} van news`} links={related.news} />
         {hub && (
           /* body_html is sanitised on the server (allow-listed tags, no attributes) before it reaches this page */
           <article className="prose-vs max-w-3xl space-y-4 text-[length:var(--text-md)] leading-relaxed text-ink-600 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-[length:var(--text-xl)] [&_h2]:font-bold [&_h2]:text-ink-900 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:font-bold [&_h3]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: hub.bodyHtml }} />

@@ -14,6 +14,7 @@ export function proxy(req: NextRequest) {
     pathname === "/favicon.ico" ||
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
+    pathname.startsWith("/sitemaps/") ||
     pathname.startsWith(HOLDING_PATH)
   ) {
     return NextResponse.next();

@@ -6,6 +6,9 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
+import { PrevNext } from "@/components/content-links";
+import { getAllGuides } from "@/lib/content/all-guides";
+import { mentioning, neighbours } from "@/lib/content/related";
 import { getBlogPost, getBlogIndex, getBlogSlugs, formatDate } from "@/lib/content/blog";
 import { blogKeywords, matchBlogPosts } from "@/lib/content/cross-links";
 import { mdToHtml } from "@/lib/content/markdown";
@@ -89,7 +92,14 @@ export default async function BlogPostPage({ params }: Props) {
   const kws = blogKeywords(post.title, post.description);
 
   // Related blog posts sharing keywords
-  const relatedPosts = matchBlogPosts(allBlog, kws.length ? kws : [post.title.split(" ")[0]], slug, 3);
+  const searchTerms = kws.length ? kws : [post.title.split(" ")[0]];
+  const guides = await getAllGuides().catch(() => []); // local posts + the guides Mason publishes, newest first
+  // The local matches first, then guides from the backend that name the same thing (they were never linked from a related block before), at most 4.
+  const relatedPosts = [...matchBlogPosts(allBlog, searchTerms, slug, 3), ...mentioning(guides, searchTerms.slice(0, 3), 3, slug)]
+    .filter((p, i, a) => a.findIndex((q) => q.slug === p.slug) === i)
+    .slice(0, 4);
+  // Previous / next in publication order: every article is linked from its two neighbours, not only from the /blog index.
+  const { newer, older } = neighbours(guides, slug);
 
   // Category pages inferred from keywords
   const categoryMap: Record<string, { href: string; label: string }> = {
@@ -225,6 +235,8 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             </div>
           )}
+
+          <PrevNext newer={newer} older={older} base="/blog" />
 
           <div className="mt-10 border-t border-border pt-8">
             <Link href="/blog" className="text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">
