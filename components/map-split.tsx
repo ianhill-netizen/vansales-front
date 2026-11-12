@@ -39,7 +39,7 @@ function popupCard(l: Listing): string {
     <div class="vs-pop-body">
       <p class="vs-pop-title">${esc(`${l.make} ${l.model}`)}</p>
       ${sub ? `<p class="vs-pop-sub">${esc(sub)}</p>` : ""}
-      <p class="vs-pop-price">${price}${l.price != null ? ` <span>${esc(vatLabel(l.price_type, l.vat_qualifying))}</span>` : ""}</p>
+      <p class="vs-pop-price">${price}${l.price != null && vatLabel(l.price_type, l.vat_qualifying) !== "" ? ` <span>${esc(vatLabel(l.price_type, l.vat_qualifying))}</span>` : ""}</p>
       <p class="vs-pop-meta"><span class="vs-pop-badge${l.seller_type === "private" ? "" : " dealer"}">${l.seller_type === "private" ? "Private seller" : "Dealer"}</span>${town ? `<span>${esc(town)}</span>` : ""}</p>
     </div></a>`;
 }

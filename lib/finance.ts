@@ -2,6 +2,7 @@
 // the default 24-month warranty financed with the van and (VAT-qualifying vans) the VAT as the deposit. Figures are indicative only; exact quotes depend on lender criteria.
 import { financeQuote, financeQuoteVat } from "./hp-example.ts";
 import type { Listing } from "./listings/types";
+import { vatOnTop } from "./listings/vat.ts";
 
 const TERM_MONTHS = 60;
 const ANNUAL_APR = 11.4;
@@ -47,7 +48,7 @@ export function monthlyForListing(l: Pick<Listing, "price" | "source" | "source_
   const price = l.price ?? 0;
   const dealerAdvert = l.source === "vansales" && /^\d+$/.test(l.source_id) && l.seller_type === "dealer" && price > 0;
   if (!dealerAdvert) return monthlyForTerms(price, t);
-  if (l.vat_status === "vat_qualifying" && !t.depositSet) return financeQuoteVat(price, 0, t.termMonths, t.warranty, t.apr).monthly;
+  if (vatOnTop(l.vat_status) && !t.depositSet) return financeQuoteVat(price, 0, t.termMonths, t.warranty, t.apr).monthly;
   return financeQuote(price, t.depositPct, t.termMonths, t.warranty, t.apr).monthly;
 }
 

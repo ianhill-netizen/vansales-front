@@ -9,7 +9,8 @@ export type ListingSource = "dealski" | "native" | "vansales";
 export type SellerType = "dealer" | "private";
 export type ListingStatus = "active" | "reserved" | "sold" | "removed";
 export type Condition = "used" | "new";
-export type PriceType = "inc_vat" | "no_vat";
+/** inc_vat = price includes VAT; ex_vat = "+ VAT"; no_vat; unknown = the record does not say (shown with NO qualifier). */
+export type PriceType = "inc_vat" | "ex_vat" | "no_vat" | "unknown";
 export type Wheelbase = "swb" | "mwb" | "lwb" | "xlwb";
 export type RoofHeight = "low" | "medium" | "high";
 
@@ -147,8 +148,8 @@ export interface Listing {
   warranty_addons?: { name: string; months: number; price: number }[];
   warranty_type?: import("./vanDetails").WarrantyType | null;
   warranty_expiry?: string | null;
-  /** The seller's VAT status (private adverts); null/absent = not given. */
-  vat_status?: "vat_qualifying" | "ex_vat" | "no_vat" | null;
+  /** The advert's VAT status as recorded; null/absent = unknown (no qualifier shown, never defaulted to inc. VAT). */
+  vat_status?: "vat_qualifying" | "ex_vat" | "inc_vat" | "no_vat" | null;
   /** Optional van details from a private seller (body type, wheelbase, roof, doors, seats, weights, service history, engine, Euro class). */
   details?: import("./vanDetails").VanDetails;
 

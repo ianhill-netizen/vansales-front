@@ -16,14 +16,14 @@ export interface VanDetails {
   previous_owners: number | null;
 }
 
-export type VatStatus = "vat_qualifying" | "ex_vat" | "no_vat";
+export type VatStatus = "vat_qualifying" | "ex_vat" | "inc_vat" | "no_vat";
 
 const WHEELBASE = { swb: "SWB (short wheelbase)", mwb: "MWB (medium wheelbase)", lwb: "LWB (long wheelbase)", xlwb: "XLWB (extra-long wheelbase)" } as const;
 const ROOF = { low: "Low roof", medium: "Medium roof", high: "High roof", super_high: "Super high roof" } as const;
 const REAR = { barn_doors: "Barn doors", top_hinged: "Top-hinged door", roller_shutter: "Roller shutter", none: "None" } as const;
 const SIDE = { nearside: "Nearside", offside: "Offside", both: "Both sides", none: "None" } as const;
 const SERVICE = { full: "Full", partial: "Partial", none: "None" } as const;
-export const VAT_BADGE: Record<VatStatus, string> = { vat_qualifying: "VAT qualifying", ex_vat: "Ex-VAT", no_vat: "No VAT" };
+export const VAT_BADGE: Record<VatStatus, string> = { vat_qualifying: "VAT qualifying", ex_vat: "Ex-VAT", inc_vat: "Inc. VAT", no_vat: "No VAT" };
 
 const n = (v: number) => new Intl.NumberFormat("en-GB").format(v);
 
