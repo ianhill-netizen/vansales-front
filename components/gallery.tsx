@@ -9,9 +9,15 @@ type Shot = { url: string; alt: string };
 
 const ARROW = "hidden size-10 items-center justify-center rounded-full bg-white/90 text-ink-800 shadow-[var(--shadow-sm)] hover:bg-white md:flex";
 
-/** No number-plate detection exists yet (follow-up issue), so every photo gets a blur over the lower-centre band where the plate usually sits. */
-function PlateBlur() {
-  return <span aria-hidden className="pointer-events-none absolute bottom-[7%] left-1/2 h-[20%] w-[34%] -translate-x-1/2 rounded-md backdrop-blur-lg" data-testid="plate-blur" />;
+/**
+ * DISABLED (2026-11-12, Ian): vehicle photos are never masked, blurred or redacted automatically. This was a fixed-position overlay (no plate detection exists) that landed on the grille/bumper of
+ * cropped photos instead of the plate. It is kept here only so the idea can be read later; it renders nothing and nothing may render it. The guard test (lib/gallery-no-blur.test.ts) fails if a
+ * <PlateBlur /> element or a backdrop-blur overlay is put back into this file. A real version would need plate detection from the backend and the originals preserved.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function PlateBlur(): null {
+  void (`<span aria-hidden className="pointer-events-none absolute bottom-[7%] left-1/2 h-[20%] w-[34%] -translate-x-1/2 rounded-md" />`);
+  return null;
 }
 
 type Tab = "photos" | "video";
@@ -106,7 +112,6 @@ export function Gallery({ listing }: { listing: Listing }) {
           {shots.map((shot, i) => (
             <button key={i} type="button" onClick={() => setZoom(true)} aria-label={`Open photo ${i + 1} of ${n} full screen`} className="relative block size-full shrink-0 basis-full snap-center cursor-zoom-in">
               <Photo src={shot.url} alt={shot.alt} sizes="(min-width: 1024px) 62vw, 100vw" first={i === 0} className="object-cover" draggable={false} />
-              <PlateBlur />
             </button>
           ))}
         </div>
@@ -151,7 +156,7 @@ export function Gallery({ listing }: { listing: Listing }) {
             {shots.map((shot, i) => (
               <div key={i} className="grid size-full shrink-0 basis-full snap-center place-items-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {zoom && <span className="relative inline-block max-h-full max-w-full"><img src={shot.url} alt={shot.alt} className="max-h-full max-w-full object-contain" draggable={false} /><PlateBlur /></span>}
+                {zoom && <span className="relative inline-block max-h-full max-w-full"><img src={shot.url} alt={shot.alt} className="max-h-full max-w-full object-contain" draggable={false} /></span>}
               </div>
             ))}
           </div>
