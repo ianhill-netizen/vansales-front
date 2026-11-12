@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ValueYourVan } from "@/components/px/value-your-van";
-import { getDealerConfig, whatsappUrl, financeUrl, type DealerConfig } from "@/lib/dealers/config";
+import { getDealerConfig, isTestDealer, whatsappUrl, financeUrl, type DealerConfig } from "@/lib/dealers/config";
 import { fetchApiDealerProfile, type ApiDealer } from "@/lib/dealers/api";
 import { SocialLinks, hasSocials } from "@/components/social-links";
 import { getListings } from "@/lib/listings/client";
@@ -38,6 +38,7 @@ type Params = { slug: string };
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
+  if (isTestDealer(slug)) return { title: "Test dealer", robots: { index: false, follow: false } };
   const dealer = getDealerConfig(slug);
   if (dealer) {
     const title = `${dealer.name} — Van Dealer in ${dealer.location.town}`;

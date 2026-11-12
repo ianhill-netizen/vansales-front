@@ -45,6 +45,42 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
   },
 ];
 
+// Chip groups under the footer's text column. Regions and brands are listed here so every landing page has a sitewide inbound link (five region pages and two brand pages had none, 2026-11-12).
+const CHIP_GROUPS: { title: string; links: { href: string; label: string }[] }[] = [
+  {
+    title: "Popular makes",
+    links: [
+      { href: "/vans/ford-vans-for-sale",          label: "Ford" },
+      { href: "/vans/volkswagen-vans-for-sale",    label: "Volkswagen" },
+      { href: "/vans/mercedes-benz-vans-for-sale", label: "Mercedes" },
+      { href: "/vans/vauxhall-vans-for-sale",      label: "Vauxhall" },
+      { href: "/vans/renault-vans-for-sale",       label: "Renault" },
+      { href: "/vans/citroen-vans-for-sale",       label: "Citroën" },
+    ],
+  },
+  {
+    title: "Vans by region",
+    links: [
+      { href: "/vans-for-sale/london",     label: "London" },
+      { href: "/vans-for-sale/birmingham", label: "Birmingham" },
+      { href: "/vans-for-sale/manchester", label: "Manchester" },
+      { href: "/vans-for-sale/leeds",      label: "Leeds" },
+      { href: "/vans-for-sale/bristol",    label: "Bristol" },
+      { href: "/vans-for-sale/wales",      label: "Wales" },
+      { href: "/vans-for-sale/scotland",   label: "Scotland" },
+    ],
+  },
+  {
+    title: "Van brands",
+    links: [
+      { href: "/byd-vans-uk",       label: "BYD" },
+      { href: "/maxus-vans-uk",     label: "Maxus" },
+      { href: "/leapmotor-vans-uk", label: "Leapmotor" },
+      { href: "/changan-vans-uk",   label: "Changan" },
+    ],
+  },
+];
+
 export function Footer() {
   return (
     <footer className="mt-[var(--section-y)] bg-ink-900 text-white">
@@ -79,24 +115,22 @@ export function Footer() {
             dealers. Filter by payload, wheelbase, ULEZ compliance and Euro 6 status to find
             the van that fits the job.
           </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {[
-              { href: "/vans/ford-vans-for-sale",          label: "Ford" },
-              { href: "/vans/volkswagen-vans-for-sale",    label: "Volkswagen" },
-              { href: "/vans/mercedes-benz-vans-for-sale", label: "Mercedes" },
-              { href: "/vans/vauxhall-vans-for-sale",      label: "Vauxhall" },
-              { href: "/vans/renault-vans-for-sale",       label: "Renault" },
-              { href: "/vans/citroen-vans-for-sale",       label: "Citroën" },
-            ].map((m) => (
-              <Link
-                key={m.href}
-                href={m.href}
-                className="rounded-[var(--radius-sm)] border border-ink-800 px-2.5 py-1 text-[length:var(--text-xs)] font-semibold text-ink-500 transition-colors hover:border-ink-600 hover:text-ink-300"
-              >
-                {m.label}
-              </Link>
-            ))}
-          </div>
+          {CHIP_GROUPS.map((g) => (
+            <div key={g.title} className="mt-6">
+              <h2 className="font-mono text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">{g.title}</h2>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {g.links.map((m) => (
+                  <Link
+                    key={m.href}
+                    href={m.href}
+                    className="rounded-[var(--radius-sm)] border border-ink-800 px-2.5 py-1 text-[length:var(--text-xs)] font-semibold text-ink-500 transition-colors hover:border-ink-600 hover:text-ink-300"
+                  >
+                    {m.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         {COLS.map((col) => (
