@@ -13,7 +13,8 @@ import { retryDelayMs } from "@/lib/content/retry";
 const BASE = (process.env.VANSALES_API_URL || process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
 const REVALIDATE = 300;
 const TIMEOUT_MS = 6000;
-const MAX_LIST_PAGES = 10;
+// 20 rows a page. The unfiltered list (every page type) was 216 rows on 2026-11-12, past the old cap of 10 pages: the OLDEST rows fell off the end, which silently dropped 4 guides from /blog and the sitemap. Guides are now fetched with page_type=guide, and the cap leaves room for 800 rows.
+const MAX_LIST_PAGES = 40;
 
 export interface BackendGuideSummary {
   slug: string;
@@ -86,7 +87,7 @@ export async function getBackendGuides(): Promise<BackendGuideSummary[]> {
   const out: BackendGuideSummary[] = [];
   const seen = new Set<string>();
   for (let page = 1; page <= MAX_LIST_PAGES; page++) {
-    const res = await getJson(`/api/public/content/pages?page=${page}`);
+    const res = await getJson(`/api/public/content/pages?page_type=guide&page=${page}`);
     if (!res || res.status !== 200 || typeof res.json !== "object" || res.json === null) break;
     const body = res.json as { data?: unknown; last_page?: unknown };
     const rows = Array.isArray(body.data) ? body.data : [];
