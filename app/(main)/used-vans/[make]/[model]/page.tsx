@@ -6,6 +6,8 @@ import { JsonLd } from "@/components/json-ld";
 import { ListingCard } from "@/components/listing-card";
 import { ModelEnquiryForm } from "@/components/used-vans/model-enquiry-form";
 import { getModelPage } from "@/lib/content/model-pages";
+import { ContentLinks } from "@/components/content-links";
+import { getModelContentLinks } from "@/lib/content/make-related";
 import { getListings } from "@/lib/listings/client";
 import { listingPath } from "@/lib/listings/slug";
 import { listingTitle } from "@/lib/listings/format";
@@ -76,6 +78,7 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
     ],
   };
   const siblings = usedVanModelsOfMake(m.makeSlug).filter((x) => x.pageSlug !== m.pageSlug);
+  const related = await getModelContentLinks(m);
   return (
     <>
       <JsonLd data={[itemList, breadcrumb]} />
@@ -139,6 +142,8 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
             </ul>
           </section>
         )}
+        <ContentLinks title={`${m.make} ${m.model} guides`} links={related.guides} />
+        <ContentLinks title={`Latest ${m.make} ${m.model} news`} links={related.news} />
       </Container>
     </>
   );

@@ -5,9 +5,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
-import { getVanNewsArticle } from "@/lib/content/van-news";
+import { getVanNewsArticle, getVanNewsArticles } from "@/lib/content/van-news";
+import { ContentLinks, PrevNext } from "@/components/content-links";
+import { neighbours, sortNewestFirst } from "@/lib/content/related";
+import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
 import { formatDate } from "@/lib/content/blog";
-import { slugify } from "@/lib/used-vans/models";
+import { slugify, usedVanModelsOfMake } from "@/lib/used-vans/models";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 import { fitTitle } from "@/lib/seo/title";
 import { isCatalogueDegraded } from "@/lib/listings/client";
@@ -52,6 +55,12 @@ export default async function VanNewsArticlePage({ params }: Props) {
   const makeSlug = a.make ? slugify(a.make) : "";
   const makeHasStock = makeSlug !== "" && !(await isCatalogueDegraded()) && makeStat(await loadCatalogue(), makeSlug).count > 0;
   const stock = makeHasStock ? makeVansPath(makeSlug) : "/vans";
+  // Neighbours in publication order, other news about the same make, and the make's used-vans page: every article is linked from other articles, not only from the /van-news index.
+  const all = sortNewestFirst((await getVanNewsArticles().catch(() => [])).map((n) => ({ slug: n.slug, title: n.title, date: n.publishedAt, make: n.make })));
+  const { newer, older } = neighbours(all, slug);
+  const sameMake = a.make ? all.filter((n) => n.make === a.make && n.slug !== slug).slice(0, 4) : [];
+  const hubs = makeSlug ? await getLiveMakeHubSlugs().catch(() => new Set<string>()) : new Set<string>();
+  const usedMakeLink = makeSlug && (usedVanModelsOfMake(makeSlug).length > 0 || hubs.has(makeSlug)) ? [{ href: `/used-vans/${makeSlug}`, label: `Used ${a.make} vans: buying guides and listings` }] : [];
   return (
     <>
       <JsonLd data={[
@@ -88,6 +97,8 @@ export default async function VanNewsArticlePage({ params }: Props) {
               </ul>
             </aside>
           )}
+          <PrevNext newer={newer} older={older} base="/van-news" newerLabel="Newer news" olderLabel="Older news" />
+          <ContentLinks className="mt-8" title={a.make ? `More ${a.make} news and guides` : "More van news"} links={[...sameMake.map((n) => ({ href: `/van-news/${n.slug}`, label: n.title })), ...usedMakeLink]} />
           <div className="mt-10 flex flex-wrap gap-4 text-[length:var(--text-sm)] font-semibold">
             <Link href={stock} className="text-brand-700 hover:underline">{makeHasStock ? `${a.make} vans for sale →` : "Browse vans for sale →"}</Link>
             <Link href="/van-news" className="text-brand-700 hover:underline">More van news →</Link>

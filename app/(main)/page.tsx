@@ -10,6 +10,10 @@ import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
+import { ContentLinks } from "@/components/content-links";
+import { getAllGuides } from "@/lib/content/all-guides";
+import { getVanNewsArticles } from "@/lib/content/van-news";
+import { sortNewestFirst, latest } from "@/lib/content/related";
 import { getMakeByName } from "@/lib/taxonomy/van-makes";
 import { slugify } from "@/lib/listings/slug";
 import { SITE, absUrl, siteUrl, DEFAULT_OG_IMAGES, ORGANIZATION_SCHEMA } from "@/lib/site";
@@ -30,6 +34,13 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const picker = await getPickerData();
+  // The newest guides and van news, as plain links: the home page is the page crawlers visit most, so a new article is found from here within a day instead of waiting for the next /blog crawl.
+  const [guides, newsItems] = await Promise.all([
+    getAllGuides().catch(() => []),
+    getVanNewsArticles().catch(() => []),
+  ]);
+  const newestGuides = latest(guides, 6);
+  const newestNews = latest(sortNewestFirst(newsItems.map((n) => ({ slug: n.slug, title: n.title, date: n.publishedAt }))), 4);
   const [{ listings, total }, facets, all] = await Promise.all([
     getListings({ sort: "newest", limit: 4 }),
     getFacets(),
@@ -167,6 +178,14 @@ export default async function HomePage() {
         </Container>
       )}
 
+
+      {/* ── LATEST NEWS AND GUIDES ───────────────────────────────────────── */}
+      {(newestNews.length > 0 || newestGuides.length > 0) && (
+        <Container className="grid gap-10 pt-10 md:grid-cols-2">
+          <ContentLinks title="Latest van news" links={newestNews.map((n) => ({ href: `/van-news/${n.slug}`, label: n.title }))} />
+          <ContentLinks title="Latest van guides" links={newestGuides.map((g) => ({ href: `/blog/${g.slug}`, label: g.title }))} />
+        </Container>
+      )}
 
       {/* ── SEARCH BY MAP ────────────────────────────────────────────────── */}
       <Container className="py-10">

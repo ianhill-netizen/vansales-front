@@ -71,3 +71,16 @@ export async function getLiveBodyTypeSlugs(): Promise<Set<string>> {
   }
   return live;
 }
+
+/** slug -> updated_at (falling back to published_at) of the published body-type pages, for the sitemap's lastmod. Same list URL as getLiveBodyTypeSlugs, so the read is shared. Empty when the API is down. */
+export async function getBodyTypeDates(): Promise<Map<string, string>> {
+  const res = await getJson("/api/public/body-type-pages");
+  const rows = res && res.status === 200 ? ((res.json as { data?: unknown } | null)?.data ?? []) : [];
+  const out = new Map<string, string>();
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const r = row as Record<string, unknown>;
+    const d = str(r?.updated_at) || str(r?.published_at);
+    if (str(r?.slug) && d) out.set(str(r.slug), d);
+  }
+  return out;
+}

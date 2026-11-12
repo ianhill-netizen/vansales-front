@@ -6,6 +6,9 @@
  */
 export const RETIRED_TEST_DEALER_SLUG = "van-viking";
 
+/** True for a dealer slug that is retired: it must not be listed on /dealers or in the sitemap (its page is a 301). */
+export const isRetiredDealerSlug = (slug: string): boolean => slug === RETIRED_TEST_DEALER_SLUG;
+
 /** [front listing slug, destination]. The slug is "dealer-" + the backend slug (make-model-year-id). */
 const LISTINGS: ReadonlyArray<readonly [string, string]> = [
   ["dealer-ford-transit-2021-9", "/used-vans/ford/transit-for-sale"],

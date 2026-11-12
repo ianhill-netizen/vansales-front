@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { geocodeTown } from "@/lib/geocoding";
 import { safeDb } from "@/lib/db-safe";
 import { fetchApiDealers } from "@/lib/dealers/api";
+import { isRetiredDealerSlug } from "@/lib/redirects/retired-test-dealer";
 
 export interface DirectoryDealer {
   slug: string;
@@ -51,13 +52,16 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
   };
 
   const out: DirectoryDealer[] = [];
+  // A retired dealer (suspended, its page a 301) stays in lib/dealers/config.ts so its records can come back, but must not be listed or linked.
   for (const d of Object.values(DEALERS)) {
+    if (isRetiredDealerSlug(d.slug)) continue;
     if (!showDemo && d.sellerNames.some((n) => /acme/i.test(n))) continue;
     const s = stats([...d.sellerNames, d.dealskiTenant].filter(Boolean), d.slug);
     const api = apiBySlug.get(d.slug);
     out.push({ slug: d.slug, name: d.name, town: d.location.town, county: d.location.county, vanCount: Math.max(s.count, api?.stock_count ?? 0), makes: s.makes, featured: d.featured, rating: d.googleRating, logoUrl: api?.logo_url ?? null, lat: s.lat, lng: s.lng });
   }
   for (const d of dbDealers) {
+    if (isRetiredDealerSlug(d.slug)) continue;
     if (out.some((o) => o.slug === d.slug)) continue;
     const s = stats([d.name], d.slug);
     const [town = "", county = ""] = (d.location ?? "").split(",").map((x) => x.trim());
@@ -65,6 +69,7 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
   }
   // Dealers from the vansales API (dealer portal): de-duplicated by slug against the config and database dealers above. Their stock is the dealer portal adverts in the catalogue.
   for (const d of apiDealers) {
+    if (isRetiredDealerSlug(d.slug)) continue;
     if (out.some((o) => o.slug === d.slug)) continue;
     const mine = listings.filter((l) => l.dealer_contact?.slug === d.slug);
     const byMake = new Map<string, number>();
