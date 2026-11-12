@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type React from "react";
+import Link from "next/link";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconArrow, IconMessage, IconFilter, IconSync, IconWhatsApp } from "@/components/icons";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
@@ -99,6 +100,10 @@ export default function AdvertisePage() {
               </li>
             ))}
           </ol>
+          <p className="mt-8 text-center text-[length:var(--text-sm)] text-ink-600">
+            Already have your stock in AutoTrader, a dealer management system or on your website platform?{" "}
+            <Link href="/stock-feeds" className="font-semibold text-brand-700 hover:underline">See the stock feeds we can import →</Link>
+          </p>
         </Container>
       </section>
     </>

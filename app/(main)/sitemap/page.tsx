@@ -40,6 +40,7 @@ const MAIN: { href: string; label: string }[] = [
   { href: "/sell", label: "Advertise your van" },
   { href: "/sell-my-van", label: "Sell my van" },
   { href: "/advertise", label: "Advertise with us" },
+  { href: "/stock-feeds", label: "Dealer stock feeds" },
   { href: "/blog", label: "Van guides" },
   { href: "/van-news", label: "Van news" },
 ];

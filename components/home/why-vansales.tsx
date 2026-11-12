@@ -24,10 +24,11 @@ const CARDS = [
   },
   {
     title: "For dealers",
-    body: "Your stock, your enquiries, your own page. Bring your vans in from AutoTrader or a CSV.",
+    body: "Your stock, your enquiries, your own page. Send us your existing feed — AutoTrader, eBay Motors, Pinewood, Dragon2000, Click Dealer, GForces or a CSV — and we do the rest. No re-keying.",
     href: "/advertise",
     link: "Advertise with us",
     external: false,
+    extra: { href: "/stock-feeds", label: "See supported feeds" },
     icon: (<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden {...stroke}><path d="M4 20V9l8-5 8 5v11" /><path d="M9 20v-6h6v6" /></svg>),
   },
 ] as const;
@@ -47,6 +48,9 @@ export function WhyVansales() {
               <a href={c.href} className="mt-4 text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">{c.link} →</a>
             ) : (
               <Link href={c.href} className="mt-4 text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">{c.link} →</Link>
+            )}
+            {"extra" in c && (
+              <Link href={c.extra.href} className="mt-2 text-[length:var(--text-sm)] font-semibold text-brand-700 hover:underline">{c.extra.label} →</Link>
             )}
           </li>
         ))}
