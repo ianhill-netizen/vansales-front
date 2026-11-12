@@ -21,7 +21,14 @@ const LISTINGS: ReadonlyArray<readonly [string, string]> = [
   ["dealer-vauxhall-vivaro-2019-16", "/used-vans/vauxhall/vivaro-for-sale"],
 ];
 
+/**
+ * The retired dogfood advert: Ian's own early test listing (private 2011 Nissan NV200, backend advert id 1) is set to draft together with the test@vansales.com login (vansales-backend retire-login).
+ * A draft answers "hidden", which the listing page turns into a 404, so its indexed URL is redirected here instead. Reversible: delete this entry when the advert is un-retired.
+ */
+const RETIRED_TEST_ADVERTS: ReadonlyArray<readonly [string, string]> = [["private-nissan-nv200-2011-1", "/used-vans/nissan/nv200-for-sale"]];
+
 export const RETIRED_TEST_DEALER_REDIRECTS: ReadonlyArray<{ source: string; destination: string; statusCode: 301 }> = [
   { source: `/dealer/${RETIRED_TEST_DEALER_SLUG}`, destination: "/dealers" },
   ...LISTINGS.map(([slug, destination]) => ({ source: `/listing/${slug}`, destination })),
+  ...RETIRED_TEST_ADVERTS.map(([slug, destination]) => ({ source: `/listing/${slug}`, destination })),
 ].map((r) => ({ ...r, statusCode: 301 as const }));
