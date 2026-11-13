@@ -41,6 +41,7 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/van-lease-deals", label: "Van leasing" },
       { href: "/van-reviews",       label: "Van reviews" },
       { href: "/blog",              label: "Guides & news" },
+      { href: "/van-accessories",   label: "Van accessories" },
       { href: "/sitemap",           label: "Site map" },
       { href: "https://dealer.vansales.com/login",       label: "Dealer login" },
       { href: "/advertise",                              label: "Advertise with us" },

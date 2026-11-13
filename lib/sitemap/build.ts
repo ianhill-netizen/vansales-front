@@ -18,6 +18,8 @@ import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
 import { STOCK_FEEDS_LASTMOD, STOCK_FEEDS_PATH } from "@/lib/stock-feeds";
 import { LANDING_PAGES } from "@/lib/landing-pages";
 import { getLiveLandingSlugs } from "@/lib/content/landing-pages";
+import { getLiveAccessorySlugs } from "@/lib/content/accessories";
+import { ACCESSORIES, ACCESSORY_BACKEND_SLUGS, ACCESSORY_HUB } from "@/lib/accessories";
 import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
 import { buildRedirects } from "@/lib/redirects/all";
 import { GROUPS, dedupeEntries, newestLastmod, splitByGroup, type GroupName, type SitemapEntry } from "@/lib/sitemap/xml";
@@ -60,6 +62,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
   const liveModelPages = await getLiveModelPageSlugs().catch(() => new Set<string>());
   const usedVanModels = USED_VAN_MODELS.filter((m) => liveModelPages.has(m.pageSlug));
   const liveSell = await getLiveSellSlugs().catch(() => new Set<string>());
+  const liveAccessories = await getLiveAccessorySlugs(ACCESSORY_BACKEND_SLUGS).catch(() => new Set<string>());
   const liveLanding = await getLiveLandingSlugs().catch(() => new Set<string>());
   const liveBodyTypes = await getLiveBodyTypeSlugs().catch(() => new Set<string>());
   const liveHubs = await getLiveMakeHubSlugs().catch(() => new Set<string>());
@@ -91,6 +94,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
   ];
   const sellRoutes = SELL_PAGES.filter((p) => liveSell.has(p.slug)).map((p) => e(sellPagePath(p)));
   const landingRoutes = LANDING_PAGES.filter((p) => liveLanding.has(p.backendSlug)).map((p) => e(p.path, contentDates.get(p.backendSlug)));
+  const accessoryRoutes = [ACCESSORY_HUB, ...ACCESSORIES].filter((a) => liveAccessories.has(a.backendSlug)).map((a) => e(a.path, contentDates.get(a.backendSlug)));
   const bodyTypeRoutes = CATEGORIES.filter((c) => c.slug !== "electric").map((c) => e(`/vans/${c.slug}`, statOf(categoryListings(idx, c)).lastModified));
   const makeRoutes = [...idx.byMake.keys()].filter((slug) => makeStat(idx, slug).count > 0).map((slug) => e(makeVansPath(slug), makeStat(idx, slug).lastModified));
   // /vans/{make}/{model} redirects to the /used-vans page where that is published, so only the models without one are listed.
@@ -116,7 +120,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
 
   const all = [
     ...staticRoutes, ...bodyTypeRoutes, ...makeRoutes, ...modelRoutes, ...dealerRoutes, ...dealerTownRoutes, ...vanNewsRoutes, ...blogRoutes, ...guideRoutes,
-    ...usedVanRoutes, ...makeHubRoutes, ...usedVanBodyTypeRoutes, ...sellRoutes, ...landingRoutes, ...listingRoutes,
+    ...usedVanRoutes, ...makeHubRoutes, ...usedVanBodyTypeRoutes, ...sellRoutes, ...landingRoutes, ...accessoryRoutes, ...listingRoutes,
   ];
   // A URL that redirects is never listed (retired pages such as /dealer/van-viking and its listings must not stay in the sitemap while the API catches up).
   const redirected = new Set(buildRedirects().filter((r) => !r.source.includes(":")).map((r) => r.source.toLowerCase()));
