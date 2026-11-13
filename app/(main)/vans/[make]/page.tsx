@@ -20,6 +20,8 @@ import { loadCatalogue, makeStat, modelsOfMake } from "@/lib/seo/catalogue";
 import { makeIntro, priceRange } from "@/lib/seo/intro";
 import { categoryLinks, makeLinks, popularModelLinks } from "@/lib/seo/links";
 import { makeSlugFromParam, makeVansPath } from "@/lib/seo/make-url";
+import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
+import { USED_VAN_MODELS, usedVanPath } from "@/lib/used-vans/models";
 import { makeBreadcrumbList, modelStockLabel, vehicleItemList } from "@/lib/seo/make-models";
 
 export const revalidate = 300; // 5 min: counts come from the vansales API (60 s data cache), so an hour showed stale "0 vans"
@@ -76,6 +78,9 @@ export default async function MakePage({
   if (CATEGORY_SLUGS.has(make)) notFound();
 
   const makeName = slugToMake(make);
+  // Model cards go to the model's content page (/used-vans/{make}/{model}-for-sale) where it is published, else to the stock page /vans/{make}/{model}. No redirects either way.
+  const liveModelPages = await getLiveModelPageSlugs().catch(() => new Set<string>());
+  const guideByModel = new Map(USED_VAN_MODELS.filter((u) => liveModelPages.has(u.pageSlug)).map((u) => [`${u.makeSlug}/${u.modelSlug}`, usedVanPath(u)]));
   const result = await getListings({ make: makeName, pageSize: 24 });
   const idx = await loadCatalogue();
   const stat = makeStat(idx, make);
@@ -151,7 +156,7 @@ export default async function MakePage({
                   {modelStats.map((m) => (
                     <li key={m.modelSlug}>
                       <Link
-                        href={`/vans/${make}/${m.modelSlug}`}
+                        href={guideByModel.get(`${make}/${m.modelSlug}`) ?? `/vans/${make}/${m.modelSlug}`}
                         className={`block rounded-[var(--radius-lg)] border p-4 transition-colors hover:border-brand-300 ${m.count > 0 ? "border-border bg-white" : "border-border/70 bg-surface-1"}`}
                       >
                         <span className="block font-display text-[length:var(--text-base)] font-bold text-ink-900">{makeName} {m.name}<span className="sr-only"> — </span></span>
