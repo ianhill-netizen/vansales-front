@@ -1,9 +1,9 @@
 /** Pure HTML helpers for the generated guide bodies (no I/O, so node --test can import them). */
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#039;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, " ").trim();
 
-/** The Q&A under the "Frequently asked questions" h2: each <h3> question followed by its <p> answer(s). */
+/** The Q&A under the "Frequently asked questions" (or "Common questions") h2: each <h3> question followed by its <p> answer(s). */
 export function parseFaq(html: string): { q: string; a: string }[] {
-  const at = html.search(/<h2[^>]*>\s*Frequently asked questions\s*<\/h2>/i);
+  const at = html.search(/<h2[^>]*>\s*(?:Frequently asked questions|Common questions)\s*<\/h2>/i);
   if (at < 0) return [];
   const out: { q: string; a: string }[] = [];
   const parts = html.slice(at).split(/(?=<h3\b)/i).slice(1);

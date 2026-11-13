@@ -8,9 +8,9 @@ const van = (o: Partial<BodyTypeListing> & { body?: string; wheelbase?: string |
   van_spec: { body_style: o.body ?? "Panel Van", wheelbase: o.wheelbase ?? null, roof_height: o.roof ?? null },
 });
 
-test("there are exactly the twelve body types, with unique slugs and paths", () => {
-  assert.deepEqual(BODY_TYPE_PAGES.map((b) => b.slug).sort(), ["4x4", "chassis-cab", "crew-van", "curtain-side", "dropside", "high-roof", "long-wheelbase", "low-mileage", "luton", "minibus", "panel-van", "pickup", "refrigerated", "tail-lift", "tipper", "wheelchair-accessible"]);
-  assert.equal(new Set(BODY_TYPE_PAGES.map(bodyTypePath)).size, 16);
+test("there are exactly the sixteen body types and five facet pages, with unique slugs and paths", () => {
+  assert.deepEqual(BODY_TYPE_PAGES.map((b) => b.slug).sort(), ["4x4", "automatic-vans", "chassis-cab", "combi-vans", "crew-van", "curtain-side", "dropside", "high-roof", "large-vans", "long-wheelbase", "low-mileage", "luton", "minibus", "no-vat-vans", "panel-van", "pickup", "refrigerated", "small-vans", "tail-lift", "tipper", "wheelchair-accessible"]);
+  assert.equal(new Set(BODY_TYPE_PAGES.map(bodyTypePath)).size, 21);
   assert.equal(bodyTypePath(findBodyType("luton")!), "/used-vans/body-type/luton-for-sale");
   assert.equal(bodyTypeOldPath(findBodyType("luton")!), "/used-vans/body-type/luton");
   assert.equal(findBodyTypeByParam("luton-for-sale")?.slug, "luton");

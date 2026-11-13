@@ -10,6 +10,7 @@ import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
 import { isSwissVans } from "@/lib/listings/finance-scope";
 import { vatOnTop } from "@/lib/listings/vat";
+import { FacetLinks } from "@/components/used-vans/facet-links";
 import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
 import { EmptyState } from "@/components/empty/empty-state";
 import { getListings, getFacets } from "@/lib/listings/client";
@@ -291,7 +292,8 @@ export default async function VansPage({
             <Pagination page={page} totalPages={totalPages} hrefFor={(p) => hrefFor(sp, p)} />
           </>
         )}
-        <p className="mt-10 text-[length:var(--text-sm)] text-ink-600">
+        <FacetLinks className="mt-10 text-[length:var(--text-sm)] text-ink-600" />
+        <p className="mt-3 text-[length:var(--text-sm)] text-ink-600">
           Fitting out a van? See our <Link href="/van-accessories" className="font-semibold text-brand-700 hover:underline">van accessories guides</Link> for racking, ply lining, security and more.
         </p>
       </Container>

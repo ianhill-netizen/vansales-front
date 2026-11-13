@@ -7,3 +7,8 @@ test("parseFaq reads the questions under the FAQ heading only", () => {
   assert.deepEqual(parseFaq(html), [{ q: "Is it legal?", a: "Check with your insurer." }, { q: "Does it add weight?", a: "Yes & it matters." }]);
   assert.deepEqual(parseFaq("<h2>No faq</h2><p>x</p>"), []);
 });
+
+test("parseFaq also reads a 'Common questions' section (the body-type guides)", () => {
+  const html = "<h2>Intro</h2><p>x</p><h2>Common questions</h2><h3>Is it automatic?</h3><p>Check the V5C.</p><h3>Is VAT payable?</h3><p>It depends on the price.</p>";
+  assert.deepEqual(parseFaq(html), [{ q: "Is it automatic?", a: "Check the V5C." }, { q: "Is VAT payable?", a: "It depends on the price." }]);
+});
