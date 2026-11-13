@@ -54,6 +54,8 @@ const SECTIONS = [
       { href: "/van-finance", label: "Finance" },
       { href: "/electric-vans", label: "Electric vans" },
       { href: "/van-insurance", label: "Insurance" },
+      { href: "/van-warranty", label: "Van warranty" },
+      { href: "/van-breakdown-cover", label: "Breakdown cover" },
     ],
   },
   {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { Container, Eyebrow, Button } from "@/components/ui";
 import { IconShield, IconCheck, IconArrow } from "@/components/icons";
@@ -121,6 +122,10 @@ export default function VanInsurancePage() {
             <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
               For a quote, we recommend using a specialist commercial vehicle broker rather than a price
               comparison site — brokers can negotiate better rates and will read your policy wording for you.
+            </p>
+            <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
+              Related guides: <Link href="/van-warranty" className="font-semibold text-brand-700 hover:underline">van warranty explained</Link>{" and "}
+              <Link href="/van-breakdown-cover" className="font-semibold text-brand-700 hover:underline">van breakdown cover</Link>.
             </p>
             <div className="mt-4 rounded-[var(--radius-lg)] border border-amber-200 bg-amber-50 p-5">
               <ul className="space-y-2">

@@ -51,6 +51,8 @@ const FINANCE_ITEMS = [
   { href: "/van-finance",       label: "Van finance" },
   { href: "/van-lease-deals", label: "Van leasing" },
   { href: "/van-insurance",     label: "Insurance" },
+  { href: "/van-warranty",      label: "Van warranty" },
+  { href: "/van-breakdown-cover", label: "Breakdown cover" },
 ];
 
 type OpenId = "used" | "finance" | "guides" | null;
