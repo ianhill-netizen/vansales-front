@@ -3,15 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container, Eyebrow } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
+import Image from "next/image";
 import { ListingCard } from "@/components/listing-card";
 import { ModelEnquiryForm } from "@/components/used-vans/model-enquiry-form";
 import { getModelPage } from "@/lib/content/model-pages";
 import { ContentLinks } from "@/components/content-links";
 import { getModelContentLinks } from "@/lib/content/make-related";
 import { getListings } from "@/lib/listings/client";
-import { listingPath } from "@/lib/listings/slug";
-import { listingTitle } from "@/lib/listings/format";
-import { findUsedVanModelByParam, usedVanDescription, usedVanH1, usedVanModelsOfMake, usedVanName, usedVanPath, usedVanTitle, vansPath } from "@/lib/used-vans/models";
+import { makeBreadcrumbList, vehicleItemList } from "@/lib/seo/make-models";
+import { makeVansPath } from "@/lib/seo/make-url";
+import { findUsedVanModelByParam, usedVanDescription, usedVanH1, usedVanModelsOfMake, usedVanPath, usedVanTitle, vansPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
 
 // /used-vans/{make}/{model}: the editorial buying guide (vansales-backend content_pages, page_type make_model) with the live listings for that model and an enquiry form.
@@ -25,6 +26,8 @@ export function generateStaticParams() {
 }
 
 type Params = { make: string; model: string };
+
+const heroAlt = (m: { make: string; model: string }) => `Used ${m.make} ${m.model} for sale`;
 
 async function load(params: Promise<Params>) {
   const { make, model } = await params;
@@ -47,7 +50,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title: { absolute: title },
     description,
     alternates: { canonical: path },
-    openGraph: { title, description, url: path, type: "website", ...(page.heroUrl ? { images: [{ url: page.heroUrl, alt: page.heroAlt || `Used ${usedVanName(m)}` }] } : {}) },
+    openGraph: { title, description, url: path, type: "website", ...(page.heroUrl ? { images: [{ url: page.heroUrl, alt: heroAlt(m) }] } : {}) },
     twitter: { card: "summary_large_image", title, description, ...(page.heroUrl ? { images: [page.heroUrl] } : {}) },
   };
 }
@@ -58,24 +61,12 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
   const { m, page } = found;
   const stock = await getListings({ make: m.makeSlug, model: m.modelSlug, pageSize: 12 });
   const vehicle = `used ${m.make} ${m.model}`;
-  const itemList = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: usedVanH1(m),
-    description: usedVanDescription(m),
-    url: absUrl(usedVanPath(m)),
-    numberOfItems: stock.total,
-    itemListElement: stock.listings.map((l, i) => ({ "@type": "ListItem", position: i + 1, url: absUrl(listingPath(l)), name: listingTitle(l) })),
-  };
+  // The vans listed on this page as Vehicle + Offer items, and Home > Vans for sale > {Make} vans for sale > Used {Make} {Model} for sale (the same first three crumbs as the make page).
+  const itemList = { ...vehicleItemList(stock.listings, absUrl), name: usedVanH1(m), url: absUrl(usedVanPath(m)), numberOfItems: stock.total };
+  const crumbs = makeBreadcrumbList(`${m.make}`, makeVansPath(m.makeSlug), absUrl);
   const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
-      { "@type": "ListItem", position: 2, name: "Used vans", item: absUrl("/used-vans") },
-      { "@type": "ListItem", position: 3, name: `Used ${m.make} vans`, item: absUrl(`/used-vans/${m.makeSlug}`) },
-      { "@type": "ListItem", position: 4, name: usedVanH1(m), item: absUrl(usedVanPath(m)) },
-    ],
+    ...crumbs,
+    itemListElement: [...crumbs.itemListElement, { "@type": "ListItem", position: 4, name: `Used ${m.make} ${m.model} for sale`, item: absUrl(usedVanPath(m)) }],
   };
   const siblings = usedVanModelsOfMake(m.makeSlug).filter((x) => x.pageSlug !== m.pageSlug);
   const related = await getModelContentLinks(m);
@@ -102,8 +93,8 @@ export default async function UsedVansModel({ params }: { params: Promise<Params
             </div>
             {page.heroUrl && (
               <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] bg-surface-2 ring-1 ring-border">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={page.heroUrl} alt={page.heroAlt || `Used ${usedVanName(m)}`} className="size-full object-cover" fetchPriority="high" />
+                {/* next/image: the hero is a large PNG in S3; this serves it resized and as webp/avif at the rendered width (440px column from lg, full width below) */}
+                <Image src={page.heroUrl} alt={heroAlt(m)} fill priority quality={70} sizes="(min-width: 1024px) 440px, 100vw" className="object-cover" />
               </div>
             )}
           </div>

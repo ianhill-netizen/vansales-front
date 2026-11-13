@@ -47,7 +47,7 @@ test("H1, title and description use the common names (VW, Merc) and the exact pa
   assert.equal(usedVanH1(sprinter), "Used Merc Sprinter For Sale");
   assert.equal(usedVanH1(findUsedVanModel("ford", "transit-custom")!), "Used Ford Transit Custom For Sale");
   assert.equal(usedVanTitle(caddy), "Used VW Caddy For Sale | Vansales.com");
-  assert.equal(usedVanDescription(caddy), "Browse used VW Caddy vans for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense, straight-talking marketplace.");
+  assert.equal(usedVanDescription(caddy), "Browse used VW Caddy vans for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense.");
   for (const m of USED_VAN_MODELS) assert.ok(usedVanDescription(m).length <= 160, m.pageSlug);
 });
 

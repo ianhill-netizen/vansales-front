@@ -82,6 +82,6 @@ export function commonMake(make: string): string {
 export const usedVanName = (m: UsedVanModel) => `${commonMake(m.make)} ${m.model}`;
 export const usedVanH1 = (m: UsedVanModel) => `Used ${usedVanName(m)} For Sale`;
 export const usedVanTitle = (m: UsedVanModel) => `${usedVanH1(m)} | Vansales.com`;
-export const usedVanDescription = (m: UsedVanModel) => `Browse used ${usedVanName(m)} vans for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense, straight-talking marketplace.`;
+export const usedVanDescription = (m: UsedVanModel) => `Browse used ${usedVanName(m)} vans for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense.`;
 /** The stock-driven sibling page that already exists (listing pages, filters): cross-linked from every /used-vans page. */
 export const vansPath = (m: UsedVanModel) => `/vans/${m.makeSlug}/${m.modelSlug}`;
