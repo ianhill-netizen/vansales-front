@@ -7,6 +7,7 @@ import { getBodyTypeDates, getLiveBodyTypeSlugs } from "@/lib/content/body-type-
 import { BODY_TYPE_PAGES, bodyTypePath } from "@/lib/used-vans/body-types";
 import { USED_VAN_MODELS, usedVanPath } from "@/lib/used-vans/models";
 import { getDealerDirectory } from "@/lib/dealers/directory";
+import { dealerIndexable, townSlug } from "@/lib/dealers/places";
 import { listingPath } from "@/lib/listings/slug";
 import { CATEGORIES } from "@/lib/seo/categories";
 import { categoryListings, loadCatalogue, makeStat, modelStat, statOf } from "@/lib/seo/catalogue";
@@ -103,14 +104,16 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
   ];
   const makeHubRoutes = [...liveHubs].map((slug) => e(`/used-vans/${slug}`, contentDates.get(slug)));
   const usedVanBodyTypeRoutes = BODY_TYPE_PAGES.filter((b) => liveBodyTypes.has(b.slug)).map((b) => e(bodyTypePath(b), bodyTypeDates.get(b.slug)));
-  const dealerRoutes = dealers.map((d) => e(`/dealer/${d.slug}`));
+  // A dealer page is listed only when it is indexed (stock or an about text; Swiss Vans always): the same rule as its robots meta. A town page is listed for every town with at least one dealer.
+  const dealerRoutes = dealers.filter((d) => dealerIndexable({ stockCount: d.vanCount, hasAbout: d.hasAbout, configured: d.configured })).map((d) => e(`/dealer/${d.slug}`));
+  const dealerTownRoutes = [...new Set(dealers.filter((d) => d.town).map((d) => townSlug(d.town)))].filter(Boolean).map((t) => e(`/dealers/${t}`));
   const vanNewsRoutes = vanNews.map((a) => e(`/van-news/${a.slug}`, a.publishedAt));
   const blogRoutes = blogPosts.map((p) => e(`/blog/${p.slug}`, p.date));
   const guideRoutes = guides.filter((g) => !localBlog.has(g.slug)).slice(0, 1000).map((g) => e(`/blog/${g.slug}`, g.date));
   const listingRoutes = listings.filter((l) => l.status === "active" || l.status === "reserved").map((l) => e(listingPath(l), l.updated_at));
 
   const all = [
-    ...staticRoutes, ...bodyTypeRoutes, ...makeRoutes, ...modelRoutes, ...dealerRoutes, ...vanNewsRoutes, ...blogRoutes, ...guideRoutes,
+    ...staticRoutes, ...bodyTypeRoutes, ...makeRoutes, ...modelRoutes, ...dealerRoutes, ...dealerTownRoutes, ...vanNewsRoutes, ...blogRoutes, ...guideRoutes,
     ...usedVanRoutes, ...makeHubRoutes, ...usedVanBodyTypeRoutes, ...sellRoutes, ...landingRoutes, ...listingRoutes,
   ];
   // A URL that redirects is never listed (retired pages such as /dealer/van-viking and its listings must not stay in the sitemap while the API catches up).

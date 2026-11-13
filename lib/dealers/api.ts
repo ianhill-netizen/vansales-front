@@ -20,6 +20,11 @@ export type OpeningHours = Partial<Record<"mon" | "tue" | "wed" | "thu" | "fri" 
 
 export interface ApiDealer {
   name: string;
+  /** The name shown: Title Case without Limited/Ltd, or the dealer's own override. Absent on an older API. */
+  display_name?: string | null;
+  companies_house_number?: string | null;
+  incorporation_year?: number | null;
+  trading_since?: number | null;
   slug: string;
   town: string | null;
   county: string | null;
@@ -55,11 +60,16 @@ export interface ApiDealer {
 
 export interface ApiDealerSummary {
   name: string;
+  display_name?: string | null;
   slug: string;
   town: string | null;
   county: string | null;
   logo_url: string | null;
   stock_count: number;
+  latitude?: number | null;
+  longitude?: number | null;
+  /** Whether the dealer has an about text (written by them or generated). Absent on an older API. */
+  has_about?: boolean;
 }
 
 export type DealerProfileResult =

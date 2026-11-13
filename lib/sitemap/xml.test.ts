@@ -55,3 +55,9 @@ test("the index lists each child with the newest real lastmod of its URLs, and o
   assert.equal((xml.match(/<sitemap>/g) ?? []).length, 2);
   assert.equal((xml.match(/<lastmod>/g) ?? []).length, 1);
 });
+
+test("town dealer pages are in the dealers sitemap group", () => {
+  assert.equal(groupOf("/dealers/bridgend"), "dealers");
+  assert.equal(groupOf("/dealer/swiss-vans"), "dealers");
+  assert.equal(groupOf("/dealers"), "dealers");
+});

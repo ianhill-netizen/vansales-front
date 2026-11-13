@@ -5,6 +5,7 @@ import { geocodeTown } from "@/lib/geocoding";
 import { safeDb } from "@/lib/db-safe";
 import { fetchApiDealers } from "@/lib/dealers/api";
 import { isRetiredDealerSlug } from "@/lib/redirects/retired-test-dealer";
+import { dealerDisplayName } from "@/lib/dealers/display-name";
 
 export interface DirectoryDealer {
   slug: string;
@@ -18,6 +19,10 @@ export interface DirectoryDealer {
   logoUrl?: string | null;
   lat: number | null;
   lng: number | null;
+  /** The dealer has an about text; with stock, this decides whether its page is indexed. Unknown (an older API) = false. */
+  hasAbout: boolean;
+  /** A configured dealer (Swiss Vans): its page is always indexed. */
+  configured: boolean;
 }
 
 /** Dealers that have a /dealer/[slug] page: the config entries (demo dealer only when SHOW_DEMO_LISTINGS) plus any Prisma dealer rows.
@@ -58,14 +63,14 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
     if (!showDemo && d.sellerNames.some((n) => /acme/i.test(n))) continue;
     const s = stats([...d.sellerNames, d.dealskiTenant].filter(Boolean), d.slug);
     const api = apiBySlug.get(d.slug);
-    out.push({ slug: d.slug, name: d.name, town: d.location.town, county: d.location.county, vanCount: Math.max(s.count, api?.stock_count ?? 0), makes: s.makes, featured: d.featured, rating: d.googleRating, logoUrl: api?.logo_url ?? null, lat: s.lat, lng: s.lng });
+    out.push({ hasAbout: true, configured: true, slug: d.slug, name: d.name, town: d.location.town, county: d.location.county, vanCount: Math.max(s.count, api?.stock_count ?? 0), makes: s.makes, featured: d.featured, rating: d.googleRating, logoUrl: api?.logo_url ?? null, lat: s.lat, lng: s.lng });
   }
   for (const d of dbDealers) {
     if (isRetiredDealerSlug(d.slug)) continue;
     if (out.some((o) => o.slug === d.slug)) continue;
     const s = stats([d.name], d.slug);
     const [town = "", county = ""] = (d.location ?? "").split(",").map((x) => x.trim());
-    out.push({ slug: d.slug, name: d.name, town, county, vanCount: s.count, makes: s.makes, featured: false, rating: d.googleRating, logoUrl: apiBySlug.get(d.slug)?.logo_url ?? null, lat: d.lat ?? s.lat, lng: d.lng ?? s.lng });
+    out.push({ hasAbout: false, configured: false, slug: d.slug, name: dealerDisplayName({ name: d.name }), town, county, vanCount: s.count, makes: s.makes, featured: false, rating: d.googleRating, logoUrl: apiBySlug.get(d.slug)?.logo_url ?? null, lat: d.lat ?? s.lat, lng: d.lng ?? s.lng });
   }
   // Dealers from the vansales API (dealer portal): de-duplicated by slug against the config and database dealers above. Their stock is the dealer portal adverts in the catalogue.
   for (const d of apiDealers) {
@@ -76,10 +81,11 @@ export async function getDealerDirectory(): Promise<DirectoryDealer[]> {
     for (const l of mine) byMake.set(l.make, (byMake.get(l.make) ?? 0) + 1);
     const at = mine.find((l) => l.location.lat != null && l.location.lng != null);
     out.push({
-      slug: d.slug, name: d.name, town: d.town ?? "", county: d.county ?? "",
+      hasAbout: d.has_about === true, configured: false,
+      slug: d.slug, name: dealerDisplayName(d), town: d.town ?? "", county: d.county ?? "",
       vanCount: Math.max(d.stock_count ?? 0, mine.length),
       makes: [...byMake.entries()].sort((a, b) => b[1] - a[1]).map(([m]) => m),
-      featured: false, rating: null, logoUrl: d.logo_url, lat: at?.location.lat ?? null, lng: at?.location.lng ?? null,
+      featured: false, rating: null, logoUrl: d.logo_url, lat: at?.location.lat ?? d.latitude ?? null, lng: at?.location.lng ?? d.longitude ?? null,
     });
   }
   // Dealers whose stock carries no coordinates are placed by their postcode / town (30-day cached, bounded).

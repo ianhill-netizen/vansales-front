@@ -41,7 +41,7 @@ export function groupOf(pathname: string): GroupName {
   if (under("/blog")) return "blog";
   if (under("/van-news")) return "van-news";
   if (under("/used-vans")) return "used-vans";
-  if (p === "/dealers" || under("/dealer")) return "dealers";
+  if (p === "/dealers" || under("/dealers") || under("/dealer")) return "dealers";
   if (under("/listing")) return "listings";
   if (under("/vans")) return "vans";
   return "pages";
