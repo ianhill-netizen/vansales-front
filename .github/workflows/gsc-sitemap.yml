@@ -1,0 +1,26 @@
+name: Submit sitemap to Search Console
+# After every successful PRODUCTION deploy on Vercel (it reports a deployment_status to GitHub), tell Search Console about the sitemap.
+# Needs the repo secret GSC_SA_JSON (the whole service-account JSON, with the account added as a user on the Search Console property). Without it the job does nothing and passes.
+on:
+  deployment_status:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    if: github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install googleapis only (not the app's dependencies)
+        run: npm install --no-save --no-package-lock --ignore-scripts googleapis@144
+      - name: Submit https://vansales.com/sitemap.xml
+        env:
+          GSC_SA_JSON: ${{ secrets.GSC_SA_JSON }}
+        run: node scripts/gsc.mjs sitemap submit
