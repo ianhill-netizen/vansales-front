@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Container, Eyebrow } from "@/components/ui";
 import { JsonLd } from "@/components/json-ld";
 import { ListingCard } from "@/components/listing-card";
+import { Photo } from "@/components/photo";
 import { getAccessoryBody } from "@/lib/content/accessories";
 import { getListings } from "@/lib/listings/client";
 import { listingTitle } from "@/lib/listings/format";
@@ -25,7 +26,16 @@ export function accessoryMetadata(p: Page): Metadata {
 
 const haystack = (l: Listing) => [listingTitle(l), l.description ?? "", ...(l.features ?? []), ...(l.extras ?? []).flatMap((e) => [e.slug, e.label])].join(" ");
 
-export async function AccessoryPage({ page, isHub }: { page: Page; isHub?: boolean }) {
+type Extras = {
+  /** A page under another topic page (the six alloy-wheel model pages): shown in the breadcrumb between the hub and the page. */
+  parent?: { path: string; h1: string };
+  /** Genuine Swiss Vans photos for the page (never generated). Empty = no photo section. */
+  photos?: readonly { url: string; alt: string }[];
+  /** Links to child pages (shown on the parent topic page). */
+  childLinks?: { title: string; links: { href: string; label: string }[] };
+};
+
+export async function AccessoryPage({ page, isHub, parent, photos, childLinks }: { page: Page; isHub?: boolean } & Extras) {
   const res = await getAccessoryBody(page.backendSlug);
   if (res.status === "unavailable") throw new Error(`vansales-backend content API unavailable for ${page.backendSlug}`);
   if (res.status !== "ok") notFound();
@@ -38,7 +48,8 @@ export async function AccessoryPage({ page, isHub }: { page: Page; isHub?: boole
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
       { "@type": "ListItem", position: 2, name: ACCESSORY_HUB.h1, item: absUrl(ACCESSORY_HUB.path) },
-      ...(isHub ? [] : [{ "@type": "ListItem", position: 3, name: page.h1, item: url }]),
+      ...(parent ? [{ "@type": "ListItem", position: 3, name: parent.h1, item: absUrl(parent.path) }] : []),
+      ...(isHub ? [] : [{ "@type": "ListItem", position: parent ? 4 : 3, name: page.h1, item: url }]),
     ],
   };
   const faq = res.faq.length >= 3 ? { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: res.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) } : null;
@@ -49,7 +60,7 @@ export async function AccessoryPage({ page, isHub }: { page: Page; isHub?: boole
         <Container className="py-10">
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link><span aria-hidden>/</span>
-            {isHub ? <span className="font-medium text-ink-700">{ACCESSORY_HUB.h1}</span> : <><Link href={ACCESSORY_HUB.path} className="hover:text-ink-900">{ACCESSORY_HUB.h1}</Link><span aria-hidden>/</span><span className="font-medium text-ink-700">{page.h1}</span></>}
+            {isHub ? <span className="font-medium text-ink-700">{ACCESSORY_HUB.h1}</span> : <><Link href={ACCESSORY_HUB.path} className="hover:text-ink-900">{ACCESSORY_HUB.h1}</Link><span aria-hidden>/</span>{parent && <><Link href={parent.path} className="hover:text-ink-900">{parent.h1}</Link><span aria-hidden>/</span></>}<span className="font-medium text-ink-700">{page.h1}</span></>}
           </nav>
           <Eyebrow>Van accessories</Eyebrow>
           <h1 className="mt-2 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">{page.h1}</h1>
@@ -59,6 +70,27 @@ export async function AccessoryPage({ page, isHub }: { page: Page; isHub?: boole
       <Container className="space-y-12 py-10">
         {/* body_html is sanitised on the server (allow-listed tags, no attributes) before it reaches this page */}
         <article className="prose-vs max-w-3xl space-y-4 text-[length:var(--text-md)] leading-relaxed text-ink-600 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-[length:var(--text-xl)] [&_h2]:font-bold [&_h2]:text-ink-900 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:font-bold [&_h3]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: res.bodyHtml }} />
+        {photos && photos.length > 0 && (
+          <section>
+            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Wheels we have fitted</h2>
+            <p className="mt-2 text-[length:var(--text-sm)] text-ink-500">Photographs from the Swiss Vans photo library.</p>
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {photos.map((p) => (
+                <div key={p.url} className="relative aspect-[3/2] overflow-hidden rounded-[var(--radius-lg)] bg-surface-2 ring-1 ring-border">
+                  <Photo src={p.url} alt={p.alt} sizes="(min-width: 640px) 45vw, 100vw" />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+        {childLinks && childLinks.links.length > 0 && (
+          <section>
+            <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{childLinks.title}</h2>
+            <ul className="mt-3 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+              {childLinks.links.map((l) => <li key={l.href}><Link href={l.href} className="font-semibold text-brand-700 hover:underline">{l.label}</Link></li>)}
+            </ul>
+          </section>
+        )}
         {isHub && (
           <section>
             <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Van accessory guides</h2>

@@ -23,6 +23,7 @@ import { GEO_NODES, geoPath } from "@/lib/geo/tree";
 import { TOWNS, findPlace } from "@/lib/geo/towns";
 import { summarisePlace } from "@/lib/geo/summary";
 import { getLiveAccessorySlugs } from "@/lib/content/accessories";
+import { ALLOY_BACKEND_SLUGS, ALLOY_MODELS } from "@/lib/alloy-wheels";
 import { INSURANCE_BACKEND_SLUGS, INSURANCE_TOPICS } from "@/lib/insurance";
 import { ACCESSORIES, ACCESSORY_BACKEND_SLUGS, ACCESSORY_HUB } from "@/lib/accessories";
 import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
@@ -90,6 +91,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
   const usedVanModels = USED_VAN_MODELS.filter((m) => liveModelPages.has(m.pageSlug));
   const liveSell = await getLiveSellSlugs().catch(() => new Set<string>());
   const liveAccessories = await getLiveAccessorySlugs(ACCESSORY_BACKEND_SLUGS).catch(() => new Set<string>());
+  const liveAlloys = await getLiveAccessorySlugs(ALLOY_BACKEND_SLUGS).catch(() => new Set<string>());
   const liveInsurance = await getLiveAccessorySlugs(INSURANCE_BACKEND_SLUGS).catch(() => new Set<string>());
   const liveLanding = await getLiveLandingSlugs().catch(() => new Set<string>());
   const liveBodyTypes = await getLiveBodyTypeSlugs().catch(() => new Set<string>());
@@ -124,6 +126,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
   const landingRoutes = LANDING_PAGES.filter((p) => liveLanding.has(p.backendSlug) && !p.path.startsWith("/vans-for-sale/")).map((p) => e(p.path, contentDates.get(p.backendSlug)));
   const accessoryRoutes = [ACCESSORY_HUB, ...ACCESSORIES].filter((a) => liveAccessories.has(a.backendSlug)).map((a) => e(a.path, contentDates.get(a.backendSlug)));
   const geoRoutes = degraded ? [] : (await geoPaths(listings, dealers).catch(() => [] as string[])).map((p) => e(p));
+  const alloyRoutes = ALLOY_MODELS.filter((a) => liveAlloys.has(a.backendSlug)).map((a) => e(a.path, contentDates.get(a.backendSlug)));
   const insuranceRoutes = INSURANCE_TOPICS.filter((t) => liveInsurance.has(t.backendSlug)).map((t) => e(t.path, contentDates.get(t.backendSlug)));
   const bodyTypeRoutes = CATEGORIES.filter((c) => c.slug !== "electric").map((c) => e(`/vans/${c.slug}`, statOf(categoryListings(idx, c)).lastModified));
   const makeRoutes = [...idx.byMake.keys()].filter((slug) => makeStat(idx, slug).count > 0).map((slug) => e(makeVansPath(slug), makeStat(idx, slug).lastModified));
@@ -150,7 +153,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
 
   const all = [
     ...staticRoutes, ...bodyTypeRoutes, ...makeRoutes, ...modelRoutes, ...dealerRoutes, ...dealerTownRoutes, ...vanNewsRoutes, ...blogRoutes, ...guideRoutes,
-    ...usedVanRoutes, ...makeHubRoutes, ...usedVanBodyTypeRoutes, ...sellRoutes, ...landingRoutes, ...accessoryRoutes, ...insuranceRoutes, ...geoRoutes, ...listingRoutes,
+    ...usedVanRoutes, ...makeHubRoutes, ...usedVanBodyTypeRoutes, ...sellRoutes, ...landingRoutes, ...accessoryRoutes, ...alloyRoutes, ...insuranceRoutes, ...geoRoutes, ...listingRoutes,
   ];
   // A URL that redirects is never listed (retired pages such as /dealer/van-viking and its listings must not stay in the sitemap while the API catches up).
   const redirected = new Set(buildRedirects().filter((r) => !r.source.includes(":")).map((r) => r.source.toLowerCase()));
