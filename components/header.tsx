@@ -222,7 +222,7 @@ export function Header() {
             Sign in
           </a>
           <SellLink
-            href={SELL_URL}
+            href={`${SELL_URL.replace(/\/$/, "")}/signup/private`}   // the final destination: the bare address 307s here
             className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
             style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
           >
