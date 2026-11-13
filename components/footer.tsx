@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Container } from "./ui";
 import { Logo } from "./brand";
 import { SITE } from "@/lib/site";
+import { getLiveGeoKeys } from "@/lib/content/geo";
+import { NATIONS, REGIONS, geoPath } from "@/lib/geo/tree";
+import { findRegion } from "@/lib/landing-pages";
 
 const COLS: { title: string; links: { href: string; label: string }[] }[] = [
   {
@@ -87,7 +90,16 @@ const CHIP_GROUPS: { title: string; links: { href: string; label: string }[] }[]
   },
 ];
 
-export function Footer() {
+/** The Regions block: the four nations and the 12 regions that have a published page (the original seven pages are always live). */
+async function regionLinks(): Promise<{ href: string; label: string }[]> {
+  const all = [...NATIONS, ...REGIONS].filter((x, i, a) => a.findIndex((y) => y.key === x.key) === i);
+  const live = await getLiveGeoKeys(all.filter((x) => !findRegion(x.key)).map((x) => x.key)).catch(() => new Set<string>());
+  return all.filter((x) => findRegion(x.key) || live.has(x.key)).map((x) => ({ href: geoPath(x.key), label: x.label }));
+}
+
+export async function Footer() {
+  const regions = await regionLinks();
+  const chipGroups = regions.length > 0 ? [...CHIP_GROUPS, { title: "Regions", links: regions }] : CHIP_GROUPS;
   return (
     <footer className="mt-[var(--section-y)] bg-ink-900 text-white">
 
@@ -121,7 +133,7 @@ export function Footer() {
             dealers. Filter by payload, wheelbase, ULEZ compliance and Euro 6 status to find
             the van that fits the job.
           </p>
-          {CHIP_GROUPS.map((g) => (
+          {chipGroups.map((g) => (
             <div key={g.title} className="mt-6">
               <h2 className="font-mono text-[length:var(--text-xs)] font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-ink-500">{g.title}</h2>
               <div className="mt-3 flex flex-wrap gap-2">
