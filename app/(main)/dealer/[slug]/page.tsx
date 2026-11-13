@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ValueYourVan } from "@/components/px/value-your-van";
+import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
 import { getDealerConfig, whatsappUrl, financeUrl, type DealerConfig } from "@/lib/dealers/config";
 import { fetchApiDealerProfile, type ApiDealer } from "@/lib/dealers/api";
 import { SocialLinks, hasSocials } from "@/components/social-links";
@@ -66,7 +67,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const api = await fetchApiDealerProfile(slug);
   if (api.kind === "ok") {
     const d = api.dealer;
-    return dealerMetadata({ slug, name: dealerDisplayName(d), town: d.town ?? "", county: d.county ?? "", stock: d.stock_count, finance: !!d.finance_url, hasAbout: !!d.about?.trim(), configured: false, logoUrl: d.logo_url });
+    return dealerMetadata({ slug, name: dealerDisplayName(d), town: d.town ?? "", county: d.county ?? "", stock: d.stock_count, finance: false, hasAbout: !!d.about?.trim(), configured: false, logoUrl: d.logo_url });
   }
   const dbDealer = await safeDb("dealer metadata lookup", () => prisma.dealer.findUnique({ where: { slug } }), null);
   if (!dbDealer) return { title: api.kind === "error" ? "Van dealer" : "Dealer not found" };
@@ -146,7 +147,7 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     googleReviewsUrl: d.google_reviews_url ?? undefined,
     logoUrl: d.logo_url,
     coverUrl: d.cover_url ?? null,
-    financeHref: d.finance_url,
+    financeHref: null,   // finance is promoted for Swiss Vans stock only
     isApi: true,
     photos: (d.photos ?? []).map((p) => p.url).filter(Boolean),
     specialisms: (d.specialisms ?? []).filter((k) => SPECIALISM_LABELS[k]),
@@ -442,6 +443,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               <p className="mt-4 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 {effectiveDealer.about}
               </p>
+              {effectiveDealer.dealskiTenant === "swissvans" && /financ/i.test(effectiveDealer.about) && <FinanceDisclosure className="mt-4 max-w-2xl" />}
               {(effectiveDealer.tradingSince || effectiveDealer.companiesHouseNumber) && (
                 <p className="mt-3 text-[length:var(--text-sm)] text-ink-500">
                   {[effectiveDealer.tradingSince ? `Trading since ${effectiveDealer.tradingSince}` : "", effectiveDealer.companiesHouseNumber ? `Registered company ${effectiveDealer.companiesHouseNumber}` : ""].filter(Boolean).join(" · ")}
@@ -746,6 +748,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                   Apply for finance
                   <IconExternalLink width={13} height={13} />
                 </a>
+                {effectiveDealer.dealskiTenant === "swissvans" && <FinanceDisclosure className="mt-3" />}
               </div>
               )}
             </div>
