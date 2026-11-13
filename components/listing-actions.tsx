@@ -20,7 +20,7 @@ export const VANSALES_CONTACT_NUMBER = "+447463580222";   // WhatsApp (Meta Clou
 export const VANSALES_SMS_NUMBER = "+447366906777";
 
 /** What the stacked buyer buttons need: the advert id (the "VS-" reference), its plain-English label ("AB12CDE Ford Transit"), its page URL, and whether a part-exchange valuation is on offer (dealer adverts). */
-export interface BuyerActions { listingId: string; label: string; shareUrl: string; shareTitle: string; partExchange: boolean }
+export interface BuyerActions { listingId: string; label: string; shareUrl: string; shareTitle: string; partExchange: boolean; /** Swiss Vans stock only: allows the generic /hire-purchase-vans finance fallback. */ swissFinance?: boolean }
 
 const pill = "inline-flex h-9 items-center justify-center gap-1.5 rounded-[var(--radius-pill)] border border-border bg-card px-3.5 text-[length:var(--text-sm)] font-semibold text-ink-800 transition-colors hover:border-ink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50";
 
@@ -100,7 +100,7 @@ export function ListingActions({ links, sold = false, showEnquire = true, buyer 
       WhatsApp
     </button>
   ) : null;
-  const financeHref = links.financeHref ?? (buyer?.partExchange ? "/hire-purchase-vans" : null);
+  const financeHref = links.financeHref ?? (buyer?.swissFinance ? "/hire-purchase-vans" : null);   // the generic finance page is Swiss Vans stock only
 
   return (
     <>

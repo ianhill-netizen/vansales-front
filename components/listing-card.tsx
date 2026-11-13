@@ -5,6 +5,7 @@ import { listingPath } from "@/lib/listings/slug";
 import { listingTitle, formatMileageDisplay, formatGearbox, titleCase, WHEELBASE_SHORT } from "@/lib/listings/format";
 import { isFeaturedSeller, getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
+import { isSwissVans } from "@/lib/listings/finance-scope";
 import { monthlyForListing, type FinanceTerms, type PayMode } from "@/lib/finance";
 import { hasCardPhoto } from "@/lib/listings/photo";
 import { Price, StatusBadge, Badge } from "./ui";
@@ -41,7 +42,7 @@ export function ListingCard({
   // No photo, no card (lib/listings/photo.ts): the data layer already drops these, this keeps a stray one (e.g. a saved van) from ever rendering a placeholder.
   if (!hasCardPhoto(listing)) return null;
   const monthly =
-    payMode !== "cash" && financeTerms && listing.price != null
+    payMode !== "cash" && financeTerms && listing.price != null && isSwissVans(listing)
       ? Math.round(monthlyForListing(listing, financeTerms))
       : undefined;
   const title = listingTitle(listing);

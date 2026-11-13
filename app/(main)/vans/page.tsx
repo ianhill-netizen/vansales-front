@@ -8,6 +8,9 @@ import { LocationBar } from "@/components/location/location-bar";
 import { Pagination } from "@/components/pagination";
 import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
+import { isSwissVans } from "@/lib/listings/finance-scope";
+import { vatOnTop } from "@/lib/listings/vat";
+import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
 import { EmptyState } from "@/components/empty/empty-state";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
@@ -155,7 +158,7 @@ export default async function VansPage({
   const buyerCoords = directCoords ?? (rawPostcode ? await geocodePostcodeServer(rawPostcode) : null);
   const fin = await getFinanceConfig();   // the admin finance settings, fetched once and passed down (fallback 11.4% / 60 months)
   const filters = parseFilters(sp, fin, buyerCoords?.lat, buyerCoords?.lng);
-  const { mode: payMode, terms: financeTerms } = parsePay(sp, fin);
+  const { mode: requestedPayMode, terms: financeTerms } = parsePay(sp, fin);
   const view: "grid" | "map" = one(sp.view) === "map" ? "map" : "grid";
 
   const [result, facets] = await Promise.all([
@@ -163,6 +166,10 @@ export default async function VansPage({
     getFacets(),
   ]);
   const { listings, total, page, totalPages } = result;
+  // Finance UI is Swiss Vans stock only: the toggle, monthly figures and the example exist only when this page shows a Swiss Vans van; otherwise the page is cash-only.
+  const swissOnPage = listings.filter(isSwissVans);
+  const payMode = swissOnPage.length > 0 ? requestedPayMode : "cash";
+  const exampleVan = swissOnPage.find((l) => l.price != null && l.price > 0);
 
   // Map view needs EVERY match that has a location (not just this page), trimmed so the payload stays small.
   let mapListings: typeof listings = [];
@@ -232,7 +239,10 @@ export default async function VansPage({
               <ViewToggle view={view} gridHref={hrefFor(sp, 1, { view: null })} mapHref={hrefFor(sp, 1, { view: "map" })} />
             </div>
           </div>
-          <PayToggle mode={payMode} terms={financeTerms} defaults={{ termMonths: fin.termMonths, apr: fin.apr }} />
+          {swissOnPage.length > 0 && <PayToggle mode={payMode} terms={financeTerms} defaults={{ termMonths: fin.termMonths, apr: fin.apr }} />}
+          {payMode !== "cash" && exampleVan && (
+            <FinanceDisclosure example={{ price: exampleVan.price!, warranties: exampleVan.warranty_addons ?? [], finance: exampleVan.finance ?? null, vatQualifying: vatOnTop(exampleVan.vat_status) }} />
+          )}
         </div>
 
         {listings.length === 0 ? (

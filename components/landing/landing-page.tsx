@@ -1,3 +1,4 @@
+import { FinanceDisclosureText } from "@/components/finance/finance-disclosure-text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -77,7 +78,8 @@ export async function LandingPage({ def }: { def: LandingDef }) {
         <article className="prose-vs max-w-3xl space-y-4 text-[length:var(--text-md)] leading-relaxed text-ink-600 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-[length:var(--text-xl)] [&_h2]:font-bold [&_h2]:text-ink-900 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:font-bold [&_h3]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: res.bodyHtml }} />
         <section className="max-w-3xl rounded-[var(--radius-xl)] border border-border bg-surface-1 p-6">
           <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Spreading the cost?</h2>
-          <p className="mt-2 text-[length:var(--text-sm)] text-ink-600">Read our guide to <Link href="/van-finance" className="font-semibold text-brand-700 hover:underline">van finance</Link>, then tell us your budget. We are not a lender: this page is information only.</p>
+          <p className="mt-2 text-[length:var(--text-sm)] text-ink-600">Read our guide to <Link href="/van-finance" className="font-semibold text-brand-700 hover:underline">van finance</Link>, then tell us your budget. This page is information only.</p>
+          <FinanceDisclosureText className="mt-3" />
         </section>
         <section>
           <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Keep reading</h2>
