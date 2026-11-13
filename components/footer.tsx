@@ -4,7 +4,6 @@ import { Logo } from "./brand";
 import { SITE } from "@/lib/site";
 import { getLiveGeoKeys } from "@/lib/content/geo";
 import { NATIONS, REGIONS, geoPath } from "@/lib/geo/tree";
-import { findRegion } from "@/lib/landing-pages";
 
 const COLS: { title: string; links: { href: string; label: string }[] }[] = [
   {
@@ -90,11 +89,11 @@ const CHIP_GROUPS: { title: string; links: { href: string; label: string }[] }[]
   },
 ];
 
-/** The Regions block: the four nations and the 12 regions that have a published page (the original seven pages are always live). */
+/** The Regions block: the four nations and the 12 regions that have a published page. */
 async function regionLinks(): Promise<{ href: string; label: string }[]> {
   const all = [...NATIONS, ...REGIONS].filter((x, i, a) => a.findIndex((y) => y.key === x.key) === i);
-  const live = await getLiveGeoKeys(all.filter((x) => !findRegion(x.key)).map((x) => x.key)).catch(() => new Set<string>());
-  return all.filter((x) => findRegion(x.key) || live.has(x.key)).map((x) => ({ href: geoPath(x.key), label: x.label }));
+  const live = await getLiveGeoKeys(all.map((x) => x.key)).catch(() => new Set<string>());
+  return all.filter((x) => live.has(x.key)).map((x) => ({ href: geoPath(x.key), label: x.label }));
 }
 
 export async function Footer() {
