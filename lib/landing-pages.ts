@@ -206,6 +206,7 @@ export const LANDING_PAGES: readonly LandingDef[] = [
 // The accessory pages' backend rows (lib/accessories.ts) are hand-built routes too: kept out of /blog, /blog/{slug} is a 301 to the real URL.
 const ACCESSORY_REDIRECTS: Record<string, string> = Object.fromEntries([
   ["van-accessories", "/van-accessories"],
+  ...["transit-custom", "transit", "transporter", "caddy", "vivaro", "sprinter"].map((s) => [`accessory-van-alloy-wheels-${s}`, `/van-accessories/van-alloy-wheels/${s}`]),
   ...["van-racking", "van-ply-lining", "van-roof-racks", "van-bulkheads", "van-tool-storage", "van-security", "van-seat-covers-and-mats", "van-alloy-wheels", "van-dash-cams", "van-conversions"].map((s) => [`accessory-${s}`, `/van-accessories/${s}`]),
 ]);
 
