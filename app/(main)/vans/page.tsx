@@ -291,6 +291,9 @@ export default async function VansPage({
             <Pagination page={page} totalPages={totalPages} hrefFor={(p) => hrefFor(sp, p)} />
           </>
         )}
+        <p className="mt-10 text-[length:var(--text-sm)] text-ink-600">
+          Fitting out a van? See our <Link href="/van-accessories" className="font-semibold text-brand-700 hover:underline">van accessories guides</Link> for racking, ply lining, security and more.
+        </p>
       </Container>
     </>
   );
