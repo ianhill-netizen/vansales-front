@@ -137,7 +137,7 @@ export function Gallery({ listing }: { listing: Listing }) {
               <li key={i} className="shrink-0 snap-start">
                 <button role="tab" aria-selected={selected} aria-label={`Photo ${i + 1}`} onClick={() => jump(rail.current, i)}
                   className={`relative block size-14 overflow-hidden rounded-[var(--radius-md)] border-2 bg-surface-2 transition-colors ${selected ? "border-accent-500" : "border-border hover:border-border-strong"}`}>
-                  <Photo src={shot.url} alt="" sizes="56px" className="object-cover" />
+                  <Photo src={shot.url} alt={shot.alt || `Photo ${i + 1}`} sizes="56px" className="object-cover" />
                 </button>
               </li>
             );

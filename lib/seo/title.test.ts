@@ -92,3 +92,17 @@ test("sweep: every markdown post title fits, is whole-word, has no double brand"
     assert.ok(t.length === out.length || /[\s:;,\-\u2013\u2014|&/(]/.test(t[out.length]), `${f}: cut mid-word: ${out}`);
   }
 });
+
+test("a long listing title fits 60 characters in total with the layout's ' · Vansales' suffix", () => {
+  const suffix = " · Vansales";
+  for (const t of [
+    "Volkswagen Transporter Kombi SWB 150 DSG T32 Highline TDI Semi-Auto (2024)",
+    "Land Rover Defender Hard Top X-Dynamic HSE D MHEV Automatic (2026)",
+    "Ford Transit Custom Double Cab-in-Van 320 Limited EcoBlue (2021)",
+    "Rhys huish commercials limited — Van Dealer in Bridgend",
+  ]) {
+    const out = fitTitle(t, suffix);
+    assert.ok([...(out + suffix)].length <= 60, `${out}${suffix}`);
+    assert.ok(out.length > 20, out);
+  }
+});

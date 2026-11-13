@@ -94,7 +94,7 @@ export default async function HomePage() {
       <section className="relative isolate flex min-h-[440px] items-center overflow-hidden bg-ink-900 md:min-h-[520px]">
         <Image
           src="/hero.webp"
-          alt=""
+          alt="Used vans for sale across the UK"
           fill
           priority
           sizes="100vw"

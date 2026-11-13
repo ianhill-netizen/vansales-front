@@ -132,7 +132,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
       <div className="flex items-center gap-3">
         {apiDealer?.logo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={apiDealer.logo_url} alt="" width={44} height={44} loading="lazy" className="size-11 shrink-0 rounded-[var(--radius-md)] border border-border bg-white object-contain" />
+          <img src={apiDealer.logo_url} alt={`${displayName} logo`} width={44} height={44} loading="lazy" className="size-11 shrink-0 rounded-[var(--radius-md)] border border-border bg-white object-contain" />
         ) : (
           <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] bg-ink-900 font-display text-[length:var(--text-lg)] font-bold text-white">
             {dealerInitials(displayName)}
