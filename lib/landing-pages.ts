@@ -228,6 +228,43 @@ const ACCESSORY_BLOG_REDIRECTS: Record<string, string> = {
   "vw-crafter-conversion-turn-your-van-into-a-dream-camper": "/van-accessories/van-conversions",
 };
 
+// The 33 thin or overlapping posts folded into the page that answers the same search (2026-11-13, 61 posts -> 28 live). Held (not touched): anything with more than 20 Search Console clicks in the last 90 days (only the Defender tax post, 34).
+const CONSOLIDATED_BLOG_REDIRECTS: Record<string, string> = {
+  "chart-your-own-course-van-finance-for-self-employed-entrepreneurs": "/van-finance",
+  "exclusive-new-van-deals-0-finance-ford-promotions": "/van-finance",
+  "ford-transit-finance": "/van-finance",
+  "ford-van-finance-custom-plans-for-your-needs": "/van-finance",
+  "ford-transit-custom-sport-finance": "/van-finance",
+  "vw-transporter-finance-offers": "/van-finance",
+  "short-term-business-loan": "/van-finance",
+  "cheap-van-leasing-no-deposit-best-deals-compared": "/van-lease-deals",
+  "how-much-to-lease-a-van-per-month-a-comprehensive-guide": "/van-lease-deals",
+  "top-business-van-lease-deals-for-2024-affordable-options": "/van-lease-deals",
+  "vw-van-lease-best-deals-for-business-and-personal-use": "/van-lease-deals",
+  "new-van-deals": "/van-lease-deals",
+  "reliable-luton-box-van-hire-with-tail-lift-available-now": "/used-vans/body-type/luton-for-sale",
+  "is-a-land-rover-defender-a-commercial-vehicle-find-out-here": "/used-vans/land-rover/defender-for-sale",
+  "land-rover-defender-commercial-interior": "/used-vans/land-rover/defender-for-sale",
+  "land-rover-defender-commercial-price-guide": "/used-vans/land-rover/defender-for-sale",
+  "where-are-land-rovers-made-uncovering-the-defenders-origin": "/used-vans/land-rover/defender-for-sale",
+  "2024-ford-transit-custom-sport-whats-new-and-improved": "/used-vans/ford/transit-custom-for-sale",
+  "ford-transit-custom-sport-colours": "/used-vans/ford/transit-custom-for-sale",
+  "ford-transit-custom-sport-interior": "/used-vans/ford/transit-custom-for-sale",
+  "ford-transit-custom-interior": "/used-vans/ford/transit-custom-for-sale",
+  "ford-transit-custom-length": "/blog/complete-guide-to-ford-transit-custom-dimensions",
+  "roof-height-options-for-ford-transit-custom-which-one-is-right-for-you": "/blog/complete-guide-to-ford-transit-custom-dimensions",
+  "id-buzz-cargo-the-future-of-electric-commercial-vans": "/used-vans/volkswagen/id-buzz-cargo-for-sale",
+  "ford-transit-center-your-one-stop-shop-for-vans": "/used-vans/ford/transit-for-sale",
+  "vw-bridgend-your-destination-for-quality-volkswagen-cars": "/dealers/bridgend",
+  "berlingo-van-for-sale-great-prices-and-selection": "/used-vans/citroen/berlingo-for-sale",
+  "affordable-dropside-vans-for-sale": "/used-vans/body-type/dropside-for-sale",
+  "find-your-vw-transporter-sportline-black-edition-for-sale-today": "/used-vans/volkswagen/transporter-for-sale",
+  "vans-for-sale-near-me": "/vans",
+  "a-guide-to-buying-vans-for-sale-no-vat": "/used-vans/body-type/no-vat-vans-for-sale",
+  "who-makes-maxus-vans": "/maxus-vans-uk",
+  "ford-ranger-raptor-ultimate-4x4-off-road-experience": "/used-vans/ford/ranger-for-sale",
+};
+
 export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = {
   "van-reviews": "/van-reviews",
   "used-van-warranty-options": "/van-warranty",
@@ -239,6 +276,7 @@ export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = {
   "get-temporary-van-insurance-quotes-save-today": "/van-insurance/short-term",
   ...ACCESSORY_REDIRECTS,
   ...ACCESSORY_BLOG_REDIRECTS,
+  ...CONSOLIDATED_BLOG_REDIRECTS,
   ...INSURANCE_REDIRECTS,
 };
 
