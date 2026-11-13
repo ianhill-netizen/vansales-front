@@ -16,11 +16,13 @@ import { ALL_MAKES, getMakeBySlug } from "@/lib/taxonomy/van-makes";
 import { EmptyState } from "@/components/empty/empty-state";
 import { MakeLogo } from "@/components/make-logo";
 import { InternalLinks } from "@/components/seo/internal-links";
-import { loadCatalogue, makeStat, modelsOfMake, topModels } from "@/lib/seo/catalogue";
+import { loadCatalogue, makeStat, modelsOfMake } from "@/lib/seo/catalogue";
 import { makeIntro, priceRange } from "@/lib/seo/intro";
 import { categoryLinks, makeLinks, popularModelLinks } from "@/lib/seo/links";
 import { makeSlugFromParam, makeVansPath } from "@/lib/seo/make-url";
+import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
 import { USED_VAN_MODELS, usedVanPath } from "@/lib/used-vans/models";
+import { makeBreadcrumbList, modelStockLabel, vehicleItemList } from "@/lib/seo/make-models";
 
 export const revalidate = 300; // 5 min: counts come from the vansales API (60 s data cache), so an hour showed stale "0 vans"
 
@@ -76,13 +78,15 @@ export default async function MakePage({
   if (CATEGORY_SLUGS.has(make)) notFound();
 
   const makeName = slugToMake(make);
-  // Model cards go to the model's buying-guide page (/used-vans/{make}/{model}-for-sale) where there is one, else to the stock page.
-  const guideByModel = new Map(USED_VAN_MODELS.map((u) => [`${u.makeSlug}/${u.modelSlug}`, usedVanPath(u)]));
+  // Model cards go to the model's content page (/used-vans/{make}/{model}-for-sale) where it is published, else to the stock page /vans/{make}/{model}. No redirects either way.
+  const liveModelPages = await getLiveModelPageSlugs().catch(() => new Set<string>());
+  const guideByModel = new Map(USED_VAN_MODELS.filter((u) => liveModelPages.has(u.pageSlug)).map((u) => [`${u.makeSlug}/${u.modelSlug}`, usedVanPath(u)]));
   const result = await getListings({ make: makeName, pageSize: 24 });
   const idx = await loadCatalogue();
   const stat = makeStat(idx, make);
   const modelStats = modelsOfMake(idx, make);
-  const popular = topModels(idx, 12);
+  // This make's own most-stocked models (the heading says "Popular {Make} models", so the list must be this make's).
+  const popular = [...modelStats].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 12);
 
   // Only an unknown make with no stock is a 404. A real make with no stock right now still renders (noindex, see generateMetadata): the link network points at every make.
   if (!getMakeBySlug(make) && result.total === 0) notFound();
@@ -93,31 +97,29 @@ export default async function MakePage({
   // Van News articles for this make (empty when the API is down)
   const makeNews = (await getVanNewsArticles().catch(() => [])).filter((a) => slugify(a.make) === make).slice(0, 5);
 
-  const breadcrumbs = [
-    { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
-    { "@type": "ListItem", position: 2, name: `Used ${makeName} Vans For Sale`, item: absUrl(makeVansPath(make)) },
-  ];
+  const shown = result.listings.slice(0, 24);
 
   return (
     <>
-      <JsonLd data={{
-        "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        name: `${makeName} Vans for Sale`,
-        url: absUrl(makeVansPath(make)),
-        description: `${makeName} vans for sale in the UK.`,
-        breadcrumb: { "@type": "BreadcrumbList", itemListElement: breadcrumbs },
-        mainEntity: {
-          "@type": "ItemList",
-          numberOfItems: result.total,
-          itemListElement: result.listings.slice(0, 24).map((l, i) => ({ "@type": "ListItem", position: i + 1, url: absUrl(`/listing/${l.slug}`), name: `${l.make} ${l.model}` })),
+      <JsonLd data={[
+        {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: `${makeName} Vans for Sale`,
+          url: absUrl(makeVansPath(make)),
+          description: `${makeName} vans for sale in the UK.`,
         },
-      }} />
+        makeBreadcrumbList(makeName, makeVansPath(make), absUrl),
+        // The vans in the grid below (same list the cards use), each as a Vehicle with its Offer.
+        { ...vehicleItemList(shown, absUrl), numberOfItems: result.total },
+      ]} />
 
       <section className="border-b border-border bg-surface-1">
         <Container className="py-10">
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
             <Link href="/" className="hover:text-ink-900">Home</Link>
+            <span aria-hidden>/</span>
+            <Link href="/vans" className="hover:text-ink-900">Vans for sale</Link>
             <span aria-hidden>/</span>
             <span className="font-medium text-ink-700">{makeName} vans</span>
           </nav>
@@ -136,20 +138,20 @@ export default async function MakePage({
           <div className="mt-4 flex flex-wrap gap-3">
             <Link href={`/vans?condition=new&q=${encodeURIComponent(makeName)}`} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               New {makeName}
-            </Link>
+            </Link>{" "}
             <Link href={`/vans?condition=used&q=${encodeURIComponent(makeName)}`} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
               Used {makeName}
             </Link>
           </div>
         </Container>
-      </section>
+      </section>{" "}
 
       <Container className="py-8">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
             {modelStats.length > 0 && (
               <section aria-labelledby="models-heading" className="mb-10">
-                <h2 id="models-heading" className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{makeName} models</h2>
+                <h2 id="models-heading" className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">{makeName} models</h2>{" "}
                 <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {modelStats.map((m) => (
                     <li key={m.modelSlug}>
@@ -157,9 +159,9 @@ export default async function MakePage({
                         href={guideByModel.get(`${make}/${m.modelSlug}`) ?? `/vans/${make}/${m.modelSlug}`}
                         className={`block rounded-[var(--radius-lg)] border p-4 transition-colors hover:border-brand-300 ${m.count > 0 ? "border-border bg-white" : "border-border/70 bg-surface-1"}`}
                       >
-                        <span className="block font-display text-[length:var(--text-base)] font-bold text-ink-900">{makeName} {m.name}</span>
+                        <span className="block font-display text-[length:var(--text-base)] font-bold text-ink-900">{makeName} {m.name}<span className="sr-only"> — </span></span>
                         <span className={`mt-1 block text-[length:var(--text-sm)] ${m.count > 0 ? "font-semibold text-brand-700" : "text-ink-400"}`}>
-                          {m.count > 0 ? `${m.count} ${m.count === 1 ? "van" : "vans"} for sale` : "None in stock now"}
+                          {modelStockLabel(m.count)}
                         </span>
                       </Link>
                     </li>
@@ -222,7 +224,7 @@ export default async function MakePage({
       {/* ── Internal link network ───────────────────────────────────────── */}
       <section className="border-t border-border bg-surface-1 py-10">
         <Container className="space-y-9">
-          <InternalLinks title="Popular models" links={popularModelLinks(popular)} columns={3} />
+          <InternalLinks title={`Popular ${makeName} models`} links={popularModelLinks(popular)} columns={3} />
           <InternalLinks title="Browse by body type" links={categoryLinks()} columns={3} />
           <InternalLinks title="All makes" links={makeLinks(make)} columns={4} />
         </Container>
