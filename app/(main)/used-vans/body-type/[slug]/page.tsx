@@ -161,7 +161,7 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
           </section>
         )}
         <section id="enquire" className="max-w-xl scroll-mt-24">
-          <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Looking for a {def.singular}?</h2>
+          <h2 className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Looking for {/^[aeiou]/i.test(def.singular) ? "an" : "a"} {def.singular}?</h2>
           <p className="mt-2 text-[length:var(--text-sm)] text-ink-600">Leave your details and what you need, and we will come back to you.</p>
           <div className="mt-4"><ModelEnquiryForm vehicle={`used ${def.singular}`} path={path} /></div>
         </section>
