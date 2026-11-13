@@ -11,7 +11,7 @@
     "db:seed": "npx tsx prisma/seed.ts",
     "db:migrate": "prisma migrate deploy",
     "check:links": "node scripts/check-redirect-links.mjs",
-    "test": "node --test lib/gallery-no-blur.test.ts lib/content/sanitize.test.ts lib/used-vans/models.test.ts lib/used-vans/body-types.test.ts lib/content/auto-link.test.ts lib/sell-pages.test.ts lib/landing-pages.test.ts lib/listings/extras-guard.test.ts lib/listings/gone.test.ts lib/hp-example.test.ts lib/seo/title.test.ts lib/content/headings.test.ts lib/listings/slug.test.ts lib/redirects/new-vans.test.ts lib/redirects/redirects.test.ts lib/redirects/retired-test-dealer.test.ts lib/listings/photo.test.ts lib/sitemap/xml.test.ts lib/content/related.test.ts lib/content/retry.test.ts lib/redirects/www.test.ts lib/fonts-selfhosted.test.ts lib/stock-feeds.test.ts lib/listings/vat.test.ts lib/listings/image-check.test.ts lib/listings/spread.test.ts lib/home-faq.test.ts lib/seo/make-models.test.ts lib/seo/label.test.ts lib/finance-disclosure.test.ts lib/redirects/legacy.test.ts lib/listings/finance-scope.test.ts lib/van-finance-faq.test.ts"
+    "test": "node --test lib/gallery-no-blur.test.ts lib/content/sanitize.test.ts lib/used-vans/models.test.ts lib/used-vans/body-types.test.ts lib/content/auto-link.test.ts lib/sell-pages.test.ts lib/landing-pages.test.ts lib/listings/extras-guard.test.ts lib/listings/gone.test.ts lib/hp-example.test.ts lib/seo/title.test.ts lib/content/headings.test.ts lib/listings/slug.test.ts lib/redirects/new-vans.test.ts lib/redirects/redirects.test.ts lib/redirects/retired-test-dealer.test.ts lib/listings/photo.test.ts lib/sitemap/xml.test.ts lib/content/related.test.ts lib/content/retry.test.ts lib/redirects/www.test.ts lib/fonts-selfhosted.test.ts lib/stock-feeds.test.ts lib/listings/vat.test.ts lib/listings/image-check.test.ts lib/listings/spread.test.ts lib/home-faq.test.ts lib/seo/make-models.test.ts lib/seo/label.test.ts lib/finance-disclosure.test.ts scripts/gsc-lib.test.mjs lib/redirects/legacy.test.ts lib/listings/finance-scope.test.ts lib/van-finance-faq.test.ts"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -43,6 +43,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "googleapis": "^144.0.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
