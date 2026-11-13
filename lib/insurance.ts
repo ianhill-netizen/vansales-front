@@ -1,6 +1,6 @@
 /**
  * /van-insurance: a hub plus thirteen information-only topic pages. Pure data. Copy is a vansales-backend content_pages row each (page_type guide, `content:seo-silo insurance`): the hub is "insurance-hub", a topic is "insurance-{slug}".
- * Information only: no provider is named, nothing is recommended, Vansales does not arrange insurance. The only outbound link is <AffiliateCta slot="INSURANCE"/>, which stays hidden until AFF_INSURANCE_URL is set (lib/affiliates.ts).
+ * Information only: no provider is named, nothing is recommended, Vansales does not arrange insurance. The only outbound link is <AffiliateCta/>, which renders nothing until Dealski (Marketing > Affiliate) has an active placement for the page (lib/affiliates.ts).
  * Keep the slugs in step with vansales-backend App\Console\Commands\SeoSilo::INSURANCE.
  */
 export interface InsuranceDef { slug: string; backendSlug: string; path: string; h1: string; title: string; description: string; group: "type" | "model" }

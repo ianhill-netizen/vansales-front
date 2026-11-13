@@ -1,17 +1,22 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { affiliateFor } from "./affiliates.ts";
+import { DEFAULT_LABEL, isAwinUrl, parsePlacements } from "./affiliates.ts";
 
-test("affiliate is hidden until its env is set to an https URL", () => {
-  assert.equal(affiliateFor("INSURANCE", {}), null);
-  assert.equal(affiliateFor("INSURANCE", { AFF_INSURANCE_URL: "" }), null);
-  assert.equal(affiliateFor("INSURANCE", { AFF_INSURANCE_URL: "   " }), null);
-  assert.equal(affiliateFor("INSURANCE", { AFF_INSURANCE_URL: "http://example.com/x" }), null);
-  assert.equal(affiliateFor("INSURANCE", { AFF_INSURANCE_URL: "javascript:alert(1)" }), null);
-  assert.equal(affiliateFor("INSURANCE", { AFF_INSURANCE_URL: "not a url" }), null);
+const URL_OK = "https://www.awin1.com/cread.php?s=1013088&v=7857&q=316409&r=573373";
+
+test("only an https awin1.com link is renderable", () => {
+  assert.equal(isAwinUrl(URL_OK), true);
+  assert.equal(isAwinUrl("http://www.awin1.com/cread.php?s=1"), false);
+  assert.equal(isAwinUrl("https://www.awin1.com.evil.example/x"), false);
+  assert.equal(isAwinUrl("https://example.com/"), false);
+  assert.equal(isAwinUrl("javascript:alert(1)"), false);
+  assert.equal(isAwinUrl(null), false);
 });
 
-test("affiliate resolves with a default or custom label", () => {
-  assert.deepEqual(affiliateFor("INSURANCE", { AFF_INSURANCE_URL: "https://example.com/go?a=1" }), { href: "https://example.com/go?a=1", label: "Visit our van insurance partner" });
-  assert.equal(affiliateFor("INSURANCE", { AFF_INSURANCE_URL: "https://example.com/", AFF_INSURANCE_LABEL: "Go" })?.label, "Go");
+test("placements: validated, labelled, junk dropped, empty when the answer is not the expected shape", () => {
+  assert.deepEqual(parsePlacements({ data: [{ advertiser_id: 7857, label: null, tracking_url: URL_OK }] }), [{ advertiserId: 7857, href: URL_OK, label: DEFAULT_LABEL }]);
+  assert.equal(parsePlacements({ data: [{ advertiser_id: 1, label: "Go", tracking_url: URL_OK }] })[0].label, "Go");
+  assert.deepEqual(parsePlacements({ data: [{ advertiser_id: 1, tracking_url: "https://evil.example/" }, { tracking_url: 5 }, null] }), []);
+  assert.deepEqual(parsePlacements({ data: "nope" }), []);
+  assert.deepEqual(parsePlacements(null), []);
 });

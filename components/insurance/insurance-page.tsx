@@ -55,7 +55,7 @@ export async function InsurancePage({ page, isHub, children }: { page: Page; isH
           <p className="mt-3 max-w-2xl rounded-[var(--radius-md)] border border-border bg-white px-4 py-3 text-[length:var(--text-sm)] text-ink-600">
             <strong className="text-ink-900">Vansales does not arrange or sell insurance.</strong> This page is general information. Policy terms vary by insurer, so read the policy wording and ask an insurer or broker about your own van.
           </p>
-          <AffiliateCta slot="INSURANCE" page={page.path} className="mt-4" />
+          <AffiliateCta page={page.path} className="mt-4" />
         </Container>
       </section>
       {children}
