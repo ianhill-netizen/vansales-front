@@ -4,6 +4,7 @@ import { Container, Eyebrow } from "@/components/ui";
 import { DealerGrid } from "@/components/dealer-grid";
 import { JsonLd } from "@/components/json-ld";
 import { getDealerDirectory } from "@/lib/dealers/directory";
+import { regionPageFor, townLabel, townSlug } from "@/lib/dealers/places";
 import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 export const revalidate = 300; // 5 min: counts come from the vansales API (60 s data cache), so an hour showed stale "0 vans"
@@ -32,6 +33,17 @@ export default async function DealersPage() {
     })),
   };
 
+  // The same dealers grouped by area (the regional "vans for sale" page that covers them, else their county), each with its town page: a crawlable index of every dealer and town.
+  const groups = new Map<string, { label: string; dealers: typeof dealers }>();
+  for (const d of dealers) {
+    const region = regionPageFor({ town: d.town, county: d.county });
+    const label = region ? region.name : d.county || "Other areas";
+    const g = groups.get(label) ?? { label, dealers: [] };
+    g.dealers.push(d);
+    groups.set(label, g);
+  }
+  const byArea = [...groups.values()].sort((a, b) => a.label.localeCompare(b.label));
+
   return (
     <>
       <JsonLd data={[ld]} />
@@ -51,6 +63,26 @@ export default async function DealersPage() {
       </section>
       <Container className="py-8">
         <DealerGrid dealers={dealers} />
+        {byArea.length > 0 && (
+          <section aria-labelledby="by-area" className="mt-12">
+            <h2 id="by-area" className="font-display text-[length:var(--text-xl)] font-bold text-ink-900">Van dealers by area</h2>
+            <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {byArea.map((g) => (
+                <div key={g.label}>
+                  <h3 className="font-display font-bold text-ink-900">{g.label}</h3>
+                  <ul className="mt-2 space-y-1 text-[length:var(--text-sm)]">
+                    {g.dealers.map((d) => (
+                      <li key={d.slug}>
+                        <Link href={`/dealer/${d.slug}`} className="text-brand-700 hover:underline">{d.name}</Link>
+                        {d.town && <> · <Link href={`/dealers/${townSlug(d.town)}`} className="text-ink-500 hover:underline">{townLabel(d.town)}</Link></>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
         <p className="mt-10 text-[length:var(--text-sm)] text-ink-500">
           Are you a dealer? <Link href="/advertise" className="font-semibold text-brand-600 hover:underline">See our advertising packages</Link>.
         </p>

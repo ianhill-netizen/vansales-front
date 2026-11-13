@@ -1,5 +1,8 @@
 import { fitTitle } from "@/lib/seo/title";
 import { DealerLogo } from "@/components/dealer-logo";
+import { dealerDisplayName } from "@/lib/dealers/display-name";
+import { dealerDescription, dealerIndexable, nearestDealers, regionPageFor, townLabel, townSlug } from "@/lib/dealers/places";
+import { getDealerDirectory } from "@/lib/dealers/directory";
 import { EmptyState } from "@/components/empty/empty-state";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -37,27 +40,38 @@ export const revalidate = 300;
 
 type Params = { slug: string };
 
+/** Title "{name} | Used Van Dealer in {town} | Vansales" (60 characters at most, cut at a word); description with the stock count when there is any; noindex,follow unless the page has stock or an about text. */
+function dealerMetadata(o: { slug: string; name: string; town: string; county: string; stock: number; finance: boolean; hasAbout: boolean; configured: boolean; logoUrl?: string | null }): Metadata {
+  const town = o.town ? townLabel(o.town) : "";
+  const title = `${fitTitle(`${o.name} | Used Van Dealer${town ? ` in ${town}` : ""}`, " | Vansales")} | Vansales`;
+  const description = dealerDescription({ name: o.name, town: o.town, county: o.county, stock: o.stock, finance: o.finance });
+  const url = `/dealer/${o.slug}`;
+  return {
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url },
+    ...(dealerIndexable({ stockCount: o.stock, hasAbout: o.hasAbout, configured: o.configured }) ? {} : { robots: { index: false, follow: true } }),
+    openGraph: { title, description, url, type: "website", images: o.logoUrl ? [{ url: o.logoUrl }] : DEFAULT_OG_IMAGES },
+  };
+}
+
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
   const dealer = getDealerConfig(slug);
   if (dealer) {
-    const title = `${dealer.name} — Van Dealer in ${dealer.location.town}`;
-    const description = `${dealer.name} is a van dealer in ${dealer.location.town}, ${dealer.location.county}. Browse their stock on ${SITE.name}.`;
-    return { title: fitTitle(title, " · Vansales"), description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
+    const api = await fetchApiDealerProfile(slug).catch(() => null);
+    const stock = api?.kind === "ok" ? api.dealer.stock_count : 0;
+    return dealerMetadata({ slug, name: dealer.name, town: dealer.location.town, county: dealer.location.county, stock, finance: !!dealer.dealskiTenant, hasAbout: true, configured: true, logoUrl: api?.kind === "ok" ? api.dealer.logo_url : null });
   }
   const api = await fetchApiDealerProfile(slug);
   if (api.kind === "ok") {
     const d = api.dealer;
-    const title = `${d.name} — Van Dealer${d.town ? ` in ${d.town}` : ""}`;
-    const description = `${d.name}${d.town ? ` is a van dealer in ${d.town}` : " sells vans"}. Browse ${d.stock_count > 0 ? `their ${d.stock_count} van${d.stock_count === 1 ? "" : "s"}` : "their stock"} on ${SITE.name}.`;
-    return { title: fitTitle(title, " · Vansales"), description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website", images: d.logo_url ? [{ url: d.logo_url }] : DEFAULT_OG_IMAGES } };
+    return dealerMetadata({ slug, name: dealerDisplayName(d), town: d.town ?? "", county: d.county ?? "", stock: d.stock_count, finance: !!d.finance_url, hasAbout: !!d.about?.trim(), configured: false, logoUrl: d.logo_url });
   }
   const dbDealer = await safeDb("dealer metadata lookup", () => prisma.dealer.findUnique({ where: { slug } }), null);
   if (!dbDealer) return { title: api.kind === "error" ? "Van dealer" : "Dealer not found" };
-  const town = (dbDealer.location ?? "").split(",")[0].trim() || "UK";
-  const title = `${dbDealer.name} — Van Dealer${town ? ` in ${town}` : ""}`;
-  const description = `Browse ${dbDealer.name}'s stock on ${SITE.name}.`;
-  return { title: fitTitle(title, " · Vansales"), description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
+  const town = (dbDealer.location ?? "").split(",")[0].trim();
+  return dealerMetadata({ slug, name: dealerDisplayName({ name: dbDealer.name }), town, county: "", stock: 0, finance: false, hasAbout: false, configured: false });
 }
 
 const DAY_LABELS: Record<string, string> = {
@@ -87,6 +101,10 @@ type ProfileDealer = Omit<DealerConfig, "hours" | "coverUrl"> & {
   what3words?: string | null;
   directionsUrl?: string | null;
   reviews?: { author: string; rating: number; text: string; time: string | null }[];
+  /** The dealer's real about text (null when it has none: `about` then holds a placeholder sentence). */
+  aboutText?: string | null;
+  companiesHouseNumber?: string | null;
+  tradingSince?: number | null;
 };
 
 const SPECIALISM_LABELS: Record<string, string> = {
@@ -107,7 +125,7 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
   let host = "";
   try { host = d.website_url ? new URL(d.website_url).host.replace(/^www\./, "") : ""; } catch { /* not a URL */ }
   return {
-    name: d.name,
+    name: dealerDisplayName(d),
     slug: d.slug,
     dealskiTenant: "",
     location: { line1: d.address ?? "", town: d.town ?? "", county: d.county ?? "", postcode: d.postcode ?? "" },
@@ -118,7 +136,7 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     hours,
     about: d.about?.trim() || `${d.name} is a van dealer${d.town ? ` in ${d.town}` : ""}. Browse their stock below.`,
     services: [],
-    sellerNames: [d.name],
+    sellerNames: [d.name, dealerDisplayName(d)],
     googleRating: d.google_rating ?? null,
     googleReviewCount: d.google_review_count ?? null,
     socials: {
@@ -135,6 +153,9 @@ function apiToProfile(d: ApiDealer): ProfileDealer {
     what3words: d.what3words ?? null,
     directionsUrl: d.google_maps_url ?? null,
     reviews: (d.google_reviews ?? []).slice(0, 3),
+    aboutText: d.about?.trim() || null,
+    companiesHouseNumber: d.companies_house_number ?? null,
+    tradingSince: d.trading_since ?? d.incorporation_year ?? null,
   };
 }
 
@@ -280,6 +301,23 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
   const directionsHref = effectiveDealer.directionsUrl || mapsUrl;
   const socialUrls = Object.values(effectiveDealer.socials ?? {}).filter((u): u is string => !!u);
 
+  // Where the dealer is: its town page, the regional "vans for sale" page that covers it, and its three nearest neighbours.
+  const town = effectiveDealer.location.town ? townLabel(effectiveDealer.location.town) : "";
+  const region = regionPageFor({ town: effectiveDealer.location.town, county: effectiveDealer.location.county, postcode: effectiveDealer.location.postcode });
+  const directory = await getDealerDirectory().catch(() => []);
+  const nearby = nearestDealers({ slug, lat: mapLat, lng: mapLng }, directory.filter((x) => x.vanCount > 0 || x.configured || x.hasAbout), 3);
+  const townDealerCount = town ? directory.filter((x) => townSlug(x.town) === townSlug(town)).length : 0;
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: absUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Van dealers", item: absUrl("/dealers") },
+      ...(town && townDealerCount > 0 ? [{ "@type": "ListItem", position: 3, name: town, item: absUrl(`/dealers/${townSlug(town)}`) }] : []),
+      { "@type": "ListItem", position: town && townDealerCount > 0 ? 4 : 3, name: effectiveDealer.name, item: absUrl(`/dealer/${slug}`) },
+    ],
+  };
+
   const dealerLd = {
     "@context": "https://schema.org",
     "@type": "AutoDealer",
@@ -329,7 +367,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
 
   return (
     <>
-      <JsonLd data={dealerLd} />
+      <JsonLd data={[dealerLd, breadcrumbLd]} />
 
       {/* ── 1. HEADER ─────────────────────────────────────────────── */}
       <div className="relative isolate overflow-hidden border-b border-border bg-ink-900 text-white">
@@ -344,6 +382,11 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
             <div className="flex items-center gap-4 md:gap-5">
               <DealerLogo name={effectiveDealer.name} logoUrl={effectiveDealer.logoUrl} size={72} className="md:!size-20" />
             <div className="min-w-0">
+              <nav aria-label="Breadcrumb" className="mb-2 flex flex-wrap items-center gap-1.5 text-[length:var(--text-xs)] text-white/60">
+                <Link href="/" className="hover:text-white">Home</Link><span aria-hidden>/</span>
+                <Link href="/dealers" className="hover:text-white">Van dealers</Link>
+                {town && townDealerCount > 0 && (<><span aria-hidden>/</span><Link href={`/dealers/${townSlug(town)}`} className="hover:text-white">{town}</Link></>)}
+              </nav>
               <p className="mb-2 font-mono text-[length:var(--text-xs)] uppercase tracking-[var(--tracking-eyebrow)] text-white/50">
                 Van dealer{effectiveDealer.location.town ? ` · ${effectiveDealer.location.town}` : ""}
               </p>
@@ -399,12 +442,45 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
               <p className="mt-4 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">
                 {effectiveDealer.about}
               </p>
+              {(effectiveDealer.tradingSince || effectiveDealer.companiesHouseNumber) && (
+                <p className="mt-3 text-[length:var(--text-sm)] text-ink-500">
+                  {[effectiveDealer.tradingSince ? `Trading since ${effectiveDealer.tradingSince}` : "", effectiveDealer.companiesHouseNumber ? `Registered company ${effectiveDealer.companiesHouseNumber}` : ""].filter(Boolean).join(" · ")}
+                </p>
+              )}
               {effectiveDealer.specialisms && effectiveDealer.specialisms.length > 0 && (
                 <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Specialisms">
                   {effectiveDealer.specialisms.map((k) => <li key={k} className="rounded-full border border-border bg-surface-1 px-2.5 py-0.5 text-[length:var(--text-xs)] font-medium text-ink-700">{SPECIALISM_LABELS[k]}</li>)}
                 </ul>
               )}
             </section>
+
+            {/* Vans for sale in this dealer's area */}
+            {town && (region || townDealerCount > 0) && (
+              <section>
+                <SectionHeading>Vans for sale in {town}</SectionHeading>
+                <ul className="mt-3 space-y-1.5 text-[length:var(--text-md)]">
+                  {region && <li><Link href={region.path} className="font-semibold text-brand-700 hover:underline">Used vans for sale in {region.name}</Link></li>}
+                  {townDealerCount > 0 && <li><Link href={`/dealers/${townSlug(town)}`} className="font-semibold text-brand-700 hover:underline">Van dealers in {town}</Link></li>}
+                </ul>
+              </section>
+            )}
+
+            {/* The three nearest other dealers */}
+            {nearby.length > 0 && (
+              <section>
+                <SectionHeading>Other van dealers near {town || "here"}</SectionHeading>
+                <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+                  {nearby.map((n) => (
+                    <li key={n.slug}>
+                      <Link href={`/dealer/${n.slug}`} className="block rounded-[var(--radius-lg)] border border-border bg-white p-4 hover:border-brand-300">
+                        <span className="block font-display font-bold text-ink-900">{n.name}</span>
+                        <span className="mt-0.5 block text-[length:var(--text-sm)] text-ink-500">{[n.town, `${Math.round(n.miles)} mile${Math.round(n.miles) === 1 ? "" : "s"} away`].filter(Boolean).join(" · ")}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
             {/* Photos of the premises (vansales-API dealers) */}
             {effectiveDealer.photos && effectiveDealer.photos.length > 0 && (
@@ -577,7 +653,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                       </a>
                     )}
                     {effectiveDealer.websites[0] && (
-                      <a href={effectiveDealer.websites[0].url} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border bg-white text-[length:var(--text-base)] font-semibold text-ink-800 transition-colors hover:border-ink-400 hover:bg-surface-1">
+                      <a href={effectiveDealer.websites[0].url} target="_blank" rel="nofollow noopener" className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border bg-white text-[length:var(--text-base)] font-semibold text-ink-800 transition-colors hover:border-ink-400 hover:bg-surface-1">
                         <IconGlobe width={18} height={18} aria-hidden />
                         Visit website
                         <IconExternalLink width={13} height={13} aria-hidden />
@@ -604,7 +680,7 @@ export default async function DealerPage({ params }: { params: Promise<Params> }
                         <a
                           href={site.url}
                           target="_blank"
-                          rel="noopener noreferrer"
+                          rel="nofollow noopener"
                           className="flex items-center gap-2 text-[length:var(--text-sm)] text-brand-700 hover:underline"
                         >
                           <IconGlobe width={14} height={14} className="shrink-0" />
