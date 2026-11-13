@@ -19,7 +19,7 @@ export function rootBlogRedirects(cwd: string = process.cwd()): RedirectRule[] {
   try {
     const routes = new Set(readdirSync(join(cwd, "app", "(main)")));
     return readdirSync(join(cwd, "content", "blog")).filter((f) => f.endsWith(".md")).map((f) => f.slice(0, -3)).filter((slug) => !routes.has(slug))
-      .map((slug) => ({ source: `/${slug}`, destination: `/blog/${slug}`, statusCode: 301 as const }));
+      .map((slug) => ({ source: `/${slug}`, destination: HAND_BUILT_GUIDE_SLUGS[slug] ?? `/blog/${slug}`, statusCode: 301 as const }));   // a consolidated post goes straight to its new page (one hop)
   } catch {
     return [];
   }

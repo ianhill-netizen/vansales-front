@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { HAND_BUILT_GUIDE_SLUGS } from "../landing-pages";
 
 const DATA_DIR = path.join(process.cwd(), "content/blog");
 
@@ -22,7 +23,8 @@ export function getBlogIndex(): BlogPost[] {
   if (_index) return _index;
   try {
     const raw = fs.readFileSync(path.join(DATA_DIR, "index.json"), "utf8");
-    _index = JSON.parse(raw) as BlogPost[];
+    // A post whose slug is a 301 to a hand-built page (consolidated guides) is not listed.
+    _index = (JSON.parse(raw) as BlogPost[]).filter((p) => !(p.slug in HAND_BUILT_GUIDE_SLUGS));
     return _index;
   } catch {
     return [];

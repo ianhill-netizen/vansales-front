@@ -56,4 +56,6 @@ test("old root-level post URLs redirect to /blog/{slug}; the generic product fam
   // every destination of the new rules is a single hop (does not itself redirect)
   const sources = new Set(all.map((r) => r.source));
   for (const r of root) assert.ok(!sources.has(r.destination), r.destination);
+  const temp = root.find((r) => r.source === "/get-temporary-van-insurance-quotes-save-today");
+  assert.equal(temp?.destination, "/van-insurance/short-term");
 });

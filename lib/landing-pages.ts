@@ -209,11 +209,23 @@ const ACCESSORY_REDIRECTS: Record<string, string> = Object.fromEntries([
   ...["van-racking", "van-ply-lining", "van-roof-racks", "van-bulkheads", "van-tool-storage", "van-security", "van-seat-covers-and-mats", "van-alloy-wheels", "van-dash-cams", "van-conversions"].map((s) => [`accessory-${s}`, `/van-accessories/${s}`]),
 ]);
 
+// The insurance rows' backend slugs (lib/insurance.ts): hub "insurance-hub" and "insurance-{slug}" are hand-built routes too.
+const INSURANCE_REDIRECTS: Record<string, string> = Object.fromEntries([
+  ["insurance-hub", "/van-insurance"],
+  ...["fleet", "commercial", "short-term", "classic", "electric", "insurance-groups", "tools-in-transit", "transporter", "transit", "transit-custom", "vivaro", "sprinter", "caddy"].map((s) => [`insurance-${s}`, `/van-insurance/${s}`]),
+]);
+
 export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = {
   "van-reviews": "/van-reviews",
   "used-van-warranty-options": "/van-warranty",
   "used-van-warranty-guide-uk": "/van-warranty",
+  // The insurance posts are folded into the information-only insurance hub (2026-11-13); /blog/{slug} is a 301.
+  "van-insurance-explained": "/van-insurance",
+  "used-van-insurance-tips": "/van-insurance",
+  "used-van-insurance-guide-uk": "/van-insurance",
+  "get-temporary-van-insurance-quotes-save-today": "/van-insurance/short-term",
   ...ACCESSORY_REDIRECTS,
+  ...INSURANCE_REDIRECTS,
 };
 
 export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set([...LANDING_PAGES.map((p) => p.backendSlug), ...Object.keys(HAND_BUILT_GUIDE_SLUGS)]);
