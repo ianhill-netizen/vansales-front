@@ -7,6 +7,8 @@
 import { getJson } from "@/lib/content/backend";
 import { safeImageUrl, sanitizeGuideHtml } from "@/lib/content/sanitize";
 import { BODY_TYPE_PAGES } from "@/lib/used-vans/body-types";
+import { parseFilterDefinition, type FilterDefinition } from "@/lib/used-vans/filter-definition";
+import { parseFaq } from "@/lib/content/faq";
 
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
 
@@ -23,6 +25,10 @@ export interface BodyTypePage {
   contextUrl: string | null;
   contextAlt: string;
   updatedAt: string;
+  /** The backend's filter_definition for this page (which listings belong on it), when it has one; the page falls back to its built-in rule otherwise. */
+  filterDefinition: FilterDefinition | null;
+  /** The Q&A from the guide's FAQ section (FAQPage JSON-LD when there are at least three). */
+  faq: { q: string; a: string }[];
 }
 
 export type BodyTypePageResult = { status: "ok"; page: BodyTypePage } | { status: "missing" } | { status: "unavailable" };
@@ -55,6 +61,8 @@ export async function getBodyTypePage(slug: string): Promise<BodyTypePageResult>
       contextUrl: ctx.url,
       contextAlt: ctx.alt,
       updatedAt: str(r.updated_at) || str(r.published_at),
+      filterDefinition: parseFilterDefinition(r.filter_definition),
+      faq: parseFaq(sanitizeGuideHtml(str(r.blurb_html))),
     },
   };
 }

@@ -3,6 +3,8 @@ import { Container } from "./ui";
 import { Logo } from "./brand";
 import { SITE } from "@/lib/site";
 import { getLiveGeoKeys } from "@/lib/content/geo";
+import { getLiveBodyTypeSlugs } from "@/lib/content/body-type-pages";
+import { BODY_TYPE_PAGES, bodyTypePath } from "@/lib/used-vans/body-types";
 import { NATIONS, REGIONS, geoPath } from "@/lib/geo/tree";
 
 const COLS: { title: string; links: { href: string; label: string }[] }[] = [
@@ -103,9 +105,22 @@ function regionLinks(): Promise<{ href: string; label: string }[]> {
   return value;
 }
 
+/** The five facet pages (small, large, automatic, combi, no VAT) that are published: one shared lookup per process per 5 minutes, like the regions. */
+const FACETS = ["small-vans", "large-vans", "automatic-vans", "combi-vans", "no-vat-vans"];
+let facetCache: { at: number; value: Promise<{ href: string; label: string }[]> } | null = null;
+
+function facetLinks(): Promise<{ href: string; label: string }[]> {
+  if (facetCache && Date.now() - facetCache.at < REGION_TTL_MS) return facetCache.value;
+  const value = getLiveBodyTypeSlugs()
+    .then((live) => BODY_TYPE_PAGES.filter((b) => FACETS.includes(b.slug) && live.has(b.slug)).map((b) => ({ href: bodyTypePath(b), label: b.label[0].toUpperCase() + b.label.slice(1) })))
+    .catch(() => []);
+  facetCache = { at: Date.now(), value };
+  return value;
+}
+
 export async function Footer() {
-  const regions = await regionLinks();
-  const chipGroups = regions.length > 0 ? [...CHIP_GROUPS, { title: "Regions", links: regions }] : CHIP_GROUPS;
+  const [regions, facets] = await Promise.all([regionLinks(), facetLinks()]);
+  const chipGroups = [...CHIP_GROUPS, ...(facets.length > 0 ? [{ title: "Find the right van", links: facets }] : []), ...(regions.length > 0 ? [{ title: "Regions", links: regions }] : [])];
   return (
     <footer className="mt-[var(--section-y)] bg-ink-900 text-white">
 

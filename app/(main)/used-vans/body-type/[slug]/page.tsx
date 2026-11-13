@@ -15,6 +15,7 @@ import { findUsedVanModel, usedVanPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
 import { getCategory } from "@/lib/seo/categories";
 import { slugify } from "@/lib/listings/slug";
+import { matchesFilter } from "@/lib/used-vans/filter-definition";
 
 // /used-vans/body-type/{slug}: one of ten body/equipment types (luton, dropside, tipper, curtain side, refrigerated, crew van, high roof, long wheelbase, 4x4, wheelchair accessible).
 // The copy (H1, meta, 600-word buying guide, two pictures) is vansales-backend's body_type_pages; the listings are the live stock that matches the type (lib/used-vans/body-types.ts).
@@ -65,7 +66,9 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
     getLiveModelPageSlugs().catch(() => new Set<string>()),
     getLiveBodyTypeSlugs().catch(() => new Set<string>()),
   ]);
-  const matching = all.listings.filter((l) => def.match(l));
+  // The backend's filter_definition wins when the API returns one (editable data); the def's own rule is the fallback.
+  const match = page.filterDefinition ? (l: (typeof all.listings)[number]) => matchesFilter(page.filterDefinition!, l) : def.match;
+  const matching = all.listings.filter((l) => match(l));
   const shown = matching.slice(0, 12);
   const path = bodyTypePath(def);
   const h1 = bodyTypeH1(def);
@@ -92,9 +95,10 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
       { "@type": "ListItem", position: 3, name: `Used ${def.label}`, item: absUrl(path) },
     ],
   };
+  const faq = page.faq.length >= 3 ? { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: page.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) } : null;
   return (
     <>
-      <JsonLd data={[itemList, breadcrumb]} />
+      <JsonLd data={[itemList, breadcrumb, ...(faq ? [faq] : [])]} />
       <section className="border-b border-border bg-surface-1">
         <Container className="py-8">
           <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 text-[length:var(--text-sm)] text-ink-400">
