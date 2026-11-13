@@ -89,11 +89,18 @@ const CHIP_GROUPS: { title: string; links: { href: string; label: string }[] }[]
   },
 ];
 
-/** The Regions block: the four nations and the 12 regions that have a published page. */
-async function regionLinks(): Promise<{ href: string; label: string }[]> {
+/** The Regions block: the four nations and the 12 regions that have a published page. One shared lookup per process per 5 minutes (the footer is on every page, so a lookup per render would hammer the content API, and a throttled API fails real pages). */
+const REGION_TTL_MS = 5 * 60 * 1000;
+let regionCache: { at: number; value: Promise<{ href: string; label: string }[]> } | null = null;
+
+function regionLinks(): Promise<{ href: string; label: string }[]> {
+  if (regionCache && Date.now() - regionCache.at < REGION_TTL_MS) return regionCache.value;
   const all = [...NATIONS, ...REGIONS].filter((x, i, a) => a.findIndex((y) => y.key === x.key) === i);
-  const live = await getLiveGeoKeys(all.map((x) => x.key)).catch(() => new Set<string>());
-  return all.filter((x) => live.has(x.key)).map((x) => ({ href: geoPath(x.key), label: x.label }));
+  const value = getLiveGeoKeys(all.map((x) => x.key))
+    .then((live) => all.filter((x) => live.has(x.key)).map((x) => ({ href: geoPath(x.key), label: x.label })))
+    .catch(() => []);
+  regionCache = { at: Date.now(), value };
+  return value;
 }
 
 export async function Footer() {
