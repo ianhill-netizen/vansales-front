@@ -1,5 +1,6 @@
 "use client";
 
+import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
 import { useId, useState } from "react";
 import { IconChevron } from "./icons";
 import { DEPOSIT_MAX_PCT, DEPOSIT_MIN_PCT, DEPOSIT_STEP_PCT, FINANCE_APR_PCT, FINANCE_DEFAULT_TERM, FINANCE_TERMS, financeQuote, financeQuoteVat, type WarrantyAddon } from "@/lib/hp-example";
@@ -105,9 +106,10 @@ export function FinanceCalculator({ price, applyHref, warranties = [], finance, 
             <p className="mt-3 font-display text-[length:var(--text-2xl)] font-extrabold leading-tight text-ink-900" data-testid="fin-monthly">{term} × {gbp(q.monthly)}</p>
           </div>
 
-          <p className="text-[length:var(--text-xs)] leading-relaxed text-ink-500">
-            Representative example. Finance subject to status. 18+, UK residents. Vansales.com is a credit broker not a lender, authorised and regulated by the FCA.
-          </p>
+          <div className="space-y-1.5">
+            <p className="text-[length:var(--text-xs)] leading-relaxed text-ink-500">Representative example. Finance subject to status. 18+, UK residents.</p>
+            <FinanceDisclosure />
+          </div>
           <a href={applyHref} className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-600 px-3 text-[length:var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
             Apply for finance
           </a>

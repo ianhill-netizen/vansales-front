@@ -8,6 +8,7 @@ import { LocationBar } from "@/components/location/location-bar";
 import { Pagination } from "@/components/pagination";
 import { MapSplit } from "@/components/map-split";
 import { PayToggle, ViewToggle } from "@/components/results-controls";
+import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
 import { EmptyState } from "@/components/empty/empty-state";
 import { getListings, getFacets } from "@/lib/listings/client";
 import { getPickerData } from "@/lib/listings/picker";
@@ -233,6 +234,7 @@ export default async function VansPage({
             </div>
           </div>
           <PayToggle mode={payMode} terms={financeTerms} defaults={{ termMonths: fin.termMonths, apr: fin.apr }} />
+          {payMode !== "cash" && <FinanceDisclosure />}
         </div>
 
         {listings.length === 0 ? (
