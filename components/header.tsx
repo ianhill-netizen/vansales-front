@@ -11,14 +11,14 @@ import { SELL_URL } from "@/lib/site";
 import { SellLink } from "./sell-link";
 
 const VAN_BODY_TYPES = [
-  { href: "/vans/panel-van",    label: "Panel vans" },
-  { href: "/vans/luton",        label: "Luton vans" },
-  { href: "/vans/tipper",       label: "Tippers" },
-  { href: "/vans/dropside",     label: "Dropsides" },
-  { href: "/vans/crew-van",     label: "Crew vans" },
-  { href: "/vans/pickup",       label: "Pickups" },
-  { href: "/vans/minibus",      label: "Minibuses" },
-  { href: "/vans/chassis-cab",  label: "Chassis cabs" },
+  { href: "/vans/panel-van",    label: "Panel vans for sale" },
+  { href: "/vans/luton",        label: "Luton vans for sale" },
+  { href: "/vans/tipper",       label: "Tipper vans for sale" },
+  { href: "/vans/dropside",     label: "Dropside vans for sale" },
+  { href: "/vans/crew-van",     label: "Crew cab vans for sale" },
+  { href: "/vans/pickup",       label: "Pickup trucks for sale" },
+  { href: "/vans/minibus",      label: "Minibuses for sale" },
+  { href: "/vans/chassis-cab",  label: "Chassis cabs for sale" },
 ];
 
 
