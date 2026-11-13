@@ -50,6 +50,7 @@ const SECTIONS = [
       { href: "/van-news",          label: "Van news" },
       { href: "/van-reviews", label: "Van reviews" },
       { href: "/blog",        label: "Guides & news" },
+      { href: "/van-accessories", label: "Van accessories" },
       { href: "/van-lease-deals", label: "Van leasing" },
       { href: "/van-finance", label: "Finance" },
       { href: "/electric-vans", label: "Electric vans" },

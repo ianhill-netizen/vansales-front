@@ -45,6 +45,7 @@ const GUIDES_ITEMS = [
   { href: "/blog",        label: "Guides & news" },
   { href: "/van-reviews", label: "Van reviews" },
   { href: "/van-news",    label: "Van news" },
+  { href: "/van-accessories", label: "Van accessories" },
 ];
 
 const FINANCE_ITEMS = [

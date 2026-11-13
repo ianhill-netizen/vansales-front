@@ -168,6 +168,7 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
               {otherTypes.map((b) => <li key={b.slug}><Link href={bodyTypePath(b)} className="text-brand-700 hover:underline">Used {b.label}</Link></li>)}
               <li><Link href="/used-vans" className="text-brand-700 hover:underline">All used vans by make and model</Link></li>
               <li><Link href="/van-finance" className="text-brand-700 hover:underline">Van finance</Link></li>
+              <li><Link href="/van-accessories" className="text-brand-700 hover:underline">Van accessories</Link></li>
             </ul>
           </section>
         )}
