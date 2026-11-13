@@ -36,6 +36,8 @@ const COLS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/sell-my-van",       label: "Sell my van" },
       { href: "/van-finance",       label: "Van finance" },
       { href: "/van-insurance",     label: "Van insurance" },
+      { href: "/van-warranty",      label: "Van warranty" },
+      { href: "/van-breakdown-cover", label: "Breakdown cover" },
       { href: "/van-lease-deals", label: "Van leasing" },
       { href: "/van-reviews",       label: "Van reviews" },
       { href: "/blog",              label: "Guides & news" },

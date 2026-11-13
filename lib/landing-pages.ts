@@ -203,7 +203,11 @@ export const LANDING_PAGES: readonly LandingDef[] = [
  * Guide rows whose real page is a hand-built route that is NOT a landing page: /van-reviews (app/(main)/van-reviews/page.tsx, in the nav and the sitemap already) shows the backend `van-reviews` body under its own
  * content. They stay out of /blog and /blog/{slug} is a 301 to the real URL (next.config.ts), exactly like the landing pages.
  */
-export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = { "van-reviews": "/van-reviews" };
+export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = {
+  "van-reviews": "/van-reviews",
+  "used-van-warranty-options": "/van-warranty",
+  "used-van-warranty-guide-uk": "/van-warranty",
+};
 
 export const LANDING_BACKEND_SLUGS: ReadonlySet<string> = new Set([...LANDING_PAGES.map((p) => p.backendSlug), ...Object.keys(HAND_BUILT_GUIDE_SLUGS)]);
 

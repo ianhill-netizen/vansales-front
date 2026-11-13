@@ -82,6 +82,8 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
     e("/van-reviews"),
     e("/van-finance"),
     e("/van-insurance"),
+    e("/van-warranty"),
+    e("/van-breakdown-cover"),
     e("/advertise"),
     e(STOCK_FEEDS_PATH, STOCK_FEEDS_LASTMOD),   // a real date from the page's data module, updated when its copy changes
     e("/sell"),

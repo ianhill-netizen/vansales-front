@@ -306,6 +306,11 @@ export default async function VanFinancePage() {
               <Link href="/van-lease-deals" className="font-semibold text-brand-600 hover:underline">Van lease deals explained →</Link>{" · "}
               <Link href="/hire-purchase-vans" className="font-semibold text-brand-600 hover:underline">Hire purchase vans explained →</Link>
             </p>
+            <p className="mt-3 text-[length:var(--text-sm)] text-ink-500">
+              Cover for the van?{" "}
+              <Link href="/van-warranty" className="font-semibold text-brand-600 hover:underline">Van warranty explained →</Link>{" · "}
+              <Link href="/van-breakdown-cover" className="font-semibold text-brand-600 hover:underline">Van breakdown cover →</Link>
+            </p>
           </div>
         </Container>
       </section>
