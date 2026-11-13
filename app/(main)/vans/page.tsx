@@ -16,7 +16,7 @@ import { priceFromMonthly, parsePay } from "@/lib/finance";
 import { getFinanceConfig, type FinanceConfig } from "@/lib/finance-config";
 import { legacyToVehicles, parseVehicles } from "@/lib/vehicle-chips";
 import { haversineDistanceMiles } from "@/lib/distance";
-import { SITE, absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
+import { absUrl, DEFAULT_OG_IMAGES } from "@/lib/site";
 
 const DEALSKI_API = (
   process.env.DEALSKI_API_URL ?? "https://swissvans.dealski.co.uk"
@@ -131,13 +131,13 @@ function hrefFor(sp: Search, page: number, override: Record<string, string | nul
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Vans for sale";
-  const description = `Browse new and used vans for sale across the UK on ${SITE.name}. Filter by make, model, price, wheelbase and more.`;
+  const title = "Used Vans for Sale UK | Vansales.com";
+  const description = "Browse used vans for sale across the UK from dealers and private sellers. Filter by make, body type, payload, ULEZ and mileage.";
   return {
-    title,
+    title: { absolute: title },   // this exact string: the layout's " · Vansales" template is not appended
     description,
     alternates: { canonical: absUrl("/vans") },
-    openGraph: { images: DEFAULT_OG_IMAGES, title: `${title} · ${SITE.name}`, description, url: absUrl("/vans"), type: "website" },
+    openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: absUrl("/vans"), type: "website" },
   };
 }
 
@@ -186,11 +186,14 @@ export default async function VansPage({
           </nav>
 
           <h1 className="font-display text-[length:var(--text-3xl)] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-ink-900">
-            Vans for sale
+            Used Vans for Sale
           </h1>
           <p className="mt-2 text-[length:var(--text-md)] text-ink-500">
             <span className="font-display font-bold text-brand-600">{facets.total.toLocaleString()}</span>{" "}
             {facets.total === 1 ? "van" : "vans"} available
+          </p>
+          <p className="mt-2 max-w-3xl text-[length:var(--text-sm)] text-ink-500">
+            Browse used vans for sale across the UK from dealers and private sellers. Filter by make, body type, payload, ULEZ and mileage to find the right van.
           </p>
         </Container>
       </section>

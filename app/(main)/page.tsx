@@ -5,6 +5,11 @@ import { Container } from "@/components/ui";
 import { HomeSearch } from "@/components/home-search";
 import Image from "next/image";
 import { WhyVansales } from "@/components/home/why-vansales";
+import { UsedVanSalesCopy } from "@/components/home/used-van-sales-copy";
+import { HomeFaq } from "@/components/home/home-faq";
+import { spreadBySeller } from "@/lib/listings/spread";
+import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
+import { getLiveBodyTypeSlugs } from "@/lib/content/body-type-pages";
 import { ListingCard } from "@/components/listing-card";
 import { JsonLd } from "@/components/json-ld";
 import { IconArrow } from "@/components/icons";
@@ -19,14 +24,14 @@ import { slugify } from "@/lib/listings/slug";
 import { SITE, absUrl, siteUrl, DEFAULT_OG_IMAGES, ORGANIZATION_SCHEMA } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Vans for Sale UK | Used & New Vans",   // the root layout's title template appends " · Vansales": do not add the brand here too
+  title: { absolute: "Van Sales UK | Used Vans for Sale from Dealers & Private Sellers | Vansales.com" },   // absolute: this exact string, the layout's " · Vansales" template is not appended
   description:
-    "Used and new vans for sale across the UK, from dealers and private sellers. Panel vans, crew cabs, Lutons, dropsides and pickups. Search by payload, wheelbase and ULEZ, not just price.",
+    "Van sales across the UK. Search used vans for sale from dealers and private sellers. HPI-checked, real photos, no hidden fees. Private sellers list free.",
   alternates: { canonical: absUrl("/") },
   openGraph: {
     images: DEFAULT_OG_IMAGES,
-    title: "Vans for Sale UK | Used & New Vans | Vansales",
-    description: "Used and new vans for sale across the UK, from dealers and private sellers. Real photos, honest listings.",
+    title: "Van Sales UK | Used Vans for Sale from Dealers & Private Sellers | Vansales.com",
+    description: "Van sales across the UK. Search used vans for sale from dealers and private sellers. HPI-checked, real photos, no hidden fees.",
     url: absUrl("/"),
     type: "website",
   },
@@ -41,11 +46,15 @@ export default async function HomePage() {
   ]);
   const newestGuides = latest(guides, 6);
   const newestNews = latest(sortNewestFirst(newsItems.map((n) => ({ slug: n.slug, title: n.title, date: n.publishedAt }))), 4);
-  const [{ listings, total }, facets, all] = await Promise.all([
-    getListings({ sort: "newest", limit: 4 }),
+  const [{ listings: newest, total }, facets, all, liveModelSlugs, liveBodyTypeSlugs] = await Promise.all([
+    getListings({ sort: "newest", limit: 60 }),
     getFacets(),
     getListings({}),
+    getLiveModelPageSlugs().catch(() => new Set<string>()),
+    getLiveBodyTypeSlugs().catch(() => new Set<string>()),
   ]);
+  // Four cards spread across different sellers where the newest stock allows it (see spreadBySeller); otherwise the four newest, as before.
+  const listings = spreadBySeller(newest, 4);
 
   // Real counts from the same sources the search uses.
   const dealerNames = new Set(all.listings.filter((l) => l.seller_type === "dealer").map((l) => l.seller.name));
@@ -94,9 +103,13 @@ export default async function HomePage() {
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(15,23,42,0.55)] to-[rgba(15,23,42,0.75)]" />
         <Container className="relative w-full pb-8 pt-10 sm:pt-12">
           <h1 className="font-display text-[length:28px] font-extrabold leading-[1.05] tracking-[var(--tracking-display)] text-white md:text-[length:clamp(1.9rem,1.2rem+3vw,3rem)]">
-            Find the right van. No nonsense.
+            Van Sales UK – Used Vans for Sale from Dealers and Private Sellers
           </h1>
           <p className="mt-2 max-w-2xl text-[length:var(--text-md)] text-white/85">
+            Find the right van. No nonsense.
+          </p>
+          <p className="mt-2 max-w-2xl text-[length:var(--text-md)] text-white/85">
+            Vansales.com is the UK&apos;s independent van sales marketplace. Browse thousands of used vans for sale across the UK, from franchised dealers, independent van sales specialists and private sellers.{" "}
             {all.total > 1000 ? "Thousands of used vans" : "Used vans"} from UK dealers and private sellers. Real photos, honest listings, and an HPI badge on every van that has been checked.
           </p>
 
@@ -135,6 +148,7 @@ export default async function HomePage() {
       </Container>
       )}
 
+      <UsedVanSalesCopy liveModelSlugs={liveModelSlugs} liveBodyTypeSlugs={liveBodyTypeSlugs} />
       <WhyVansales />
 
       {/* ── STATS ────────────────────────────────────────────────────────── */}
@@ -167,7 +181,7 @@ export default async function HomePage() {
                       className="group inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-border bg-white py-1.5 pl-2 pr-4 text-[length:var(--text-sm)] font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
                     >
                       <MakeLogo make={slug} name={m.value} size={28} />
-                      {m.value}
+                      {m.value} vans for sale
                       <span className="font-mono text-[length:var(--text-xs)] font-normal text-ink-400">{m.count}</span>
                     </Link>
                   </li>
@@ -186,6 +200,8 @@ export default async function HomePage() {
           <ContentLinks title="Latest van guides" links={newestGuides.map((g) => ({ href: `/blog/${g.slug}`, label: g.title }))} />
         </Container>
       )}
+
+      <HomeFaq />
 
       {/* ── SEARCH BY MAP ────────────────────────────────────────────────── */}
       <Container className="py-10">
