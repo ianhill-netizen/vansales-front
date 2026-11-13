@@ -3,6 +3,8 @@ import { buildRedirects } from "./lib/redirects/all";
 import { WWW_TO_APEX_REDIRECT } from "./lib/redirects/www";
 
 const nextConfig: NextConfig = {
+  // Trailing slashes are handled in proxy.ts instead of by Next, so a legacy URL with a trailing slash reaches its final page in ONE redirect (Next used to spend a separate 308 stripping the slash first). proxy.ts still 308s every other slash URL.
+  skipTrailingSlashRedirect: true,
   // Advert photos and dealer images are in one S3 bucket: next/image resizes them to what the screen needs and serves AVIF / WebP (components/photo.tsx).
   images: {
     formats: ["image/avif", "image/webp"],

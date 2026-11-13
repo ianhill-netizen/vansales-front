@@ -8,10 +8,6 @@ const HOLDING_PATH = "/coming-soon";
 export function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
 
-  // Legacy WordPress families (/product-category/*, /product/*, /van/*): one permanent redirect to the nearest live page (lib/redirects/legacy.ts). Explicit overrides are in next.config redirects, which run first.
-  const legacy = resolveLegacy(pathname);
-  if (legacy) return NextResponse.redirect(new URL(legacy.to, req.url), 301);
-
   // Pass through: static assets, API routes, the holding page itself
   if (
     pathname.startsWith("/_next/") ||
@@ -23,6 +19,17 @@ export function proxy(req: NextRequest) {
     pathname.startsWith(HOLDING_PATH)
   ) {
     return NextResponse.next();
+  }
+
+  // Legacy WordPress families (/product-category/*, /product/*, /van/*): one permanent redirect to the nearest live page (lib/redirects/legacy.ts), with or without a trailing slash. Explicit overrides are next.config redirects, which run first.
+  const legacy = resolveLegacy(pathname);
+  if (legacy) return NextResponse.redirect(new URL(legacy.to, req.url), 301);
+
+  // skipTrailingSlashRedirect is on (next.config.ts), so strip the slash here, with the same 308 Next used to send.
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    // Built from scratch: NextURL remembers the trailing slash and would put it back.
+    const trimmed = pathname.replace(/\/+$/, "") || "/";
+    return NextResponse.redirect(new URL(`${trimmed}${req.nextUrl.search}`, req.nextUrl.origin), 308);
   }
 
   // Gate is active only when COMING_SOON env is not explicitly "false"
