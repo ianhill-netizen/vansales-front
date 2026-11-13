@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveLegacy } from "@/lib/redirects/legacy";
 
 const PREVIEW_KEY = "vsp_0fj2k7mx";
 const COOKIE_NAME = "vs_preview";
@@ -6,6 +7,10 @@ const HOLDING_PATH = "/coming-soon";
 
 export function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
+
+  // Legacy WordPress families (/product-category/*, /product/*, /van/*): one permanent redirect to the nearest live page (lib/redirects/legacy.ts). Explicit overrides are in next.config redirects, which run first.
+  const legacy = resolveLegacy(pathname);
+  if (legacy) return NextResponse.redirect(new URL(legacy.to, req.url), 301);
 
   // Pass through: static assets, API routes, the holding page itself
   if (

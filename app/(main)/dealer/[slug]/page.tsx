@@ -1,3 +1,4 @@
+import { fitTitle } from "@/lib/seo/title";
 import { DealerLogo } from "@/components/dealer-logo";
 import { EmptyState } from "@/components/empty/empty-state";
 import type { Metadata } from "next";
@@ -42,21 +43,21 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (dealer) {
     const title = `${dealer.name} — Van Dealer in ${dealer.location.town}`;
     const description = `${dealer.name} is a van dealer in ${dealer.location.town}, ${dealer.location.county}. Browse their stock on ${SITE.name}.`;
-    return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
+    return { title: fitTitle(title, " · Vansales"), description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
   }
   const api = await fetchApiDealerProfile(slug);
   if (api.kind === "ok") {
     const d = api.dealer;
     const title = `${d.name} — Van Dealer${d.town ? ` in ${d.town}` : ""}`;
     const description = `${d.name}${d.town ? ` is a van dealer in ${d.town}` : " sells vans"}. Browse ${d.stock_count > 0 ? `their ${d.stock_count} van${d.stock_count === 1 ? "" : "s"}` : "their stock"} on ${SITE.name}.`;
-    return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website", images: d.logo_url ? [{ url: d.logo_url }] : DEFAULT_OG_IMAGES } };
+    return { title: fitTitle(title, " · Vansales"), description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { title, description, url: `/dealer/${slug}`, type: "website", images: d.logo_url ? [{ url: d.logo_url }] : DEFAULT_OG_IMAGES } };
   }
   const dbDealer = await safeDb("dealer metadata lookup", () => prisma.dealer.findUnique({ where: { slug } }), null);
   if (!dbDealer) return { title: api.kind === "error" ? "Van dealer" : "Dealer not found" };
   const town = (dbDealer.location ?? "").split(",")[0].trim() || "UK";
   const title = `${dbDealer.name} — Van Dealer${town ? ` in ${town}` : ""}`;
   const description = `Browse ${dbDealer.name}'s stock on ${SITE.name}.`;
-  return { title, description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
+  return { title: fitTitle(title, " · Vansales"), description, alternates: { canonical: `/dealer/${slug}` }, openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: `/dealer/${slug}`, type: "website" } };
 }
 
 const DAY_LABELS: Record<string, string> = {

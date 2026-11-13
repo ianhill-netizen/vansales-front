@@ -5,7 +5,24 @@ import { USED_VAN_MODELS, usedVanOldPath, usedVanPath } from "../used-vans/model
 import { BODY_TYPE_PAGES, bodyTypeOldPath, bodyTypePath } from "../used-vans/body-types.ts";
 import { HAND_BUILT_GUIDE_SLUGS, LANDING_PAGES } from "../landing-pages.ts";
 
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
+
 export type RedirectRule = { source: string; destination: string; statusCode: 301 | 308 };
+
+/**
+ * The old WordPress site served every post at /{slug}/; here a post is /blog/{slug}. One redirect per post that exists as a content/blog markdown file, skipping any slug that is a real route.
+ * Read from disk at build time (next.config); at runtime on a server without the sources it is simply empty. The published-guides list (backend) is not included: those slugs were never on the old site.
+ */
+export function rootBlogRedirects(cwd: string = process.cwd()): RedirectRule[] {
+  try {
+    const routes = new Set(readdirSync(join(cwd, "app", "(main)")));
+    return readdirSync(join(cwd, "content", "blog")).filter((f) => f.endsWith(".md")).map((f) => f.slice(0, -3)).filter((slug) => !routes.has(slug))
+      .map((slug) => ({ source: `/${slug}`, destination: `/blog/${slug}`, statusCode: 301 as const }));
+  } catch {
+    return [];
+  }
+}
 
 /** Every redirect of the site, in match order (next.config.ts returns this from redirects(); redirects.test.ts checks it). */
 export function buildRedirects(): RedirectRule[] {
@@ -19,8 +36,8 @@ export function buildRedirects(): RedirectRule[] {
     const makePages = [{ source: `/vans/:make((?!(?:${categories})$)(?!.*-vans-for-sale$)[a-z0-9-]+)`, destination: "/vans/:make-vans-for-sale", statusCode: 301 as const }];
     // Dead WordPress URLs from the old site: nothing here is worth keeping, so each family goes to the nearest live page.
     const wordpress = [
-      { source: "/product-category/:path*", destination: "/vans" },
-      { source: "/product/:path*", destination: "/vans" },
+      // /product-category/*, /product/* and /van/* are resolved by proxy.ts (lib/redirects/legacy.ts): body type, model or make page where the slug names one, else /vans.
+      { source: "/about-us", destination: "/" },
       { source: "/shop/:path*", destination: "/vans" },
       { source: "/wp-content/:path*", destination: "/" },
       { source: "/wp-admin/:path*", destination: "/" },
@@ -45,5 +62,5 @@ export function buildRedirects(): RedirectRule[] {
       { source: "/vans/citro-n", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
       { source: "/vans/citro-n-vans-for-sale", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
     ];
-    return [...landing, ...retired, ...RETIRED_TEST_DEALER_REDIRECTS.map((r) => ({ ...r })), ...BACKLINK_REDIRECTS.map((r) => ({ ...r })), ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress];
+    return [...landing, ...retired, ...RETIRED_TEST_DEALER_REDIRECTS.map((r) => ({ ...r })), ...BACKLINK_REDIRECTS.map((r) => ({ ...r })), ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress, ...rootBlogRedirects()];
 }

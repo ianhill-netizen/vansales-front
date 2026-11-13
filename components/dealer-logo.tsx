@@ -3,14 +3,14 @@ export function dealerInitials(name: string): string {
   return name.trim().split(/\s+/).slice(0, 2).map((w) => (w[0] ?? "").toUpperCase()).join("");
 }
 
-export function DealerLogo({ name, logoUrl, size = 72, className = "", decorative = false }: { name: string; logoUrl?: string | null; size?: number; className?: string; decorative?: boolean }) {
+export function DealerLogo({ name, logoUrl, size = 72, className = "" }: { name: string; logoUrl?: string | null; size?: number; className?: string; decorative?: boolean }) {
   const box = { width: size, height: size };
   if (logoUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={logoUrl}
-        alt={decorative ? "" : `${name} logo`}
+        alt={`${name} logo`}
         width={size}
         height={size}
         loading="lazy"

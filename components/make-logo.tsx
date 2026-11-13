@@ -1,7 +1,7 @@
 /* =============================================================================
    MakeLogo — a make's logo (from /public/logos, Wikimedia Commons, see
    LICENCES.md) or, when we have no suitably licensed file, a neutral monogram.
-   Decorative: it always sits next to the make's name, so alt="".
+   It sits next to the make's name and its wrapper is aria-hidden, but it still carries real alt text ("{Make} logo") so crawlers and audits do not see an image with no alternative.
    Greyscale + slightly faded by default; full colour when the parent pill
    (class "group") is hovered or focused. Trademarks are shown only to
    identify makes of vans for sale.
@@ -70,7 +70,7 @@ export function MakeLogo({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`/logos/${slug}.svg`}
-          alt=""
+          alt={`${name ?? make} logo`}
           width={w}
           height={inner}
           loading="lazy"

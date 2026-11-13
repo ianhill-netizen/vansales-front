@@ -10,7 +10,7 @@ import { SITE, absUrl } from "@/lib/site";
 
 export const revalidate = 300;
 
-const TITLE = `Used Vans For Sale: Buying Guides and Listings by Make and Model | ${SITE.name}`;
+const TITLE = `Used Vans For Sale: Guides by Make and Model | ${SITE.name}`;
 const DESCRIPTION = "Used van buying guides and live listings for the most searched-for makes and models in the UK: what to check, what to pay, and the vans for sale right now.";
 
 export const metadata: Metadata = {

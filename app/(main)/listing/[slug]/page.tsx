@@ -14,6 +14,7 @@ import { IconGauge, IconFuel, IconGearbox, IconCheck, IconShield } from "@/compo
 import { ListingTabs, type ListingTab } from "@/components/listing-tabs";
 import { ListingActions } from "@/components/listing-actions";
 import { FinanceCalculator } from "@/components/finance-calculator";
+import { fitTitle } from "@/lib/seo/title";
 import { dealerFinanceLine, isSwissVans } from "@/lib/listings/finance-scope";
 import { listingActionLinks } from "@/lib/dealers/actions";
 import { getListingBySlug } from "@/lib/listings/client";
@@ -55,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const canonical = `/listing/${slug}`;
   const ogImage = absUrl(`/api/og/${slug}`);
   return {
-    title,
+    title: fitTitle(title, ` · ${SITE.name}`),   // the layout appends " · Vansales"; 60 characters in total
     description,
     alternates: { canonical },
     openGraph: {
