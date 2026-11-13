@@ -215,6 +215,18 @@ const INSURANCE_REDIRECTS: Record<string, string> = Object.fromEntries([
   ...["fleet", "commercial", "short-term", "classic", "electric", "insurance-groups", "tools-in-transit", "transporter", "transit", "transit-custom", "vivaro", "sprinter", "caddy"].map((s) => [`insurance-${s}`, `/van-insurance/${s}`]),
 ]);
 
+// The old accessory blog posts, folded into /van-accessories (2026-11-13). Their text was not merged: the facts they state are inconsistent or unsourced (see the PR), so the new pages stand on their own. used-campervan-conversion-buying-guide stays.
+const ACCESSORY_BLOG_REDIRECTS: Record<string, string> = {
+  "van-racking-and-conversions": "/van-accessories/van-racking",
+  "transit-custom-sport-accessories": "/van-accessories",
+  "top-vw-crafter-accessories-for-enhanced-van-styling": "/van-accessories",
+  "top-ford-ranger-accessories-for-the-ultimate-wildtrak-experience": "/van-accessories",
+  "top-ford-ranger-canopy-options-for-your-wildtrak": "/van-accessories",
+  "mercedes-vito-alloy-wheels": "/van-accessories/van-alloy-wheels",
+  "best-citroen-berlingo-van-roof-rack-options-for-2023": "/van-accessories/van-roof-racks",
+  "vw-crafter-conversion-turn-your-van-into-a-dream-camper": "/van-accessories/van-conversions",
+};
+
 export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = {
   "van-reviews": "/van-reviews",
   "used-van-warranty-options": "/van-warranty",
@@ -225,6 +237,7 @@ export const HAND_BUILT_GUIDE_SLUGS: Readonly<Record<string, string>> = {
   "used-van-insurance-guide-uk": "/van-insurance",
   "get-temporary-van-insurance-quotes-save-today": "/van-insurance/short-term",
   ...ACCESSORY_REDIRECTS,
+  ...ACCESSORY_BLOG_REDIRECTS,
   ...INSURANCE_REDIRECTS,
 };
 
