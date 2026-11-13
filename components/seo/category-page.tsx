@@ -15,6 +15,7 @@ import { categoryListings, loadCatalogue, popularModelsFor, statOf } from "@/lib
 import { categoryIntro, priceRange } from "@/lib/seo/intro";
 import { categoryLinks, makeLinks, popularModelLinks } from "@/lib/seo/links";
 import { slugify } from "@/lib/listings/slug";
+import { lc, properNoun } from "@/lib/seo/label";
 import { SITE } from "@/lib/site";
 import type { Metadata } from "next";
 
@@ -93,13 +94,13 @@ export async function CategoryPage({ slug }: { slug: string }) {
           {intro && <p className="mt-3 max-w-2xl text-[length:var(--text-md)] leading-relaxed text-ink-600">{intro}</p>}
           <div className="mt-4 flex flex-wrap gap-3">
             <Link href={browseHref(c)} className="rounded-[var(--radius-pill)] bg-ink-900 px-5 py-2 text-[length:var(--text-sm)] font-semibold text-white hover:bg-ink-700">
-              Browse {result.total > 0 ? `all ${result.total}` : ""} {c.label.toLowerCase()} →
-            </Link>
+              Browse {result.total > 0 ? `all ${result.total}` : ""} {lc(c.label)} →
+            </Link>{" "}
             <Link href={browseHref(c, "&condition=new")} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
-              New {c.label.toLowerCase()}
-            </Link>
+              New {lc(c.label)}
+            </Link>{" "}
             <Link href={browseHref(c, "&condition=used")} className="rounded-[var(--radius-pill)] border border-border bg-white px-5 py-2 text-[length:var(--text-sm)] font-semibold text-ink-700 hover:border-ink-400">
-              Used {c.label.toLowerCase()}
+              Used {lc(c.label)}
             </Link>
           </div>
         </Container>
@@ -108,20 +109,20 @@ export async function CategoryPage({ slug }: { slug: string }) {
       <Container className="py-10">
         {result.listings.length > 0 ? (
           <>
-            <h2 className="mb-4 font-display text-[length:var(--text-xl)] font-bold text-ink-900">Latest {c.label.toLowerCase()}</h2>
+            <h2 className="mb-4 font-display text-[length:var(--text-xl)] font-bold text-ink-900">Latest {lc(c.label)}</h2>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {result.listings.map((l, i) => <ListingCard key={l.id} listing={l} priority={i < 3} cardIndex={i} />)}
             </div>
             <div className="mt-8 text-center">
               <Link href={browseHref(c)} className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-ink-900 px-6 py-3 text-[length:var(--text-sm)] font-semibold text-white hover:bg-ink-700">
-                View all {result.total} {c.label.toLowerCase()} →
+                View all {result.total} {lc(c.label)} →
               </Link>
             </div>
           </>
         ) : (
           <EmptyState
             illustration="no-vans"
-            title={`No ${c.label.toLowerCase()} in stock right now`}
+            title={`No ${lc(c.label)} in stock right now`}
             body="Stock updates through the day. Browse every van in the meantime, or try the models below."
             action={{ label: "Browse all vans", href: "/vans" }}
           />
@@ -132,7 +133,7 @@ export async function CategoryPage({ slug }: { slug: string }) {
       <section className="border-t border-border bg-surface-1 py-10">
         <Container className="space-y-9">
           <InternalLinks
-            title={`Popular ${c.label.toLowerCase()} models`}
+            title={`Popular ${properNoun(c.singular)} models`}
             links={popularModelLinks(popular.map((m) => ({ makeSlug: m.makeSlug, modelSlug: m.modelSlug, makeName: m.label.split(" ")[0], name: m.label.split(" ").slice(1).join(" ") })))}
             columns={3}
           />

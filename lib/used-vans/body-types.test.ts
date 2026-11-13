@@ -9,8 +9,8 @@ const van = (o: Partial<BodyTypeListing> & { body?: string; wheelbase?: string |
 });
 
 test("there are exactly the twelve body types, with unique slugs and paths", () => {
-  assert.deepEqual(BODY_TYPE_PAGES.map((b) => b.slug).sort(), ["4x4", "crew-van", "curtain-side", "dropside", "high-roof", "long-wheelbase", "low-mileage", "luton", "refrigerated", "tail-lift", "tipper", "wheelchair-accessible"]);
-  assert.equal(new Set(BODY_TYPE_PAGES.map(bodyTypePath)).size, 12);
+  assert.deepEqual(BODY_TYPE_PAGES.map((b) => b.slug).sort(), ["4x4", "chassis-cab", "crew-van", "curtain-side", "dropside", "high-roof", "long-wheelbase", "low-mileage", "luton", "minibus", "panel-van", "pickup", "refrigerated", "tail-lift", "tipper", "wheelchair-accessible"]);
+  assert.equal(new Set(BODY_TYPE_PAGES.map(bodyTypePath)).size, 16);
   assert.equal(bodyTypePath(findBodyType("luton")!), "/used-vans/body-type/luton-for-sale");
   assert.equal(bodyTypeOldPath(findBodyType("luton")!), "/used-vans/body-type/luton");
   assert.equal(findBodyTypeByParam("luton-for-sale")?.slug, "luton");
