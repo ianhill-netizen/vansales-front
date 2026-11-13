@@ -24,13 +24,13 @@ import { slugify } from "@/lib/listings/slug";
 import { SITE, absUrl, siteUrl, DEFAULT_OG_IMAGES, ORGANIZATION_SCHEMA } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: "Van Sales UK | Used Vans for Sale from Dealers & Private Sellers | Vansales.com" },   // absolute: this exact string, the layout's " · Vansales" template is not appended
+  title: { absolute: "Van Sales UK | Used Vans for Sale | Vansales.com" },   // absolute: this exact string, the layout's " · Vansales" template is not appended
   description:
     "Van sales across the UK. Search used vans for sale from dealers and private sellers. HPI-checked, real photos, no hidden fees. Private sellers list free.",
   alternates: { canonical: absUrl("/") },
   openGraph: {
     images: DEFAULT_OG_IMAGES,
-    title: "Van Sales UK | Used Vans for Sale from Dealers & Private Sellers | Vansales.com",
+    title: "Van Sales UK | Used Vans for Sale | Vansales.com",
     description: "Van sales across the UK. Search used vans for sale from dealers and private sellers. HPI-checked, real photos, no hidden fees.",
     url: absUrl("/"),
     type: "website",
