@@ -22,7 +22,7 @@ export const VAN_FINANCE_FAQ: ReadonlyArray<{ q: string; a: string }> = [
   },
   {
     q: "What does Vansales do with my budget?",
-    a: "The details you enter in the form (your name, contact details and budget range) are used to follow up your enquiry about van finance. They go to Swiss Vans Ltd, which trades as Vansales.com, and are not published or sold. Submitting the form does not apply for credit and is not an offer of finance.",
+    a: "The details you enter in the form (your name, contact details and budget range) are used to follow up your enquiry about van finance. They go to Swiss Vans Ltd, which trades as Vansales.com, and are used only for Swiss Vans stock; they are not published or sold. Submitting the form does not apply for credit and is not an offer of finance.",
   },
 ];
 

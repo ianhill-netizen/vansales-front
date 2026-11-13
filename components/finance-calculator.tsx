@@ -1,6 +1,6 @@
 "use client";
 
-import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
+import { FinanceDisclosureText } from "@/components/finance/finance-disclosure-text";
 import { useId, useState } from "react";
 import { IconChevron } from "./icons";
 import { DEPOSIT_MAX_PCT, DEPOSIT_MIN_PCT, DEPOSIT_STEP_PCT, FINANCE_APR_PCT, FINANCE_DEFAULT_TERM, FINANCE_TERMS, financeQuote, financeQuoteVat, type WarrantyAddon } from "@/lib/hp-example";
@@ -12,7 +12,7 @@ export interface FinanceConfig { apr: number; terms: number[]; default_term: num
 
 /** The HP "Finance calculator" under the dealer card: collapsible (open by default), representative APR and terms from the listing API (Swiss Vans' 11.4%, 12-60 months, default 60; admin Settings > Prices), UK CCA compound method (lib/hp-example.ts).
  *  VAT-qualifying vans (`price` ex VAT): the VAT is a locked upfront deposit plus an optional extra deposit; other vans keep the % slider. An illustration, not an offer. */
-export function FinanceCalculator({ price, applyHref, warranties = [], finance, vatQualifying = false }: { price: number; applyHref: string; warranties?: WarrantyAddon[]; finance?: FinanceConfig | null; vatQualifying?: boolean }) {
+export function FinanceCalculator({ price, applyHref, warranties = [], finance, vatQualifying = false, embedded = false }: { embedded?: boolean; price: number; applyHref: string; warranties?: WarrantyAddon[]; finance?: FinanceConfig | null; vatQualifying?: boolean }) {
   const apr = finance?.apr ?? FINANCE_APR_PCT;
   const terms: readonly number[] = finance?.terms?.length ? finance.terms : FINANCE_TERMS;
   const [extraRaw, setExtraRaw] = useState("");
@@ -34,7 +34,7 @@ export function FinanceCalculator({ price, applyHref, warranties = [], finance, 
             <span>Finance calculator</span>
             <span className="mt-0.5 flex flex-wrap items-baseline gap-x-2">
               <span className="font-display text-[length:var(--text-2xl)] font-extrabold text-ink-900" data-testid="fin-headline">{gbp0(q.monthly)}/mo</span>
-              <span className="text-[length:var(--text-xs)] font-normal text-ink-500">Representative {q.apr.toFixed(1)}% APR</span>
+              <span className="text-[length:var(--text-xs)] font-normal text-ink-500">Representative example: {q.apr.toFixed(1)}% APR</span>
             </span>
           </span>
           <IconChevron width={18} height={18} aria-hidden className={`shrink-0 transition-transform ${open ? "rotate-90" : "-rotate-90"}`} />
@@ -108,11 +108,11 @@ export function FinanceCalculator({ price, applyHref, warranties = [], finance, 
 
           <div className="space-y-1.5">
             <p className="text-[length:var(--text-xs)] leading-relaxed text-ink-500">Representative example. Finance subject to status. 18+, UK residents.</p>
-            <FinanceDisclosure />
+            {!embedded && <FinanceDisclosureText />}
           </div>
-          <a href={applyHref} className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-600 px-3 text-[length:var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
+          {!embedded && <a href={applyHref} className="flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-600 px-3 text-[length:var(--text-sm)] font-semibold text-white transition-colors hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
             Apply for finance
-          </a>
+          </a>}
         </div>
       )}
     </section>

@@ -1,4 +1,4 @@
-import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
+import { FinanceDisclosureText } from "@/components/finance/finance-disclosure-text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -79,7 +79,7 @@ export async function LandingPage({ def }: { def: LandingDef }) {
         <section className="max-w-3xl rounded-[var(--radius-xl)] border border-border bg-surface-1 p-6">
           <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Spreading the cost?</h2>
           <p className="mt-2 text-[length:var(--text-sm)] text-ink-600">Read our guide to <Link href="/van-finance" className="font-semibold text-brand-700 hover:underline">van finance</Link>, then tell us your budget. This page is information only.</p>
-          <FinanceDisclosure className="mt-3" />
+          <FinanceDisclosureText className="mt-3" />
         </section>
         <section>
           <h2 className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Keep reading</h2>

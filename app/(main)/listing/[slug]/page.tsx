@@ -14,6 +14,7 @@ import { IconGauge, IconFuel, IconGearbox, IconCheck, IconShield } from "@/compo
 import { ListingTabs, type ListingTab } from "@/components/listing-tabs";
 import { ListingActions } from "@/components/listing-actions";
 import { FinanceCalculator } from "@/components/finance-calculator";
+import { dealerFinanceLine, isSwissVans } from "@/lib/listings/finance-scope";
 import { listingActionLinks } from "@/lib/dealers/actions";
 import { getListingBySlug } from "@/lib/listings/client";
 import { fetchListingState } from "@/lib/listings/sources/vansales";
@@ -256,7 +257,7 @@ export default async function ListingPage({
               <ListingActions
                 links={actionLinks}
                 sold={listing.status === "sold"}
-                buyer={{ listingId: listing.source_id, label: [listing.vrm, listing.make, listing.model].filter(Boolean).join(" "), shareUrl: absUrl(`/listing/${slug}`), shareTitle: title, partExchange: listing.seller_type === "dealer" }}
+                buyer={{ listingId: listing.source_id, label: [listing.vrm, listing.make, listing.model].filter(Boolean).join(" "), shareUrl: absUrl(`/listing/${slug}`), shareTitle: title, partExchange: listing.seller_type === "dealer", swissFinance: isSwissVans(listing) }}
               />
             ) : (
               <ListingActions links={actionLinks} sold={listing.status === "sold"} />
@@ -269,9 +270,10 @@ export default async function ListingPage({
                 </div>
               ))}
             </dl>
-            {isVansalesAdvert && listing.seller_type === "dealer" && listing.price != null && listing.price > 0 && (
+            {isVansalesAdvert && isSwissVans(listing) && listing.price != null && listing.price > 0 && (
               <FinanceCalculator price={listing.price} applyHref={actionLinks.financeHref ?? "/hire-purchase-vans"} warranties={listing.warranty_addons ?? []} finance={listing.finance ?? null} vatQualifying={vatOnTop(listing.vat_status)} />
             )}
+            {dealerFinanceLine(listing) && <p className="text-[length:var(--text-sm)] text-ink-600" data-testid="dealer-finance-line">{dealerFinanceLine(listing)}</p>}
           </aside>
 
           <div className="min-w-0 lg:col-start-1 lg:row-start-2">

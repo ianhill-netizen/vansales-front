@@ -70,6 +70,8 @@ export interface DealerContact {
   has_whatsapp?: boolean;
   has_phone?: boolean;
   finance_url?: string | null;
+  /** The dealer's own FCA firm reference number, when we hold it (vansales-backend dealers.fca_frn). */
+  fca_frn?: string | null;
   /** The dealer's stored Google rating (from the API's dealers table). Absent until the dealer has one. */
   google_rating?: number | null;
   google_review_count?: number | null;

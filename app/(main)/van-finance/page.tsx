@@ -7,8 +7,10 @@ import { JsonLd } from "@/components/json-ld";
 import { FinanceEnquiryForm } from "@/components/finance/finance-enquiry-form";
 import { FinanceDisclosure } from "@/components/finance/finance-disclosure";
 import { VAN_FINANCE_FAQ, vanFinanceFaqSchema } from "@/lib/van-finance-faq";
-import { loadCatalogue, modelStat } from "@/lib/seo/catalogue";
-import { priceRange } from "@/lib/seo/intro";
+import { loadCatalogue } from "@/lib/seo/catalogue";
+import { isSwissVans } from "@/lib/listings/finance-scope";
+import { vatOnTop } from "@/lib/listings/vat";
+import { slugify } from "@/lib/listings/slug";
 import { getLiveBodyTypeSlugs } from "@/lib/content/body-type-pages";
 import { BODY_TYPE_PAGES, bodyTypePath } from "@/lib/used-vans/body-types";
 import { DEFAULT_TERMS } from "@/lib/finance";
@@ -80,11 +82,18 @@ const gbp = (n: number) => `£${Math.round(n).toLocaleString("en-GB")}`;
 export default async function VanFinancePage() {
   const [idx, liveTypes] = await Promise.all([loadCatalogue(), getLiveBodyTypeSlugs().catch(() => new Set<string>())]);
   const depositPct = DEFAULT_TERMS.depositPct;
+  // Finance is Swiss Vans Ltd stock only, so every figure below comes from Swiss Vans vans that are listed right now.
+  const swiss = idx.all.filter((l) => isSwissVans(l) && l.price != null && l.price > 0);
   const priceRows = PRICE_MODELS.map((m) => {
-    const st = modelStat(idx, m.make, m.model);
-    const band = st.count > 0 ? priceRange(st) : null;
-    return { label: m.label, count: st.count, band, deposit: st.count > 0 && st.minPrice != null ? `${gbp(st.minPrice * depositPct / 100)}${st.maxPrice != null && st.maxPrice !== st.minPrice ? ` to ${gbp(st.maxPrice * depositPct / 100)}` : ""}` : null };
+    const vans = swiss.filter((l) => slugify(l.make) === m.make && slugify(l.model) === m.model);
+    const prices = vans.map((l) => l.price as number);
+    const lo = prices.length ? Math.min(...prices) : null, hi = prices.length ? Math.max(...prices) : null;
+    const dep = (n: number) => gbp(n * depositPct / 100);
+    return { label: m.label, count: vans.length, band: lo == null ? null : hi !== lo ? `${gbp(lo)} to ${gbp(hi!)}` : gbp(lo), deposit: lo == null ? null : hi !== lo ? `${dep(lo)} to ${dep(hi!)}` : dep(lo) };
   });
+  // The representative example is worked out for the Swiss Vans van priced nearest the middle of Swiss Vans' current stock (live, never a fixed figure).
+  const sorted = [...swiss].sort((x, y) => (x.price as number) - (y.price as number));
+  const exampleVan = sorted.length ? sorted[Math.floor(sorted.length / 2)] : null;
   const typeLines = BODY_TYPE_PAGES.filter((b) => liveTypes.has(b.slug) && TYPE_NOTES[b.slug]);
   const breadcrumb = {
     "@context": "https://schema.org",
@@ -105,10 +114,10 @@ export default async function VanFinancePage() {
             <h1 className="mt-3 font-display text-[length:var(--text-3xl)] font-extrabold leading-tight text-ink-900">Used Van Finance UK</h1>
             <p className="mt-2 font-display text-[length:var(--text-xl)] font-bold text-brand-500">Keep cash in the business.</p>
             <p className="mt-4 text-[length:var(--text-md)] leading-relaxed text-ink-600">
-              Finance on Vansales works in three steps. You find a van on the marketplace and send an enquiry, which goes straight to the dealer or seller. If you want to spread the cost, you tell us your budget in the form below. Vansales.com is a trading name of Swiss Vans Ltd, which can introduce you to a limited number of lenders; the full regulatory wording is at the foot of this page.
+              Finance on Vansales is available on vans from Swiss Vans Ltd. You find a van on the marketplace and send an enquiry, which goes straight to the seller. If the van is a Swiss Vans van and you want to spread the cost, you tell us your budget in the form below. Vansales.com is a trading name of Swiss Vans Ltd, which can introduce you to a limited number of lenders; the full regulatory wording is at the foot of this page.
             </p>
             <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
-              We are not a lender. The lender, not Vansales, decides whether to accept your application, on what terms and at what rate. The rate and the monthly payment depend on you, the van, the deposit and the term, so the only figure we ever show is the representative example on a van&apos;s own page, calculated from the current rate. Nothing on this page is an offer of credit or a quote.
+              The lender, not Vansales, decides whether to accept your application, on what terms and at what rate. The rate and the monthly payment depend on you, the van, the deposit and the term, so the only figure we show is the representative example, calculated from the current rate. Nothing on this page is an offer of credit or a quote. Vans sold by other dealers and by private sellers are not part of this finance service.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Button href="#enquire" variant="primary" size="lg">
@@ -163,7 +172,7 @@ export default async function VanFinancePage() {
           <div className="max-w-3xl">
             <h2 className="font-display text-[length:var(--text-2xl)] font-bold text-ink-900">What used vans typically cost on finance</h2>
             <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
-              Lenders finance the price of the van less your deposit, so the price you pay and the deposit you put down set the size of the loan. The table shows the price range of the used vans listed on Vansales right now for six common models, and the deposit that would be if you put down {depositPct}% of the price. We do not show monthly payments here, because they depend on the lender, the term and your circumstances.
+              Lenders finance the price of the van less your deposit, so the price you pay and the deposit you put down set the size of the loan. The table shows the price range of the Swiss Vans used vans listed right now for six common models, and the deposit that would be if you put down {depositPct}% of the price. We do not show monthly payments here, because they depend on the lender, the term and your circumstances.
             </p>
           </div>
           <div className="mt-6 overflow-x-auto">
@@ -190,8 +199,13 @@ export default async function VanFinancePage() {
             </table>
           </div>
           <p className="mt-3 max-w-3xl text-[length:var(--text-xs)] leading-relaxed text-ink-500">
-            Source: live Vansales listings, read when this page was last built (refreshed every few minutes). The deposit is {depositPct}% of the price, the default in the Vansales finance calculator; you can choose any deposit from 0% to 50% there. Lenders set their own deposit requirements, and a range of listed prices is not a quote for any particular van.
+            Source: Swiss Vans vans listed on Vansales, read when this page was last built (refreshed every few minutes). The deposit is {depositPct}% of the price, the default in the Vansales finance calculator; you can choose any deposit from 0% to 50% there. Lenders set their own deposit requirements, and a range of listed prices is not a quote for any particular van.
           </p>
+          {exampleVan && (
+            <div className="mt-6 max-w-xl">
+              <FinanceDisclosure example={{ price: exampleVan.price as number, warranties: exampleVan.warranty_addons ?? [], finance: exampleVan.finance ?? null, vatQualifying: vatOnTop(exampleVan.vat_status) }} />
+            </div>
+          )}
         </Container>
       </section>
 
@@ -249,6 +263,7 @@ export default async function VanFinancePage() {
             <Eyebrow>Used van finance enquiry</Eyebrow>
             <h2 className="mt-2 font-display text-[length:var(--text-2xl)] font-bold text-ink-900">Tell us your budget</h2>
             <p className="mt-2 text-[length:var(--text-sm)] text-ink-600">Leave your details and a van budget and we will get back to you about used van finance.</p>
+            <p className="mt-2 text-[length:var(--text-sm)] font-semibold text-ink-700">This form is for Swiss Vans stock only. Your enquiry goes to Swiss Vans Ltd, which trades as Vansales.com, and covers vans that Swiss Vans has for sale.</p>
             <div className="mt-5"><FinanceEnquiryForm /></div>
           </div>
         </Container>
@@ -276,13 +291,6 @@ export default async function VanFinancePage() {
       <section className="py-14">
         <Container>
           <div className="mx-auto max-w-2xl">
-            <Eyebrow>Important</Eyebrow>
-            <h2 className="mt-2 font-display text-[length:var(--text-xl)] font-bold text-ink-900">We&apos;re not a lender</h2>
-            <p className="mt-3 text-[length:var(--text-md)] leading-relaxed text-ink-600">
-              Vansales provides this guide for information only. We do not lend money, nor are we authorised
-              to give financial advice. For a personalised quote, speak to an authorised finance broker or
-              your bank. Always read the full credit agreement before signing.
-            </p>
             <div className="mt-5 rounded-[var(--radius-lg)] border border-amber-200 bg-amber-50 p-5">
               <p className="text-[length:var(--text-sm)] font-semibold text-amber-800">Finance is credit. Think carefully before using any loan to buy a vehicle. Your van may be repossessed if you do not keep up repayments.</p>
             </div>
