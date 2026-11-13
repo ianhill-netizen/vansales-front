@@ -1,3 +1,4 @@
+import { categoryPath } from "@/lib/used-vans/paths";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
@@ -98,7 +99,7 @@ export default async function SiteMapPage() {
       </section>
       <Container className="space-y-10 py-10">
         <Group title="Main pages" links={MAIN} />
-        <Group title="Vans for sale by type" links={CATEGORIES.map((c) => ({ href: `/vans/${c.slug}`, label: c.label }))} />
+        <Group title="Vans for sale by type" links={CATEGORIES.map((c) => ({ href: categoryPath(c.slug), label: c.label }))} />
         <Group title="Vans for sale by make" links={stockMakes.map((s) => ({ href: makeVansPath(s), label: `${cap(s)} vans for sale` }))} />
         <Group title="Used vans by make" links={[...usedMakes.map((m) => ({ href: `/used-vans/${m.makeSlug}`, label: `Used ${m.make} vans` })), ...hubOnly.map((s) => ({ href: `/used-vans/${s}`, label: `Used ${cap(s)} vans` }))]} />
         <Group title="Used van buying guides by model" links={USED_VAN_MODELS.filter((m) => liveModels.has(m.pageSlug)).map((m) => ({ href: usedVanPath(m), label: `Used ${usedVanName(m)} for sale` }))} />

@@ -1,3 +1,4 @@
+import { modelPagePath } from "../used-vans/paths.ts";
 import { getMakeBySlug, getModelBySlug } from "@/lib/taxonomy/van-makes";
 
 /* =============================================================================
@@ -81,7 +82,7 @@ function resolveRef([m, mod]: Ref): Competitor | null {
   const make = getMakeBySlug(m);
   const model = getModelBySlug(m, mod);
   if (!make || !model) return null;
-  return { makeSlug: m, modelSlug: mod, label: `${make.name} ${model.name}`, href: `/vans/${m}/${mod}` };
+  return { makeSlug: m, modelSlug: mod, label: `${make.name} ${model.name}`, href: modelPagePath(m, mod) };
 }
 
 function groupOf(makeSlug: string, modelSlug: string): { size: VanSize; key: string } | null {

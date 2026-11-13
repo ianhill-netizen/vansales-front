@@ -31,13 +31,19 @@ const MORE: ReadonlyArray<readonly [string, string]> = [
   ["Nissan", "NV400"], ["Nissan", "Townstar"], ["Toyota", "Hilux Invincible"], ["Vauxhall", "Combo Cargo"],
 ];
 
-export const USED_VAN_MODELS: readonly UsedVanModel[] = [...RAW, ...MORE].map(([make, model]) => ({
-  make,
-  model,
-  makeSlug: slugify(make),
-  modelSlug: slugify(model),
-  pageSlug: slugify(`${make}-${model}-vans-for-sale`),
-}));
+// The stock feeds slug the ID. Buzz Cargo as "id-buzz-cargo" while the content row (and its published backend slug) was written as "IDBuzz Cargo": the URL follows the stock slug, the content slug stays what the backend has.
+const URL_MODEL_SLUG: Record<string, string> = { "idbuzz-cargo": "id-buzz-cargo" };
+
+export const USED_VAN_MODELS: readonly UsedVanModel[] = [...RAW, ...MORE].map(([make, model]) => {
+  const contentSlug = slugify(model);
+  return {
+    make,
+    model,
+    makeSlug: slugify(make),
+    modelSlug: URL_MODEL_SLUG[contentSlug] ?? contentSlug,
+    pageSlug: slugify(`${make}-${model}-vans-for-sale`),
+  };
+});
 
 export function findUsedVanModel(makeSlug: string, modelSlug: string): UsedVanModel | undefined {
   return USED_VAN_MODELS.find((m) => m.makeSlug === makeSlug && m.modelSlug === modelSlug);
@@ -83,5 +89,5 @@ export const usedVanName = (m: UsedVanModel) => `${commonMake(m.make)} ${m.model
 export const usedVanH1 = (m: UsedVanModel) => `Used ${usedVanName(m)} For Sale`;
 export const usedVanTitle = (m: UsedVanModel) => `${usedVanH1(m)} | Vansales.com`;
 export const usedVanDescription = (m: UsedVanModel) => `Browse used ${usedVanName(m)} vans for sale from verified UK dealers. Compare prices, specs and mileage. No nonsense.`;
-/** The stock-driven sibling page that already exists (listing pages, filters): cross-linked from every /used-vans page. */
-export const vansPath = (m: UsedVanModel) => `/vans/${m.makeSlug}/${m.modelSlug}`;
+/** The searchable stock view of this model (the /vans chip filter): cross-linked from every /used-vans page. (/vans/{make}/{model} now redirects to the /used-vans page, so it cannot be this link.) */
+export const vansPath = (m: UsedVanModel) => `/vans?v=${m.makeSlug}:${m.modelSlug}`;

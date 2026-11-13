@@ -1,3 +1,4 @@
+import { modelPagePath } from "@/lib/used-vans/paths";
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
@@ -110,7 +111,7 @@ export default function VanContractHirePage() {
             ].map((van) => (
               <Link
                 key={van.slug}
-                href={`/vans/${van.slug}`}
+                href={modelPagePath(van.slug.split("/")[0], van.slug.split("/")[1])}
                 className="group flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-white p-5 shadow-[var(--shadow-xs)] transition-all hover:border-brand-500 hover:shadow-[var(--shadow-sm)]"
               >
                 <div>

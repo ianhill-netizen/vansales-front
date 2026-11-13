@@ -1,6 +1,8 @@
 import type { Listing } from "./types";
 
 /** Lowercase, hyphenate, strip anything that isn't a-z 0-9 or hyphen. */
+import { modelPagePath } from "../used-vans/paths.ts";
+
 export function slugify(input: string): string {
   return input
     .normalize("NFD")
@@ -39,7 +41,7 @@ export function sourceIdFromSlug(slug: string): string {
 
 /** make+model path segment for /vans/[make]/[model]. */
 export function modelPath(make: string, model: string): string {
-  return `/vans/${slugify(make)}/${slugify(model)}`;
+  return modelPagePath(slugify(make), slugify(model));
 }
 
 export function listingPath(slugOrListing: string | Listing): string {

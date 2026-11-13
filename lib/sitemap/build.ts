@@ -90,7 +90,9 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
   const landingRoutes = LANDING_PAGES.filter((p) => liveLanding.has(p.backendSlug)).map((p) => e(p.path, contentDates.get(p.backendSlug)));
   const bodyTypeRoutes = CATEGORIES.filter((c) => c.slug !== "electric").map((c) => e(`/vans/${c.slug}`, statOf(categoryListings(idx, c)).lastModified));
   const makeRoutes = [...idx.byMake.keys()].filter((slug) => makeStat(idx, slug).count > 0).map((slug) => e(makeVansPath(slug), makeStat(idx, slug).lastModified));
-  const modelRoutes = [...idx.byModel.keys()].map((key) => {
+  // /vans/{make}/{model} redirects to the /used-vans page where that is published, so only the models without one are listed.
+  const guideModels = new Set(usedVanModels.map((m) => `${m.makeSlug}/${m.modelSlug}`));
+  const modelRoutes = [...idx.byModel.keys()].filter((key) => !guideModels.has(key)).map((key) => {
     const [m, mod] = key.split("/");
     return e(`/vans/${m}/${mod}`, modelStat(idx, m, mod).lastModified);
   });

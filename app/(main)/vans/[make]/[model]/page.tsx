@@ -1,6 +1,9 @@
 import { EmptyState } from "@/components/empty/empty-state";
 import { makeVansPath } from "@/lib/seo/make-url";
 import type { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
+import { getLiveModelPageSlugs } from "@/lib/content/model-pages";
+import { findUsedVanModel, usedVanPath } from "@/lib/used-vans/models";
 import Link from "next/link";
 import { Container, Eyebrow } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
@@ -98,6 +101,9 @@ function cleanPageUrl(makeSlug: string, modelSlug: string, page: number): string
 
 async function resolve(params: Promise<Params>, searchParams: Promise<Search>) {
   const { make, model } = await params;
+  // /used-vans/{make}/{model}-for-sale is the canonical model page (Ian, 2026-11-13). Where that page is published this one is a permanent redirect to it; where it is not (or the backend cannot be reached) this stock page renders as before.
+  const guide = findUsedVanModel(make, model);
+  if (guide && (await getLiveModelPageSlugs().catch(() => new Set<string>())).has(guide.pageSlug)) permanentRedirect(usedVanPath(guide));
   const sp = await searchParams;
   const filters = parseFilters(make, model, sp);
   const result = await getListings(filters);

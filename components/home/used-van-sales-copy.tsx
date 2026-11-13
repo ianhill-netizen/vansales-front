@@ -23,7 +23,7 @@ const BODY_ANCHORS: ReadonlyArray<readonly [string, string]> = [
 // "small vans for sale" and "automatic vans for sale" have no page in the app, so they are not linked.
 const FIXED_ANCHORS: readonly Anchor[] = [
   { label: "electric vans for sale", href: "/electric-vans" },
-  { label: "pickup trucks for sale", href: "/vans/pickup" },
+  { label: "pickup trucks for sale", href: "/used-vans/body-type/pickup-for-sale" },
 ];
 
 function List({ items }: { items: Anchor[] }) {

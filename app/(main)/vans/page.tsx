@@ -133,13 +133,19 @@ function hrefFor(sp: Search, page: number, override: Record<string, string | nul
   return `/vans${qs ? `?${qs}` : ""}`;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+// Search and filter URLs (/vans?bodyStyle=luton, ?v=ford:transit, ?near=...) are views of the same listing, not pages to rank: noindex,follow. The plain /vans (and its ?page=N) stay indexable.
+const FILTER_KEYS = ["v", "make", "model", "models", "bodyStyle", "fuel", "condition", "wheelbase", "gearbox", "colour", "minPrice", "maxPrice", "minYear", "maxYear", "maxMileage", "ulez", "q", "near", "postcode", "dealer", "radius", "lat", "lng", "loc", "monthlyMax", "sort"];
+
+export async function generateMetadata({ searchParams }: { searchParams: Promise<Search> }): Promise<Metadata> {
+  const sp = await searchParams;
+  const filtered = FILTER_KEYS.some((k) => one(sp[k]) !== undefined && one(sp[k]) !== "");
   const title = "Used Vans for Sale UK | Vansales.com";
   const description = "Browse used vans for sale across the UK from dealers and private sellers. Filter by make, body type, payload, ULEZ and mileage.";
   return {
     title: { absolute: title },   // this exact string: the layout's " · Vansales" template is not appended
     description,
     alternates: { canonical: absUrl("/vans") },
+    ...(filtered ? { robots: { index: false, follow: true } } : {}),
     openGraph: { images: DEFAULT_OG_IMAGES, title, description, url: absUrl("/vans"), type: "website" },
   };
 }

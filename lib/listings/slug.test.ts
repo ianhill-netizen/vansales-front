@@ -4,7 +4,8 @@ import { slugify, modelPath } from "./slug.ts";
 
 test("accented letters fold to ASCII instead of becoming a hyphen", () => {
   assert.equal(slugify("Citroën"), "citroen");
-  assert.equal(modelPath("Citroën", "Berlingo"), "/vans/citroen/berlingo");
+  assert.equal(modelPath("Citroën", "Berlingo"), "/used-vans/citroen/berlingo-for-sale", "a model with a /used-vans page links there; /vans/{make}/{model} redirects to it");
+  assert.equal(modelPath("Ford", "Tourneo Custom"), "/vans/ford/tourneo-custom");
   assert.equal(slugify("Škoda Fabia"), "skoda-fabia");
 });
 
