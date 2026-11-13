@@ -49,7 +49,7 @@ export const WARRANTY_SECTIONS: Section[] = [
     id: "cost",
     h2: "What a van warranty costs",
     blocks: [
-      { p: "Price depends on the van's age and mileage, the level of cover, the claim limit, how long it lasts and the excess. As a rough guide only, a basic engine-and-gearbox policy on a van a few years old typically costs from a few hundred pounds for a year, mid-level cover costs somewhat more, and comprehensive cover on a newer or higher-value van can run to four figures. Older, higher-mileage vans cost more to cover and may be refused. These are indicative ranges, not quotes or offers: get the terms in writing and compare the claim limit, labour rate and exclusions as well as the price." },
+      { p: "Price depends on the van's age and mileage, the level of cover, the claim limit, how long it lasts and the excess. Basic engine-and-gearbox cover generally costs less than mid-level cover, and comprehensive cover on a newer or higher-value van costs the most, often with a higher claim limit. Older, higher-mileage vans cost more to cover and may be refused. This is a general pattern, not a quote or an offer, and the price of any policy varies widely: get the terms in writing and compare the claim limit, labour rate and exclusions as well as the price." },
     ],
   },
   {
