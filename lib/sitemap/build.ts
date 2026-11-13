@@ -22,7 +22,6 @@ import { getLiveGeoKeys } from "@/lib/content/geo";
 import { GEO_NODES, geoPath } from "@/lib/geo/tree";
 import { TOWNS, findPlace } from "@/lib/geo/towns";
 import { summarisePlace } from "@/lib/geo/summary";
-import { REGION_KEYS } from "@/lib/landing-pages";
 import { getLiveAccessorySlugs } from "@/lib/content/accessories";
 import { ACCESSORIES, ACCESSORY_BACKEND_SLUGS, ACCESSORY_HUB } from "@/lib/accessories";
 import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
@@ -33,11 +32,10 @@ import { GROUPS, dedupeEntries, newestLastmod, splitByGroup, type GroupName, typ
 const GEO_TTL_MS = 24 * 60 * 60 * 1000;
 let geoCache: { at: number; paths: string[] } | null = null;
 
-/** Nation and region pages (when their guide is published), city pages and towns when they meet the index rule (lib/geo/config.ts). The seven original landing pages are listed by landingRoutes. */
+/** Nation and region pages (when their guide is published), city pages and towns when they meet the index rule (lib/geo/config.ts). */
 async function geoPaths(listings: Awaited<ReturnType<typeof getListings>>["listings"], dealers: Awaited<ReturnType<typeof getDealerDirectory>>): Promise<string[]> {
   if (geoCache && Date.now() - geoCache.at < GEO_TTL_MS) return geoCache.paths;
-  const legacy = new Set(REGION_KEYS);
-  const nodes = GEO_NODES.filter((n) => !legacy.has(n.key));
+  const nodes = GEO_NODES;
   const live = await getLiveGeoKeys(nodes.map((n) => n.key));
   const vans = listings.filter((l) => l.status === "active");
   const ds = dealers.filter((d) => dealerIndexable({ stockCount: d.vanCount, hasAbout: d.hasAbout, configured: d.configured }));
@@ -121,7 +119,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
     e("/directory"),
   ];
   const sellRoutes = SELL_PAGES.filter((p) => liveSell.has(p.slug)).map((p) => e(sellPagePath(p)));
-  const landingRoutes = LANDING_PAGES.filter((p) => liveLanding.has(p.backendSlug)).map((p) => e(p.path, contentDates.get(p.backendSlug)));
+  const landingRoutes = LANDING_PAGES.filter((p) => liveLanding.has(p.backendSlug) && !p.path.startsWith("/vans-for-sale/")).map((p) => e(p.path, contentDates.get(p.backendSlug)));
   const accessoryRoutes = [ACCESSORY_HUB, ...ACCESSORIES].filter((a) => liveAccessories.has(a.backendSlug)).map((a) => e(a.path, contentDates.get(a.backendSlug)));
   const geoRoutes = degraded ? [] : (await geoPaths(listings, dealers).catch(() => [] as string[])).map((p) => e(p));
   const bodyTypeRoutes = CATEGORIES.filter((c) => c.slug !== "electric").map((c) => e(`/vans/${c.slug}`, statOf(categoryListings(idx, c)).lastModified));
