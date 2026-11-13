@@ -13,6 +13,8 @@ import { listingTitle } from "@/lib/listings/format";
 import { BODY_TYPE_PAGES, bodyTypeDescription, bodyTypeH1, bodyTypePath, bodyTypeTitle, findBodyType, findBodyTypeByParam } from "@/lib/used-vans/body-types";
 import { findUsedVanModel, usedVanPath } from "@/lib/used-vans/models";
 import { SITE, absUrl } from "@/lib/site";
+import { getCategory } from "@/lib/seo/categories";
+import { slugify } from "@/lib/listings/slug";
 
 // /used-vans/body-type/{slug}: one of ten body/equipment types (luton, dropside, tipper, curtain side, refrigerated, crew van, high roof, long wheelbase, 4x4, wheelchair accessible).
 // The copy (H1, meta, 600-word buying guide, two pictures) is vansales-backend's body_type_pages; the listings are the live stock that matches the type (lib/used-vans/body-types.ts).
@@ -107,7 +109,7 @@ export default async function UsedVansBodyType({ params }: { params: Promise<Par
               <p className="mt-4 text-[length:var(--text-sm)] font-semibold text-ink-600">
                 <span className="font-mono text-brand-700">{matching.length}</span> {matching.length === 1 ? "van" : "vans"} listed now
                 {def.vansCategory && (
-                  <> · <Link href={`/vans/${def.vansCategory}`} className="text-brand-700 hover:underline">search and filter all {def.label}</Link></>
+                  <> · <Link href={`/vans?bodyStyle=${slugify(getCategory(def.vansCategory).filter.bodyStyle ?? def.vansCategory)}`} className="text-brand-700 hover:underline">search and filter all {def.label}</Link></>
                 )}
               </p>
               <p className="mt-4"><a href="#enquire" className="font-semibold text-brand-700 hover:underline">Looking for one? Tell us what you want</a></p>

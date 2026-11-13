@@ -25,7 +25,7 @@ Selecting the right vehicle for business or personal use is pivotal, and underst
 
 Both generations: width 1,904mm excluding mirrors, maximum load width 1,700mm and 1,244mm between the wheel arches. The guide gives the following LWB figures without naming a generation: roof heights of 1,990mm (low), about 2,176mm (medium, since discontinued) and up to 2,477mm (high); a load length of up to 2,975mm; and a load volume of up to 9.3 m³ on the high roof. The T4 is mentioned but no T4 figures are given.
 
-Looking for one? Browse [VW Transporter vans for sale](/vans/volkswagen/transporter).
+Looking for one? Browse [VW Transporter vans for sale](/used-vans/volkswagen/transporter-for-sale).
 
 This article will delve into the specifics of the VW Transporter dimensions, covering both the short wheelbase (SWB) and long wheelbase (LWB) models, as well as the various roof options available, including the High roof variant. Additionally, it will explore the vehicle’s load capacity, from its payload capacity to barn doors configuration, providing insight into how these factors impact practical applications and conversions. Whether you’re interested in the capabilities of the VW T6 dimensions or seeking information on Volkswagen Transporter dimensions for earlier models, this comprehensive guide aims to equip you with all the necessary details to choose the right version for your requirements.
 

@@ -18,7 +18,7 @@ Understanding the Ford Transit Custom dimensions is crucial for both business an
 
 All versions: exterior width 2,275mm with mirrors and 2,032mm without; interior width 1,777mm (1,392mm between the wheel arches); rear door aperture width 1,400mm. The guide quotes the L2H2 load volume as 8.3 m³ in the Overall Dimensions and Load Capacity sections and as 9.0 m³ in the Interior Dimensions section.
 
-Looking for one? Browse [Ford Transit Custom vans for sale](/vans/ford/transit-custom).
+Looking for one? Browse [Ford Transit Custom vans for sale](/used-vans/ford/transit-custom-for-sale).
 
 The article intricately explores the vehicle’s overall dimensions, including the specific Ford Transit Custom measurement interior dimensions, which are crucial for businesses and individuals planning their space requirements. Additionally, it reviews the door dimensions and access options that significantly impact loading and unloading efficiency. Load capacity and payload specifications are also covered, providing a comprehensive understanding of how much the Ford Transit Custom can carry. The insights offered guide users in maximising the vehicle’s utility while ensuring compliance with legal load regulations, making this guide an essential read for prospective buyers and current owners alike.
 

@@ -11,6 +11,8 @@ export const SITE = {
 
 /** Where "Sell your van" goes: the seller app (sell.vansales.com). Overridable per environment. */
 export const SELL_URL = process.env.NEXT_PUBLIC_SELL_URL || "https://sell.vansales.com";
+/** Where "Sell your van" links go: the final destination of the bare address (which 307s here), so there is no redirect hop. */
+export const SELL_SIGNUP_URL = `${SELL_URL.replace(/\/$/, "")}/signup/private`;
 
 /** Absolute base URL for the running deployment (no trailing slash). */
 export function siteUrl(): string {

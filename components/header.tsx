@@ -7,18 +7,18 @@ import { Container } from "./ui";
 import { Logo } from "./brand";
 import { MobileNav } from "./mobile-nav";
 import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
-import { SELL_URL } from "@/lib/site";
+import { SELL_SIGNUP_URL } from "@/lib/site";
 import { SellLink } from "./sell-link";
 
 const VAN_BODY_TYPES = [
-  { href: "/vans/panel-van",    label: "Panel vans for sale" },
-  { href: "/vans/luton",        label: "Luton vans for sale" },
-  { href: "/vans/tipper",       label: "Tipper vans for sale" },
-  { href: "/vans/dropside",     label: "Dropside vans for sale" },
-  { href: "/vans/crew-van",     label: "Crew cab vans for sale" },
-  { href: "/vans/pickup",       label: "Pickup trucks for sale" },
-  { href: "/vans/minibus",      label: "Minibuses for sale" },
-  { href: "/vans/chassis-cab",  label: "Chassis cabs for sale" },
+  { href: "/used-vans/body-type/panel-van-for-sale",    label: "Panel vans for sale" },
+  { href: "/used-vans/body-type/luton-for-sale",        label: "Luton vans for sale" },
+  { href: "/used-vans/body-type/tipper-for-sale",       label: "Tipper vans for sale" },
+  { href: "/used-vans/body-type/dropside-for-sale",     label: "Dropside vans for sale" },
+  { href: "/used-vans/body-type/crew-van-for-sale",     label: "Crew cab vans for sale" },
+  { href: "/used-vans/body-type/pickup-for-sale",       label: "Pickup trucks for sale" },
+  { href: "/used-vans/body-type/minibus-for-sale",      label: "Minibuses for sale" },
+  { href: "/used-vans/body-type/chassis-cab-for-sale",  label: "Chassis cabs for sale" },
 ];
 
 
@@ -222,7 +222,7 @@ export function Header() {
             Sign in
           </a>
           <SellLink
-            href={`${SELL_URL.replace(/\/$/, "")}/signup/private`}   // the final destination: the bare address 307s here
+            href={SELL_SIGNUP_URL}
             className="hidden rounded-[var(--radius-md)] px-4 py-2 text-[length:var(--text-sm)] font-bold text-white shadow-[var(--shadow-xs)] transition-all hover:brightness-95 md:inline-flex"
             style={{ background: "linear-gradient(135deg, #f47c1e 0%, #d96410 100%)" }}
           >

@@ -1,3 +1,4 @@
+import { modelPagePath } from "@/lib/used-vans/paths";
 import type { Metadata } from "next";
 import { makeVansPath } from "@/lib/seo/make-url";
 import { pageMeta } from "@/lib/seo";
@@ -137,7 +138,7 @@ export default async function VanReviewsPage() {
                   </p>
                 </div>
                 <Link
-                  href={`/vans/${slugify(r.make)}/${slugify(r.model)}`}
+                  href={modelPagePath(slugify(r.make), slugify(r.model))}
                   className="mt-5 flex items-center gap-1.5 text-[length:var(--text-sm)] font-semibold text-brand-600 hover:underline"
                 >
                   See {r.make} {r.model} stock <IconArrow width={15} height={15} />

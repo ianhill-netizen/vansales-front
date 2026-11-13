@@ -5,19 +5,19 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import { POPULAR_MAKES } from "@/lib/taxonomy/van-makes";
-import { SELL_URL } from "@/lib/site";
+import { SELL_SIGNUP_URL } from "@/lib/site";
 import { Logo } from "./brand";
 
 const BODY_TYPE_LINKS = [
   { href: "/vans", label: "All vans for sale" },
-  { href: "/vans/panel-van", label: "Panel vans for sale" },
-  { href: "/vans/luton", label: "Luton vans for sale" },
-  { href: "/vans/tipper", label: "Tipper vans for sale" },
-  { href: "/vans/dropside", label: "Dropside vans for sale" },
-  { href: "/vans/crew-van", label: "Crew cab vans for sale" },
-  { href: "/vans/pickup", label: "Pickup trucks for sale" },
-  { href: "/vans/minibus", label: "Minibuses for sale" },
-  { href: "/vans/chassis-cab", label: "Chassis cabs for sale" },
+  { href: "/used-vans/body-type/panel-van-for-sale", label: "Panel vans for sale" },
+  { href: "/used-vans/body-type/luton-for-sale", label: "Luton vans for sale" },
+  { href: "/used-vans/body-type/tipper-for-sale", label: "Tipper vans for sale" },
+  { href: "/used-vans/body-type/dropside-for-sale", label: "Dropside vans for sale" },
+  { href: "/used-vans/body-type/crew-van-for-sale", label: "Crew cab vans for sale" },
+  { href: "/used-vans/body-type/pickup-for-sale", label: "Pickup trucks for sale" },
+  { href: "/used-vans/body-type/minibus-for-sale", label: "Minibuses for sale" },
+  { href: "/used-vans/body-type/chassis-cab-for-sale", label: "Chassis cabs for sale" },
 ];
 
 const MAKE_LINKS = POPULAR_MAKES.map((m) => ({
@@ -40,7 +40,7 @@ const SECTIONS = [
     links: [
       { href: "/vans?view=map", label: "Search by map" },
       { href: "/dealers",    label: "Find a dealer" },
-      { href: SELL_URL,      label: "Sell your van" },
+      { href: SELL_SIGNUP_URL, label: "Sell your van" },
       { href: "/advertise",  label: "Advertise with us" },
     ],
   },

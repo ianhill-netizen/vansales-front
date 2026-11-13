@@ -4,6 +4,7 @@ import { CATEGORIES } from "./categories";
 import { getCompetitors } from "./competitors";
 import type { InternalLink } from "@/components/seo/internal-links";
 import type { ModelStat } from "./catalogue";
+import { categoryPath, modelPagePath } from "../used-vans/paths";
 
 /* Builders for the link blocks used on every make / model / category page. Anchor text is descriptive ("Ford Transit Custom vans for sale"), never "click here". */
 
@@ -12,13 +13,13 @@ export function makeLinks(excludeSlug?: string): InternalLink[] {
 }
 
 export function categoryLinks(excludeSlug?: string): InternalLink[] {
-  return CATEGORIES.filter((c) => c.slug !== excludeSlug).map((c) => ({ href: c.slug === "electric" ? "/electric-vans" : `/vans/${c.slug}`, label: `${c.label} for sale` }));
+  return CATEGORIES.filter((c) => c.slug !== excludeSlug).map((c) => ({ href: categoryPath(c.slug), label: `${c.label} for sale` }));
 }
 
 export function modelLinksOfMake(makeSlug: string, excludeModel?: string): InternalLink[] {
   const mk = getMakeBySlug(makeSlug);
   if (!mk) return [];
-  return mk.models.filter((m) => m.slug !== excludeModel).map((m) => ({ href: `/vans/${mk.slug}/${m.slug}`, label: `${mk.name} ${m.name} for sale` }));
+  return mk.models.filter((m) => m.slug !== excludeModel).map((m) => ({ href: modelPagePath(mk.slug, m.slug), label: `${mk.name} ${m.name} for sale` }));
 }
 
 export function competitorLinks(makeSlug: string, modelSlug: string): InternalLink[] {
@@ -26,5 +27,5 @@ export function competitorLinks(makeSlug: string, modelSlug: string): InternalLi
 }
 
 export function popularModelLinks(models: Pick<ModelStat, "makeSlug" | "modelSlug" | "makeName" | "name">[]): InternalLink[] {
-  return models.map((m) => ({ href: `/vans/${m.makeSlug}/${m.modelSlug}`, label: `${m.makeName} ${m.name} for sale` }));
+  return models.map((m) => ({ href: modelPagePath(m.makeSlug, m.modelSlug), label: `${m.makeName} ${m.name} for sale` }));
 }

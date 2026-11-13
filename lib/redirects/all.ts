@@ -4,6 +4,7 @@ import { RETIRED_TEST_DEALER_REDIRECTS } from "./retired-test-dealer.ts";
 import { USED_VAN_MODELS, usedVanOldPath, usedVanPath } from "../used-vans/models.ts";
 import { BODY_TYPE_PAGES, bodyTypeOldPath, bodyTypePath } from "../used-vans/body-types.ts";
 import { HAND_BUILT_GUIDE_SLUGS, LANDING_PAGES } from "../landing-pages.ts";
+import { MOVED_CATEGORY_SLUGS, canonicalDestination, categoryPath } from "../used-vans/paths.ts";
 
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -30,6 +31,13 @@ export function buildRedirects(): RedirectRule[] {
     const forSale = [
       ...USED_VAN_MODELS.map((m) => ({ source: usedVanOldPath(m), destination: usedVanPath(m), statusCode: 301 as const })),
       ...BODY_TYPE_PAGES.map((b) => ({ source: bodyTypeOldPath(b), destination: bodyTypePath(b), statusCode: 301 as const })),
+    ];
+    // /vans/{category} for the eight body types -> its /used-vans body-type page (all eight are published with a guide). The other categories (ulez, used, new) and /vans/electric (-> /electric-vans) are handled elsewhere.
+    const categories301 = MOVED_CATEGORY_SLUGS.map((slug) => ({ source: `/vans/${slug}`, destination: categoryPath(slug), statusCode: 301 as const }));
+    // The ID. Buzz Cargo model URL now follows the stock slug (id-buzz-cargo); the old content-slug URLs go to it in one hop.
+    const idBuzz = [
+      { source: "/used-vans/volkswagen/idbuzz-cargo-for-sale", destination: "/used-vans/volkswagen/id-buzz-cargo-for-sale", statusCode: 301 as const },
+      { source: "/used-vans/volkswagen/idbuzz-cargo", destination: "/used-vans/volkswagen/id-buzz-cargo-for-sale", statusCode: 301 as const },
     ];
     // /vans/{make} -> /vans/{make}-vans-for-sale. The category pages (/vans/luton ...) are real pages of their own and are excluded, as is anything already carrying the suffix.
     const categories = "chassis-cab|crew-van|dropside|electric|luton|minibus|new|panel-van|pickup|tipper|ulez|used";
@@ -62,5 +70,6 @@ export function buildRedirects(): RedirectRule[] {
       { source: "/vans/citro-n", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
       { source: "/vans/citro-n-vans-for-sale", destination: "/vans/citroen-vans-for-sale", statusCode: 301 as const },
     ];
-    return [...landing, ...retired, ...RETIRED_TEST_DEALER_REDIRECTS.map((r) => ({ ...r })), ...BACKLINK_REDIRECTS.map((r) => ({ ...r })), ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...forSale, ...makePages, ...wordpress, ...rootBlogRedirects()];
+    const all = [...landing, ...retired, ...RETIRED_TEST_DEALER_REDIRECTS.map((r) => ({ ...r })), ...BACKLINK_REDIRECTS.map((r) => ({ ...r })), ...NEW_VANS_REDIRECTS.map((r) => ({ ...r })), ...categories301, ...idBuzz, ...forSale, ...makePages, ...wordpress, ...rootBlogRedirects()];
+    return all.map((r) => ({ ...r, destination: canonicalDestination(r.destination) }));
 }

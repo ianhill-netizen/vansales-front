@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui";
-import { SELL_URL } from "@/lib/site";
+import { SELL_SIGNUP_URL } from "@/lib/site";
 import { PanelVanIcon } from "@/components/icons/body-types";
 
 const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round", strokeLinejoin: "round" } as const;
@@ -17,7 +17,7 @@ const CARDS = [
   {
     title: "For sellers",
     body: "List free in about five minutes. Enquiries come straight to you, and we never share your number.",
-    href: SELL_URL,
+    href: SELL_SIGNUP_URL,
     link: "Sell your van",
     external: true,
     icon: (<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden {...stroke}><path d="M4 12.5l5 5L20 6.5" /></svg>),

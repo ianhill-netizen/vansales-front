@@ -1,3 +1,4 @@
+import { modelPagePath } from "@/lib/used-vans/paths";
 import type { Metadata } from "next";
 import { makeVansPath } from "@/lib/seo/make-url";
 import { pageMeta } from "@/lib/seo";
@@ -83,7 +84,7 @@ export default async function DirectoryPage() {
                       {(byMake[makeEntry.make] ?? []).map((entry) => (
                         <li key={`${entry.make}/${entry.model}`}>
                           <Link
-                            href={`/vans/${slugify(entry.make)}/${slugify(entry.model)}`}
+                            href={modelPagePath(slugify(entry.make), slugify(entry.model))}
                             className="flex items-center justify-between text-[length:var(--text-sm)] text-ink-600 hover:text-brand-600"
                           >
                             <span>{entry.model}</span>
