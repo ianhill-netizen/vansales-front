@@ -18,11 +18,39 @@ import { SELL_PAGES, sellPagePath } from "@/lib/sell-pages";
 import { STOCK_FEEDS_LASTMOD, STOCK_FEEDS_PATH } from "@/lib/stock-feeds";
 import { LANDING_PAGES } from "@/lib/landing-pages";
 import { getLiveLandingSlugs } from "@/lib/content/landing-pages";
+import { getLiveGeoKeys } from "@/lib/content/geo";
+import { GEO_NODES, geoPath } from "@/lib/geo/tree";
+import { TOWNS, findPlace } from "@/lib/geo/towns";
+import { summarisePlace } from "@/lib/geo/summary";
+import { REGION_KEYS } from "@/lib/landing-pages";
 import { getLiveAccessorySlugs } from "@/lib/content/accessories";
 import { ACCESSORIES, ACCESSORY_BACKEND_SLUGS, ACCESSORY_HUB } from "@/lib/accessories";
 import { getLiveMakeHubSlugs } from "@/lib/content/make-hubs";
 import { buildRedirects } from "@/lib/redirects/all";
 import { GROUPS, dedupeEntries, newestLastmod, splitByGroup, type GroupName, type SitemapEntry } from "@/lib/sitemap/xml";
+
+// The geography pages' sitemap entries are worked out from stock and dealers, so they are recomputed nightly rather than on every sitemap build.
+const GEO_TTL_MS = 24 * 60 * 60 * 1000;
+let geoCache: { at: number; paths: string[] } | null = null;
+
+/** Nation and region pages (when their guide is published), city pages and towns when they meet the index rule (lib/geo/config.ts). The seven original landing pages are listed by landingRoutes. */
+async function geoPaths(listings: Awaited<ReturnType<typeof getListings>>["listings"], dealers: Awaited<ReturnType<typeof getDealerDirectory>>): Promise<string[]> {
+  if (geoCache && Date.now() - geoCache.at < GEO_TTL_MS) return geoCache.paths;
+  const legacy = new Set(REGION_KEYS);
+  const nodes = GEO_NODES.filter((n) => !legacy.has(n.key));
+  const live = await getLiveGeoKeys(nodes.map((n) => n.key));
+  const vans = listings.filter((l) => l.status === "active");
+  const ds = dealers.filter((d) => dealerIndexable({ stockCount: d.vanCount, hasAbout: d.hasAbout, configured: d.configured }));
+  const paths: string[] = [];
+  for (const n of nodes) {
+    if (!live.has(n.key)) continue;
+    if (n.kind === "city") { const p = findPlace(n.key)!; if (!summarisePlace({ lat: p.la, lng: p.ln }, vans, ds).indexable) continue; }
+    paths.push(geoPath(n.key));
+  }
+  for (const t of TOWNS) if (summarisePlace({ lat: t.la, lng: t.ln }, vans, ds).indexable) paths.push(geoPath(t.s));
+  geoCache = { at: Date.now(), paths };
+  return paths;
+}
 
 export type SitemapGroups = Record<GroupName, SitemapEntry[]>;
 
@@ -95,6 +123,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
   const sellRoutes = SELL_PAGES.filter((p) => liveSell.has(p.slug)).map((p) => e(sellPagePath(p)));
   const landingRoutes = LANDING_PAGES.filter((p) => liveLanding.has(p.backendSlug)).map((p) => e(p.path, contentDates.get(p.backendSlug)));
   const accessoryRoutes = [ACCESSORY_HUB, ...ACCESSORIES].filter((a) => liveAccessories.has(a.backendSlug)).map((a) => e(a.path, contentDates.get(a.backendSlug)));
+  const geoRoutes = degraded ? [] : (await geoPaths(listings, dealers).catch(() => [] as string[])).map((p) => e(p));
   const bodyTypeRoutes = CATEGORIES.filter((c) => c.slug !== "electric").map((c) => e(`/vans/${c.slug}`, statOf(categoryListings(idx, c)).lastModified));
   const makeRoutes = [...idx.byMake.keys()].filter((slug) => makeStat(idx, slug).count > 0).map((slug) => e(makeVansPath(slug), makeStat(idx, slug).lastModified));
   // /vans/{make}/{model} redirects to the /used-vans page where that is published, so only the models without one are listed.
@@ -120,7 +149,7 @@ async function buildSitemap(): Promise<{ groups: SitemapGroups; degraded: boolea
 
   const all = [
     ...staticRoutes, ...bodyTypeRoutes, ...makeRoutes, ...modelRoutes, ...dealerRoutes, ...dealerTownRoutes, ...vanNewsRoutes, ...blogRoutes, ...guideRoutes,
-    ...usedVanRoutes, ...makeHubRoutes, ...usedVanBodyTypeRoutes, ...sellRoutes, ...landingRoutes, ...accessoryRoutes, ...listingRoutes,
+    ...usedVanRoutes, ...makeHubRoutes, ...usedVanBodyTypeRoutes, ...sellRoutes, ...landingRoutes, ...accessoryRoutes, ...geoRoutes, ...listingRoutes,
   ];
   // A URL that redirects is never listed (retired pages such as /dealer/van-viking and its listings must not stay in the sitemap while the API catches up).
   const redirected = new Set(buildRedirects().filter((r) => !r.source.includes(":")).map((r) => r.source.toLowerCase()));
