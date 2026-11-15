@@ -4,6 +4,8 @@
  * No dependency: the input is split into tags and text, every tag is rebuilt from scratch, and every stray "<" in text is escaped.
  */
 
+import { finalHref } from "../redirects/final-href.ts";
+
 const ALLOWED = new Set(["p", "h2", "h3", "h4", "ul", "ol", "li", "strong", "b", "em", "i", "a", "blockquote", "br", "hr", "table", "thead", "tbody", "tr", "th", "td", "code", "pre", "sup", "sub", "figure", "figcaption"]);
 const VOID = new Set(["br", "hr"]);
 const DROP_WITH_CONTENT = new Set(["script", "style", "iframe", "object", "embed", "svg", "math", "template", "noscript", "form", "textarea", "select", "button"]);
@@ -91,7 +93,8 @@ export function sanitizeGuideHtml(html: string): string {
         out += "<a>";
       } else {
         const external = /^https?:\/\//i.test(safe);
-        out += `<a href="${escapeHtml(safe)}"${external ? ' rel="nofollow noopener noreferrer" target="_blank"' : ""} class="text-brand-700 hover:underline">`;
+        const target = external ? safe : finalHref(safe);   // an internal link that now 301s is written as its destination (one hop for visitors and crawlers)
+        out += `<a href="${escapeHtml(target)}"${external ? ' rel="nofollow noopener noreferrer" target="_blank"' : ""} class="text-brand-700 hover:underline">`;
       }
       open.push("a");
       continue;

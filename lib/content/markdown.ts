@@ -1,3 +1,5 @@
+import { finalHref } from "../redirects/final-href.ts";
+
 /** Minimal safe markdown → HTML converter. Handles what the seed content uses. */
 export function mdToHtml(md: string): string {
   const lines = md.split("\n");
@@ -18,7 +20,7 @@ export function mdToHtml(md: string): string {
     .replace(/`(.+?)`/g, "<code>$1</code>")
     // External links → plain text (remove vansales.com internals, keep others)
     .replace(/\[([^\]]+)\]\(https?:\/\/(?:www\.)?vansales\.com[^)]*\)/g, "$1")
-    .replace(/\[([^\]]+)\]\(\/([^)]*)\)/g, '<a href="/$2" class="text-brand-700 hover:underline">$1</a>')
+    .replace(/\[([^\]]+)\]\(\/([^)]*)\)/g, (_m, text: string, rest: string) => `<a href="${finalHref(`/${rest}`)}" class="text-brand-700 hover:underline">${text}</a>`)
     .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, '<a href="#" class="text-brand-700 hover:underline">$1</a>')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
 
