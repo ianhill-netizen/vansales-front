@@ -41,7 +41,8 @@ export function RetailSignupForm() {
         body: JSON.stringify({
           variant: "retail",
           email: fd.get("email"),
-          name: fd.get("name"),
+          first_name: fd.get("first_name"),
+          last_name: fd.get("last_name"),
           looking_for: fd.get("looking_for"),
           website: fd.get("website"),
         }),
@@ -96,13 +97,10 @@ export function RetailSignupForm() {
         placeholder="you@example.com"
       />
 
-      <Input
-        label="Your name (optional)"
-        type="text"
-        name="name"
-        autoComplete="name"
-        placeholder="Jane Smith"
-      />
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="First name *" type="text" name="first_name" required maxLength={60} autoComplete="given-name" />
+        <Input label="Last name *" type="text" name="last_name" required maxLength={60} autoComplete="family-name" />
+      </div>
 
       <div className="flex flex-col gap-1">
         <label

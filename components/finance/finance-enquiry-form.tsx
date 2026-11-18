@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui";
 import { IconCheck } from "@/components/icons";
-import { Field, inputCls } from "@/components/enquiry-fields";
+import { Field, NameFields, inputCls } from "@/components/enquiry-fields";
 
 type State = "idle" | "submitting" | "success" | "error";
 
@@ -28,7 +28,8 @@ export function FinanceEnquiryForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: String(fd.get("name") ?? "").trim(),
+          first_name: String(fd.get("first_name") ?? "").trim(),
+          last_name: String(fd.get("last_name") ?? "").trim(),
           email: String(fd.get("email") ?? "").trim(),
           mobile: String(fd.get("mobile") ?? "").trim(),
           budget: String(fd.get("budget") ?? ""),
@@ -68,9 +69,7 @@ export function FinanceEnquiryForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-3" noValidate>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Your name" required compact>
-          <input name="name" type="text" required autoComplete="name" className={inputCls} />
-        </Field>
+        <NameFields compact />
         <Field label="Email" required compact>
           <input name="email" type="email" required autoComplete="email" className={inputCls} />
         </Field>

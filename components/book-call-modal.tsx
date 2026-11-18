@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "./ui";
 import { IconCheck, IconX } from "./icons";
-import { Field, inputCls } from "./enquiry-fields";
+import { Field, NameFields, inputCls } from "./enquiry-fields";
 
 /** The vansales API's public host (the browser posts to it directly, like the private enquiry form, so the API rate-limits the buyer's own address). */
 const API = (process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.com").replace(/\/$/, "");
@@ -11,7 +11,7 @@ const API = (process.env.NEXT_PUBLIC_VANSALES_API_URL || "https://api.vansales.c
 type State = "idle" | "submitting" | "success" | "error";
 
 /**
- * "Book a call" for a dealer portal advert: POST {API}/api/public/listings/{id}/book-call {name, phone, email?, preferred_time?}.
+ * "Book a call" for a dealer portal advert: POST {API}/api/public/listings/{id}/book-call {first_name, last_name, phone, email?, preferred_time?}.
  * Built on the native <dialog> opened with showModal(), so the browser traps focus inside it, makes the page behind it inert, closes on Esc and
  * hands focus back to the button that opened it. The `website` input is a honeypot, invisible to people.
  */
@@ -46,7 +46,8 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          name: String(fd.get("name") ?? "").trim(),
+          first_name: String(fd.get("first_name") ?? "").trim(),
+          last_name: String(fd.get("last_name") ?? "").trim(),
           phone: String(fd.get("phone") ?? "").trim(),
           email: String(fd.get("email") ?? "").trim() || null,
           preferred_time: String(fd.get("preferred_time") ?? "").trim() || null,
@@ -103,9 +104,7 @@ export function BookCallModal({ listingId, dealerName, open, onClose }: { listin
             {/* Honeypot: invisible to real users */}
             <input type="text" name="website" tabIndex={-1} aria-hidden="true" autoComplete="off" className="sr-only" />
 
-            <Field label="Your name" required>
-              <input type="text" name="name" required minLength={2} maxLength={120} autoComplete="name" placeholder="Jane Smith" className={inputCls} />
-            </Field>
+            <NameFields />
             <Field label="Phone number" required>
               <input type="tel" name="phone" required maxLength={30} pattern="[0-9+()\s.\-]{6,30}" title="A phone number, e.g. 07700 900 000" autoComplete="tel" placeholder="07700 900 000" className={inputCls} />
             </Field>

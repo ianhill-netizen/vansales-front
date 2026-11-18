@@ -15,7 +15,7 @@ const KEY = "vansales:buyer";
 /**
  * Gated contact: the WhatsApp and Call buttons never carry a number. They open this modal (centred on a desktop, a bottom sheet on a phone) for First name, Last name and Mobile; the details are POSTed to
  * {API}/api/public/listings/{id}/lead, which logs a lead FIRST and returns {ref, whatsapp_url} or {ref, phone_number}. Only then is a number shown or opened: WhatsApp opens wa.me with the message already typed
- * (it quotes the ref), Call reveals a tap-to-call link and "Quote ref VS-4821". Built on the native <dialog> (focus trap, Esc, inert page behind). `website` is a honeypot.
+ * (it quotes the ref), Call (callIntent) asks for the buyer's mobile ONLY, and skips even that when this browser already remembers one, then reveals a tap-to-call link and "Quote ref VS-4821". Built on the native <dialog> (focus trap, Esc, inert page behind). `website` is a honeypot.
  */
 /** UK numbers in any spelling to E.164 (07700 900123 -> +447700900123); a number already starting + is kept. Null when it is not a phone number the API will take. */
 function toE164(raw: string): string | null {
@@ -35,9 +35,16 @@ export function ContactModal({ listingId, dealerName, label, channel, open, onCl
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading the remembered buyer details from localStorage on open (it does not exist on the server)
-    if (open && !d.open) { d.showModal(); try { setSaved(JSON.parse(localStorage.getItem(KEY) || "{}")); } catch {} }
+    if (open && !d.open) {
+      d.showModal();
+      let mine: { first_name?: string; last_name?: string; mobile?: string } = {};
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading the remembered buyer details from localStorage on open (it does not exist on the server)
+      try { mine = JSON.parse(localStorage.getItem(KEY) || "{}"); setSaved(mine); } catch {}
+      // Call with a remembered mobile: no form at all, connect straight away
+      if (channel === "call" && callIntent && mine.mobile && toE164(mine.mobile)) void startCall({ first_name: mine.first_name ?? "", last_name: mine.last_name ?? "", mobile: mine.mobile }, "");
+    }
     if (!open && d.open) d.close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs when the dialog opens or closes only
   }, [open]);
 
   function close() {
@@ -46,38 +53,40 @@ export function ContactModal({ listingId, dealerName, label, channel, open, onCl
     setResult(null);
   }
 
+  /** Masked call: the API makes a call intent for this mobile and hands back the vansales number to ring; the call is then forwarded to the dealer's team. The dealer's own number is never sent. */
+  async function startCall(mine: { first_name: string; last_name: string; mobile: string }, website: FormDataEntryValue | null) {
+    setState("submitting"); setError("");
+    const e164 = toE164(mine.mobile);
+    if (!e164) { setError("Please enter a phone number we can call you back on, e.g. 07700 900 000."); setState("error"); return; }
+    try {
+      const res = await fetch(`${API}/api/public/call-intent/${encodeURIComponent(listingId)}`, {
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ buyer_mobile: e164, first_name: mine.first_name || undefined, last_name: mine.last_name || undefined, website }),
+      });
+      const body = (await res.json().catch(() => ({}))) as { dial_number?: string; dealer_name?: string; ref?: string; message?: string; error?: string };
+      if (res.status === 201 && body.dial_number) {
+        try { localStorage.setItem(KEY, JSON.stringify({ ...mine, mobile: mine.mobile })); } catch {}
+        setResult({ ref: body.ref ?? "", dial_number: body.dial_number, dealer_name: body.dealer_name ?? dealerName }); setState("done");
+        // on a phone, dial straight away (the link below is the fallback)
+        if (window.matchMedia("(pointer: coarse)").matches) window.location.href = `tel:${body.dial_number.replace(/[^\d+]/g, "")}`;
+        return;
+      }
+      setError(res.status === 402 ? "This dealer is not taking calls through vansales right now. Please send a message instead."
+        : res.status === 429 ? "You have asked for a few calls already. Please try again in an hour."
+        : res.status === 404 ? "Sorry, this advert is no longer available." : (body.message ?? "Something went wrong. Please try again."));
+    } catch {
+      setError("We could not reach the server. Please check your connection and try again.");
+    }
+    setState("error");
+  }
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (state === "submitting") return;
     const fd = new FormData(e.currentTarget);
-    const mine = { first_name: String(fd.get("first_name") ?? "").trim(), last_name: String(fd.get("last_name") ?? "").trim(), mobile: String(fd.get("mobile") ?? "").trim() };
+    const mine = { first_name: String(fd.get("first_name") ?? saved.first_name ?? "").trim(), last_name: String(fd.get("last_name") ?? saved.last_name ?? "").trim(), mobile: String(fd.get("mobile") ?? "").trim() };
     setState("submitting"); setError("");
-    if (channel === "call" && callIntent) {
-      // Masked call: the API makes a call intent for this mobile and hands back the vansales number to ring; the call is then forwarded to the dealer's team. The dealer's own number is never sent.
-      const e164 = toE164(mine.mobile);
-      if (!e164) { setError("Please enter a phone number we can call you back on, e.g. 07700 900 000."); setState("error"); return; }
-      try {
-        const res = await fetch(`${API}/api/public/call-intent/${encodeURIComponent(listingId)}`, {
-          method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ buyer_mobile: e164, first_name: mine.first_name, last_name: mine.last_name, website: fd.get("website") }),
-        });
-        const body = (await res.json().catch(() => ({}))) as { dial_number?: string; dealer_name?: string; ref?: string; message?: string; error?: string };
-        if (res.status === 201 && body.dial_number) {
-          try { localStorage.setItem(KEY, JSON.stringify(mine)); } catch {}
-          setResult({ ref: body.ref ?? "", dial_number: body.dial_number, dealer_name: body.dealer_name ?? dealerName }); setState("done");
-          // on a phone, dial straight away (the link below is the fallback)
-          if (window.matchMedia("(pointer: coarse)").matches) window.location.href = `tel:${body.dial_number.replace(/[^\d+]/g, "")}`;
-          return;
-        }
-        setError(res.status === 402 ? "This dealer is not taking calls through vansales right now. Please send a message instead."
-          : res.status === 429 ? "You have asked for a few calls already. Please try again in an hour."
-          : res.status === 404 ? "Sorry, this advert is no longer available." : (body.message ?? "Something went wrong. Please try again."));
-      } catch {
-        setError("We could not reach the server. Please check your connection and try again.");
-      }
-      setState("error");
-      return;
-    }
+    if (channel === "call" && callIntent) { await startCall(mine, fd.get("website")); return; }
     try {
       const res = await fetch(`${API}/api/public/listings/${encodeURIComponent(listingId)}/lead`, {
         method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -114,7 +123,7 @@ export function ContactModal({ listingId, dealerName, label, channel, open, onCl
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 id={titleId} className="font-display text-[length:var(--text-lg)] font-bold text-ink-900">Contact {dealerName}</h2>
-            <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">{channel === "whatsapp" ? `Tell us who you are and we will open WhatsApp about the ${label}.` : `Tell us who you are and we will show you the number for the ${label}.`}</p>
+            <p className="mt-1 text-[length:var(--text-sm)] text-ink-500">{channel === "whatsapp" ? `Tell us who you are and we will open WhatsApp about the ${label}.` : callIntent ? `Enter your mobile and we will connect you to ${dealerName} about the ${label}.` : `Tell us who you are and we will show you the number for the ${label}.`}</p>
           </div>
           <button type="button" onClick={() => ref.current?.close()} aria-label="Close" className="grid size-9 shrink-0 place-items-center rounded-[var(--radius-md)] text-ink-500 hover:bg-surface-1 hover:text-ink-900"><IconX width={18} height={18} aria-hidden /></button>
         </div>
@@ -145,14 +154,16 @@ export function ContactModal({ listingId, dealerName, label, channel, open, onCl
         ) : (
           <form onSubmit={onSubmit} className="mt-4 space-y-3" key={`${open}-${saved.mobile ?? ""}`}>
             <input type="text" name="website" tabIndex={-1} aria-hidden="true" autoComplete="off" className="sr-only" />
-            <div className="grid grid-cols-2 gap-3">
-              <Field compact label="First name" required><input type="text" name="first_name" required maxLength={60} autoComplete="given-name" defaultValue={saved.first_name ?? ""} className={inputCls} /></Field>
-              <Field compact label="Last name" required><input type="text" name="last_name" required maxLength={60} autoComplete="family-name" defaultValue={saved.last_name ?? ""} className={inputCls} /></Field>
-            </div>
+            {!(channel === "call" && callIntent) && (
+              <div className="grid grid-cols-2 gap-3">
+                <Field compact label="First name" required><input type="text" name="first_name" required maxLength={60} autoComplete="given-name" defaultValue={saved.first_name ?? ""} className={inputCls} /></Field>
+                <Field compact label="Last name" required><input type="text" name="last_name" required maxLength={60} autoComplete="family-name" defaultValue={saved.last_name ?? ""} className={inputCls} /></Field>
+              </div>
+            )}
             <Field compact label="Mobile" required><input type="tel" name="mobile" required inputMode="tel" maxLength={30} pattern="[0-9+()\s.\-]{6,30}" title="A mobile number, e.g. 07700 900 000" autoComplete="tel" placeholder="07700 900 000" defaultValue={saved.mobile ?? ""} className={inputCls} /></Field>
             {state === "error" && <p role="alert" className="rounded-[var(--radius-md)] bg-sold-tint px-3 py-2.5 text-[length:var(--text-sm)] font-medium text-sold-600">{error}</p>}
             <Button type="submit" variant="primary" size="lg" className="w-full" disabled={state === "submitting"}>
-              <Icon width={16} height={16} aria-hidden />{state === "submitting" ? "One moment…" : channel === "whatsapp" ? "Continue to WhatsApp" : callIntent ? "Get the number to call" : "Show the number"}
+              <Icon width={16} height={16} aria-hidden />{state === "submitting" ? "One moment…" : channel === "whatsapp" ? "Continue to WhatsApp" : callIntent ? "Call now" : "Show the number"}
             </Button>
             <p className="text-center text-[length:var(--text-xs)] text-ink-400">We log every contact so a dealer can trace it. Your details go only to {dealerName}.</p>
           </form>

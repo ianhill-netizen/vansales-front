@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { readPersonName } from "@/lib/person-name";
 
 /* Rate limit: 5 submissions per IP per 15 min (same policy as /api/enquiry). */
 const RATE_WINDOW_MS = 15 * 60 * 1000;
@@ -16,11 +17,6 @@ function rateCheck(ip: string): boolean {
   if (entry.count >= RATE_MAX) return true;
   entry.count++;
   return false;
-}
-
-function splitName(full: string): { first_name: string; last_name: string } {
-  const parts = full.trim().split(/\s+/);
-  return { first_name: parts[0] ?? "", last_name: parts.slice(1).join(" ") };
 }
 
 /* Forwards to the same Dealski leads endpoint used by /api/enquiry.
@@ -49,7 +45,7 @@ export async function POST(req: Request) {
   // Honeypot — silently accept bots
   if (body.website) return NextResponse.json({ ok: true });
 
-  const name = String(body.name ?? "").trim();
+  const { first_name, last_name, name } = readPersonName(body);
   const email = String(body.email ?? "").trim();
   const message = String(body.message ?? "").trim();
   // Optional, used by the /van-finance form: a UK-style mobile (at least 10 digits) and a budget band.
@@ -59,9 +55,9 @@ export async function POST(req: Request) {
   const enquiryType: "retail" | "trade" | null =
     rawType === "retail" || rawType === "trade" ? rawType : null;
 
-  if (!name || name.length < 2) {
+  if (!first_name || !last_name) {
     return NextResponse.json(
-      { ok: false, error: "Please enter your full name." },
+      { ok: false, error: "Please enter your first and last name." },
       { status: 400 },
     );
   }
@@ -85,7 +81,6 @@ export async function POST(req: Request) {
   const rawPath = String(body.page_path ?? "").trim();
   const pagePath = /^\/[a-z0-9\-/]{0,150}$/.test(rawPath) ? rawPath : "";
 
-  const { first_name, last_name } = splitName(name);
   const enquiryLabel = enquiryType === "retail" ? "Retail (buying a van)" : "Trade (dealer)";
   const notes = [
     `Enquiry type: ${enquiryLabel}`,

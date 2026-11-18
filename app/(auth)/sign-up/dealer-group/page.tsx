@@ -23,7 +23,8 @@ export default function DealerGroupSignUpPage() {
       <div className="rounded-[var(--radius-xl)] border border-border bg-white shadow-[var(--shadow-md)]">
         <form onSubmit={handleSubmit} className="space-y-4 px-6 py-6">
           {[
-            { id: "contact", label: "Contact name", type: "text", auto: "name" },
+            { id: "first_name", label: "First name", type: "text", auto: "given-name" },
+            { id: "last_name", label: "Last name", type: "text", auto: "family-name" },
             { id: "group", label: "Dealer group name", type: "text", auto: "organization" },
             { id: "email", label: "Email address", type: "email", auto: "email" },
             { id: "phone", label: "Phone", type: "tel", auto: "tel" },

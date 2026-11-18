@@ -43,7 +43,8 @@ export function EnquiryModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: fd.get("name"),
+          first_name: fd.get("first_name"),
+          last_name: fd.get("last_name"),
           email: fd.get("email"),
           phone: fd.get("phone"),
           message: fd.get("message"),
@@ -60,7 +61,7 @@ export function EnquiryModal({
       if (data.ok) {
         setState("success");
         trackEnquiry({
-          name: fd.get("name") as string | null,
+          name: `${fd.get("first_name") ?? ""} ${fd.get("last_name") ?? ""}`.trim() || null,
           email: fd.get("email") as string | null,
           mobile: fd.get("phone") as string | null,
         });
@@ -101,7 +102,10 @@ export function EnquiryModal({
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3" noValidate>
             <input type="text" name="website" tabIndex={-1} aria-hidden="true" autoComplete="off" className="sr-only" />
-            <ModalField label="Name"><input type="text" name="name" required autoComplete="name" placeholder="Jane Smith" className={inputCls} /></ModalField>
+            <div className="grid grid-cols-2 gap-3">
+              <ModalField label="First name"><input type="text" name="first_name" required maxLength={60} autoComplete="given-name" className={inputCls} /></ModalField>
+              <ModalField label="Last name"><input type="text" name="last_name" required maxLength={60} autoComplete="family-name" className={inputCls} /></ModalField>
+            </div>
             <ModalField label="Phone"><input type="tel" name="phone" required autoComplete="tel" placeholder="07700 900 000" className={inputCls} /></ModalField>
             <ModalField label="Email"><input type="email" name="email" required autoComplete="email" placeholder="you@example.com" className={inputCls} /></ModalField>
             <ModalField label="Message (optional)">

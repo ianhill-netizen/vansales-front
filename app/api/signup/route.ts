@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { readPersonName } from "@/lib/person-name";
 
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_MAX = 5;
@@ -15,11 +16,6 @@ function rateCheck(ip: string): boolean {
   if (entry.count >= RATE_MAX) return true;
   entry.count++;
   return false;
-}
-
-function splitName(full: string): { first_name: string; last_name: string } {
-  const parts = full.trim().split(/\s+/);
-  return { first_name: parts[0] ?? "", last_name: parts.slice(1).join(" ") };
 }
 
 const DEALSKI_LEADS_URL = "https://swissvans.dealski.co.uk/api/leads/website";
@@ -59,6 +55,7 @@ export async function POST(req: Request) {
   }
 
   let contactName: string;
+  let person: { first_name: string; last_name: string; name: string };
   let source: string;
   let enquiry_type: string;
   let notes: string;
@@ -66,7 +63,11 @@ export async function POST(req: Request) {
   let page_name: string;
 
   if (variant === "retail") {
-    const name = String(body.name ?? "").trim() || "Van Buyer";
+    person = readPersonName(body);
+    if (!person.first_name || !person.last_name) {
+      return NextResponse.json({ ok: false, error: "Please enter your first and last name." }, { status: 400 });
+    }
+    const name = person.name;
     const looking_for = String(body.looking_for ?? "").trim();
     contactName = name;
     source = "vansales-signup-retail";
@@ -81,7 +82,8 @@ export async function POST(req: Request) {
     page_name = "Sign Up — Van Buyer";
   } else if (variant === "trade") {
     const dealership = String(body.dealership ?? "").trim();
-    const contact_name = String(body.contact_name ?? "").trim();
+    person = readPersonName(body, { first: "first_name", last: "last_name", full: "contact_name" });
+    const contact_name = person.name;
     const phone = String(body.phone ?? "").trim();
     const stock_size = String(body.stock_size ?? "").trim();
 
@@ -91,9 +93,9 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
-    if (!contact_name || contact_name.length < 2) {
+    if (!person.first_name || !person.last_name) {
       return NextResponse.json(
-        { ok: false, error: "Please enter your name." },
+        { ok: false, error: "Please enter your first and last name." },
         { status: 400 },
       );
     }
@@ -124,7 +126,8 @@ export async function POST(req: Request) {
   } else {
     // advertise
     const company = String(body.company ?? "").trim();
-    const contact_name = String(body.contact_name ?? "").trim();
+    person = readPersonName(body, { first: "first_name", last: "last_name", full: "contact_name" });
+    const contact_name = person.name;
     const advertise_category = String(body.advertise_category ?? "").trim();
 
     if (!company) {
@@ -133,9 +136,9 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
-    if (!contact_name || contact_name.length < 2) {
+    if (!person.first_name || !person.last_name) {
       return NextResponse.json(
-        { ok: false, error: "Please enter your name." },
+        { ok: false, error: "Please enter your first and last name." },
         { status: 400 },
       );
     }
@@ -158,7 +161,7 @@ export async function POST(req: Request) {
     page_name = "Sign Up — Advertise";
   }
 
-  const { first_name, last_name } = splitName(contactName);
+  const { first_name, last_name } = person;
 
   const payload = {
     first_name,

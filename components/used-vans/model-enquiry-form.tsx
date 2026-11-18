@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui";
 import { IconCheck } from "@/components/icons";
-import { Field, inputCls } from "@/components/enquiry-fields";
+import { Field, NameFields, inputCls } from "@/components/enquiry-fields";
 
 type State = "idle" | "submitting" | "success" | "error";
 
@@ -26,7 +26,8 @@ export function ModelEnquiryForm({ vehicle, path }: { vehicle: string; path: str
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: String(fd.get("name") ?? "").trim(),
+          first_name: String(fd.get("first_name") ?? "").trim(),
+          last_name: String(fd.get("last_name") ?? "").trim(),
           email: String(fd.get("email") ?? "").trim(),
           enquiry_type: String(fd.get("enquiry_type") ?? ""),
           message: String(fd.get("message") ?? "").trim(),
@@ -64,9 +65,7 @@ export function ModelEnquiryForm({ vehicle, path }: { vehicle: string; path: str
   return (
     <form onSubmit={onSubmit} className="space-y-3" noValidate>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Your name" required compact>
-          <input name="name" type="text" required autoComplete="name" className={inputCls} />
-        </Field>
+        <NameFields compact />
         <Field label="Email" required compact>
           <input name="email" type="email" required autoComplete="email" className={inputCls} />
         </Field>
