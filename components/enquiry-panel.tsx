@@ -7,7 +7,7 @@ import { getDealerConfigBySeller } from "@/lib/dealers/config";
 import { supplierCode } from "@/lib/listings/supplier-code";
 import { Button } from "./ui";
 import { IconCheck, IconShield, IconArrow, IconStar } from "./icons";
-import { Field, inputCls } from "./enquiry-fields";
+import { Field, NameFields, inputCls } from "./enquiry-fields";
 import { PrivateEnquiryForm } from "./private-enquiry-form";
 import { PxFields } from "./px/px-fields";
 import { OPEN_ENQUIRY_EVENT } from "./listing-actions";
@@ -96,7 +96,8 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: fd.get("name"),
+          first_name: fd.get("first_name"),
+          last_name: fd.get("last_name"),
           email: fd.get("email"),
           phone: fd.get("phone"),
           message: fd.get("message"),
@@ -244,16 +245,7 @@ export function EnquiryPanel({ listing, autoOpen = false }: { listing: Listing; 
             className="sr-only"
           />
 
-          <Field label="Your name" required>
-            <input
-              type="text"
-              name="name"
-              required
-              autoComplete="name"
-              placeholder="Jane Smith"
-              className={inputCls}
-            />
-          </Field>
+          <NameFields />
 
           <Field label="Phone number" required>
             <input

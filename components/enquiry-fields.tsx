@@ -15,3 +15,17 @@ export function Field({ label, required, compact, children }: { label: string; r
     </label>
   );
 }
+
+/** First name + Last name, two required fields side by side. The one name control every form uses; read the values as `first_name` and `last_name`. */
+export function NameFields({ compact, defaultFirst, defaultLast }: { compact?: boolean; defaultFirst?: string; defaultLast?: string }) {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <Field label="First name" required compact={compact}>
+        <input type="text" name="first_name" required maxLength={60} autoComplete="given-name" defaultValue={defaultFirst} className={inputCls} />
+      </Field>
+      <Field label="Last name" required compact={compact}>
+        <input type="text" name="last_name" required maxLength={60} autoComplete="family-name" defaultValue={defaultLast} className={inputCls} />
+      </Field>
+    </div>
+  );
+}

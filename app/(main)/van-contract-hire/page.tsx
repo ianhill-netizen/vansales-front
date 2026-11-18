@@ -141,7 +141,8 @@ export default function VanContractHirePage() {
             </p>
             <div className="mt-6 space-y-3">
               {[
-                { label: "Your name", type: "text" },
+                { label: "First name", type: "text" },
+                { label: "Last name", type: "text" },
                 { label: "Email address", type: "email" },
                 { label: "Phone number", type: "tel" },
                 { label: "Van you&apos;re interested in", type: "text" },

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { sourceIdFromSlug } from "@/lib/listings/slug";
+import { readPersonName } from "@/lib/person-name";
 
 /* Per-instance rate limit: max 5 submissions per IP per 15 min.
    Serverless means this resets on cold starts — good enough for a contact form. */
@@ -32,14 +33,6 @@ function validateEnquiryUrl(raw: unknown): string | null {
   return ALLOWED_ENQUIRY_URL.test(raw) ? raw : null;
 }
 
-function splitName(full: string): { first_name: string; last_name: string } {
-  const parts = full.trim().split(/\s+/);
-  return {
-    first_name: parts[0] ?? "",
-    last_name: parts.slice(1).join(" "),
-  };
-}
-
 export async function POST(req: Request) {
   const h = await headers();
   const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
@@ -63,13 +56,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const name = String(body.name ?? "").trim();
+  const { first_name, last_name, name } = readPersonName(body);
   const email = String(body.email ?? "").trim();
   const phone = String(body.phone ?? "").trim();
   const message = String(body.message ?? "").trim();
 
-  if (!name || name.length < 2) {
-    return NextResponse.json({ ok: false, error: "Please enter your full name." }, { status: 400 });
+  if (!first_name || !last_name) {
+    return NextResponse.json({ ok: false, error: "Please enter your first and last name." }, { status: 400 });
   }
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ ok: false, error: "Please enter a valid email address." }, { status: 400 });
@@ -156,7 +149,6 @@ export async function POST(req: Request) {
   // Marketplace listings supply a per-tenant enquiry_url; Dealski-source listings
   // fall back to the SwissVans URL (single tenant, no enquiry_url set).
   const forwardUrl = enquiryUrl ?? DEALSKI_LEADS_FALLBACK;
-  const { first_name, last_name } = splitName(name);
   const pageUrl = slug ? `https://vansales.com/listing/${slug}` : "https://vansales.com";
 
   const payload = {
